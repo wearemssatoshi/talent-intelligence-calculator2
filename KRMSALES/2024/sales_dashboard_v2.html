@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>売上ダッシュボード v2</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2024年度 売上ダッシュボード</h1>
+        
+        <div class="chart-container">
+            <h2>年間売上推移</h2>
+            <canvas id="annualSalesChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>年間での曜日別平均売上</h2>
+            <canvas id="avgSalesByDayOfWeekChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Chart 1: Annual Sales Trend
+        const ctx1 = document.getElementById('annualSalesChart').getContext('2d');
+        const annualSalesChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'],
+                datasets: [{
+                    label: '月間売上 (円)',
+                    data: [
+                        2595480, 3353940, 3944290, 4339430, 4262800, 3494750, 
+                        3677250, 3873230, 4499880, 4402800, 4011750, 3630000
+                    ],
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: value => '¥' + value.toLocaleString() }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: context => `月間売上: ¥${context.parsed.y.toLocaleString()}`
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Average Sales by Day of the Week (Annual)
+        const ctx2 = document.getElementById('avgSalesByDayOfWeekChart').getContext('2d');
+        const avgSalesByDayOfWeekChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['月', '火', '水', '木', '金', '土', '日'],
+                datasets: [{
+                    label: '曜日別平均売上 (円)',
+                    data: [
+                        108419, // Mon
+                        105741, // Tue
+                        112942, // Wed
+                        119789, // Thu
+                        139400, // Fri
+                        151373, // Sat
+                        146269  // Sun
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)',
+                        'rgba(199, 199, 199, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(199, 199, 199, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: value => '¥' + value.toLocaleString() }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: context => `平均売上: ¥${context.parsed.y.toLocaleString()}`
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

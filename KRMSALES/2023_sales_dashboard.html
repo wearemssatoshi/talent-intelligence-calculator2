@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2023年度 売上ダッシュボード</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f9; color: #333; }
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1, h2 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
+        .chart-container { margin-bottom: 50px; }
+        .month-selector { display: block; margin: 0 auto 20px auto; padding: 8px 12px; font-size: 1em; border-radius: 5px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>2023年度 売上ダッシュボード</h1>
+        
+        <div class="chart-container">
+            <h2>年間売上推移</h2>
+            <canvas id="annualSalesChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>年間での曜日別平均売上</h2>
+            <canvas id="avgSalesByDayOfWeekChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h2>月別の曜日別平均売上</h2>
+            <select id="monthSelector" class="month-selector"></select>
+            <canvas id="monthlyAvgSalesChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels);
+
+        const monthlyData = {
+            '4月': { total: 3879580, averages: [110938, 95858, 106500, 113315, 126610, 168736, 148025] },
+            '5月': { total: 3773890, averages: [103624, 101274, 123188, 130950, 118758, 125508, 138165] },
+            '6月': { total: 3529970, averages: [101753, 114525, 96280, 128385, 122310, 143595, 150000] },
+            '7月': { total: 4063850, averages: [101486, 121085, 121263, 109905, 172930, 140320, 136720] },
+            '8月': { total: 3739900, averages: [94808, 121378, 108678, 124158, 150945, 129368, 128300] },
+            '9月': { total: 3494160, averages: [100206, 93433, 118223, 87825, 128000, 130005, 148070] },
+            '10月': { total: 4488810, averages: [108666, 98314, 109260, 134520, 151810, 180668, 187120] },
+            '11月': { total: 4048957, averages: [98371, 108170, 144113, 134833, 138290, 156394, 161880] },
+            '12月': { total: 5009264, averages: [116230, 104421, 148820, 165738, 174878, 193638, 196808] },
+            '1月': { total: 3849300, averages: [144713, 114638, 118113, 132470, 161775, 166850, 145188] },
+            '2月': { total: 4968480, averages: [146313, 116388, 146950, 168925, 171663, 211845, 260295] },
+            '3月': { total: 3380480, averages: [88330, 88025, 63763, 113045, 126020, 127660, 117340] },
+        };
+
+        const formatCurrency = (value) => '¥' + value.toLocaleString();
+        const formatCurrencyK = (value) => '¥' + (value / 1000).toFixed(0) + 'k';
+
+        // Chart 1: Annual Sales Trend
+        const ctx1 = document.getElementById('annualSalesChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: Object.keys(monthlyData),
+                datasets: [{
+                    label: '月間売上 (円)',
+                    data: Object.values(monthlyData).map(d => d.total),
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)', borderColor: 'rgba(52, 152, 219, 1)', borderWidth: 2, tension: 0.1, fill: true
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, ticks: { callback: formatCurrency } } }, plugins: { tooltip: { callbacks: { label: context => `月間売上: ${formatCurrency(context.parsed.y)}` } }, datalabels: { align: 'end', anchor: 'end', backgroundColor: 'rgba(52, 152, 219, 0.7)', borderRadius: 4, color: 'white', font: { size: 10 }, padding: 4, formatter: (value) => formatCurrencyK(value) } } }
+        });
+
+        // Chart 2: Average Sales by Day of the Week (Annual)
+        const annualAverages = [112292, 107997, 120772, 129384, 144297, 154450, 157061];
+        const ctx2 = document.getElementById('avgSalesByDayOfWeekChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['月', '火', '水', '木', '金', '土', '日'],
+                datasets: [{
+                    label: '曜日別平均売上 (円)',
+                    data: annualAverages,
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0', '#f77825', '#9966ff'].map(c => c + '80'),
+                    borderColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0', '#f77825', '#9966ff'],
+                    borderWidth: 1
+                }]
+            },
+            options: { scales: { y: { beginAtZero: true, ticks: { callback: formatCurrency } } }, plugins: { tooltip: { callbacks: { label: context => `平均売上: ${formatCurrency(context.parsed.y)}` } }, datalabels: { anchor: 'end', align: 'top', color: '#555', font: { weight: 'bold' }, formatter: (value) => formatCurrencyK(value) } } }
+        });
+
+        // Chart 3: Monthly Average Sales by Day of the Week
+        const monthSelector = document.getElementById('monthSelector');
+        const ctx3 = document.getElementById('monthlyAvgSalesChart').getContext('2d');
+        let monthlyChart;
+
+        Object.keys(monthlyData).forEach(month => {
+            const option = document.createElement('option');
+            option.value = month;
+            option.textContent = month;
+            monthSelector.appendChild(option);
+        });
+
+        function updateMonthlyChart(month) {
+            const chartData = monthlyData[month].averages;
+            const options = { scales: { y: { beginAtZero: true, ticks: { callback: formatCurrency } } }, plugins: { tooltip: { callbacks: { label: context => `平均売上: ${formatCurrency(context.parsed.y)}` } }, datalabels: { anchor: 'end', align: 'top', color: '#555', font: { weight: 'bold' }, formatter: (value) => formatCurrencyK(value) } } };
+            if (monthlyChart) {
+                monthlyChart.data.datasets[0].data = chartData;
+                monthlyChart.data.datasets[0].label = `${month}の曜日別平均売上 (円)`;
+                monthlyChart.update();
+            } else {
+                monthlyChart = new Chart(ctx3, { type: 'bar', data: { labels: ['月', '火', '水', '木', '金', '土', '日'], datasets: [{ label: `${month}の曜日別平均売上 (円)`, data: chartData, backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0', '#f77825', '#9966ff'].map(c => c + '80'), borderColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#4bc0c0', '#f77825', '#9966ff'], borderWidth: 1 }] }, options: options });
+            }
+        }
+
+        monthSelector.addEventListener('change', (e) => { updateMonthlyChart(e.target.value); });
+        updateMonthlyChart(Object.keys(monthlyData)[0]);
+
+    </script>
+</body>
+</html>
