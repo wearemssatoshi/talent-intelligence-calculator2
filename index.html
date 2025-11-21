@@ -970,7 +970,7 @@
         });
 
         async function downloadPdf() {
-            console.log('PDFダウンロード処理を開始します (v3 - Premium Fix)');
+            console.log('PDFダウンロード処理を開始します (v4 - High Contrast / Vivid Color)');
             const resultDashboard = document.getElementById('result-dashboard');
             if (resultDashboard.style.display === 'none') {
                 alert('診断結果が表示されていません。まず診断を実行してください。');
@@ -979,69 +979,79 @@
 
             const downloadPdfBtn = document.getElementById('download-pdf-btn');
             const originalBtnText = downloadPdfBtn.textContent;
-            downloadPdfBtn.textContent = '高品質PDF作成中...';
+            downloadPdfBtn.textContent = '高コントラストPDF作成中...';
             downloadPdfBtn.disabled = true;
 
-            // 一時的にスクロールをトップに戻す（キャプチャズレ防止）
+            // 一時的にスクロールをトップに戻す
             window.scrollTo(0, 0);
 
             try {
                 const canvas = await html2canvas(resultDashboard, {
-                    scale: 3, // バランスの良い解像度
+                    scale: 3,
                     useCORS: true,
                     allowTaint: true,
-                    backgroundColor: '#ECEFF1', // 背景色を明示
+                    backgroundColor: '#FFFFFF', // 背景は完全な白
                     logging: false,
                     onclone: (clonedDoc) => {
                         const clonedDashboard = clonedDoc.getElementById('result-dashboard');
 
-                        // 1. 全体のフォントと色を調整
+                        // 1. 全体のフォントと色を「濃く」「黒く」
                         clonedDashboard.style.fontFamily = "'Noto Sans JP', sans-serif";
-                        clonedDashboard.style.color = '#263238';
+                        clonedDashboard.style.color = '#000000'; // 完全な黒
+                        clonedDashboard.style.fontWeight = '500'; // 全体的に少し太く
 
-                        // 2. カードのスタイル調整（影を消してフラットに、背景を真っ白に）
+                        // 2. カードのスタイル調整
                         const cards = clonedDashboard.querySelectorAll('.card');
                         cards.forEach(card => {
                             card.style.boxShadow = 'none';
-                            card.style.border = '1px solid #CFD8DC';
+                            card.style.border = '2px solid #000000'; // 枠線も黒くはっきり
                             card.style.backgroundColor = '#FFFFFF';
                             card.style.marginBottom = '20px';
-                            card.style.pageBreakInside = 'avoid'; // ページ跨ぎ防止
+                            card.style.color = '#000000'; // カード内テキストも黒
                         });
 
-                        // 3. チャートタイトルの強制表示とスタイル強化
+                        // 3. チャートタイトルの超強調
                         const chartTitles = clonedDashboard.querySelectorAll('#chart-grid .card h3');
                         chartTitles.forEach(title => {
-                            title.style.color = '#1A237E !important'; // Deep Navy
+                            title.style.color = '#000080 !important'; // 濃いネイビー
                             title.style.fontSize = '24px';
-                            title.style.fontWeight = 'bold';
-                            title.style.borderBottom = '3px solid #FBC02D'; // Gold Accent
+                            title.style.fontWeight = '900'; // 極太
+                            title.style.borderBottom = '3px solid #FFD700'; // 濃いゴールド
                             title.style.marginBottom = '15px';
-                            title.style.display = 'block';
-                            title.style.visibility = 'visible';
                             title.style.opacity = '1';
                         });
 
-                        // 4. アドバイスカードのグラデーション対応（html2canvasはグラデーションが苦手な場合があるため、単色フォールバックも考慮）
+                        // 4. スコア詳細の文字も濃く
+                        const listItems = clonedDashboard.querySelectorAll('li');
+                        listItems.forEach(li => {
+                            li.style.color = '#000000';
+                            li.style.fontWeight = 'bold';
+                        });
+
+                        // 5. アドバイスカードの調整
                         const adviceCard = clonedDashboard.querySelector('.advice-card');
                         if (adviceCard) {
-                            adviceCard.style.background = '#1A237E'; // Fallback to solid Deep Navy
+                            adviceCard.style.background = '#000080'; // 濃いネイビー単色
                             adviceCard.style.color = '#FFFFFF';
+                            adviceCard.style.border = 'none';
+
                             const adviceHeader = adviceCard.querySelector('h3');
                             if (adviceHeader) {
-                                adviceHeader.style.color = '#FFFFFF';
-                                adviceHeader.style.borderBottomColor = 'rgba(255,255,255,0.5)';
+                                adviceHeader.style.color = '#FFFFFF !important';
+                                adviceHeader.style.borderBottom = '1px solid #FFFFFF';
                             }
                             const adviceText = adviceCard.querySelector('#advice-text');
                             if (adviceText) {
                                 adviceText.style.color = '#FFFFFF';
+                                adviceText.style.fontWeight = 'bold';
                             }
                         }
 
-                        // 5. 凡例の表示
+                        // 6. チャートの凡例
                         clonedDashboard.querySelectorAll('.chart-legend').forEach(legend => {
                             legend.style.display = 'block';
-                            legend.style.fontSize = '10px';
+                            legend.style.color = '#000000';
+                            legend.style.fontWeight = 'bold';
                         });
                     }
                 });
@@ -1056,23 +1066,23 @@
                 const imgHeight = canvas.height;
                 const ratio = imgWidth / imgHeight;
 
-                const canvasWidthInMM = pdfWidth - 20; // 左右マージン10mmずつ
+                const canvasWidthInMM = pdfWidth - 20;
                 const canvasHeightInMM = canvasWidthInMM / ratio;
 
-                let position = 10; // 上マージン10mm
+                let position = 10;
                 let heightLeft = canvasHeightInMM;
-                let pageHeight = pdfHeight - 20; // 上下マージン分引く
+                let pageHeight = pdfHeight - 20;
 
-                // ヘッダー追加
-                pdf.setFontSize(10);
-                pdf.setTextColor(100);
+                // ヘッダー
+                pdf.setFontSize(12);
+                pdf.setTextColor(0, 0, 0); // 黒
                 pdf.text("SVD Talent Intelligence Report", 10, 8);
 
                 pdf.addImage(imgData, 'PNG', 10, position, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
                 heightLeft -= pageHeight;
 
                 while (heightLeft > 0) {
-                    position = heightLeft - canvasHeightInMM; // 修正が必要なロジックだが、簡易的に改ページ
+                    position = heightLeft - canvasHeightInMM;
                     pdf.addPage();
                     pdf.text("SVD Talent Intelligence Report", 10, 8);
                     pdf.addImage(imgData, 'PNG', 10, 10, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
@@ -1082,6 +1092,7 @@
                 const userName = document.getElementById('user-name').value || '診断者';
                 const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
                 pdf.save(`${userName}_SVD_TI_${dateStr}.pdf`);
+                alert('PDFのダウンロードが完了しました！');
 
             } catch (error) {
                 console.error("PDF生成中にエラーが発生しました:", error);
