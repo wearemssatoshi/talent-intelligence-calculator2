@@ -1085,7 +1085,7 @@
                     position = heightLeft - canvasHeightInMM;
                     pdf.addPage();
                     pdf.text("SVD Talent Intelligence Report", 10, 8);
-                    pdf.addImage(imgData, 'PNG', 10, 10, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
+                    pdf.addImage(imgData, 'PNG', 10, position + 10, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
                     heightLeft -= pageHeight;
                 }
 
