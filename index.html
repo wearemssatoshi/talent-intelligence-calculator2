@@ -981,7 +981,7 @@
         });
 
         async function downloadPdf() {
-            console.log('PDFダウンロード処理を開始します (v4 - High Contrast / Vivid Color)');
+            console.log('PDFダウンロード処理を開始します (v5 - Smart Pagination / Premium Design)');
             const resultDashboard = document.getElementById('result-dashboard');
             if (resultDashboard.style.display === 'none') {
                 alert('診断結果が表示されていません。まず診断を実行してください。');
@@ -990,114 +990,83 @@
 
             const downloadPdfBtn = document.getElementById('download-pdf-btn');
             const originalBtnText = downloadPdfBtn.textContent;
-            downloadPdfBtn.textContent = '高コントラストPDF作成中...';
+            downloadPdfBtn.textContent = 'PDF作成中...';
             downloadPdfBtn.disabled = true;
 
             // 一時的にスクロールをトップに戻す
             window.scrollTo(0, 0);
 
             try {
-                const canvas = await html2canvas(resultDashboard, {
-                    scale: 3,
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: '#FFFFFF', // 背景は完全な白
-                    logging: false,
-                    onclone: (clonedDoc) => {
-                        const clonedDashboard = clonedDoc.getElementById('result-dashboard');
-
-                        // 1. 全体のフォントと色を「濃く」「黒く」
-                        clonedDashboard.style.fontFamily = "'Noto Sans JP', sans-serif";
-                        clonedDashboard.style.color = '#000000'; // 完全な黒
-                        clonedDashboard.style.fontWeight = '500'; // 全体的に少し太く
-
-                        // 2. カードのスタイル調整
-                        const cards = clonedDashboard.querySelectorAll('.card');
-                        cards.forEach(card => {
-                            card.style.boxShadow = 'none';
-                            card.style.border = '2px solid #000000'; // 枠線も黒くはっきり
-                            card.style.backgroundColor = '#FFFFFF';
-                            card.style.marginBottom = '20px';
-                            card.style.color = '#000000'; // カード内テキストも黒
-                        });
-
-                        // 3. チャートタイトルの超強調
-                        const chartTitles = clonedDashboard.querySelectorAll('#chart-grid .card h3');
-                        chartTitles.forEach(title => {
-                            title.style.color = '#000080 !important'; // 濃いネイビー
-                            title.style.fontSize = '24px';
-                            title.style.fontWeight = '900'; // 極太
-                            title.style.borderBottom = '3px solid #FFD700'; // 濃いゴールド
-                            title.style.marginBottom = '15px';
-                            title.style.opacity = '1';
-                        });
-
-                        // 4. スコア詳細の文字も濃く
-                        const listItems = clonedDashboard.querySelectorAll('li');
-                        listItems.forEach(li => {
-                            li.style.color = '#000000';
-                            li.style.fontWeight = 'bold';
-                        });
-
-                        // 5. アドバイスカードの調整
-                        const adviceCard = clonedDashboard.querySelector('.advice-card');
-                        if (adviceCard) {
-                            adviceCard.style.background = '#000080'; // 濃いネイビー単色
-                            adviceCard.style.color = '#FFFFFF';
-                            adviceCard.style.border = 'none';
-
-                            const adviceHeader = adviceCard.querySelector('h3');
-                            if (adviceHeader) {
-                                adviceHeader.style.color = '#FFFFFF !important';
-                                adviceHeader.style.borderBottom = '1px solid #FFFFFF';
-                            }
-                            const adviceText = adviceCard.querySelector('#advice-text');
-                            if (adviceText) {
-                                adviceText.style.color = '#FFFFFF';
-                                adviceText.style.fontWeight = 'bold';
-                            }
-                        }
-
-                        // 6. チャートの凡例
-                        clonedDashboard.querySelectorAll('.chart-legend').forEach(legend => {
-                            legend.style.display = 'block';
-                            legend.style.color = '#000000';
-                            legend.style.fontWeight = 'bold';
-                        });
-                    }
-                });
-
-                const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
-
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = canvas.width;
-                const imgHeight = canvas.height;
-                const ratio = imgWidth / imgHeight;
+                const margin = 10;
+                const contentWidth = pdfWidth - (margin * 2);
 
-                const canvasWidthInMM = pdfWidth - 20;
-                const canvasHeightInMM = canvasWidthInMM / ratio;
+                let currentY = margin;
 
-                let position = 10;
-                let heightLeft = canvasHeightInMM;
-                let pageHeight = pdfHeight - 20;
+                // ヘッダー追加関数
+                const addHeader = () => {
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(100, 100, 100);
+                    pdf.text("SVD Talent Intelligence Report", margin, margin - 2);
+                    currentY = margin + 5; // ヘッダー下の開始位置
+                };
 
-                // ヘッダー
-                pdf.setFontSize(12);
-                pdf.setTextColor(0, 0, 0); // 黒
-                pdf.text("SVD Talent Intelligence Report", 10, 8);
+                // 初期ページにヘッダー追加
+                addHeader();
 
-                pdf.addImage(imgData, 'PNG', 10, position, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
-                heightLeft -= pageHeight;
+                // PDFに追加する要素のリストを作成
+                // 1. 診断結果タイトルとスコア (total-score-card)
+                // 2. スコア詳細 (score-breakdown)
+                // 3. アドバイス (advice-card)
+                // 4. 各レーダーチャート (chart-grid内の各card)
 
-                while (heightLeft > 0) {
-                    position = heightLeft - canvasHeightInMM;
-                    pdf.addPage();
-                    pdf.text("SVD Talent Intelligence Report", 10, 8);
-                    pdf.addImage(imgData, 'PNG', 10, position + 10, canvasWidthInMM, canvasHeightInMM, undefined, 'FAST');
-                    heightLeft -= pageHeight;
+                const elementsToCapture = [];
+
+                // total-score-card
+                const totalScoreCard = resultDashboard.querySelector('.total-score-card');
+                if (totalScoreCard) elementsToCapture.push(totalScoreCard);
+
+                // score-breakdown
+                const scoreBreakdown = resultDashboard.querySelector('.score-breakdown');
+                if (scoreBreakdown) elementsToCapture.push(scoreBreakdown);
+
+                // advice-card
+                const adviceCard = resultDashboard.querySelector('.advice-card');
+                if (adviceCard) elementsToCapture.push(adviceCard);
+
+                // charts
+                const chartCards = resultDashboard.querySelectorAll('#chart-grid .card');
+                chartCards.forEach(card => elementsToCapture.push(card));
+
+                for (const element of elementsToCapture) {
+                    // 要素をキャプチャ
+                    // デザインを維持するため、背景色などを強制変更しない
+                    // ただし、文字が見やすいように、必要であれば一時的にスタイル調整を行うことも可能
+                    // 今回は「プレミアムデザイン」維持のため、そのままキャプチャする
+
+                    const canvas = await html2canvas(element, {
+                        scale: 2, // 画質確保
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: null, // 透明背景を許可（カードの背景色を活かす）
+                        logging: false
+                    });
+
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = contentWidth;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                    // 改ページ判定
+                    if (currentY + imgHeight > pdfHeight - margin) {
+                        pdf.addPage();
+                        addHeader(); // 新しいページにもヘッダー
+                    }
+
+                    pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+                    currentY += imgHeight + 5; // 要素間のマージン
                 }
 
                 const userName = document.getElementById('user-name').value || '診断者';
