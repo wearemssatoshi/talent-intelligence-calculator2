@@ -981,7 +981,7 @@
         });
 
         async function downloadPdf() {
-            console.log('PDFダウンロード処理を開始します (v7 - Force 2-Column Grid)');
+            console.log('PDFダウンロード処理を開始します (v8 - Footer Added)');
             const resultDashboard = document.getElementById('result-dashboard');
             if (resultDashboard.style.display === 'none') {
                 alert('診断結果が表示されていません。まず診断を実行してください。');
@@ -1021,19 +1021,20 @@
 
                 // 1. Total Score Card (Top)
                 const totalScoreCard = resultDashboard.querySelector('.total-score-card');
-                if (totalScoreCard) elementsToCapture.push({ element: totalScoreCard, forceGrid: false });
+                if (totalScoreCard) elementsToCapture.push({ element: totalScoreCard, forceGrid: false, type: 'score' });
 
                 // 2. Summary Grid (Breakdown + Advice)
                 const summaryGrid = resultDashboard.querySelector('.result-grid:not(#chart-grid)');
-                if (summaryGrid) elementsToCapture.push({ element: summaryGrid, forceGrid: true });
+                if (summaryGrid) elementsToCapture.push({ element: summaryGrid, forceGrid: true, type: 'summary' });
 
                 // 3. Chart Grid (4 Charts)
                 const chartGrid = document.getElementById('chart-grid');
-                if (chartGrid) elementsToCapture.push({ element: chartGrid, forceGrid: true });
+                if (chartGrid) elementsToCapture.push({ element: chartGrid, forceGrid: true, type: 'charts' });
 
                 for (const item of elementsToCapture) {
                     const element = item.element;
                     const forceGrid = item.forceGrid;
+                    const type = item.type;
 
                     const canvas = await html2canvas(element, {
                         scale: 2,
@@ -1084,6 +1085,39 @@
 
                     pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
                     currentY += imgHeight + 5;
+
+                    // Summary Grid (1ページ目の最後) の後にフッターを追加
+                    if (type === 'summary') {
+                        // フッター領域の確保 (ページ下部から40mm)
+                        const footerHeight = 40;
+                        const footerY = pdfHeight - margin - footerHeight;
+
+                        // もし現在のY位置がフッター領域に被っていたら、フッターは諦めるか改ページするが
+                        // 基本的には収まる想定。念のためチェックはしない（強制描画）
+
+                        // 1. 日付 (右寄せ)
+                        const now = new Date();
+                        const dateStr = `Date: ${now.getFullYear()}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getDate().toString().padStart(2, '0')}`;
+                        pdf.setFontSize(11);
+                        pdf.setTextColor(50, 50, 50);
+                        pdf.text(dateStr, pdfWidth - margin, footerY - 2, { align: 'right' });
+
+                        // 2. Message Box
+                        pdf.setDrawColor(200, 200, 200); // 薄いグレーの枠線
+                        pdf.setLineWidth(0.5);
+                        pdf.rect(margin, footerY, contentWidth, footerHeight);
+
+                        // Message Label
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(100, 100, 100);
+                        pdf.text("Message", margin + 2, footerY + 5);
+
+                        // 次の要素（チャート）のために改ページを強制する
+                        // (チャートは必ず2ページ目のトップから始めたい)
+                        pdf.addPage();
+                        addHeader();
+                        currentY = margin + 5; // リセット
+                    }
                 }
 
                 const userName = document.getElementById('user-name').value || '診断者';
