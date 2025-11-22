@@ -981,7 +981,7 @@
         });
 
         async function downloadPdf() {
-            console.log('PDFダウンロード処理を開始します (v5 - Smart Pagination / Premium Design)');
+            console.log('PDFダウンロード処理を開始します (v6 - 2-Page Optimization / Block Capture)');
             const resultDashboard = document.getElementById('result-dashboard');
             if (resultDashboard.style.display === 'none') {
                 alert('診断結果が表示されていません。まず診断を実行してください。');
@@ -1017,42 +1017,36 @@
                 // 初期ページにヘッダー追加
                 addHeader();
 
-                // PDFに追加する要素のリストを作成
-                // 1. 診断結果タイトルとスコア (total-score-card)
-                // 2. スコア詳細 (score-breakdown)
-                // 3. アドバイス (advice-card)
-                // 4. 各レーダーチャート (chart-grid内の各card)
+                // PDFに追加する要素を「ブロック」として定義
+                // 2ページに収めるため、個別のカードではなく、グリッド全体をキャプチャする戦略に変更
 
                 const elementsToCapture = [];
 
-                // total-score-card
+                // 1. Total Score Card (Top)
                 const totalScoreCard = resultDashboard.querySelector('.total-score-card');
                 if (totalScoreCard) elementsToCapture.push(totalScoreCard);
 
-                // score-breakdown
-                const scoreBreakdown = resultDashboard.querySelector('.score-breakdown');
-                if (scoreBreakdown) elementsToCapture.push(scoreBreakdown);
+                // 2. Summary Grid (Breakdown + Advice) - これを1つのブロックとしてキャプチャ
+                // .result-gridの最初の要素を取得（チャートグリッドではない方）
+                const summaryGrid = resultDashboard.querySelector('.result-grid:not(#chart-grid)');
+                if (summaryGrid) elementsToCapture.push(summaryGrid);
 
-                // advice-card
-                const adviceCard = resultDashboard.querySelector('.advice-card');
-                if (adviceCard) elementsToCapture.push(adviceCard);
-
-                // charts
-                const chartCards = resultDashboard.querySelectorAll('#chart-grid .card');
-                chartCards.forEach(card => elementsToCapture.push(card));
+                // 3. Chart Grid (4 Charts) - これを1つのブロックとしてキャプチャ
+                const chartGrid = document.getElementById('chart-grid');
+                if (chartGrid) elementsToCapture.push(chartGrid);
 
                 for (const element of elementsToCapture) {
                     // 要素をキャプチャ
-                    // デザインを維持するため、背景色などを強制変更しない
-                    // ただし、文字が見やすいように、必要であれば一時的にスタイル調整を行うことも可能
-                    // 今回は「プレミアムデザイン」維持のため、そのままキャプチャする
+                    // windowWidth: 1280 を指定して、強制的にPCレイアウト（2カラム）でレンダリングさせる
+                    // これにより、チャートが2x2になり、1ページに収まるようになる
 
                     const canvas = await html2canvas(element, {
                         scale: 2, // 画質確保
                         useCORS: true,
                         allowTaint: true,
-                        backgroundColor: null, // 透明背景を許可（カードの背景色を活かす）
-                        logging: false
+                        backgroundColor: null, // 透明背景を許可
+                        logging: false,
+                        windowWidth: 1280 // PC幅を強制
                     });
 
                     const imgData = canvas.toDataURL('image/png');
@@ -1060,6 +1054,7 @@
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
                     // 改ページ判定
+                    // 残りスペースより画像が大きい場合は改ページ
                     if (currentY + imgHeight > pdfHeight - margin) {
                         pdf.addPage();
                         addHeader(); // 新しいページにもヘッダー
