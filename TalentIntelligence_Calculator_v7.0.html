@@ -981,7 +981,7 @@
         });
 
         async function downloadPdf() {
-            console.log('PDFダウンロード処理を開始します (v6 - 2-Page Optimization / Block Capture)');
+            console.log('PDFダウンロード処理を開始します (v7 - Force 2-Column Grid)');
             const resultDashboard = document.getElementById('result-dashboard');
             if (resultDashboard.style.display === 'none') {
                 alert('診断結果が表示されていません。まず診断を実行してください。');
@@ -1017,36 +1017,59 @@
                 // 初期ページにヘッダー追加
                 addHeader();
 
-                // PDFに追加する要素を「ブロック」として定義
-                // 2ページに収めるため、個別のカードではなく、グリッド全体をキャプチャする戦略に変更
-
                 const elementsToCapture = [];
 
                 // 1. Total Score Card (Top)
                 const totalScoreCard = resultDashboard.querySelector('.total-score-card');
-                if (totalScoreCard) elementsToCapture.push(totalScoreCard);
+                if (totalScoreCard) elementsToCapture.push({ element: totalScoreCard, forceGrid: false });
 
-                // 2. Summary Grid (Breakdown + Advice) - これを1つのブロックとしてキャプチャ
-                // .result-gridの最初の要素を取得（チャートグリッドではない方）
+                // 2. Summary Grid (Breakdown + Advice)
                 const summaryGrid = resultDashboard.querySelector('.result-grid:not(#chart-grid)');
-                if (summaryGrid) elementsToCapture.push(summaryGrid);
+                if (summaryGrid) elementsToCapture.push({ element: summaryGrid, forceGrid: true });
 
-                // 3. Chart Grid (4 Charts) - これを1つのブロックとしてキャプチャ
+                // 3. Chart Grid (4 Charts)
                 const chartGrid = document.getElementById('chart-grid');
-                if (chartGrid) elementsToCapture.push(chartGrid);
+                if (chartGrid) elementsToCapture.push({ element: chartGrid, forceGrid: true });
 
-                for (const element of elementsToCapture) {
-                    // 要素をキャプチャ
-                    // windowWidth: 1280 を指定して、強制的にPCレイアウト（2カラム）でレンダリングさせる
-                    // これにより、チャートが2x2になり、1ページに収まるようになる
+                for (const item of elementsToCapture) {
+                    const element = item.element;
+                    const forceGrid = item.forceGrid;
 
                     const canvas = await html2canvas(element, {
-                        scale: 2, // 画質確保
+                        scale: 2,
                         useCORS: true,
                         allowTaint: true,
-                        backgroundColor: null, // 透明背景を許可
+                        backgroundColor: null,
                         logging: false,
-                        windowWidth: 1280 // PC幅を強制
+                        windowWidth: 1280, // ベースはPC幅
+                        onclone: (clonedDoc) => {
+                            // キャプチャ時に強制的に2カラムにする
+                            if (forceGrid) {
+                                // クローンされた要素自身が grid の場合と、子が grid の場合がある
+                                // 今回のロジックでは element そのものが .result-grid なので、直接スタイルを当てる
+                                // ただし html2canvas はクローンされたDOMの特定の要素を見つけるのが少し難しい場合がある
+                                // ここでは element の classList を頼りに特定する
+
+                                // クローンされたドキュメントから、元の要素と同じクラスを持つ要素を探す
+                                // (elementがIDを持っていればIDで、なければクラスで)
+                                let target;
+                                if (element.id) {
+                                    target = clonedDoc.getElementById(element.id);
+                                } else {
+                                    // IDがない場合（summaryGridなど）、クラスで検索して該当しそうなものを探す
+                                    // ここでは簡易的に、clonedDoc内の該当クラスを持つ要素すべてに適用してしまうのが安全
+                                    const grids = clonedDoc.querySelectorAll('.result-grid');
+                                    grids.forEach(grid => {
+                                        grid.style.gridTemplateColumns = '1fr 1fr';
+                                    });
+                                    return;
+                                }
+
+                                if (target) {
+                                    target.style.gridTemplateColumns = '1fr 1fr';
+                                }
+                            }
+                        }
                     });
 
                     const imgData = canvas.toDataURL('image/png');
@@ -1054,14 +1077,13 @@
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
                     // 改ページ判定
-                    // 残りスペースより画像が大きい場合は改ページ
                     if (currentY + imgHeight > pdfHeight - margin) {
                         pdf.addPage();
-                        addHeader(); // 新しいページにもヘッダー
+                        addHeader();
                     }
 
                     pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
-                    currentY += imgHeight + 5; // 要素間のマージン
+                    currentY += imgHeight + 5;
                 }
 
                 const userName = document.getElementById('user-name').value || '診断者';
