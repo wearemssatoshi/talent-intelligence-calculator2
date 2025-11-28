@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD Manager Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Teko:wght@700&display=swap');
+
+        :root {
+            --primary-color: #1A237E;
+            --secondary-color: #536DFE;
+            --accent-color: #FBC02D;
+            --background-color: #ECEFF1;
+            --text-color: #263238;
+            --light-text-color: #546E7A;
+            --border-color: #CFD8DC;
+            --card-bg: #FFFFFF;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-family: 'Teko', sans-serif;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: 1.5px;
+        }
+
+        header p {
+            color: var(--light-text-color);
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(83, 109, 254, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(83, 109, 254, 0.5);
+        }
+
+        .btn-accent {
+            background: #FF9800;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-accent:hover {
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.5);
+        }
+
+        /* Member List Styles */
+        #member-selection-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .member-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-card:hover {
+            border-color: var(--secondary-color);
+            background: #f5f7fa;
+        }
+
+        .member-card.selected {
+            background: #E3F2FD;
+            border-color: #2196F3;
+        }
+
+        .member-info h4 {
+            margin: 0 0 0.2rem 0;
+            color: var(--primary-color);
+        }
+
+        .member-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+        }
+
+        /* Team Simulator Styles (Copied) */
+        #team-simulator {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+        }
+
+        #team-momentum-score {
+            font-family: 'Teko', sans-serif;
+            font-size: 6rem;
+            font-weight: 700;
+            color: #D84315;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>SVD MANAGER DASHBOARD</h1>
+            <p>Team Analysis & Momentum Simulator</p>
+        </header>
+
+        <!-- Data Loading Section -->
+        <div class="card">
+            <h2>1. Load Staff Data</h2>
+            <p>Google Sheetsから最新のスタッフデータを読み込みます。</p>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <input type="text" id="script-url" placeholder="Enter Google Apps Script Web App URL"
+                    value="https://script.google.com/macros/s/AKfycbylwBwxUjqQlrolic8ISUJBU84_uWEeoz9C4YL3UHrmZz_EBzOQvR20pEgwLGmrtjxg/exec"
+                    style="flex: 1; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                <button id="load-data-btn" class="btn">Load Data</button>
+            </div>
+            <p id="loading-status" style="margin-top: 0.5rem; color: var(--light-text-color);"></p>
+        </div>
+
+        <!-- Member Selection Section -->
+        <div class="card" id="selection-card" style="display: none;">
+            <h2>2. Select Team Members</h2>
+            <p>分析したいメンバーをクリックして選択してください。</p>
+            <div id="member-selection-area">
+                <!-- Members will be populated here -->
+            </div>
+        </div>
+
+        <!-- Team Simulator Section -->
+        <div class="card" id="team-simulator" style="display:none;">
+            <h2
+                style="text-align: center; color: #1565C0; font-family: 'Teko', sans-serif; font-size: 3rem; margin-top: 0;">
+                TEAM MOMENTUM SIMULATOR
+            </h2>
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>Selected Members</h3>
+                    <ul id="team-list" style="list-style: none; padding: 0;">
+                        <!-- Team members will be added here -->
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 300px; text-align: center;">
+                    <h3>TEAM MOMENTUM METRICS</h3>
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 1rem;">
+                        <div>
+                            <div style="font-size: 1rem; color: #546E7A;">Quality (Avg)</div>
+                            <div id="team-momentum-score"
+                                style="font-family: 'Teko', sans-serif; font-size: 4rem; font-weight: 700; color: #1565C0; line-height: 1;">
+                                0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1rem; color: #546E7A;">Total Momentum (Sum)</div>
+                            <div id="total-power-score"
+                                style="font-family: 'Teko', sans-serif; font-size: 4rem; font-weight: 700; color: #D84315; line-height: 1;">
+                                0</div>
+                        </div>
+                    </div>
+                    <p id="synergy-bonus" style="color: #2E7D32; font-weight: bold; font-size: 1.1rem;"></p>
+                    <div id="team-advice"
+                        style="background: white; padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: left;">
+                        <strong>チーム分析:</strong><br>
+                        メンバーを追加して分析を開始してください。
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>Team Skill Balance</h3>
+                    <canvas id="team-radar-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SVD 18 TYPES DATA ---
+        const svdTypes = {
+            "Balance": { name: "Balance (バランス)", desc: "汎用・適応" },
+            "Flare": { name: "Flare (フレア)", desc: "情熱・突破" },
+            "Flow": { name: "Flow (フロー)", desc: "柔軟・浸透" },
+            "Bloom": { name: "Bloom (ブルーム)", desc: "育成・調和" },
+            "Spark": { name: "Spark (スパーク)", desc: "閃き・革新" },
+            "Crystal": { name: "Crystal (クリスタル)", desc: "緻密・冷静" },
+            "Striker": { name: "Striker (ストライカー)", desc: "実直・技術" },
+            "Rogue": { name: "Rogue (ローグ)", desc: "改革・本質" },
+            "Ground": { name: "Ground (グラウンド)", desc: "安定・土台" },
+            "Wing": { name: "Wing (ウィング)", desc: "自由・俯瞰" },
+            "Seraph": { name: "Seraph (セラフ)", desc: "洞察・予知" },
+            "Craft": { name: "Craft (クラフト)", desc: "改善・適応" },
+            "Solid": { name: "Solid (ソリッド)", desc: "信念・伝統" },
+            "Shade": { name: "Shade (シェード)", desc: "献身・黒子" },
+            "Emperor": { name: "Emperor (エンペラー)", desc: "統率・圧倒" },
+            "Night Shift": { name: "Night Shift (ナイトシフト)", desc: "危機・実利" },
+            "Iron": { name: "Iron (アイアン)", desc: "鉄壁・規律" },
+            "Bliss": { name: "Bliss (ブリス)", desc: "愛嬌・浄化" }
+        };
+
+        // Synergy Data (Best Match & Caution Match)
+        const synergyData = {
+            "Balance": { best: ["Flare", "Emperor"], caution: [] },
+            "Flare": { best: ["Flow", "Ground"], caution: ["Flare"] },
+            "Flow": { best: ["Flare", "Spark"], caution: ["Solid"] },
+            "Bloom": { best: ["Flare", "Ground"], caution: ["Rogue", "Night Shift"] },
+            "Spark": { best: ["Flow", "Wing"], caution: ["Ground"] },
+            "Crystal": { best: ["Flare", "Striker"], caution: ["Spark"] },
+            "Striker": { best: ["Seraph", "Bloom"], caution: ["Wing"] },
+            "Rogue": { best: ["Seraph", "Ground"], caution: ["Bloom", "Bliss"] },
+            "Ground": { best: ["Spark", "Flare"], caution: ["Flow", "Wing"] },
+            "Wing": { best: ["Spark", "Ground"], caution: ["Striker", "Iron"] },
+            "Seraph": { best: ["Striker", "Rogue"], caution: ["Night Shift", "Craft"] },
+            "Craft": { best: ["Bloom", "Iron"], caution: ["Flare", "Wing"] },
+            "Solid": { best: ["Striker", "Ground"], caution: ["Flow", "Spark"] },
+            "Shade": { best: ["Emperor", "Seraph"], caution: ["Night Shift"] },
+            "Emperor": { best: ["Bliss", "Shade"], caution: ["Bliss", "Crystal"] },
+            "Night Shift": { best: ["Rogue", "Striker"], caution: ["Bloom", "Bliss"] },
+            "Iron": { best: ["Crystal", "Striker"], caution: ["Flare", "Rogue"] },
+            "Bliss": { best: ["Emperor", "Iron"], caution: ["Rogue", "Night Shift"] }
+        };
+
+        // --- APP LOGIC ---
+        let allStaffData = [];
+        let teamMembers = [];
+        let teamRadarChart = null;
+
+        document.getElementById('load-data-btn').addEventListener('click', loadData);
+
+        function loadData() {
+            const scriptUrl = document.getElementById('script-url').value;
+            const statusEl = document.getElementById('loading-status');
+
+            if (!scriptUrl) {
+                alert('Please enter the Script URL.');
+                return;
+            }
+
+            statusEl.textContent = 'Loading data...';
+
+            // Append ?action=getStaffData to the URL to trigger the doGet logic
+            fetch(`${scriptUrl}?action=getStaffData`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        allStaffData = data.data;
+                        statusEl.textContent = `Successfully loaded ${allStaffData.length} staff members.`;
+                        renderMemberSelection();
+                        document.getElementById('selection-card').style.display = 'block';
+                        document.getElementById('team-simulator').style.display = 'block';
+                    } else {
+                        throw new Error(data.message || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusEl.textContent = 'Error loading data. Please check the URL and try again. (Make sure the script is deployed as "Anyone")';
+                    // For demo purposes, let's load some dummy data if fetch fails
+                    if (confirm("データの読み込みに失敗しました。ダミーデータでテストしますか？")) {
+                        loadDummyData();
+                    }
+                });
+        }
+
+        function loadDummyData() {
+            allStaffData = [
+                { name: "Sato (Demo)", affiliation: "JEWELS", jobTitle: "マネジャー", type: "Flare", score: 8.5, meisterRank: "Expert", qualifications: "J.S.A. ソムリエ", detailedScores: [5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
+                { name: "Suzuki (Demo)", affiliation: "GARDEN", jobTitle: "キャプテン", type: "Flow", score: 7.8, meisterRank: "Specialist", qualifications: "食品衛生責任者", detailedScores: [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
+                { name: "Tanaka (Demo)", affiliation: "BRIQUE", jobTitle: "一般", type: "Ground", score: 9.0, meisterRank: "Grand Master", qualifications: "HRS 1級, ソムリエ・エクセレンス", detailedScores: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4] }
+            ];
+            renderMemberSelection();
+            document.getElementById('selection-card').style.display = 'block';
+            document.getElementById('team-simulator').style.display = 'block';
+        }
+
+        function renderMemberSelection() {
+            const container = document.getElementById('member-selection-area');
+            container.innerHTML = '';
+
+            allStaffData.forEach((staff, index) => {
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.onclick = () => toggleMember(index, card);
+
+                const typeName = svdTypes[staff.type] ? svdTypes[staff.type].name : staff.type;
+                const rank = staff.meisterRank || 'Rookie';
+                let rankColor = '#546E7A';
+                if (rank === 'Grand Master') rankColor = '#FFD700';
+                else if (rank === 'Expert') rankColor = '#D84315';
+                else if (rank === 'Specialist') rankColor = '#1565C0';
+
+                card.innerHTML = `
+                    <div class="member-info">
+                        <h4>${staff.name} <span style="font-size:0.8rem; background:${rankColor}; color:${rank === 'Grand Master' ? 'black' : 'white'}; padding:2px 6px; border-radius:4px;">${rank}</span></h4>
+                        <p>${staff.affiliation} / ${staff.jobTitle || '-'} | ${typeName}</p>
+                        <p>Score: ${Number(staff.score).toFixed(2)}</p>
+                        <p style="font-size:0.8rem; color:#78909C; margin-top:0.2rem;">${staff.qualifications || '-'}</p>
+                    </div>
+                    <div class="add-icon" style="font-size: 1.5rem; color: var(--border-color);">+</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleMember(index, cardElement) {
+            const staff = allStaffData[index];
+            const existingIndex = teamMembers.findIndex(m => m.name === staff.name); // Simple check by name for now
+
+            if (existingIndex >= 0) {
+                // Remove
+                teamMembers.splice(existingIndex, 1);
+                cardElement.classList.remove('selected');
+                cardElement.querySelector('.add-icon').textContent = '+';
+                cardElement.querySelector('.add-icon').style.color = 'var(--border-color)';
+            } else {
+                // Add
+                teamMembers.push(staff);
+                cardElement.classList.add('selected');
+                cardElement.querySelector('.add-icon').textContent = '✓';
+                cardElement.querySelector('.add-icon').style.color = 'var(--secondary-color)';
+            }
+            updateTeamUI();
+        }
+
+        function updateTeamUI() {
+            const list = document.getElementById('team-list');
+            list.innerHTML = '';
+            teamMembers.forEach((member) => {
+                const typeName = svdTypes[member.type] ? svdTypes[member.type].name : member.type;
+                // Get just the type name without Japanese for the badge if possible, or just use the first letter
+                const typeShort = member.type.split(' ')[0];
+                const rank = member.meisterRank || 'Rookie';
+
+                const li = document.createElement('li');
+                li.style.background = 'white';
+                li.style.padding = '1rem';
+                li.style.marginBottom = '0.8rem';
+                li.style.borderRadius = '8px';
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
+                li.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+
+                // Type Color mapping (simplified)
+                let typeColor = '#546E7A';
+                if (['Flare', 'Spark', 'Emperor'].includes(member.type)) typeColor = '#E53935'; // Red-ish
+                else if (['Flow', 'Bloom', 'Bliss'].includes(member.type)) typeColor = '#FB8C00'; // Orange-ish
+                else if (['Crystal', 'Seraph', 'Wing'].includes(member.type)) typeColor = '#039BE5'; // Blue-ish
+                else if (['Ground', 'Solid', 'Iron'].includes(member.type)) typeColor = '#43A047'; // Green-ish
+                else if (['Rogue', 'Striker', 'Night Shift'].includes(member.type)) typeColor = '#8E24AA'; // Purple-ish
+
+                li.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="
+                            width: 40px; 
+                            height: 40px; 
+                            background: ${typeColor}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-weight: bold; 
+                            font-family: 'Teko', sans-serif;
+                            font-size: 1.2rem;"
+                            title="${typeName}">
+                            ${typeShort.charAt(0)}
+                        </div>
+                        <div>
+                            <div style="font-weight:bold; font-size:1.1rem;">${member.name}</div>
+                            <div style="font-size:0.8rem; color:#90A4AE;">${rank}</div>
+                        </div>
+                    </div>
+                    <div style="font-family: 'Teko', sans-serif; font-size: 1.5rem; font-weight:bold; color:var(--primary-color);">
+                        ${Number(member.score).toFixed(1)} <span style="font-size:0.8rem; color:#90A4AE;">pts</span>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+
+            calculateTeamMomentum();
+            drawTeamRadarChart();
+        }
+
+        function calculateTeamMomentum() {
+            if (teamMembers.length === 0) {
+                document.getElementById('team-momentum-score').textContent = '0';
+                document.getElementById('total-power-score').textContent = '0';
+                document.getElementById('synergy-bonus').textContent = '';
+                document.getElementById('team-advice').innerHTML = 'メンバーを追加して分析を開始してください。';
+                return;
+            }
+
+            // Step 1: Base Power (Average Individual Score)
+            let totalScore = 0;
+            teamMembers.forEach(m => totalScore += Number(m.score));
+            const avgScore = totalScore / teamMembers.length;
+
+            // Step 2: Synergy Multiplier (Pairwise Analysis)
+            let totalMultiplier = 0;
+            let pairCount = 0;
+            let synergyDetails = [];
+
+            if (teamMembers.length < 2) {
+                totalMultiplier = 1.0;
+                pairCount = 1;
+                synergyDetails.push("メンバーが1名のため、シナジー効果は発生しません。");
+            } else {
+                for (let i = 0; i < teamMembers.length; i++) {
+                    for (let j = i + 1; j < teamMembers.length; j++) {
+                        const m1 = teamMembers[i];
+                        const m2 = teamMembers[j];
+                        const type1 = m1.type;
+                        const type2 = m2.type;
+
+                        let multiplier = 1.0;
+
+                        // Check Synergy
+                        if (synergyData[type1] && (synergyData[type1].best.includes(type2) || synergyData[type2].best.includes(type1))) {
+                            multiplier = 1.2;
+                            synergyDetails.push(`<span style="color:#2E7D32;">★ Best: ${m1.name} & ${m2.name} (1.2倍)</span>`);
+                        } else if (synergyData[type1] && (synergyData[type1].caution.includes(type2) || synergyData[type2].caution.includes(type1))) {
+                            multiplier = 0.9;
+                            synergyDetails.push(`<span style="color:#C62828;">⚠ Warning: ${m1.name} & ${m2.name} (0.9倍)</span>`);
+                        } else if (type1 === type2) {
+                            multiplier = 1.1;
+                            synergyDetails.push(`<span style="color:#1565C0;">☆ Better: ${m1.name} & ${m2.name} (1.1倍)</span>`);
+                        }
+
+                        totalMultiplier += multiplier;
+                        pairCount++;
+                    }
+                }
+            }
+
+            const avgMultiplier = totalMultiplier / pairCount;
+            const teamMomentum = avgScore * avgMultiplier;
+            const totalMomentum = teamMomentum * teamMembers.length;
+
+            document.getElementById('team-momentum-score').textContent = teamMomentum.toFixed(2);
+            document.getElementById('total-power-score').textContent = totalMomentum.toFixed(2);
+
+            let bonusText = `Avg Score: ${avgScore.toFixed(2)} × Synergy: ${avgMultiplier.toFixed(2)}`;
+            document.getElementById('synergy-bonus').innerHTML = bonusText;
+
+            // --- Scale-based Advice Logic ---
+            let scaleAdvice = "";
+            const size = teamMembers.length;
+
+            if (size <= 5) {
+                // Small Team (1-5)
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E8F5E9; border-left:4px solid #4CAF50;">
+                    <strong>Phase: Small (少数精鋭)</strong><br>
+                    個々のスキルと相性が全てです。Synergy 1.1以上を目指しましょう。
+                </div>`;
+            } else if (size <= 12) {
+                // Medium Team (6-12)
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#FFF3E0; border-left:4px solid #FF9800;">
+                    <strong>Phase: Medium (組織化)</strong><br>
+                    バランスが重要です。Total Momentumを高めつつ、Warningペアのケアを行ってください。
+                </div>`;
+            } else {
+                // Large Team (13+)
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E3F2FD; border-left:4px solid #2196F3;">
+                    <strong>Phase: Large (大組織)</strong><br>
+                    ハレーション防止が最優先です。Synergyが1.0を下回らないように注意し、司令塔（Balance/Emperor）を配置してください。
+                </div>`;
+            }
+
+            let adviceHtml = scaleAdvice;
+            adviceHtml += `<strong>詳細分析:</strong><br>`;
+
+            if (synergyDetails.length > 0) {
+                adviceHtml += synergyDetails.slice(0, 5).join('<br>');
+                if (synergyDetails.length > 5) adviceHtml += '<br>...他';
+            } else {
+                adviceHtml += "特筆すべきシナジー・コンフリクトはありません。";
+            }
+
+            document.getElementById('team-advice').innerHTML = adviceHtml;
+        }
+
+        function drawTeamRadarChart() {
+            const ctx = document.getElementById('team-radar-chart').getContext('2d');
+            const categories = ["パーソル力", "サービススキル", "経験・資格", "マネジメントスキル"];
+            const teamCategoryScores = [0, 0, 0, 0];
+
+            teamMembers.forEach(m => {
+                // detailedScores is expected to be an array of 24 numbers
+                // If fetching from sheet, it might be a comma-separated string or array
+                let scores = m.detailedScores;
+                if (typeof scores === 'string') {
+                    scores = scores.split(',').map(Number);
+                }
+
+                if (!scores || scores.length < 24) return; // Safety check
+
+                let p = 0, s = 0, e = 0, mg = 0;
+                for (let i = 0; i < 6; i++) p += scores[i];
+                for (let i = 6; i < 12; i++) s += scores[i];
+                for (let i = 12; i < 18; i++) e += scores[i];
+                for (let i = 18; i < 24; i++) mg += scores[i];
+
+                teamCategoryScores[0] += (p / 6);
+                teamCategoryScores[1] += (s / 6);
+                teamCategoryScores[2] += (e / 6);
+                teamCategoryScores[3] += (mg / 6);
+            });
+
+            const count = teamMembers.length || 1;
+            const avgData = teamCategoryScores.map(s => s / count);
+
+            if (teamRadarChart) {
+                teamRadarChart.destroy();
+            }
+
+            teamRadarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'チーム平均',
+                        data: avgData,
+                        backgroundColor: 'rgba(255, 152, 0, 0.2)',
+                        borderColor: 'rgba(255, 152, 0, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#fff'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: 10,
+                            ticks: { stepSize: 2 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

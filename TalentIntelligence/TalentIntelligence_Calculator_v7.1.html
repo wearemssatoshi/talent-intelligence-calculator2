@@ -249,6 +249,53 @@
             text-align: center;
         }
 
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            input[type="text"],
+            select {
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+                padding: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 1.2rem;
+                font-size: 1.3rem;
+            }
+
+            /* Improve Accordion Touch Targets */
+            .accordion-header {
+                padding: 1.2rem;
+            }
+
+            .accordion-content {
+                padding: 1rem;
+            }
+
+            /* Adjust grid for mobile */
+            .user-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         #total-score {
             font-family: 'Teko', sans-serif;
             font-size: 7rem;
@@ -524,7 +571,7 @@
     <div class="container">
         <header>
             <h1>SVD TALENT INTELLIGENCE CALCULATOR</h1>
-            <p>v7.0 - The Coaching Model (FINAL)</p>
+            <p>v7.1 - The Coaching Model (FINAL)</p>
         </header>
         <div class="card">
             <div class="user-info-grid">
@@ -865,19 +912,24 @@
             let rank = "Rookie";
             let color = "#546E7A"; // Default gray
 
-            if (totalPoints >= 31) {
-                rank = "Grand Master";
+            if (totalPoints >= 13) {
+                rank = "Master";
                 color = "#FFD700"; // Gold
             }
 
-            else if (totalPoints >= 16) {
+            else if (totalPoints >= 8) {
                 rank = "Expert";
                 color = "#D84315"; // Red/Orange
             }
 
-            else if (totalPoints >= 6) {
+            else if (totalPoints >= 3) {
                 rank = "Specialist";
                 color = "#1565C0"; // Blue
+            }
+
+            else if (totalPoints >= 2) {
+                rank = "Junior";
+                color = "#43A047"; // Green
             }
 
             const rankEl = document.getElementById('meister-rank');
@@ -1465,7 +1517,7 @@
         }
 
         // --- CALCULATION & CHART LOGIC ---
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz653x8Hn97ztAHFUrvIsAoQkcEVbMFP1EvhV6HlI3ymw9BtANP7hgPb77DTUMCD4qf/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylwBwxUjqQlrolic8ISUJBU84_uWEeoz9C4YL3UHrmZz_EBzOQvR20pEgwLGmrtjxg/exec';
 
         function submitData() {
             const formData = new FormData();
@@ -1476,7 +1528,8 @@
             formData.append('user-name', document.getElementById('user-name').value);
             formData.append('user-affiliation', document.getElementById('user-affiliation').value);
             formData.append('user-job-title', document.getElementById('user-job-title').value);
-            formData.append('user-type-self', document.getElementById('user-type-self').value);
+            formData.append('TypeSelf', document.getElementById('user-type-self').value);
+            formData.append('TypeOther', document.getElementById('user-type-other').value);
 
             // Qualifications
             const qualCheckboxes = document.querySelectorAll('input[name="qualification"]:checked');
@@ -1511,6 +1564,11 @@
 
             calculateBtn.innerHTML = '記録中...';
             calculateBtn.disabled = true;
+
+            // Debug logging
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
