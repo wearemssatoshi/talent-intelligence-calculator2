@@ -7,6 +7,7 @@
     <title>SVD Manager Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Teko:wght@700&display=swap');
 
@@ -147,6 +148,39 @@
             color: #D84315;
             line-height: 1;
         }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            input[type="text"],
+            select {
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+                padding: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 1.2rem;
+                font-size: 1.3rem;
+            }
+        }
     </style>
 </head>
 
@@ -159,7 +193,7 @@
         </header>
 
         <!-- Data Loading Section -->
-        <div class="card">
+        <div class="card" data-html2canvas-ignore="true">
             <h2>1. Load Staff Data</h2>
             <p>Google Sheetsから最新のスタッフデータを読み込みます。</p>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -172,7 +206,7 @@
         </div>
 
         <!-- Member Selection Section -->
-        <div class="card" id="selection-card" style="display: none;">
+        <div class="card" id="selection-card" style="display: none;" data-html2canvas-ignore="true">
             <h2>2. Select Team Members</h2>
             <p>分析したいメンバーをクリックして選択してください。</p>
             <div id="member-selection-area">
@@ -182,6 +216,12 @@
 
         <!-- Team Simulator Section -->
         <div class="card" id="team-simulator" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <input type="text" id="team-name-input" placeholder="Enter Team Name (e.g. JEWELS Team A)"
+                    style="font-family: 'Teko', sans-serif; font-size: 2rem; font-weight: bold; color: #1A237E; border: none; background: transparent; border-bottom: 2px solid #2196F3; width: 60%;">
+                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">Export PDF</button>
+            </div>
+
             <h2
                 style="text-align: center; color: #1565C0; font-family: 'Teko', sans-serif; font-size: 3rem; margin-top: 0;">
                 TEAM MOMENTUM SIMULATOR
@@ -316,7 +356,7 @@
             allStaffData = [
                 { name: "Sato (Demo)", affiliation: "JEWELS", jobTitle: "マネジャー", type: "Flare", score: 8.5, meisterRank: "Expert", qualifications: "J.S.A. ソムリエ", detailedScores: [5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
                 { name: "Suzuki (Demo)", affiliation: "GARDEN", jobTitle: "キャプテン", type: "Flow", score: 7.8, meisterRank: "Specialist", qualifications: "食品衛生責任者", detailedScores: [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
-                { name: "Tanaka (Demo)", affiliation: "BRIQUE", jobTitle: "一般", type: "Ground", score: 9.0, meisterRank: "Grand Master", qualifications: "HRS 1級, ソムリエ・エクセレンス", detailedScores: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4] }
+                { name: "Tanaka (Demo)", affiliation: "BRIQUE", jobTitle: "一般", type: "Ground", score: 9.0, meisterRank: "Master", qualifications: "HRS 1級, ソムリエ・エクセレンス", detailedScores: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4] }
             ];
             renderMemberSelection();
             document.getElementById('selection-card').style.display = 'block';
@@ -335,13 +375,14 @@
                 const typeName = svdTypes[staff.type] ? svdTypes[staff.type].name : staff.type;
                 const rank = staff.meisterRank || 'Rookie';
                 let rankColor = '#546E7A';
-                if (rank === 'Grand Master') rankColor = '#FFD700';
+                if (rank === 'Master') rankColor = '#FFD700';
                 else if (rank === 'Expert') rankColor = '#D84315';
                 else if (rank === 'Specialist') rankColor = '#1565C0';
+                else if (rank === 'Junior') rankColor = '#43A047';
 
                 card.innerHTML = `
                     <div class="member-info">
-                        <h4>${staff.name} <span style="font-size:0.8rem; background:${rankColor}; color:${rank === 'Grand Master' ? 'black' : 'white'}; padding:2px 6px; border-radius:4px;">${rank}</span></h4>
+                        <h4>${staff.name} <span style="font-size:0.8rem; background:${rankColor}; color:${rank === 'Master' ? 'black' : 'white'}; padding:2px 6px; border-radius:4px;">${rank}</span></h4>
                         <p>${staff.affiliation} / ${staff.jobTitle || '-'} | ${typeName}</p>
                         <p>Score: ${Number(staff.score).toFixed(2)}</p>
                         <p style="font-size:0.8rem; color:#78909C; margin-top:0.2rem;">${staff.qualifications || '-'}</p>
@@ -590,6 +631,29 @@
                         legend: { display: true }
                     }
                 }
+            });
+        }
+
+        // --- PDF EXPORT ---
+        function exportPDF() {
+            const element = document.getElementById('team-simulator');
+            const teamName = document.getElementById('team-name-input').value || 'My Team';
+
+            const opt = {
+                margin: 0.5,
+                filename: `${teamName}_Analysis.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+
+            // Temporarily hide the export button and input border for cleaner PDF
+            const btn = document.querySelector('#team-simulator button');
+            if (btn) btn.style.display = 'none';
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restore button
+                if (btn) btn.style.display = 'inline-block';
             });
         }
     </script>
