@@ -528,7 +528,11 @@
 
         function toggleMember(index, cardElement) {
             const staff = allStaffData[index];
-            const existingIndex = teamMembers.findIndex(m => m.name === staff.name); // Simple check by name for now
+            // Use unique identifier: name + affiliation + jobTitle
+            const staffId = `${staff.name}_${staff.affiliation}_${staff.jobTitle || ''}`;
+            const existingIndex = teamMembers.findIndex(m =>
+                `${m.name}_${m.affiliation}_${m.jobTitle || ''}` === staffId
+            );
 
             if (existingIndex >= 0) {
                 // Remove
