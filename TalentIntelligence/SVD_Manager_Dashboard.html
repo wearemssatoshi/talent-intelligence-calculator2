@@ -674,139 +674,82 @@
             });
         }
 
-        // --- PDF EXPORT (DIRECT DOM MANIPULATION STRATEGY) ---
+        // --- SNAPSHOT PDF EXPORT ---
         async function exportPDF() {
             const element = document.getElementById('team-simulator');
             const btn = document.querySelector('#team-simulator button');
             const originalBtnText = btn ? btn.textContent : '';
 
-            // Update Title for Capture
             const teamNameInput = document.getElementById('team-name-input');
             const teamName = teamNameInput.value || 'My Team';
 
-            // Create a temporary title div for the capture
+            // Create temporary title for capture
             const titleDiv = document.createElement('div');
             titleDiv.textContent = teamName;
-            titleDiv.style.fontFamily = "'Teko', sans-serif";
-            titleDiv.style.fontSize = "3rem";
-            titleDiv.style.fontWeight = "bold";
-            titleDiv.style.color = "#1A237E";
-            titleDiv.style.borderBottom = "2px solid #2196F3";
-            titleDiv.style.marginBottom = "1rem";
-            titleDiv.style.textAlign = "center";
+            titleDiv.style.cssText = `
+                font-family: 'Teko', sans-serif;
+                font-size: 3rem;
+                font-weight: bold;
+                color: #1A237E;
+                border-bottom: 2px solid #2196F3;
+                margin-bottom: 1rem;
+                text-align: center;
+            `;
 
-            // Hide input and button during capture
-            teamNameInput.style.display = 'none';
-            if (btn) {
-                btn.textContent = 'Generating High-Res PDF...';
-                // We don't hide the button, we just change text, 
-                // but actually for a clean PDF we should hide the button container
-            }
+            // Temporarily hide input and button
             const headerContainer = teamNameInput.parentNode;
             headerContainer.insertBefore(titleDiv, teamNameInput);
+            teamNameInput.style.display = 'none';
 
-            // Hide the button for capture
-            const originalBtnDisplay = btn.style.display;
-            btn.style.display = 'none';
-
-            try {
-                // Move element to body to ensure it's at the top level
-                document.body.appendChild(element);
-                document.body.classList.add('printing-mode');
-
-                // 2. Handle Canvas (Convert to Image)
-                if (originalCanvas) {
-                    canvasParent = originalCanvas.parentNode;
-                    canvasNextSibling = originalCanvas.nextSibling;
-                    const imgData = originalCanvas.toDataURL('image/png');
-                    imgElement = document.createElement('img');
-                    imgElement.src = imgData;
-                    imgElement.style.width = '100%';
-                    imgElement.style.maxWidth = '100%';
-
-                    // Replace canvas with image
-                    originalCanvas.remove();
-                    canvasParent.insertBefore(imgElement, canvasNextSibling);
-                }
-
-                // 3. Replace Input with Text
-                titleDiv = document.createElement('div');
-                titleDiv.style.fontFamily = "'Teko', sans-serif";
-                titleDiv.style.fontSize = "3rem";
-                titleDiv.style.fontWeight = "bold";
-                titleDiv.style.color = "#1A237E";
-                titleDiv.style.borderBottom = "2px solid #2196F3";
-                titleDiv.style.marginBottom = "1rem";
-                titleDiv.textContent = teamName;
-
-                const inputParent = teamNameInput.parentNode;
-                const inputNext = teamNameInput.nextSibling;
-                teamNameInput.style.display = 'none';
-                inputParent.insertBefore(titleDiv, inputNext);
-
-                // 4. Generate PDF
-                const opt = {
-                    margin: 10,
-                    filename: `${teamName}_Analysis.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        windowWidth: 1120, // Match CSS width
-                        scrollX: 0,
-                        scrollY: 0
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                };
-
-                // Small delay to allow DOM reflow
-                setTimeout(() => {
-                    html2pdf().set(opt).from(element).save()
-                        .then(() => {
-                            restoreState();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert('PDF Generation Failed');
-                            restoreState();
-                        });
-                }, 500);
-
-            } catch (e) {
-                console.error(e);
-                alert('Error: ' + e.message);
-                restoreState();
+            if (btn) {
+                btn.textContent = 'Generating PDF...';
+                btn.style.display = 'none';
             }
 
-            function restoreState() {
-                // Restore DOM
-                document.body.classList.remove('printing-mode');
+            try {
+                // Wait for any re-renders
+                await new Promise(resolve => setTimeout(resolve, 100));
 
-                // Move element back
-                if (nextSibling) {
-                    originalParent.insertBefore(element, nextSibling);
-                } else {
-                    originalParent.appendChild(element);
+                // Capture with html2canvas
+                const canvas = await html2canvas(element, {
+                    scale: 3,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+                // Create PDF with jsPDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('l', 'mm', 'a4');
+
+                const pageWidth = 297;
+                const pageHeight = 210;
+
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pageWidth;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                let yOffset = 0;
+                if (pdfHeight < pageHeight) {
+                    yOffset = (pageHeight - pdfHeight) / 2;
                 }
 
-                // Restore Canvas
-                if (imgElement && canvasParent) {
-                    imgElement.remove();
-                    if (canvasNextSibling) {
-                        canvasParent.insertBefore(originalCanvas, canvasNextSibling);
-                    } else {
-                        canvasParent.appendChild(originalCanvas);
-                    }
-                }
+                pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfWidth, pdfHeight);
+                pdf.save(`${teamName}_Analysis.pdf`);
 
-                // Restore Input
+            } catch (err) {
+                console.error('PDF Export Error:', err);
+                alert('PDF生成に失敗しました: ' + err.message);
+            } finally {
+                // Restore UI
+                titleDiv.remove();
                 teamNameInput.style.display = 'block';
-                if (titleDiv) {
-                    titleDiv.remove();
+                if (btn) {
+                    btn.textContent = originalBtnText;
+                    btn.style.display = '';
                 }
-
-                if (btn) btn.textContent = originalBtnText;
             }
         }
     </script>
