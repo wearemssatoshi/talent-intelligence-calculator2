@@ -7,7 +7,9 @@
     <title>SVD Manager Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Replaced html2pdf with specific libraries for better control -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Teko:wght@700&display=swap');
 
@@ -32,124 +34,15 @@
             line-height: 1.7;
         }
 
-        /* --- PROFESSIONAL A4 PRINT STYLES --- */
-        @media print {
-            @page {
-                size: A4 landscape;
-                margin: 0;
-            }
-
-            html,
-            body {
-                width: 297mm;
-                height: 210mm;
-                margin: 0;
-                padding: 0;
-                background: white;
-                overflow: hidden;
-                /* Prevent scrollbars in print */
-            }
-
-            /* Hide everything by default */
-            body>* {
-                display: none !important;
-            }
-
-            /* Only show the simulator */
-            #team-simulator {
-                display: block !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 297mm;
-                height: 210mm;
-                padding: 10mm !important;
-                /* Safe margin */
-                box-sizing: border-box;
-                background: white !important;
-                border: none !important;
-
-                /* Scale content to fit comfortably */
-                transform: scale(0.95);
-                transform-origin: center center;
-            }
-
-            /* Print Layout Optimization */
-            #team-simulator h2 {
-                font-size: 2.5rem !important;
-                margin-bottom: 1rem !important;
-                margin-top: 0 !important;
-            }
-
-            /* 3-Column Layout for Print */
-            #team-simulator>div:last-child {
-                display: grid !important;
-                grid-template-columns: 1fr 1.2fr 1fr !important;
-                /* Wider center for metrics */
-                gap: 1.5rem !important;
-                align-items: start !important;
-                height: auto !important;
-            }
-
-            /* Column 1: Member List */
-            #team-list {
-                max-height: 130mm !important;
-                overflow: hidden !important;
-                /* Hide overflow if too many members */
-            }
-
-            #team-list li {
-                padding: 0.5rem !important;
-                margin-bottom: 0.5rem !important;
-                border: 1px solid #eee !important;
-                box-shadow: none !important;
-            }
-
-            /* Column 2: Metrics */
-            #team-momentum-score,
-            #total-power-score {
-                font-size: 4rem !important;
-                /* Slightly smaller */
-            }
-
-            #team-advice {
-                font-size: 0.9rem !important;
-                padding: 0.8rem !important;
-                border: 1px solid #ddd !important;
-            }
-
-            /* Column 3: Chart */
-            #chart-container {
-                width: 100% !important;
-                height: auto !important;
-                display: flex;
-                justify-content: center;
-            }
-
-            canvas {
-                max-width: 100% !important;
-                max-height: 100mm !important;
-                /* Restrict height */
-            }
-
-            /* Header/Title in Print */
-            #team-name-print-display {
-                display: block !important;
-                font-size: 2.5rem !important;
-                text-align: center;
-                margin-bottom: 0.5rem;
-                border-bottom: 2px solid #2196F3;
-            }
-
-            /* Hide interactive elements */
-            button,
-            input,
-            .btn {
-                display: none !important;
-            }
+        /* --- SNAPSHOT CAPTURE STYLES --- */
+        /* These styles ensure the element looks good when captured by html2canvas */
+        #team-simulator {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            /* Ensure it has a fixed width during capture if needed,
+               but usually the natural width is fine if we scale correctly.
+               We will handle sizing in JS. */
         }
-
-        /* --------------------------- */
 
         .container {
             max-width: 1200px;
@@ -782,29 +675,41 @@
         }
 
         // --- PDF EXPORT (DIRECT DOM MANIPULATION STRATEGY) ---
-        function exportPDF() {
-            if (typeof html2pdf === 'undefined') {
-                alert('Error: PDF library not loaded.');
-                return;
-            }
-
+        async function exportPDF() {
             const element = document.getElementById('team-simulator');
-            const teamNameInput = document.getElementById('team-name-input');
-            const teamName = teamNameInput.value || 'My Team';
             const btn = document.querySelector('#team-simulator button');
             const originalBtnText = btn ? btn.textContent : '';
 
-            // State Backup
-            const originalParent = element.parentNode;
-            const nextSibling = element.nextSibling;
-            const originalCanvas = element.querySelector('canvas');
-            let canvasParent, canvasNextSibling, imgElement;
-            let titleDiv; // Define here to access in restoreState
+            // Update Title for Capture
+            const teamNameInput = document.getElementById('team-name-input');
+            const teamName = teamNameInput.value || 'My Team';
+
+            // Create a temporary title div for the capture
+            const titleDiv = document.createElement('div');
+            titleDiv.textContent = teamName;
+            titleDiv.style.fontFamily = "'Teko', sans-serif";
+            titleDiv.style.fontSize = "3rem";
+            titleDiv.style.fontWeight = "bold";
+            titleDiv.style.color = "#1A237E";
+            titleDiv.style.borderBottom = "2px solid #2196F3";
+            titleDiv.style.marginBottom = "1rem";
+            titleDiv.style.textAlign = "center";
+
+            // Hide input and button during capture
+            teamNameInput.style.display = 'none';
+            if (btn) {
+                btn.textContent = 'Generating High-Res PDF...';
+                // We don't hide the button, we just change text, 
+                // but actually for a clean PDF we should hide the button container
+            }
+            const headerContainer = teamNameInput.parentNode;
+            headerContainer.insertBefore(titleDiv, teamNameInput);
+
+            // Hide the button for capture
+            const originalBtnDisplay = btn.style.display;
+            btn.style.display = 'none';
 
             try {
-                if (btn) btn.textContent = 'Generating...';
-
-                // 1. Prepare DOM for Print
                 // Move element to body to ensure it's at the top level
                 document.body.appendChild(element);
                 document.body.classList.add('printing-mode');
