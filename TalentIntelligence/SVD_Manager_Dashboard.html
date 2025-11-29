@@ -637,23 +637,41 @@
         // --- PDF EXPORT ---
         function exportPDF() {
             const element = document.getElementById('team-simulator');
-            const teamName = document.getElementById('team-name-input').value || 'My Team';
+            const teamNameInput = document.getElementById('team-name-input');
+            const teamName = teamNameInput.value || 'My Team';
 
-            const opt = {
-                margin: 0.5,
-                filename: `${teamName}_Analysis.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
+            // 1. Prepare for Export: Swap Input for Static Text
+            const titleDiv = document.createElement('div');
+            titleDiv.id = 'pdf-team-title';
+            titleDiv.style.fontFamily = "'Teko', sans-serif";
+            titleDiv.style.fontSize = "3rem";
+            titleDiv.style.fontWeight = "bold";
+            titleDiv.style.color = "#1A237E";
+            titleDiv.style.borderBottom = "2px solid #2196F3";
+            titleDiv.style.marginBottom = "1rem";
+            titleDiv.textContent = teamName;
 
-            // Temporarily hide the export button and input border for cleaner PDF
+            // Insert title before the input's parent container or replace the input
+            teamNameInput.style.display = 'none';
+            teamNameInput.parentNode.insertBefore(titleDiv, teamNameInput);
+
+            // Hide the export button
             const btn = document.querySelector('#team-simulator button');
             if (btn) btn.style.display = 'none';
 
+            const opt = {
+                margin: 0.3,
+                filename: `${teamName}_Analysis.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+
             html2pdf().set(opt).from(element).save().then(() => {
-                // Restore button
+                // 2. Restore UI
                 if (btn) btn.style.display = 'inline-block';
+                teamNameInput.style.display = 'inline-block';
+                if (titleDiv.parentNode) titleDiv.parentNode.removeChild(titleDiv);
             });
         }
     </script>
