@@ -707,15 +707,23 @@
             }
 
             try {
-                // Wait for any re-renders
-                await new Promise(resolve => setTimeout(resolve, 100));
+                // Wait for DOM updates and any animations
+                await new Promise(resolve => setTimeout(resolve, 300));
 
-                // Capture with html2canvas
+                // Get the full scrollable height of the element
+                const fullHeight = element.scrollHeight;
+                const fullWidth = element.scrollWidth;
+
+                // Capture with html2canvas - specify full dimensions
                 const canvas = await html2canvas(element, {
                     scale: 3,
                     useCORS: true,
                     logging: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    height: fullHeight,
+                    width: fullWidth,
+                    windowHeight: fullHeight,
+                    windowWidth: fullWidth
                 });
 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
