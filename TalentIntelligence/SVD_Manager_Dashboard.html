@@ -32,6 +32,76 @@
             line-height: 1.7;
         }
 
+        /* --- NATIVE PRINT STYLES --- */
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 10mm;
+            }
+
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* Hide everything by default */
+            body>* {
+                display: none !important;
+            }
+
+            /* Only show the container and the simulator */
+            .container,
+            #team-simulator {
+                display: block !important;
+                visibility: visible !important;
+            }
+
+            /* Hide other cards in container */
+            .container>*:not(#team-simulator) {
+                display: none !important;
+            }
+
+            #team-simulator {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Hide Buttons and Inputs in Print Mode */
+            button,
+            .btn,
+            input {
+                display: none !important;
+            }
+
+            /* Ensure Chart is visible */
+            canvas,
+            img {
+                max-width: 100% !important;
+            }
+
+            /* Add a print title if input is hidden */
+            #team-name-print-display {
+                display: block !important;
+                font-family: 'Teko', sans-serif;
+                font-size: 3rem;
+                font-weight: bold;
+                color: #1A237E;
+                border-bottom: 2px solid #2196F3;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* --------------------------- */
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -149,12 +219,6 @@
             line-height: 1;
         }
 
-        /* --- PRINTING MODE STYLES --- */
-        body.printing-mode {
-            background-color: white !important;
-            overflow: hidden !important;
-            padding: 0 !important;
-            margin: 0 !important;
         }
 
         body.printing-mode>* {
@@ -247,9 +311,13 @@
         <!-- Team Simulator Section -->
         <div class="card" id="team-simulator" style="display:none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <!-- Print Title (Hidden by default, shown in print) -->
+                <div id="team-name-print-display" style="display:none;"></div>
+
                 <input type="text" id="team-name-input" placeholder="Enter Team Name (e.g. JEWELS Team A)"
                     style="font-family: 'Teko', sans-serif; font-size: 2rem; font-weight: bold; color: #1A237E; border: none; background: transparent; border-bottom: 2px solid #2196F3; width: 60%;">
-                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">Export PDF</button>
+                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">Print / Save
+                    PDF</button>
             </div>
 
             <h2
