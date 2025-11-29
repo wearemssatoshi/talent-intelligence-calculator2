@@ -39,9 +39,30 @@
         #team-simulator {
             background: #E3F2FD;
             border: 2px solid #2196F3;
-            /* Ensure it has a fixed width during capture if needed,
-               but usually the natural width is fine if we scale correctly.
-               We will handle sizing in JS. */
+        }
+
+        /* PDF Optimization: Compact member list layout */
+        #team-simulator.pdf-mode #team-list {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.5rem !important;
+            max-height: none !important;
+        }
+
+        #team-simulator.pdf-mode #team-list li {
+            padding: 0.4rem !important;
+            margin-bottom: 0 !important;
+            font-size: 0.85rem !important;
+        }
+
+        #team-simulator.pdf-mode h3 {
+            font-size: 1.2rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        #team-simulator.pdf-mode h2 {
+            font-size: 2rem !important;
+            margin-bottom: 0.8rem !important;
         }
 
         .container {
@@ -706,9 +727,12 @@
                 btn.style.display = 'none';
             }
 
+            // Apply PDF-optimized layout
+            element.classList.add('pdf-mode');
+
             try {
-                // Wait for DOM updates and any animations
-                await new Promise(resolve => setTimeout(resolve, 300));
+                // Wait for DOM updates and CSS transitions
+                await new Promise(resolve => setTimeout(resolve, 400));
 
                 // Get the full scrollable height of the element
                 const fullHeight = element.scrollHeight;
@@ -716,7 +740,7 @@
 
                 // Capture with html2canvas - specify full dimensions
                 const canvas = await html2canvas(element, {
-                    scale: 3,
+                    scale: 2.5, // Slightly reduced for better performance
                     useCORS: true,
                     logging: false,
                     backgroundColor: '#ffffff',
@@ -726,7 +750,7 @@
                     windowWidth: fullWidth
                 });
 
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
                 // Create PDF with jsPDF
                 const { jsPDF } = window.jspdf;
@@ -736,15 +760,22 @@
                 const pageHeight = 210;
 
                 const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pageWidth;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-                let yOffset = 0;
-                if (pdfHeight < pageHeight) {
-                    yOffset = (pageHeight - pdfHeight) / 2;
+                // Calculate dimensions to fit on one page
+                let pdfWidth = pageWidth;
+                let pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                // If height exceeds page, scale down to fit
+                if (pdfHeight > pageHeight) {
+                    pdfHeight = pageHeight;
+                    pdfWidth = (imgProps.width * pdfHeight) / imgProps.height;
                 }
 
-                pdf.addImage(imgData, 'JPEG', 0, yOffset, pdfWidth, pdfHeight);
+                // Center the image
+                const xOffset = (pageWidth - pdfWidth) / 2;
+                const yOffset = (pageHeight - pdfHeight) / 2;
+
+                pdf.addImage(imgData, 'JPEG', xOffset, yOffset, pdfWidth, pdfHeight);
                 pdf.save(`${teamName}_Analysis.pdf`);
 
             } catch (err) {
@@ -752,6 +783,7 @@
                 alert('PDF生成に失敗しました: ' + err.message);
             } finally {
                 // Restore UI
+                element.classList.remove('pdf-mode');
                 titleDiv.remove();
                 teamNameInput.style.display = 'block';
                 if (btn) {
