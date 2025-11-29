@@ -348,14 +348,12 @@
                 style="text-align: center; color: #1565C0; font-family: 'Teko', sans-serif; font-size: 3rem; margin-top: 0;">
                 TEAM MOMENTUM SIMULATOR
             </h2>
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
-                <div style="flex: 1; min-width: 300px;">
-                    <h3>Selected Members</h3>
-                    <ul id="team-list" style="list-style: none; padding: 0;">
-                        <!-- Team members will be added here -->
-                    </ul>
-                </div>
-                <div style="flex: 1; min-width: 300px; text-align: center;">
+
+            <!-- NEW 2-TIER LAYOUT -->
+            <div
+                style="display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 2rem; margin-bottom: 2rem;">
+                <!-- TIER 1 LEFT: Metrics -->
+                <div style="text-align: center;">
                     <h3>TEAM MOMENTUM METRICS</h3>
                     <div style="display: flex; justify-content: space-around; margin-bottom: 1rem;">
                         <div>
@@ -378,9 +376,22 @@
                         メンバーを追加して分析を開始してください。
                     </div>
                 </div>
-                <div style="flex: 1; min-width: 300px;">
-                    <h3>Team Skill Balance</h3>
-                    <canvas id="team-radar-chart"></canvas>
+
+                <!-- TIER 1 RIGHT: Chart -->
+                <div>
+                    <h3 style="text-align: center;">Team Skill Balance</h3>
+                    <div id="chart-container">
+                        <canvas id="team-radar-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- TIER 2: Member List (spans full width) -->
+                <div style="grid-column: 1 / -1;">
+                    <h3>Selected Members</h3>
+                    <ul id="team-list"
+                        style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <!-- Team members will be added here -->
+                    </ul>
                 </div>
             </div>
         </div>
