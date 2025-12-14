@@ -126,6 +126,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
+            margin-bottom: 30px;
         }
 
         @media (max-width: 1000px) {
@@ -140,6 +141,10 @@
             border-radius: 24px;
             padding: 30px;
             border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section.full-width {
+            grid-column: 1 / -1;
         }
 
         .section-header {
@@ -185,6 +190,15 @@
             color: #F87171;
         }
 
+        /* AI Section */
+        .section.ai {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .section.ai .section-title {
+            color: #60A5FA;
+        }
+
         /* Icon Cards */
         .icon-grid {
             display: grid;
@@ -194,6 +208,16 @@
 
         .icon-grid.single-col {
             grid-template-columns: 1fr;
+        }
+
+        .icon-grid.four-col {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 1000px) {
+            .icon-grid.four-col {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .icon-card {
@@ -229,8 +253,8 @@
             --card-color: #EAB308;
         }
 
-        .icon-card.rebrand {
-            --card-color: #EF4444;
+        .icon-card.interior {
+            --card-color: #F59E0B;
         }
 
         .icon-card.lunch {
@@ -243,6 +267,10 @@
 
         .icon-card.sommelier {
             --card-color: #EC4899;
+        }
+
+        .icon-card.ai-item {
+            --card-color: #3B82F6;
         }
 
         .icon-emoji {
@@ -352,6 +380,15 @@
             color: #EF4444;
         }
 
+        .action-items.ai li {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3B82F6;
+        }
+
+        .action-items.ai li::before {
+            color: #3B82F6;
+        }
+
         .goal-badge {
             display: inline-block;
             padding: 6px 16px;
@@ -388,7 +425,7 @@
         .footer-concept {
             font-size: 1.2rem;
             font-weight: 700;
-            background: linear-gradient(90deg, #B8995C, #EF4444, #A855F7);
+            background: linear-gradient(90deg, #B8995C, #EF4444, #3B82F6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -449,7 +486,7 @@
                     <span class="section-icon">🍷</span>
                     <div>
                         <div class="section-title">LA BRIQUE SAPPORO</div>
-                        <div class="section-subtitle">PREMIUM FRENCH</div>
+                        <div class="section-subtitle">PREMIUM DINING</div>
                     </div>
                 </div>
 
@@ -458,6 +495,11 @@
                         <span class="icon-emoji">🍽️</span>
                         <div class="icon-title">SAPPORO BEGINNING TABLE</div>
                         <div class="icon-period">1月13日〜2月28日</div>
+                    </div>
+                    <div class="icon-card interior" data-months="1,2,3,4" onclick="showDetail('interior', this)">
+                        <span class="icon-emoji">✨</span>
+                        <div class="icon-title">設え強化・スポットライト増設</div>
+                        <div class="icon-period">空間演出</div>
                     </div>
                     <div class="icon-card snow" data-months="1,2" onclick="showDetail('snow', this)">
                         <span class="icon-emoji">❄️</span>
@@ -492,24 +534,24 @@
                 </div>
 
                 <div class="icon-grid">
+                    <div class="icon-card sommelier" data-months="1,2,3,4" onclick="showDetail('sommelier', this)">
+                        <span class="icon-emoji">🍷</span>
+                        <div class="icon-title">ソムリエ配置</div>
+                        <div class="icon-period">1月中旬〜 佐藤友哉</div>
+                    </div>
+                    <div class="icon-card winebuffet" data-months="1,2,3,4" onclick="showDetail('winebuffet', this)">
+                        <span class="icon-emoji">🥂</span>
+                        <div class="icon-title">ワインブッフェ</div>
+                        <div class="icon-period">1月中旬〜</div>
+                    </div>
+                    <div class="icon-card lunch" data-months="2,3,4" onclick="showDetail('lunch', this)">
+                        <span class="icon-emoji">🍱</span>
+                        <div class="icon-title">ウィークリーランチ</div>
+                        <div class="icon-period">2月〜 5軸展開</div>
+                    </div>
                     <div class="icon-card rebrand" data-months="4" onclick="showDetail('rebrand', this)">
                         <span class="icon-emoji">🏪</span>
                         <div class="icon-title">店舗名変更</div>
-                        <div class="icon-period">4月〜</div>
-                    </div>
-                    <div class="icon-card sommelier" data-months="4" onclick="showDetail('sommelier', this)">
-                        <span class="icon-emoji">🍷</span>
-                        <div class="icon-title">ソムリエ配置</div>
-                        <div class="icon-period">佐藤友哉</div>
-                    </div>
-                    <div class="icon-card lunch" data-months="4" onclick="showDetail('lunch', this)">
-                        <span class="icon-emoji">🍱</span>
-                        <div class="icon-title">ウィークリーランチ</div>
-                        <div class="icon-period">5軸展開</div>
-                    </div>
-                    <div class="icon-card winebuffet" data-months="4" onclick="showDetail('winebuffet', this)">
-                        <span class="icon-emoji">🥂</span>
-                        <div class="icon-title">ワインブッフェ</div>
                         <div class="icon-period">4月〜</div>
                     </div>
                 </div>
@@ -523,11 +565,53 @@
                     <div id="detailContent2" class="detail-content"></div>
                 </div>
             </div>
+
+            <!-- AI Section -->
+            <div class="section ai full-width">
+                <div class="section-header">
+                    <span class="section-icon">🤖</span>
+                    <div>
+                        <div class="section-title">SVD AI活用の取り組み</div>
+                        <div class="section-subtitle">DIGITAL TRANSFORMATION</div>
+                    </div>
+                </div>
+
+                <div class="icon-grid four-col">
+                    <div class="icon-card ai-item" onclick="showDetail('pl', this)">
+                        <span class="icon-emoji">💳</span>
+                        <div class="icon-title">費用→PL自動化</div>
+                        <div class="icon-period">経理DX</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('wine', this)">
+                        <span class="icon-emoji">📦</span>
+                        <div class="icon-title">ワイン棚卸</div>
+                        <div class="icon-period">在庫管理</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('report', this)">
+                        <span class="icon-emoji">📊</span>
+                        <div class="icon-title">AI日報</div>
+                        <div class="icon-period">レポート</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('social', this)">
+                        <span class="icon-emoji">📱</span>
+                        <div class="icon-title">SNS公式</div>
+                        <div class="icon-period">IG & YT</div>
+                    </div>
+                </div>
+
+                <div id="detailPanel3" class="detail-panel">
+                    <div class="detail-header">
+                        <span id="detailEmoji3" class="detail-emoji"></span>
+                        <span id="detailTitle3" class="detail-title"></span>
+                    </div>
+                    <div id="detailContent3" class="detail-content"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Footer -->
         <footer class="footer">
-            <p class="footer-concept">BQ × RYB — 二刀流で街を制する</p>
+            <p class="footer-concept">BQ × RYB × AI — 三位一体で街を制する</p>
             <p class="footer-brand">SAPPORO VIEWTIFUL DINING - 赤れんがテラス</p>
         </footer>
     </div>
@@ -552,6 +636,23 @@
                     <p>新しい年の始まりに、初めての時間と体験を。SVD4店舗合同の閑散期対策イベント。</p>
                     <span class="goal-badge">🍽️ Premium Dining</span>
                     <span class="deadline-badge">⏰ 1月13日スタート</span>
+                `
+            },
+            interior: {
+                emoji: '✨',
+                title: '設え強化・スポットライト増設',
+                period: '継続',
+                panel: 1,
+                content: `
+                    <h4>🎯 空間演出の強化</h4>
+                    <ul class="action-items">
+                        <li>スポットライト増設で料理を美しく照らす</li>
+                        <li>テーブルセッティングの見直し</li>
+                        <li>季節に応じた装飾の強化</li>
+                        <li>プレミアム感を演出する空間づくり</li>
+                    </ul>
+                    <p>Premium Diningにふさわしい空間演出で、お客様の期待を超える体験を提供。</p>
+                    <span class="goal-badge">✨ プレミアム空間の創造</span>
                 `
             },
             snow: {
@@ -592,6 +693,60 @@
                 `
             },
             // RYB施策
+            sommelier: {
+                emoji: '🍷',
+                title: '佐藤友哉ソムリエ配置',
+                period: '1月中旬〜',
+                panel: 2,
+                content: `
+                    <h4>🎯 戦術：佐藤友哉</h4>
+                    <ul class="action-items ryb">
+                        <li>佐藤友哉ソムリエをRYBに配置</li>
+                        <li>ワインと豚肉のペアリング提案</li>
+                        <li>カジュアルだけど本格的な体験</li>
+                        <li>現場に一定の裁量を与えて対策</li>
+                    </ul>
+                    <p>とんかつ屋にソムリエ。他にはない独自のポジショニングで差別化。</p>
+                    <span class="goal-badge">🎯 唯一無二のとんかつ屋へ</span>
+                    <span class="deadline-badge">⏰ 1月中旬スタート</span>
+                `
+            },
+            winebuffet: {
+                emoji: '🥂',
+                title: 'ワインブッフェ開始',
+                period: '1月中旬〜',
+                panel: 2,
+                content: `
+                    <h4>🎯 ワインブッフェ価格体系</h4>
+                    <ul class="action-items ryb">
+                        <li>🍽️ ランチ +¥660（60分）</li>
+                        <li>☕ アイドルタイム 料理+¥990（60分）← お得！</li>
+                        <li>🌙 ディナー飲み放題 ¥2,200（90分）</li>
+                    </ul>
+                    <p>アイドルタイムがお得！ソムリエセレクトのワインでとんかつ × ワインの新提案。</p>
+                    <span class="goal-badge">🎯 新しい食体験の創造</span>
+                    <span class="deadline-badge">⏰ 1月中旬スタート</span>
+                `
+            },
+            lunch: {
+                emoji: '🍱',
+                title: 'ウィークリーランチ 5軸展開',
+                period: '2月〜',
+                panel: 2,
+                content: `
+                    <h4>🎯 5軸ランチセット ¥1,500（税込）</h4>
+                    <ul class="action-items ryb">
+                        <li>🐷 とんかつ</li>
+                        <li>🍝 パスタ</li>
+                        <li>🥗 サラダ</li>
+                        <li>🥪 サンドイッチ</li>
+                        <li>🍛 カレー</li>
+                    </ul>
+                    <p>ドリンク・ミニソフト付（またはサラダ付）で¥1,500税込。毎日違うランチで飽きさせない。</p>
+                    <span class="goal-badge">🎯 リピーター獲得</span>
+                    <span class="deadline-badge">⏰ 2月スタート</span>
+                `
+            },
             rebrand: {
                 emoji: '🏪',
                 title: '店舗名変更（SEO/MEO対策）',
@@ -610,56 +765,67 @@
                     <span class="deadline-badge">⏰ 4月リニューアル</span>
                 `
             },
-            sommelier: {
-                emoji: '🍷',
-                title: '佐藤友哉ソムリエ配置',
-                period: '4月〜',
-                panel: 2,
+            // AI活用
+            pl: {
+                emoji: '💳',
+                title: '費用計上 → PL自動生成',
+                panel: 3,
                 content: `
-                    <h4>🎯 ソムリエの力で立て直し</h4>
-                    <ul class="action-items ryb">
-                        <li>佐藤友哉ソムリエをRYBに配置</li>
-                        <li>ワインと豚肉のペアリング提案</li>
-                        <li>カジュアルだけど本格的な体験</li>
-                        <li>現場に一定の裁量を与えて対策</li>
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items ai">
+                        <li>ビジネスカード明細の自動取得</li>
+                        <li>AIによる勘定科目自動分類</li>
+                        <li>店舗別・部門別タグ付け</li>
+                        <li>月次簡易PL自動生成</li>
                     </ul>
-                    <p>とんかつ屋にソムリエ。他にはない独自のポジショニングで差別化。</p>
-                    <span class="goal-badge">🎯 唯一無二のとんかつ屋へ</span>
+                    <p>経理＝入力作業 から 経営ダッシュボード へ進化させる。</p>
+                    <span class="goal-badge">🎯 数字で語る現場へ</span>
                 `
             },
-            lunch: {
-                emoji: '🍱',
-                title: 'ウィークリーランチ 5軸展開',
-                period: '4月〜',
-                panel: 2,
+            wine: {
+                emoji: '📦',
+                title: 'ワイン棚卸自動化',
+                panel: 3,
                 content: `
-                    <h4>🎯 5軸ランチセット ¥1,500（税込）</h4>
-                    <ul class="action-items ryb">
-                        <li>🐷 とんかつ</li>
-                        <li>🍝 パスタ</li>
-                        <li>🥗 サラダ</li>
-                        <li>🥪 サンドイッチ</li>
-                        <li>🍛 カレー</li>
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items ai">
+                        <li>納品書フォーマット統一</li>
+                        <li>AI読込 → 在庫自動反映</li>
+                        <li>原価率計算の自動化</li>
+                        <li>デジタルワインリスト連携</li>
                     </ul>
-                    <p>ドリンク・ミニソフト付（またはサラダ付）で¥1,500税込。毎日違うランチで飽きさせない。</p>
-                    <span class="goal-badge">🎯 リピーター獲得</span>
+                    <p>棚卸＝月末作業 から リアルタイム管理 へ。RYBワインブッフェにも直結。</p>
+                    <span class="goal-badge">🎯 リアルタイム在庫管理</span>
                 `
             },
-            winebuffet: {
-                emoji: '🥂',
-                title: 'ワインブッフェ開始',
-                period: '4月〜',
-                panel: 2,
+            report: {
+                emoji: '📊',
+                title: 'AI日報アップデート',
+                panel: 3,
                 content: `
-                    <h4>🎯 ワインブッフェで差別化</h4>
-                    <ul class="action-items ryb">
-                        <li>ソムリエセレクトのワインブッフェ</li>
-                        <li>とんかつ × ワインの新提案</li>
-                        <li>ランチ・ディナー両対応</li>
-                        <li>BQとの連携でワイン調達</li>
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items ai">
+                        <li>売上・客数・客単価の自動集計</li>
+                        <li>今日のハイライト（AI要約）</li>
+                        <li>課題仮説と明日の一手（AI提案）</li>
                     </ul>
-                    <p>とんかつ屋でワインブッフェ。カジュアルだけど本格的な体験を提供。</p>
-                    <span class="goal-badge">🎯 新しい食体験の創造</span>
+                    <p>「報告」ではなく「思考の補助輪」へ。RYB立て直しの効果測定にも活用。</p>
+                    <span class="goal-badge">🎯 報告→思考支援へ</span>
+                `
+            },
+            social: {
+                emoji: '📱',
+                title: 'Instagram & YouTube 公式',
+                panel: 3,
+                content: `
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items ai">
+                        <li>Instagram：今の熱量・ストーリー発信</li>
+                        <li>YouTube：思想・背景・物語の発信</li>
+                        <li>採用・共感・ファン化の母艦構築</li>
+                    </ul>
+                    <p>BQ・RYBの魅力をSNSで発信し、集客につなげる。</p>
+                    <span class="goal-badge">🎯 メディアが人を呼ぶ</span>
                 `
             }
         };
