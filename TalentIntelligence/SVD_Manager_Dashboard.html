@@ -315,8 +315,33 @@
 
             .btn {
                 width: 100%;
-                padding: 1.2rem;
-                font-size: 1.3rem;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            #team-simulator h2 {
+                font-size: 1.8rem !important;
+            }
+
+            #team-simulator h3 {
+                font-size: 1rem !important;
+            }
+
+            .team-metrics-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            #team-list {
+                grid-template-columns: 1fr !important;
+            }
+
+            .metric-value {
+                font-size: 2.5rem !important;
+            }
+
+            #member-selection-area {
+                grid-template-columns: 1fr !important;
             }
         }
     </style>
@@ -355,52 +380,60 @@
 
         <!-- Team Simulator Section -->
         <div class="card" id="team-simulator" style="display:none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                 <!-- Print Title (Hidden by default, shown in print) -->
                 <div id="team-name-print-display" style="display:none;"></div>
 
-                <input type="text" id="team-name-input" placeholder="Enter Team Name (e.g. JEWELS Team A)"
-                    style="font-family: 'Teko', sans-serif; font-size: 2rem; font-weight: bold; color: #1A237E; border: none; background: transparent; border-bottom: 2px solid #2196F3; width: 60%;">
-                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">Print / Save
-                    PDF</button>
+                <input type="text" id="team-name-input" placeholder="チーム名を入力（例: JEWELS Aチーム）"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: #0f172a; border: none; background: transparent; border-bottom: 2px solid #B8995C; flex: 1; min-width: 200px;">
+                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">PDF保存</button>
             </div>
 
             <h2
-                style="text-align: center; color: #1565C0; font-family: 'Teko', sans-serif; font-size: 3rem; margin-top: 0;">
+                style="text-align: center; color: var(--secondary-color); font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 800; margin-top: 0; letter-spacing: 0.1em;">
                 TEAM MOMENTUM SIMULATOR
             </h2>
 
             <!-- NEW 2-TIER LAYOUT -->
-            <div
+            <div class="team-metrics-grid"
                 style="display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 2rem; margin-bottom: 2rem;">
                 <!-- TIER 1 LEFT: Metrics -->
                 <div style="text-align: center;">
-                    <h3>TEAM MOMENTUM METRICS</h3>
-                    <div style="display: flex; justify-content: space-around; margin-bottom: 1rem;">
+                    <h3
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color); letter-spacing: 0.05em;">
+                        TEAM MOMENTUM METRICS</h3>
+                    <div
+                        style="display: flex; justify-content: space-around; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                         <div>
-                            <div style="font-size: 1rem; color: #546E7A;">Quality (Avg)</div>
-                            <div id="team-momentum-score"
-                                style="font-family: 'Teko', sans-serif; font-size: 4rem; font-weight: 700; color: #1565C0; line-height: 1;">
+                            <div style="font-size: 0.85rem; color: var(--light-text-color); font-weight: 500;">Quality
+                                (Avg)</div>
+                            <div id="team-momentum-score" class="metric-value"
+                                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--secondary-color); line-height: 1;">
                                 0</div>
                         </div>
                         <div>
-                            <div style="font-size: 1rem; color: #546E7A;">Total Momentum (Sum)</div>
-                            <div id="total-power-score"
-                                style="font-family: 'Teko', sans-serif; font-size: 4rem; font-weight: 700; color: #D84315; line-height: 1;">
+                            <div style="font-size: 0.85rem; color: var(--light-text-color); font-weight: 500;">Total
+                                Momentum</div>
+                            <div id="total-power-score" class="metric-value"
+                                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--primary-color); line-height: 1;">
                                 0</div>
                         </div>
                     </div>
-                    <p id="synergy-bonus" style="color: #2E7D32; font-weight: bold; font-size: 1.1rem;"></p>
+                    <p id="synergy-bonus" style="color: var(--secondary-color); font-weight: 600; font-size: 0.95rem;">
+                    </p>
                     <div id="team-advice"
-                        style="background: white; padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: left;">
-                        <strong>チーム分析:</strong><br>
+                        style="background: var(--background-color); padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: left; border-left: 4px solid var(--secondary-color);">
+                        <strong style="color: var(--primary-color);">チーム分析:</strong><br>
                         メンバーを追加して分析を開始してください。
                     </div>
                 </div>
 
                 <!-- TIER 1 RIGHT: Chart -->
                 <div>
-                    <h3 style="text-align: center;">Team Skill Balance</h3>
+                    <h3
+                        style="text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color);">
+                        Team Skill Balance</h3>
                     <div id="chart-container">
                         <canvas id="team-radar-chart"></canvas>
                     </div>
@@ -408,7 +441,8 @@
 
                 <!-- TIER 2: Member List (spans full width) -->
                 <div style="grid-column: 1 / -1;">
-                    <h3>Selected Members</h3>
+                    <h3 style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color);">
+                        Selected Members</h3>
                     <ul id="team-list"
                         style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
                         <!-- Team members will be added here -->
