@@ -6,18 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE BEGINNING TABLE 2026 | SAPPORO VIEWTIFUL DINING</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
             --gold: #C9A962;
             --gold-light: #D4B87A;
             --gold-dark: #A88B4A;
-            --black: #0A0A0A;
-            --black-light: #1A1A1A;
+            --black: #1A1A1A;
+            --black-dark: #0A0A0A;
             --white: #FFFFFF;
-            --white-off: #F5F5F5;
-            --gray: #888888;
+            --white-off: #FAFAFA;
+            --gray: #666666;
+            --gray-light: #999999;
         }
 
         * {
@@ -28,9 +29,9 @@
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: var(--black);
+            background: var(--white);
             min-height: 100vh;
-            color: var(--white);
+            color: var(--black);
             line-height: 1.8;
         }
 
@@ -43,7 +44,7 @@
         /* Hero Section */
         .hero {
             text-align: center;
-            margin-bottom: 100px;
+            margin-bottom: 80px;
             padding: 60px 0;
         }
 
@@ -51,7 +52,7 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.75rem;
             font-weight: 500;
-            color: var(--gold);
+            color: var(--gray);
             letter-spacing: 0.4em;
             margin-bottom: 40px;
             text-transform: uppercase;
@@ -60,45 +61,66 @@
         .hero h1 {
             font-family: 'Playfair Display', serif;
             font-size: 4rem;
-            font-weight: 400;
-            color: var(--white);
+            font-weight: 500;
+            color: var(--black);
             letter-spacing: 0.1em;
             margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .hero .year {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
             font-weight: 300;
-            color: var(--gold);
+            color: var(--gray);
             letter-spacing: 0.3em;
             margin-bottom: 50px;
         }
 
         .hero .tagline {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: var(--white-off);
-            font-style: italic;
-            line-height: 2;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--black);
+            line-height: 2.2;
+        }
+
+        /* Gold Box Highlight */
+        .gold-box {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--white);
+            padding: 15px 40px;
+            margin-top: 30px;
+        }
+
+        .gold-box span {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
         }
 
         /* Divider */
         .divider {
-            width: 80px;
-            height: 1px;
+            width: 60px;
+            height: 2px;
             background: var(--gold);
             margin: 60px auto;
         }
 
-        /* Info Section */
+        /* Info Section with Gold Box */
         .info-section {
+            background: var(--gold);
+            padding: 40px;
+            margin-bottom: 80px;
+        }
+
+        .info-grid {
             display: flex;
             justify-content: center;
-            gap: 80px;
-            margin-bottom: 100px;
+            gap: 100px;
             flex-wrap: wrap;
         }
 
@@ -110,23 +132,24 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.65rem;
             font-weight: 600;
-            color: var(--gold);
+            color: var(--white);
             letter-spacing: 0.3em;
             text-transform: uppercase;
             margin-bottom: 10px;
+            opacity: 0.9;
         }
 
         .info-value {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
             color: var(--white);
             letter-spacing: 0.1em;
         }
 
         /* Venues Section */
         .venues-section {
-            margin-bottom: 100px;
+            margin-bottom: 80px;
         }
 
         .section-header {
@@ -138,7 +161,7 @@
             font-family: 'Montserrat', sans-serif;
             font-size: 0.65rem;
             font-weight: 600;
-            color: var(--gold);
+            color: var(--gray);
             letter-spacing: 0.3em;
             text-transform: uppercase;
             margin-bottom: 15px;
@@ -147,8 +170,8 @@
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
-            font-weight: 400;
-            color: var(--white);
+            font-weight: 500;
+            color: var(--black);
             letter-spacing: 0.1em;
         }
 
@@ -171,33 +194,33 @@
         }
 
         .venue-card {
-            background: var(--black-light);
-            border: 1px solid rgba(201, 169, 98, 0.2);
+            background: var(--white-off);
+            border: 1px solid #E5E5E5;
             padding: 40px 20px;
             text-align: center;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .venue-card:hover {
             border-color: var(--gold);
-            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
 
         .venue-logo {
-            height: 50px;
+            height: 70px;
             width: auto;
-            max-width: 100px;
+            max-width: 140px;
             object-fit: contain;
             margin-bottom: 25px;
-            opacity: 0.9;
+            filter: brightness(0);
         }
 
         .venue-name {
             font-family: 'Montserrat', sans-serif;
             font-size: 0.7rem;
             font-weight: 600;
-            color: var(--white);
-            letter-spacing: 0.15em;
+            color: var(--black);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             margin-bottom: 8px;
             line-height: 1.6;
@@ -205,19 +228,37 @@
 
         .venue-location {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 400;
             color: var(--gray);
-            font-style: italic;
         }
 
-        /* Menu Section */
+        /* Menu Section with Gold Header */
         .menu-section {
-            background: var(--black-light);
-            border-top: 1px solid rgba(201, 169, 98, 0.3);
-            border-bottom: 1px solid rgba(201, 169, 98, 0.3);
-            padding: 80px 40px;
-            margin-bottom: 100px;
+            margin-bottom: 80px;
+        }
+
+        .menu-header {
+            background: var(--gold);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        .menu-header .section-label {
+            color: var(--white);
+            opacity: 0.9;
+        }
+
+        .menu-header .section-title {
+            color: var(--white);
+        }
+
+        .menu-content {
+            background: var(--white-off);
+            border: 1px solid #E5E5E5;
+            border-top: none;
+            padding: 60px 40px;
         }
 
         .menu-plans {
@@ -237,34 +278,31 @@
         .menu-plan {
             text-align: center;
             padding: 40px;
-            border: 1px solid rgba(201, 169, 98, 0.2);
-            transition: all 0.3s;
-        }
-
-        .menu-plan:hover {
-            border-color: var(--gold);
+            border: 1px solid #E5E5E5;
+            background: var(--white);
         }
 
         .plan-type {
             font-family: 'Montserrat', sans-serif;
             font-size: 0.65rem;
             font-weight: 600;
-            color: var(--gold);
+            color: var(--gold-dark);
             letter-spacing: 0.3em;
             text-transform: uppercase;
             margin-bottom: 20px;
         }
 
         .plan-price {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            font-weight: 400;
-            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: var(--black);
             margin-bottom: 30px;
         }
 
         .plan-price .currency {
-            font-size: 1rem;
+            font-size: 1.2rem;
+            font-weight: 400;
             color: var(--gray);
         }
 
@@ -276,9 +314,9 @@
         .plan-courses li {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1rem;
-            color: var(--white-off);
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--black);
+            padding: 10px 0;
+            border-bottom: 1px solid #EEEEEE;
         }
 
         .plan-courses li:last-child {
@@ -286,21 +324,21 @@
         }
 
         .plan-drink {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--gold);
-            padding: 12px 20px;
-            border: 1px solid var(--gold);
             display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--white);
+            background: var(--gold);
+            padding: 10px 25px;
+            letter-spacing: 0.1em;
             margin-top: 15px;
         }
 
         .plan-note {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.85rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
             color: var(--gray);
-            font-style: italic;
             margin-top: 15px;
         }
 
@@ -312,9 +350,9 @@
 
         .cta-button {
             display: inline-block;
-            padding: 20px 60px;
-            background: var(--gold);
-            color: var(--black);
+            padding: 20px 80px;
+            background: var(--black);
+            color: var(--white);
             font-family: 'Montserrat', sans-serif;
             font-size: 0.8rem;
             font-weight: 600;
@@ -325,29 +363,27 @@
         }
 
         .cta-button:hover {
-            background: var(--gold-light);
-            transform: translateY(-3px);
+            background: var(--gold);
         }
 
         .cta-note {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
             color: var(--gray);
-            font-style: italic;
             margin-top: 20px;
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            padding-top: 60px;
-            border-top: 1px solid rgba(201, 169, 98, 0.2);
+            padding: 60px 0;
+            border-top: 1px solid #E5E5E5;
         }
 
         .footer-logo {
-            height: 40px;
-            margin-bottom: 20px;
-            opacity: 0.8;
+            height: 120px;
+            margin-bottom: 30px;
+            opacity: 0.9;
         }
 
         .footer-brand {
@@ -371,17 +407,17 @@
             <p class="tagline">新しい年の始まりに、<br>初めての時間と体験を。</p>
         </section>
 
-        <div class="divider"></div>
-
-        <!-- Info -->
+        <!-- Info with Gold Box -->
         <section class="info-section">
-            <div class="info-item">
-                <p class="info-label">Period</p>
-                <p class="info-value">2025.1.13 — 2.28</p>
-            </div>
-            <div class="info-item">
-                <p class="info-label">Venues</p>
-                <p class="info-value">4 Restaurants</p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <p class="info-label">Period</p>
+                    <p class="info-value">2025.1.13 — 2.28</p>
+                </div>
+                <div class="info-item">
+                    <p class="info-label">Venues</p>
+                    <p class="info-value">4 Restaurants</p>
+                </div>
             </div>
         </section>
 
@@ -415,46 +451,45 @@
             </div>
         </section>
 
-        <div class="divider"></div>
-
         <!-- Menu -->
         <section class="menu-section">
-            <div class="section-header">
+            <div class="menu-header">
                 <p class="section-label">Menu</p>
                 <h2 class="section-title">THE BEGINNING COURSE</h2>
             </div>
+            <div class="menu-content">
+                <div class="menu-plans">
+                    <!-- Lunch -->
+                    <div class="menu-plan">
+                        <p class="plan-type">Lunch</p>
+                        <p class="plan-price"><span class="currency">¥</span>4,950</p>
+                        <ul class="plan-courses">
+                            <li>ヒンナ（アミューズ）</li>
+                            <li>前菜</li>
+                            <li>魚料理</li>
+                            <li>肉料理</li>
+                            <li>デザート</li>
+                            <li>コーヒー</li>
+                        </ul>
+                        <p class="plan-drink">ドリンク 2杯付</p>
+                        <p class="plan-note">ソフトドリンクへの変更可</p>
+                    </div>
 
-            <div class="menu-plans">
-                <!-- Lunch -->
-                <div class="menu-plan">
-                    <p class="plan-type">Lunch</p>
-                    <p class="plan-price"><span class="currency">¥</span>4,950</p>
-                    <ul class="plan-courses">
-                        <li>ヒンナ（アミューズ）</li>
-                        <li>前菜</li>
-                        <li>魚料理</li>
-                        <li>肉料理</li>
-                        <li>デザート</li>
-                        <li>コーヒー</li>
-                    </ul>
-                    <p class="plan-drink">ドリンク 2杯付</p>
-                    <p class="plan-note">ソフトドリンクへの変更可</p>
-                </div>
-
-                <!-- Dinner -->
-                <div class="menu-plan">
-                    <p class="plan-type">Dinner</p>
-                    <p class="plan-price"><span class="currency">¥</span>9,900</p>
-                    <ul class="plan-courses">
-                        <li>ヒンナ（アミューズ）</li>
-                        <li>前菜</li>
-                        <li>魚料理</li>
-                        <li>肉料理</li>
-                        <li>デザート</li>
-                        <li>コーヒー</li>
-                    </ul>
-                    <p class="plan-drink">ペアリング 3杯付</p>
-                    <p class="plan-note">ソフトドリンクへの変更可</p>
+                    <!-- Dinner -->
+                    <div class="menu-plan">
+                        <p class="plan-type">Dinner</p>
+                        <p class="plan-price"><span class="currency">¥</span>9,900</p>
+                        <ul class="plan-courses">
+                            <li>ヒンナ（アミューズ）</li>
+                            <li>前菜</li>
+                            <li>魚料理</li>
+                            <li>肉料理</li>
+                            <li>デザート</li>
+                            <li>コーヒー</li>
+                        </ul>
+                        <p class="plan-drink">ペアリング 3杯付</p>
+                        <p class="plan-note">ソフトドリンクへの変更可</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -467,7 +502,7 @@
 
         <!-- Footer -->
         <footer class="footer">
-            <img src="logo/SVD_logo_white1.png" alt="SAPPORO VIEWTIFUL DINING" class="footer-logo">
+            <img src="logo/SVD_logo_standard.png" alt="SAPPORO VIEWTIFUL DINING" class="footer-logo">
             <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
         </footer>
     </div>
