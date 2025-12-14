@@ -178,25 +178,43 @@
             border-right: 1px solid var(--gray-light);
             border-bottom: 1px solid var(--gray-light);
             transition: background 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 380px;
         }
 
         .venue-card:hover {
             background: var(--bg);
         }
 
+        .venue-logo-wrapper {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
         .venue-logo {
-            height: 150px;
+            height: 80px;
             width: auto;
-            max-width: 280px;
+            max-width: 160px;
             object-fit: contain;
-            margin-bottom: 30px;
             filter: brightness(0);
             opacity: 0.9;
         }
 
         .venue-logo.premium {
-            height: 200px;
-            max-width: 320px;
+            height: 160px;
+            max-width: 280px;
+        }
+
+        .venue-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .venue-name {
@@ -442,16 +460,24 @@
             </div>
             <div class="venues-grid">
                 <div class="venue-card">
-                    <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
-                    <p class="venue-name">THE JEWELS</p>
-                    <p class="venue-location">藻岩山</p>
-                    <p class="venue-tier">Casual Dining</p>
+                    <div class="venue-logo-wrapper">
+                        <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
+                    </div>
+                    <div class="venue-info">
+                        <p class="venue-name">THE JEWELS</p>
+                        <p class="venue-location">藻岩山</p>
+                        <p class="venue-tier">Casual Dining</p>
+                    </div>
                 </div>
                 <div class="venue-card">
-                    <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo premium">
-                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
-                    <p class="venue-location">大倉山</p>
-                    <p class="venue-tier">Premium Dining</p>
+                    <div class="venue-logo-wrapper">
+                        <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo premium">
+                    </div>
+                    <div class="venue-info">
+                        <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
+                        <p class="venue-location">大倉山</p>
+                        <p class="venue-tier">Premium Dining</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -464,17 +490,25 @@
             </div>
             <div class="venues-grid">
                 <div class="venue-card">
-                    <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO Akarenga Terrace"
-                        class="venue-logo premium">
-                    <p class="venue-name">LA BRIQUE SAPPORO<br>Akarenga Terrace</p>
-                    <p class="venue-location">赤れんが テラス</p>
-                    <p class="venue-tier">Premium Dining</p>
+                    <div class="venue-logo-wrapper">
+                        <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO Akarenga Terrace"
+                            class="venue-logo premium">
+                    </div>
+                    <div class="venue-info">
+                        <p class="venue-name">LA BRIQUE SAPPORO<br>Akarenga Terrace</p>
+                        <p class="venue-location">赤れんが テラス</p>
+                        <p class="venue-tier">Premium Dining</p>
+                    </div>
                 </div>
                 <div class="venue-card">
-                    <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
-                    <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
-                    <p class="venue-location">さっぽろテレビ塔</p>
-                    <p class="venue-tier">Casual Dining</p>
+                    <div class="venue-logo-wrapper">
+                        <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
+                    </div>
+                    <div class="venue-info">
+                        <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
+                        <p class="venue-location">さっぽろテレビ塔</p>
+                        <p class="venue-tier">Casual Dining</p>
+                    </div>
                 </div>
             </div>
         </div>
