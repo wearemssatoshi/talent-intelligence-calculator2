@@ -280,6 +280,103 @@
             margin-top: 20px;
         }
 
+        /* Menu Plans */
+        .menu-plans {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 800px) {
+            .menu-plans {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .menu-plan {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .menu-plan.lunch {
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .menu-plan.dinner {
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .menu-plan:hover {
+            transform: translateY(-5px);
+        }
+
+        .plan-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .plan-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .plan-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .plan-price.lunch-price {
+            color: #FBBF24;
+        }
+
+        .plan-price.dinner-price {
+            color: #A78BFA;
+        }
+
+        .plan-courses {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .plan-courses li {
+            padding: 8px 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-courses li::before {
+            content: '◆';
+            font-size: 0.6rem;
+            color: #64748b;
+        }
+
+        .plan-drink {
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 0.85rem;
+            color: #60A5FA;
+            margin-top: 10px;
+        }
+
+        .plan-note {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 10px;
+        }
+
         /* Price */
         .price-section {
             text-align: center;
@@ -451,34 +548,48 @@
 
         <!-- Menu Concept -->
         <section class="menu-section">
-            <h3>MENU CONCEPT</h3>
-            <h2>シェフおまかせ サプライズコース</h2>
-            <div class="menu-items">
-                <div class="menu-item">
-                    <div class="number">3</div>
-                    <div class="label">COURSES</div>
-                </div>
-                <div class="menu-item">
-                    <div class="number">1</div>
-                    <div class="label">SPECIAL PRICE</div>
-                </div>
-                <div class="menu-item">
-                    <div class="number">4</div>
-                    <div class="label">VENUES</div>
-                </div>
-            </div>
-            <p class="menu-note">※メニューは当日のお楽しみ。各店舗のシェフが腕を振るいます。</p>
-        </section>
+            <h3>MENU</h3>
+            <h2>THE BEGINNING COURSE</h2>
 
-        <!-- Price -->
-        <section class="price-section">
-            <div class="price-box">
-                <div class="price-label">SPECIAL PRICE</div>
-                <div class="price-value">
-                    <span class="currency">¥</span>4,950
-                    <span class="tax">(税込)</span>
+            <div class="menu-plans">
+                <!-- Lunch -->
+                <div class="menu-plan lunch">
+                    <div class="plan-header">
+                        <span class="plan-name">☀️ LUNCH</span>
+                        <span class="plan-price lunch-price">¥4,950</span>
+                    </div>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <div class="plan-drink">🍷 ドリンク2杯付</div>
+                    <p class="plan-note">※ソフトドリンクへの変更可</p>
+                </div>
+
+                <!-- Dinner -->
+                <div class="menu-plan dinner">
+                    <div class="plan-header">
+                        <span class="plan-name">🌙 DINNER</span>
+                        <span class="plan-price dinner-price">¥9,900</span>
+                    </div>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <div class="plan-drink">🍷 ペアリング3杯付</div>
+                    <p class="plan-note">※ソフトドリンクへの変更可</p>
                 </div>
             </div>
+
+            <p class="menu-note">※メニューは当日のお楽しみ。各店舗のシェフが腕を振るいます。</p>
         </section>
 
         <!-- CTA -->
