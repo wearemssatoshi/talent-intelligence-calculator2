@@ -6,19 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE BEGINNING TABLE 2026 | SAPPORO VIEWTIFUL DINING</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --gold: #C9A962;
-            --gold-light: #D4B87A;
-            --gold-dark: #A88B4A;
-            --black: #1A1A1A;
-            --black-dark: #0A0A0A;
+            --gold: #B8995C;
+            --black: #1C1C1C;
             --white: #FFFFFF;
-            --white-off: #FAFAFA;
-            --gray: #666666;
-            --gray-light: #999999;
+            --gray: #6B6B6B;
+            --gray-light: #E8E8E8;
+            --bg: #FAFAFA;
         }
 
         * {
@@ -30,98 +27,65 @@
         body {
             font-family: 'Montserrat', sans-serif;
             background: var(--white);
-            min-height: 100vh;
             color: var(--black);
             line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 80px 20px;
+            padding: 100px 40px;
         }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
             text-align: center;
-            margin-bottom: 80px;
-            padding: 60px 0;
+            padding: 80px 0 100px;
         }
 
         .hero-brand {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 500;
             color: var(--gray);
-            letter-spacing: 0.4em;
-            margin-bottom: 40px;
+            letter-spacing: 0.5em;
             text-transform: uppercase;
+            margin-bottom: 60px;
         }
 
         .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            font-weight: 500;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2rem;
+            font-weight: 300;
             color: var(--black);
-            letter-spacing: 0.1em;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            letter-spacing: 0.15em;
+            margin-bottom: 15px;
         }
 
         .hero .year {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
+            font-size: 1rem;
             font-weight: 300;
             color: var(--gray);
-            letter-spacing: 0.3em;
-            margin-bottom: 50px;
+            letter-spacing: 0.4em;
+            margin-bottom: 60px;
         }
 
         .hero .tagline {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 400;
             color: var(--black);
-            line-height: 2.2;
+            line-height: 2.4;
+            letter-spacing: 0.05em;
         }
 
-        /* Gold Box Highlight */
-        .gold-box {
-            display: inline-block;
+        /* Info Bar */
+        .info-bar {
             background: var(--gold);
-            color: var(--white);
-            padding: 15px 40px;
-            margin-top: 30px;
-        }
-
-        .gold-box span {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-        }
-
-        /* Divider */
-        .divider {
-            width: 60px;
-            height: 2px;
-            background: var(--gold);
-            margin: 60px auto;
-        }
-
-        /* Info Section with Gold Box */
-        .info-section {
-            background: var(--gold);
-            padding: 40px;
-            margin-bottom: 80px;
-        }
-
-        .info-grid {
+            padding: 35px 40px;
             display: flex;
             justify-content: center;
-            gap: 100px;
-            flex-wrap: wrap;
+            gap: 80px;
         }
 
         .info-item {
@@ -129,194 +93,177 @@
         }
 
         .info-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
+            font-size: 0.6rem;
+            font-weight: 500;
             color: var(--white);
             letter-spacing: 0.3em;
             text-transform: uppercase;
-            margin-bottom: 10px;
-            opacity: 0.9;
+            margin-bottom: 8px;
+            opacity: 0.85;
         }
 
         .info-value {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 500;
+            font-size: 0.9rem;
+            font-weight: 400;
             color: var(--white);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
         }
 
-        /* Venues Section */
-        .venues-section {
-            margin-bottom: 80px;
-        }
-
+        /* Section Header */
         .section-header {
             text-align: center;
-            margin-bottom: 60px;
+            padding: 80px 0 50px;
         }
 
         .section-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
+            font-size: 0.6rem;
+            font-weight: 500;
             color: var(--gray);
-            letter-spacing: 0.3em;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 500;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
             color: var(--black);
             letter-spacing: 0.1em;
         }
 
+        /* Venues */
         .venues-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
+            border-top: 1px solid var(--gray-light);
+            border-left: 1px solid var(--gray-light);
         }
 
-        @media (max-width: 1000px) {
+        @media (max-width: 900px) {
             .venues-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        @media (max-width: 600px) {
-            .venues-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .venue-card {
-            background: var(--white-off);
-            border: 1px solid #E5E5E5;
-            padding: 40px 20px;
+            padding: 50px 25px;
             text-align: center;
-            transition: all 0.3s ease;
+            border-right: 1px solid var(--gray-light);
+            border-bottom: 1px solid var(--gray-light);
+            transition: background 0.3s;
         }
 
         .venue-card:hover {
-            border-color: var(--gold);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background: var(--bg);
         }
 
         .venue-logo {
-            height: 70px;
+            height: 60px;
             width: auto;
-            max-width: 140px;
+            max-width: 120px;
             object-fit: contain;
             margin-bottom: 25px;
             filter: brightness(0);
+            opacity: 0.85;
         }
 
         .venue-name {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 0.65rem;
+            font-weight: 500;
             color: var(--black);
-            letter-spacing: 0.12em;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            line-height: 1.6;
+            line-height: 1.8;
+            margin-bottom: 10px;
         }
 
         .venue-location {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 400;
             color: var(--gray);
+            letter-spacing: 0.05em;
         }
 
-        /* Menu Section with Gold Header */
-        .menu-section {
-            margin-bottom: 80px;
-        }
-
-        .menu-header {
+        /* Menu */
+        .menu-header-bar {
             background: var(--gold);
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            margin-bottom: 0;
         }
 
-        .menu-header .section-label {
+        .menu-header-bar .section-label {
             color: var(--white);
-            opacity: 0.9;
+            opacity: 0.85;
+            margin-bottom: 8px;
         }
 
-        .menu-header .section-title {
+        .menu-header-bar .section-title {
             color: var(--white);
         }
 
         .menu-content {
-            background: var(--white-off);
-            border: 1px solid #E5E5E5;
-            border-top: none;
+            background: var(--bg);
             padding: 60px 40px;
         }
 
         .menu-plans {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 60px;
-            max-width: 900px;
+            gap: 40px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        @media (max-width: 800px) {
+        @media (max-width: 700px) {
             .menu-plans {
                 grid-template-columns: 1fr;
             }
         }
 
         .menu-plan {
-            text-align: center;
-            padding: 40px;
-            border: 1px solid #E5E5E5;
             background: var(--white);
+            padding: 45px 35px;
+            text-align: center;
+            border: 1px solid var(--gray-light);
         }
 
         .plan-type {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--gold-dark);
-            letter-spacing: 0.3em;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: 0.35em;
             text-transform: uppercase;
             margin-bottom: 20px;
         }
 
         .plan-price {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 600;
+            font-size: 2.2rem;
+            font-weight: 500;
             color: var(--black);
             margin-bottom: 30px;
+            letter-spacing: 0.02em;
         }
 
         .plan-price .currency {
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             font-weight: 400;
             color: var(--gray);
         }
 
         .plan-courses {
             list-style: none;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .plan-courses li {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--black);
             padding: 10px 0;
-            border-bottom: 1px solid #EEEEEE;
+            border-bottom: 1px solid var(--gray-light);
+            letter-spacing: 0.03em;
         }
 
         .plan-courses li:last-child {
@@ -325,38 +272,35 @@
 
         .plan-drink {
             display: inline-block;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 0.65rem;
+            font-weight: 500;
             color: var(--white);
             background: var(--gold);
             padding: 10px 25px;
-            letter-spacing: 0.1em;
-            margin-top: 15px;
+            letter-spacing: 0.15em;
         }
 
         .plan-note {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--gray);
             margin-top: 15px;
+            letter-spacing: 0.05em;
         }
 
-        /* CTA Section */
+        /* CTA */
         .cta-section {
             text-align: center;
-            margin-bottom: 100px;
+            padding: 80px 0;
         }
 
         .cta-button {
             display: inline-block;
-            padding: 20px 80px;
+            padding: 18px 70px;
             background: var(--black);
             color: var(--white);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
             text-transform: uppercase;
             text-decoration: none;
             transition: all 0.3s;
@@ -367,145 +311,135 @@
         }
 
         .cta-note {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gray);
             margin-top: 20px;
+            letter-spacing: 0.05em;
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            padding: 60px 0;
-            border-top: 1px solid #E5E5E5;
+            padding: 80px 0;
+            border-top: 1px solid var(--gray-light);
         }
 
         .footer-logo {
-            height: 120px;
-            margin-bottom: 30px;
+            height: 100px;
+            margin-bottom: 25px;
             opacity: 0.9;
         }
 
         .footer-brand {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 500;
             color: var(--gray);
-            letter-spacing: 0.3em;
+            letter-spacing: 0.4em;
             text-transform: uppercase;
         }
     </style>
 </head>
 
 <body>
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-brand">SAPPORO VIEWTIFUL DINING</p>
+        <h1>THE BEGINNING TABLE</h1>
+        <p class="year">2026</p>
+        <p class="tagline">新しい年の始まりに、<br>初めての時間と体験を。</p>
+    </section>
+
+    <!-- Info Bar -->
+    <section class="info-bar">
+        <div class="info-item">
+            <p class="info-label">Period</p>
+            <p class="info-value">2025.1.13 — 2.28</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label">Venues</p>
+            <p class="info-value">4 Restaurants</p>
+        </div>
+    </section>
+
     <div class="container">
-        <!-- Hero -->
-        <section class="hero">
-            <p class="hero-brand">SAPPORO VIEWTIFUL DINING</p>
-            <h1>THE BEGINNING TABLE</h1>
-            <p class="year">2026</p>
-            <p class="tagline">新しい年の始まりに、<br>初めての時間と体験を。</p>
-        </section>
-
-        <!-- Info with Gold Box -->
-        <section class="info-section">
-            <div class="info-grid">
-                <div class="info-item">
-                    <p class="info-label">Period</p>
-                    <p class="info-value">2025.1.13 — 2.28</p>
-                </div>
-                <div class="info-item">
-                    <p class="info-label">Venues</p>
-                    <p class="info-value">4 Restaurants</p>
-                </div>
-            </div>
-        </section>
-
         <!-- Venues -->
-        <section class="venues-section">
-            <div class="section-header">
-                <p class="section-label">Participating Venues</p>
-                <h2 class="section-title">参加店舗</h2>
+        <div class="section-header">
+            <p class="section-label">Participating Venues</p>
+            <h2 class="section-title">参加店舗</h2>
+        </div>
+        <div class="venues-grid">
+            <div class="venue-card">
+                <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
+                <p class="venue-name">THE JEWELS</p>
+                <p class="venue-location">藻岩山</p>
             </div>
-            <div class="venues-grid">
-                <div class="venue-card">
-                    <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
-                    <p class="venue-name">THE JEWELS</p>
-                    <p class="venue-location">藻岩山</p>
-                </div>
-                <div class="venue-card">
-                    <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo">
-                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
-                    <p class="venue-location">大倉山</p>
-                </div>
-                <div class="venue-card">
-                    <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
-                    <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
-                    <p class="venue-location">テレビ塔</p>
-                </div>
-                <div class="venue-card">
-                    <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo">
-                    <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
-                    <p class="venue-location">赤れんが テラス</p>
-                </div>
+            <div class="venue-card">
+                <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo">
+                <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
+                <p class="venue-location">大倉山</p>
             </div>
-        </section>
-
-        <!-- Menu -->
-        <section class="menu-section">
-            <div class="menu-header">
-                <p class="section-label">Menu</p>
-                <h2 class="section-title">THE BEGINNING COURSE</h2>
+            <div class="venue-card">
+                <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
+                <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
+                <p class="venue-location">テレビ塔</p>
             </div>
-            <div class="menu-content">
-                <div class="menu-plans">
-                    <!-- Lunch -->
-                    <div class="menu-plan">
-                        <p class="plan-type">Lunch</p>
-                        <p class="plan-price"><span class="currency">¥</span>4,950</p>
-                        <ul class="plan-courses">
-                            <li>ヒンナ（アミューズ）</li>
-                            <li>前菜</li>
-                            <li>魚料理</li>
-                            <li>肉料理</li>
-                            <li>デザート</li>
-                            <li>コーヒー</li>
-                        </ul>
-                        <p class="plan-drink">ドリンク 2杯付</p>
-                        <p class="plan-note">ソフトドリンクへの変更可</p>
-                    </div>
-
-                    <!-- Dinner -->
-                    <div class="menu-plan">
-                        <p class="plan-type">Dinner</p>
-                        <p class="plan-price"><span class="currency">¥</span>9,900</p>
-                        <ul class="plan-courses">
-                            <li>ヒンナ（アミューズ）</li>
-                            <li>前菜</li>
-                            <li>魚料理</li>
-                            <li>肉料理</li>
-                            <li>デザート</li>
-                            <li>コーヒー</li>
-                        </ul>
-                        <p class="plan-drink">ペアリング 3杯付</p>
-                        <p class="plan-note">ソフトドリンクへの変更可</p>
-                    </div>
-                </div>
+            <div class="venue-card">
+                <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo">
+                <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
+                <p class="venue-location">赤れんが テラス</p>
             </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="cta-section">
-            <a href="#" class="cta-button">Reservation</a>
-            <p class="cta-note">ご予約はTableCheckにて受付中</p>
-        </section>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <img src="logo/SVD_logo_standard.png" alt="SAPPORO VIEWTIFUL DINING" class="footer-logo">
-            <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
-        </footer>
+        </div>
     </div>
+
+    <!-- Menu -->
+    <section class="menu-header-bar">
+        <p class="section-label">Menu</p>
+        <h2 class="section-title">THE BEGINNING COURSE</h2>
+    </section>
+    <div class="menu-content">
+        <div class="menu-plans">
+            <div class="menu-plan">
+                <p class="plan-type">Lunch</p>
+                <p class="plan-price"><span class="currency">¥</span>4,950</p>
+                <ul class="plan-courses">
+                    <li>ヒンナ（アミューズ）</li>
+                    <li>前菜</li>
+                    <li>魚料理</li>
+                    <li>肉料理</li>
+                    <li>デザート</li>
+                    <li>コーヒー</li>
+                </ul>
+                <p class="plan-drink">ドリンク 2杯付</p>
+                <p class="plan-note">ソフトドリンクへの変更可</p>
+            </div>
+            <div class="menu-plan">
+                <p class="plan-type">Dinner</p>
+                <p class="plan-price"><span class="currency">¥</span>9,900</p>
+                <ul class="plan-courses">
+                    <li>ヒンナ（アミューズ）</li>
+                    <li>前菜</li>
+                    <li>魚料理</li>
+                    <li>肉料理</li>
+                    <li>デザート</li>
+                    <li>コーヒー</li>
+                </ul>
+                <p class="plan-drink">ペアリング 3杯付</p>
+                <p class="plan-note">ソフトドリンクへの変更可</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <a href="#" class="cta-button">Reservation</a>
+        <p class="cta-note">ご予約はTableCheckにて受付中</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <img src="logo/SVD_logo_standard.png" alt="SAPPORO VIEWTIFUL DINING" class="footer-logo">
+        <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
+    </footer>
 </body>
 
 </html>
