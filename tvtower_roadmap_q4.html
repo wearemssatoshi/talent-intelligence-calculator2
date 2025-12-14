@@ -225,6 +225,10 @@
             --card-color: #60A5FA;
         }
 
+        .icon-card.sbt {
+            --card-color: #B8995C;
+        }
+
         .icon-card.yellow {
             --card-color: #EAB308;
         }
@@ -441,6 +445,11 @@
                 </div>
 
                 <div class="icon-grid single-col">
+                    <div class="icon-card sbt" data-months="1,2" onclick="showDetail('sbt', this)">
+                        <span class="icon-emoji">🍽️</span>
+                        <div class="icon-title">SAPPORO BEGINNING TABLE</div>
+                        <div class="icon-period">1月13日〜2月28日</div>
+                    </div>
                     <div class="icon-card wine" data-months="1,2,3" onclick="showDetail('wine', this)">
                         <span class="icon-emoji">🍷</span>
                         <div class="icon-title">ワインBAR ローンチ</div>
@@ -521,6 +530,25 @@
     <script>
         const details = {
             // テレビ塔施策
+            sbt: {
+                emoji: '🍽️',
+                title: 'SAPPORO BEGINNING TABLE',
+                period: '1月13日〜2月28日',
+                panel: 1,
+                content: `
+                    <h4>🍽️ SVD関散期対策イベント</h4>
+                    <ul class="action-items">
+                        <li>SBT COURSE（Casual Dining）の提供</li>
+                        <li>Dinner ¥9,900 / Lunch ¥5,500（税込）</li>
+                        <li>ヒンナ＋前菜＋魚＋肉＋デザート＋コーヒー</li>
+                        <li>Dinner:ペアリング3杯付 / Lunch:ドリンク2杯付</li>
+                        <li>ソフトドリンクへの変更可</li>
+                    </ul>
+                    <p>新しい年の始まりに、初めての時間と体験を。SVD4店舗合同の閑散期対策イベント。</p>
+                    <span class="goal-badge">🍽️ Casual Dining</span>
+                    <span class="deadline-badge">⏰ 1月13日スタート</span>
+                `
+            },
             wine: {
                 emoji: '🍷',
                 title: 'ワインBAR ローンチ',
