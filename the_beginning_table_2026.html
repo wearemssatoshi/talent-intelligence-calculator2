@@ -5,9 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE BEGINNING TABLE 2026 | SAPPORO VIEWTIFUL DINING</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <style>
+        :root {
+            --gold: #C9A962;
+            --gold-light: #D4B87A;
+            --gold-dark: #A88B4A;
+            --black: #0A0A0A;
+            --black-light: #1A1A1A;
+            --white: #FFFFFF;
+            --white-off: #F5F5F5;
+            --gray: #888888;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,285 +27,205 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #0f172a 100%);
+            font-family: 'Montserrat', sans-serif;
+            background: var(--black);
             min-height: 100vh;
-            color: #e2e8f0;
-            line-height: 1.6;
+            color: var(--white);
+            line-height: 1.8;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 80px 20px;
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 100px;
+            padding: 60px 0;
         }
 
-        .hero-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #A78BFA;
-            letter-spacing: 0.15em;
-            margin-bottom: 25px;
+        .hero-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: 0.4em;
+            margin-bottom: 40px;
+            text-transform: uppercase;
         }
 
         .hero h1 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: #94a3b8;
-            letter-spacing: 0.3em;
-            margin-bottom: 15px;
-        }
-
-        .hero h2 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, #A78BFA 50%, #3B82F6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 0.1em;
+            margin-bottom: 20px;
             line-height: 1.2;
         }
 
         .hero .year {
-            font-size: 1.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
             font-weight: 300;
-            color: #64748b;
-            letter-spacing: 0.2em;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            margin-bottom: 50px;
         }
 
         .hero .tagline {
-            font-size: 1.3rem;
-            color: #94a3b8;
-            margin-top: 30px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
             font-weight: 300;
+            color: var(--white-off);
+            font-style: italic;
+            line-height: 2;
         }
 
-        .hero .tagline strong {
-            color: #fff;
-            font-weight: 600;
+        /* Divider */
+        .divider {
+            width: 80px;
+            height: 1px;
+            background: var(--gold);
+            margin: 60px auto;
         }
 
-        /* Info Cards */
+        /* Info Section */
         .info-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 60px;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 100px;
+            flex-wrap: wrap;
         }
 
-        @media (max-width: 800px) {
-            .info-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .info-card {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 20px;
-            padding: 30px;
+        .info-item {
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(139, 92, 246, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .info-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
         }
 
         .info-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .info-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .info-value.highlight {
-            color: #A78BFA;
-        }
-
-        /* Venues Section */
-        .venues-section {
-            margin-bottom: 60px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .section-title h3 {
-            font-size: 0.8rem;
-            color: #64748b;
-            letter-spacing: 0.2em;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.3em;
             text-transform: uppercase;
             margin-bottom: 10px;
         }
 
-        .section-title h2 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff;
+        .info-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 0.1em;
+        }
+
+        /* Venues Section */
+        .venues-section {
+            margin-bottom: 100px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--white);
+            letter-spacing: 0.1em;
         }
 
         .venues-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 30px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .venues-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
+        @media (max-width: 600px) {
+            .venues-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .venue-card {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 20px;
-            padding: 30px 20px;
+            background: var(--black-light);
+            border: 1px solid rgba(201, 169, 98, 0.2);
+            padding: 40px 20px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
-            cursor: pointer;
+            transition: all 0.4s ease;
         }
 
         .venue-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--venue-color, #A78BFA);
-            box-shadow: 0 0 30px var(--venue-glow, rgba(167, 139, 250, 0.2));
-        }
-
-        .venue-card.jewels {
-            --venue-color: #3B82F6;
-            --venue-glow: rgba(59, 130, 246, 0.2);
-        }
-
-        .venue-card.okurayama {
-            --venue-color: #D4AF37;
-            --venue-glow: rgba(212, 175, 55, 0.2);
-        }
-
-        .venue-card.garden {
-            --venue-color: #10B981;
-            --venue-glow: rgba(16, 185, 129, 0.2);
-        }
-
-        .venue-card.brick {
-            --venue-color: #EF4444;
-            --venue-glow: rgba(239, 68, 68, 0.2);
-        }
-
-        .venue-emoji {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        .venue-name {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 5px;
-        }
-
-        .venue-location {
-            font-size: 0.75rem;
-            color: #64748b;
+            border-color: var(--gold);
+            transform: translateY(-5px);
         }
 
         .venue-logo {
-            height: 60px;
+            height: 50px;
             width: auto;
-            max-width: 120px;
+            max-width: 100px;
             object-fit: contain;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+            opacity: 0.9;
         }
 
-        /* Menu Concept */
-        .menu-section {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 24px;
-            padding: 50px;
-            margin-bottom: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-        }
-
-        .menu-section h3 {
-            font-size: 0.8rem;
-            color: #A78BFA;
-            letter-spacing: 0.2em;
+        .venue-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: 0.15em;
             text-transform: uppercase;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+            line-height: 1.6;
         }
 
-        .menu-section h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 30px;
-        }
-
-        .menu-items {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-
-        .menu-item {
-            text-align: center;
-        }
-
-        .menu-item .number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #A78BFA;
-        }
-
-        .menu-item .label {
-            font-size: 0.85rem;
-            color: #94a3b8;
-        }
-
-        .menu-note {
-            color: #64748b;
+        .venue-location {
+            font-family: 'Cormorant Garamond', serif;
             font-size: 0.9rem;
-            margin-top: 20px;
+            font-weight: 400;
+            color: var(--gray);
+            font-style: italic;
         }
 
-        /* Menu Plans */
+        /* Menu Section */
+        .menu-section {
+            background: var(--black-light);
+            border-top: 1px solid rgba(201, 169, 98, 0.3);
+            border-bottom: 1px solid rgba(201, 169, 98, 0.3);
+            padding: 80px 40px;
+            margin-bottom: 100px;
+        }
+
         .menu-plans {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 40px;
+            gap: 60px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         @media (max-width: 800px) {
@@ -303,193 +235,128 @@
         }
 
         .menu-plan {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 20px;
-            padding: 30px;
-            border: 2px solid transparent;
+            text-align: center;
+            padding: 40px;
+            border: 1px solid rgba(201, 169, 98, 0.2);
             transition: all 0.3s;
         }
 
-        .menu-plan.lunch {
-            border-color: rgba(251, 191, 36, 0.3);
-        }
-
-        .menu-plan.dinner {
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-
         .menu-plan:hover {
-            transform: translateY(-5px);
+            border-color: var(--gold);
         }
 
-        .plan-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .plan-type {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .plan-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #fff;
         }
 
         .plan-price {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--white);
+            margin-bottom: 30px;
         }
 
-        .plan-price.lunch-price {
-            color: #FBBF24;
-        }
-
-        .plan-price.dinner-price {
-            color: #A78BFA;
+        .plan-price .currency {
+            font-size: 1rem;
+            color: var(--gray);
         }
 
         .plan-courses {
             list-style: none;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .plan-courses li {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            color: var(--white-off);
             padding: 8px 0;
-            color: #94a3b8;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .plan-courses li::before {
-            content: '◆';
-            font-size: 0.6rem;
-            color: #64748b;
+        .plan-courses li:last-child {
+            border-bottom: none;
         }
 
         .plan-drink {
-            background: rgba(59, 130, 246, 0.1);
-            border-radius: 10px;
-            padding: 12px 15px;
-            font-size: 0.85rem;
-            color: #60A5FA;
-            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--gold);
+            padding: 12px 20px;
+            border: 1px solid var(--gold);
+            display: inline-block;
+            margin-top: 15px;
         }
 
         .plan-note {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-top: 10px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-style: italic;
+            margin-top: 15px;
         }
 
-        /* Price */
-        .price-section {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .price-box {
-            display: inline-block;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
-            border: 2px solid rgba(139, 92, 246, 0.5);
-            border-radius: 24px;
-            padding: 40px 80px;
-        }
-
-        .price-label {
-            font-size: 0.8rem;
-            color: #A78BFA;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-
-        .price-value {
-            font-size: 4rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        .price-value .currency {
-            font-size: 1.5rem;
-            font-weight: 400;
-            color: #94a3b8;
-        }
-
-        .price-value .tax {
-            font-size: 1rem;
-            font-weight: 400;
-            color: #64748b;
-        }
-
-        /* CTA */
+        /* CTA Section */
         .cta-section {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 100px;
         }
 
         .cta-button {
             display: inline-block;
             padding: 20px 60px;
-            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
-            border-radius: 50px;
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 700;
+            background: var(--gold);
+            color: var(--black);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
             text-decoration: none;
             transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
         }
 
         .cta-button:hover {
+            background: var(--gold-light);
             transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
         }
 
         .cta-note {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem;
+            color: var(--gray);
+            font-style: italic;
             margin-top: 20px;
-            color: #64748b;
-            font-size: 0.85rem;
         }
 
         /* Footer */
         .footer {
             text-align: center;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 60px;
+            border-top: 1px solid rgba(201, 169, 98, 0.2);
         }
 
-        .footer-concept {
-            font-size: 1rem;
-            color: #64748b;
-            margin-bottom: 10px;
+        .footer-logo {
+            height: 40px;
+            margin-bottom: 20px;
+            opacity: 0.8;
         }
 
         .footer-brand {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-        }
-
-        /* Animations */
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .float {
-            animation: float 3s ease-in-out infinite;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--gray);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -498,74 +365,70 @@
     <div class="container">
         <!-- Hero -->
         <section class="hero">
-            <span class="hero-badge">🍽️ SPECIAL DINING EVENT</span>
-            <h1>SAPPORO VIEWTIFUL DINING</h1>
-            <h2>THE BEGINNING TABLE</h2>
-            <span class="year">— 2026 —</span>
-            <p class="tagline">ここから、<strong>始まる。</strong></p>
+            <p class="hero-brand">SAPPORO VIEWTIFUL DINING</p>
+            <h1>THE BEGINNING TABLE</h1>
+            <p class="year">2026</p>
+            <p class="tagline">新しい年の始まりに、<br>初めての時間と体験を。</p>
         </section>
 
-        <!-- Info Cards -->
+        <div class="divider"></div>
+
+        <!-- Info -->
         <section class="info-section">
-            <div class="info-card">
-                <div class="info-icon">📅</div>
-                <div class="info-label">PERIOD</div>
-                <div class="info-value">2025.1.13 - 2.28</div>
+            <div class="info-item">
+                <p class="info-label">Period</p>
+                <p class="info-value">2025.1.13 — 2.28</p>
             </div>
-            <div class="info-card">
-                <div class="info-icon">🏢</div>
-                <div class="info-label">VENUES</div>
-                <div class="info-value highlight">全4店舗</div>
-            </div>
-            <div class="info-card">
-                <div class="info-icon">🍷</div>
-                <div class="info-label">CONCEPT</div>
-                <div class="info-value">サプライズ3コース</div>
+            <div class="info-item">
+                <p class="info-label">Venues</p>
+                <p class="info-value">4 Restaurants</p>
             </div>
         </section>
 
         <!-- Venues -->
         <section class="venues-section">
-            <div class="section-title">
-                <h3>PARTICIPATING VENUES</h3>
-                <h2>参加店舗</h2>
+            <div class="section-header">
+                <p class="section-label">Participating Venues</p>
+                <h2 class="section-title">参加店舗</h2>
             </div>
             <div class="venues-grid">
-                <div class="venue-card jewels">
+                <div class="venue-card">
                     <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
-                    <div class="venue-name">THE JEWELS</div>
-                    <div class="venue-location">JRタワー</div>
+                    <p class="venue-name">THE JEWELS</p>
+                    <p class="venue-location">藻岩山</p>
                 </div>
-                <div class="venue-card okurayama">
+                <div class="venue-card">
                     <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo">
-                    <div class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</div>
-                    <div class="venue-location">大倉山</div>
+                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
+                    <p class="venue-location">大倉山</p>
                 </div>
-                <div class="venue-card garden">
+                <div class="venue-card">
                     <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
-                    <div class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</div>
-                    <div class="venue-location">テレビ塔</div>
+                    <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
+                    <p class="venue-location">テレビ塔</p>
                 </div>
-                <div class="venue-card brick">
+                <div class="venue-card">
                     <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo">
-                    <div class="venue-name">LA BRIQUE SAPPORO<br>Akarenga Terrace</div>
-                    <div class="venue-location">赤レンガテラス</div>
+                    <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
+                    <p class="venue-location">赤れんが テラス</p>
                 </div>
             </div>
         </section>
 
-        <!-- Menu Concept -->
+        <div class="divider"></div>
+
+        <!-- Menu -->
         <section class="menu-section">
-            <h3>MENU</h3>
-            <h2>THE BEGINNING COURSE</h2>
+            <div class="section-header">
+                <p class="section-label">Menu</p>
+                <h2 class="section-title">THE BEGINNING COURSE</h2>
+            </div>
 
             <div class="menu-plans">
                 <!-- Lunch -->
-                <div class="menu-plan lunch">
-                    <div class="plan-header">
-                        <span class="plan-name">☀️ LUNCH</span>
-                        <span class="plan-price lunch-price">¥4,950</span>
-                    </div>
+                <div class="menu-plan">
+                    <p class="plan-type">Lunch</p>
+                    <p class="plan-price"><span class="currency">¥</span>4,950</p>
                     <ul class="plan-courses">
                         <li>ヒンナ（アミューズ）</li>
                         <li>前菜</li>
@@ -574,16 +437,14 @@
                         <li>デザート</li>
                         <li>コーヒー</li>
                     </ul>
-                    <div class="plan-drink">🍷 ドリンク2杯付</div>
-                    <p class="plan-note">※ソフトドリンクへの変更可</p>
+                    <p class="plan-drink">ドリンク 2杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
                 </div>
 
                 <!-- Dinner -->
-                <div class="menu-plan dinner">
-                    <div class="plan-header">
-                        <span class="plan-name">🌙 DINNER</span>
-                        <span class="plan-price dinner-price">¥9,900</span>
-                    </div>
+                <div class="menu-plan">
+                    <p class="plan-type">Dinner</p>
+                    <p class="plan-price"><span class="currency">¥</span>9,900</p>
                     <ul class="plan-courses">
                         <li>ヒンナ（アミューズ）</li>
                         <li>前菜</li>
@@ -592,23 +453,21 @@
                         <li>デザート</li>
                         <li>コーヒー</li>
                     </ul>
-                    <div class="plan-drink">🍷 ペアリング3杯付</div>
-                    <p class="plan-note">※ソフトドリンクへの変更可</p>
+                    <p class="plan-drink">ペアリング 3杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
                 </div>
             </div>
-
-            <p class="menu-note">※メニューは当日のお楽しみ。各店舗のシェフが腕を振るいます。</p>
         </section>
 
         <!-- CTA -->
         <section class="cta-section">
-            <a href="#" class="cta-button">ご予約はこちら</a>
-            <p class="cta-note">※ご予約はTableCheckにて受付中</p>
+            <a href="#" class="cta-button">Reservation</a>
+            <p class="cta-note">ご予約はTableCheckにて受付中</p>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
-            <p class="footer-concept">ここだけの美味しさ。ここだけのエンターテインメント。</p>
+            <img src="logo/SVD_logo_white1.png" alt="SAPPORO VIEWTIFUL DINING" class="footer-logo">
             <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
         </footer>
     </div>
