@@ -1820,10 +1820,13 @@
                             labels: chartLabels,
                             datasets: [{
                                 data: originalChartData,
-                                backgroundColor: 'rgba(26, 35, 126, 0.2)', // Primary color with transparency
-                                borderColor: 'rgba(26, 35, 126, 1)', // Solid Primary color
+                                backgroundColor: 'rgba(184, 153, 92, 0.15)', // Gold with transparency
+                                borderColor: 'rgba(184, 153, 92, 1)', // Solid Gold
                                 borderWidth: 2,
-                                pointBackgroundColor: 'rgba(251, 192, 45, 1)' // Solid Accent color
+                                pointBackgroundColor: 'rgba(15, 23, 42, 1)', // Dark Navy
+                                pointBorderColor: '#fff',
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             }
 
                             ]
@@ -1848,25 +1851,30 @@
                                     ,
                                     pointLabels: {
                                         font: {
-                                            size: 12, weight: 'normal', family: 'Noto Sans JP'
+                                            size: 14, weight: 'bold', family: 'Montserrat'
                                         }
 
-                                        , color: lightTextColor
+                                        , color: 'var(--primary-color)',
+                                        padding: 15
                                     }
 
                                     ,
                                     beginAtZero: true, // Ensure scale starts at 0
                                     min: 0, // Explicitly set minimum value
-                                    max: 10, // Explicitly set maximum value
+                                    max: 11, // Extended to give space for labels when data is 10
 
                                     ticks: {
                                         backdropColor: 'transparent',
-                                        color: '#757575',
-                                        stepSize: 1,
-                                        // The min/max here are redundant if set on the scale itself, but good for clarity
+                                        color: '#94a3b8',
+                                        stepSize: 2,
+                                        // Only show ticks up to 10
+                                        callback: function (value) {
+                                            return value <= 10 ? value : '';
+                                        },
                                         min: 0,
                                         max: 10
-                                    }
+                                    },
+                                    suggestedMax: 11
                                 }
                             }
 
@@ -1879,10 +1887,11 @@
                                 ,
                                 datalabels: {
 
-                                    color: 'black',
+                                    color: 'var(--primary-color)',
                                     font: {
                                         weight: 'bold',
-                                        size: 14
+                                        size: 12,
+                                        family: 'Montserrat'
                                     }
 
                                     ,
@@ -1891,9 +1900,12 @@
                                     }
 
                                     ,
-                                    anchor: 'end',
-                                    align: 'end',
-                                    offset: 4
+                                    anchor: 'center',
+                                    align: 'center',
+                                    offset: 0,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                    borderRadius: 4,
+                                    padding: 4
                                 }
                             }
                         }
