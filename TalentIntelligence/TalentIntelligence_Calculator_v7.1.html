@@ -1267,7 +1267,7 @@
         function populateTypeSelects() {
             const selfSelect = document.getElementById('user-type-self');
             const otherSelect = document.getElementById('user-type-other');
-            let optionsHtml = '<option value="" disabled selected>選択してください</option>';
+            let optionsHtml = '';
 
             for (const key in svdTypes) {
                 optionsHtml += `<option value="${key}">${svdTypes[key].name}
