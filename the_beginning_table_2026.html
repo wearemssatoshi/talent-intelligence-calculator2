@@ -132,18 +132,18 @@
             letter-spacing: 0.1em;
         }
 
-        /* Venue Category */
-        .venue-category {
+        /* Side Category */
+        .side-category {
             margin-bottom: 60px;
         }
 
-        .category-header {
+        .side-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .category-label {
-            font-size: 0.55rem;
+        .side-label {
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--gold);
             letter-spacing: 0.4em;
@@ -151,8 +151,8 @@
             margin-bottom: 5px;
         }
 
-        .category-price {
-            font-size: 0.75rem;
+        .side-desc {
+            font-size: 0.7rem;
             font-weight: 400;
             color: var(--gray);
             letter-spacing: 0.1em;
@@ -166,20 +166,14 @@
             border-left: 1px solid var(--gray-light);
         }
 
-        .venues-grid.four-col {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        @media (max-width: 900px) {
-
-            .venues-grid,
-            .venues-grid.four-col {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 700px) {
+            .venues-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         .venue-card {
-            padding: 50px 25px;
+            padding: 50px 30px;
             text-align: center;
             border-right: 1px solid var(--gray-light);
             border-bottom: 1px solid var(--gray-light);
@@ -191,18 +185,13 @@
         }
 
         .venue-logo {
-            height: 60px;
+            height: 70px;
             width: auto;
-            max-width: 120px;
+            max-width: 180px;
             object-fit: contain;
             margin-bottom: 25px;
             filter: brightness(0);
-            opacity: 0.85;
-        }
-
-        .venue-logo.large {
-            height: 120px;
-            max-width: 200px;
+            opacity: 0.9;
         }
 
         .venue-name {
@@ -221,6 +210,15 @@
             font-weight: 400;
             color: var(--gray);
             letter-spacing: 0.05em;
+        }
+
+        .venue-tier {
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-top: 12px;
         }
 
         /* Menu Section */
@@ -431,42 +429,46 @@
             <h2 class="section-title">参加店舗</h2>
         </div>
 
-        <!-- Premium Dining -->
-        <div class="venue-category">
-            <div class="category-header">
-                <p class="category-label">Premium Dining</p>
-                <p class="category-price">Dinner ¥11,000 / Lunch ¥6,600</p>
-            </div>
-            <div class="venues-grid">
-                <div class="venue-card">
-                    <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo large">
-                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
-                    <p class="venue-location">大倉山</p>
-                </div>
-                <div class="venue-card">
-                    <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo large">
-                    <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
-                    <p class="venue-location">赤れんが テラス</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Casual Dining -->
-        <div class="venue-category">
-            <div class="category-header">
-                <p class="category-label">Casual Dining</p>
-                <p class="category-price">Dinner ¥9,900 / Lunch ¥5,500</p>
+        <!-- PEAK SIDE -->
+        <div class="side-category">
+            <div class="side-header">
+                <p class="side-label">Peak Side</p>
+                <p class="side-desc">山のレストラン</p>
             </div>
             <div class="venues-grid">
                 <div class="venue-card">
                     <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
                     <p class="venue-name">THE JEWELS</p>
                     <p class="venue-location">藻岩山</p>
+                    <p class="venue-tier">Casual</p>
+                </div>
+                <div class="venue-card">
+                    <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo">
+                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
+                    <p class="venue-location">大倉山</p>
+                    <p class="venue-tier">Premium</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- URBAN SIDE -->
+        <div class="side-category">
+            <div class="side-header">
+                <p class="side-label">Urban Side</p>
+                <p class="side-desc">街のレストラン</p>
+            </div>
+            <div class="venues-grid">
+                <div class="venue-card">
+                    <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo">
+                    <p class="venue-name">LA BRIQUE SAPPORO</p>
+                    <p class="venue-location">赤れんが テラス</p>
+                    <p class="venue-tier">Premium</p>
                 </div>
                 <div class="venue-card">
                     <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
                     <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
                     <p class="venue-location">テレビ塔</p>
+                    <p class="venue-tier">Casual</p>
                 </div>
             </div>
         </div>
@@ -482,7 +484,7 @@
         <!-- Premium Tier -->
         <div class="menu-tier">
             <div class="tier-header">
-                <p class="tier-label">Premium Dining</p>
+                <p class="tier-label">Premium</p>
                 <p class="tier-venues">NOUVELLE POUSSE OKURAYAMA / LA BRIQUE SAPPORO</p>
             </div>
             <div class="menu-plans">
@@ -520,7 +522,7 @@
         <!-- Casual Tier -->
         <div class="menu-tier">
             <div class="tier-header">
-                <p class="tier-label">Casual Dining</p>
+                <p class="tier-label">Casual</p>
                 <p class="tier-venues">THE JEWELS / THE GARDEN SAPPORO</p>
             </div>
             <div class="menu-plans">
