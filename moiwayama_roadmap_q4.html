@@ -211,11 +211,17 @@
         }
 
         .icon-grid.four-col {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .icon-grid.six-col {
+            grid-template-columns: repeat(6, 1fr);
         }
 
         @media (max-width: 1000px) {
-            .icon-grid.four-col {
+
+            .icon-grid.four-col,
+            .icon-grid.six-col {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -557,30 +563,40 @@
                     <span class="section-icon">🤖</span>
                     <div>
                         <div class="section-title">SVD AI活用の取り組み</div>
-                        <div class="section-subtitle">DIGITAL TRANSFORMATION</div>
+                        <div class="section-subtitle">DIGITAL TRANSFORMATION - 6軸体制</div>
                     </div>
                 </div>
 
-                <div class="icon-grid four-col">
-                    <div class="icon-card ai-item" onclick="showDetail('pl', this)">
+                <div class="icon-grid six-col">
+                    <div class="icon-card ai-item" onclick="showDetail('office', this)">
                         <span class="icon-emoji">💳</span>
-                        <div class="icon-title">費用→PL自動化</div>
+                        <div class="icon-title">事務仕事AIX</div>
                         <div class="icon-period">経理DX</div>
                     </div>
-                    <div class="icon-card ai-item" onclick="showDetail('wine', this)">
+                    <div class="icon-card ai-item" onclick="showDetail('inventory', this)">
                         <span class="icon-emoji">📦</span>
-                        <div class="icon-title">ワイン棚卸</div>
+                        <div class="icon-title">棚卸しAIX</div>
                         <div class="icon-period">在庫管理</div>
                     </div>
-                    <div class="icon-card ai-item" onclick="showDetail('report', this)">
-                        <span class="icon-emoji">📊</span>
-                        <div class="icon-title">AI日報</div>
-                        <div class="icon-period">レポート</div>
+                    <div class="icon-card ai-item" onclick="showDetail('digitalmenu', this)">
+                        <span class="icon-emoji">📜</span>
+                        <div class="icon-title">デジタルメニューAIX</div>
+                        <div class="icon-period">NFT化準備</div>
                     </div>
-                    <div class="icon-card ai-item" onclick="showDetail('social', this)">
+                    <div class="icon-card ai-item" onclick="showDetail('momentum', this)">
+                        <span class="icon-emoji">📊</span>
+                        <div class="icon-title">AI日報+MP</div>
+                        <div class="icon-period">Momentum Peaks</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('sns', this)">
                         <span class="icon-emoji">📱</span>
-                        <div class="icon-title">SNS公式</div>
-                        <div class="icon-period">IG & YT</div>
+                        <div class="icon-title">SNS公式発信</div>
+                        <div class="icon-period">マーク取得</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('talent', this)">
+                        <span class="icon-emoji">👥</span>
+                        <div class="icon-title">Talent Intelligence</div>
+                        <div class="icon-period">HR資産化</div>
                     </div>
                 </div>
 
@@ -714,13 +730,13 @@
                     <span class="goal-badge">🎯 運休期間を成長期間に</span>
                 `
             },
-            // AI活用
-            pl: {
+            // AI活用 - 6軸体制
+            office: {
                 emoji: '💳',
-                title: '費用計上 → PL自動生成',
+                title: '事務仕事AIX',
                 panel: 3,
                 content: `
-                    <h4>🎯 やるべきこと</h4>
+                    <h4>💳 経理業務のAI化</h4>
                     <ul class="action-items ai">
                         <li>ビジネスカード明細の自動取得</li>
                         <li>AIによる勘定科目自動分類</li>
@@ -731,12 +747,12 @@
                     <span class="goal-badge">🎯 数字で語る現場へ</span>
                 `
             },
-            wine: {
+            inventory: {
                 emoji: '📦',
-                title: 'ワイン棚卸自動化',
+                title: '棚卸しAIX',
                 panel: 3,
                 content: `
-                    <h4>🎯 やるべきこと</h4>
+                    <h4>📦 在庫管理のAI化</h4>
                     <ul class="action-items ai">
                         <li>納品書フォーマット統一</li>
                         <li>AI読込 → 在庫自動反映</li>
@@ -747,35 +763,71 @@
                     <span class="goal-badge">🎯 リアルタイム在庫管理</span>
                 `
             },
-            report: {
-                emoji: '📊',
-                title: 'AI日報アップデート',
+            digitalmenu: {
+                emoji: '📜',
+                title: 'デジタルメニューAIX + NFT化準備',
                 panel: 3,
                 content: `
-                    <h4>🎯 やるべきこと</h4>
+                    <h4>📜 Web3への布石</h4>
+                    <ul class="action-items ai">
+                        <li>デジタルメニューのAI自動生成</li>
+                        <li>写真・テキストの自動レイアウト</li>
+                        <li>NFT化への下準備（メタデータ整備）</li>
+                        <li>SBT (Soul Bound Token) との連携構想</li>
+                    </ul>
+                    <p>メニューをデジタル資産へ。Web3時代に先手を打つ。</p>
+                    <span class="goal-badge">🚀 Web3への布石</span>
+                `
+            },
+            momentum: {
+                emoji: '📊',
+                title: 'AI日報 + Momentum Peaks',
+                panel: 3,
+                content: `
+                    <h4>📊 日報から戦略へ</h4>
                     <ul class="action-items ai">
                         <li>売上・客数・客単価の自動集計</li>
                         <li>今日のハイライト（AI要約）</li>
                         <li>課題仮説と明日の一手（AI提案）</li>
+                        <li>Momentum Peaksダッシュボード連携</li>
+                        <li>月次モメンタムスコアの可視化</li>
                     </ul>
-                    <p>「報告」ではなく「思考の補助輪」へ。運休情報との連携も。</p>
+                    <p>「報告」ではなく「思考の補助輪」へ。データ駆動の意思決定を実現。</p>
                     <span class="goal-badge">🎯 報告→思考支援へ</span>
                 `
             },
-            social: {
+            sns: {
                 emoji: '📱',
-                title: 'Instagram & YouTube 公式',
+                title: 'SNS公式発信',
                 panel: 3,
                 content: `
-                    <h4>🎯 やるべきこと</h4>
+                    <h4>📱 マーク取得で信頼性UP</h4>
                     <ul class="action-items ai">
-                        <li>Instagram：今の熱量・ストーリー発信</li>
-                        <li>YouTube：思想・背景・物語の発信</li>
+                        <li>Instagram公式マーク取得</li>
+                        <li>YouTube公式チャンネル開設</li>
+                        <li>今の熱量・ストーリー発信</li>
+                        <li>思想・背景・物語の発信</li>
                         <li>採用・共感・ファン化の母艦構築</li>
-                        <li>夜景のライブ配信検討</li>
                     </ul>
-                    <p>藻岩山の夜景をSNSで発信し、集客につなげる。</p>
+                    <p>メディアが人を呼ぶ。公式マークで信頼性を確立。</p>
                     <span class="goal-badge">🎯 メディアが人を呼ぶ</span>
+                `
+            },
+            talent: {
+                emoji: '👥',
+                title: 'Talent Intelligence',
+                panel: 3,
+                content: `
+                    <h4>👥 ヒューマンリソースの資産化</h4>
+                    <ul class="action-items ai">
+                        <li>個人の強み・成長曲線の客観視</li>
+                        <li>スキルマップによるキャリアパス設計</li>
+                        <li>チームのバランス可視化</li>
+                        <li>1on1・コミュニケーション支援</li>
+                        <li>採用時のマッチング活用</li>
+                    </ul>
+                    <p>「人」を資産として可視化。成長を支援し、チームを最適化。</p>
+                    <span class="goal-badge">🎯 HR資産化で組織強化</span>
                 `
             }
         };
