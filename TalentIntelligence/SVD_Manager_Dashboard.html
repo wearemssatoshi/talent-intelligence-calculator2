@@ -769,23 +769,59 @@
                     datasets: [{
                         label: 'チーム平均',
                         data: avgData,
-                        backgroundColor: 'rgba(255, 152, 0, 0.2)',
-                        borderColor: 'rgba(255, 152, 0, 1)',
-                        borderWidth: 2,
-                        pointBackgroundColor: '#fff'
+                        backgroundColor: 'rgba(184, 153, 92, 0.2)',
+                        borderColor: 'rgba(184, 153, 92, 1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#0f172a',
+                        pointBorderColor: '#fff',
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
                     scales: {
                         r: {
                             beginAtZero: true,
                             min: 0,
-                            max: 10,
-                            ticks: { stepSize: 2 }
+                            max: 11,
+                            ticks: {
+                                stepSize: 2,
+                                color: '#64748b',
+                                backdropColor: 'transparent',
+                                callback: function (value) {
+                                    return value <= 10 ? value : '';
+                                }
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: 'Montserrat'
+                                },
+                                color: '#0f172a',
+                                padding: 15
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
                         }
                     },
                     plugins: {
-                        legend: { display: true }
+                        legend: {
+                            display: true,
+                            labels: {
+                                font: {
+                                    family: 'Montserrat',
+                                    weight: '600'
+                                },
+                                color: '#0f172a'
+                            }
+                        }
                     }
                 }
             });
@@ -804,13 +840,15 @@
             const titleDiv = document.createElement('div');
             titleDiv.textContent = teamName;
             titleDiv.style.cssText = `
-                font-family: 'Teko', sans-serif;
-                font-size: 3rem;
-                font-weight: bold;
-                color: #1A237E;
-                border-bottom: 2px solid #2196F3;
-                margin-bottom: 1rem;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: #0f172a;
+                border-bottom: 3px solid #B8995C;
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.5rem;
                 text-align: center;
+                letter-spacing: 0.05em;
             `;
 
             // Temporarily hide input and button
