@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE BEGINNING TABLE 2026 | SAPPORO VIEWTIFUL DINING</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #A78BFA;
+            letter-spacing: 0.15em;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #94a3b8;
+            letter-spacing: 0.3em;
+            margin-bottom: 15px;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #A78BFA 50%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .hero .year {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #64748b;
+            letter-spacing: 0.2em;
+        }
+
+        .hero .tagline {
+            font-size: 1.3rem;
+            color: #94a3b8;
+            margin-top: 30px;
+            font-weight: 300;
+        }
+
+        .hero .tagline strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Info Cards */
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 800px) {
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .info-value.highlight {
+            color: #A78BFA;
+        }
+
+        /* Venues Section */
+        .venues-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title h3 {
+            font-size: 0.8rem;
+            color: #64748b;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .section-title h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .venues-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .venue-card {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .venue-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--venue-color, #A78BFA);
+            box-shadow: 0 0 30px var(--venue-glow, rgba(167, 139, 250, 0.2));
+        }
+
+        .venue-card.jewels {
+            --venue-color: #3B82F6;
+            --venue-glow: rgba(59, 130, 246, 0.2);
+        }
+
+        .venue-card.okurayama {
+            --venue-color: #D4AF37;
+            --venue-glow: rgba(212, 175, 55, 0.2);
+        }
+
+        .venue-card.garden {
+            --venue-color: #10B981;
+            --venue-glow: rgba(16, 185, 129, 0.2);
+        }
+
+        .venue-card.brick {
+            --venue-color: #EF4444;
+            --venue-glow: rgba(239, 68, 68, 0.2);
+        }
+
+        .venue-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .venue-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .venue-location {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Menu Concept */
+        .menu-section {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .menu-section h3 {
+            font-size: 0.8rem;
+            color: #A78BFA;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .menu-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        .menu-items {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .menu-item {
+            text-align: center;
+        }
+
+        .menu-item .number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #A78BFA;
+        }
+
+        .menu-item .label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .menu-note {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        /* Price */
+        .price-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .price-box {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 24px;
+            padding: 40px 80px;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: #A78BFA;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .price-value {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .price-value .currency {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #94a3b8;
+        }
+
+        .price-value .tax {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 20px 60px;
+            background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .cta-note {
+            margin-top: 20px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-concept {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+        }
+
+        /* Animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <span class="hero-badge">🍽️ SPECIAL DINING EVENT</span>
+            <h1>SAPPORO VIEWTIFUL DINING</h1>
+            <h2>THE BEGINNING TABLE</h2>
+            <span class="year">— 2026 —</span>
+            <p class="tagline">ここから、<strong>始まる。</strong></p>
+        </section>
+
+        <!-- Info Cards -->
+        <section class="info-section">
+            <div class="info-card">
+                <div class="info-icon">📅</div>
+                <div class="info-label">PERIOD</div>
+                <div class="info-value">2025.1.13 - 2.28</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">🏢</div>
+                <div class="info-label">VENUES</div>
+                <div class="info-value highlight">全4店舗</div>
+            </div>
+            <div class="info-card">
+                <div class="info-icon">🍷</div>
+                <div class="info-label">CONCEPT</div>
+                <div class="info-value">サプライズ3コース</div>
+            </div>
+        </section>
+
+        <!-- Venues -->
+        <section class="venues-section">
+            <div class="section-title">
+                <h3>PARTICIPATING VENUES</h3>
+                <h2>参加店舗</h2>
+            </div>
+            <div class="venues-grid">
+                <div class="venue-card jewels">
+                    <div class="venue-emoji">💎</div>
+                    <div class="venue-name">The Jewels</div>
+                    <div class="venue-location">JRタワー</div>
+                </div>
+                <div class="venue-card okurayama">
+                    <div class="venue-emoji">⛷️</div>
+                    <div class="venue-name">ヌーベルプース大倉山</div>
+                    <div class="venue-location">大倉山</div>
+                </div>
+                <div class="venue-card garden">
+                    <div class="venue-emoji">🌿</div>
+                    <div class="venue-name">ザ ガーデン サッポロ</div>
+                    <div class="venue-location">テレビ塔</div>
+                </div>
+                <div class="venue-card brick">
+                    <div class="venue-emoji">🧱</div>
+                    <div class="venue-name">ラ・ブリック</div>
+                    <div class="venue-location">赤レンガテラス</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Concept -->
+        <section class="menu-section">
+            <h3>MENU CONCEPT</h3>
+            <h2>シェフおまかせ サプライズコース</h2>
+            <div class="menu-items">
+                <div class="menu-item">
+                    <div class="number">3</div>
+                    <div class="label">COURSES</div>
+                </div>
+                <div class="menu-item">
+                    <div class="number">1</div>
+                    <div class="label">SPECIAL PRICE</div>
+                </div>
+                <div class="menu-item">
+                    <div class="number">4</div>
+                    <div class="label">VENUES</div>
+                </div>
+            </div>
+            <p class="menu-note">※メニューは当日のお楽しみ。各店舗のシェフが腕を振るいます。</p>
+        </section>
+
+        <!-- Price -->
+        <section class="price-section">
+            <div class="price-box">
+                <div class="price-label">SPECIAL PRICE</div>
+                <div class="price-value">
+                    <span class="currency">¥</span>4,950
+                    <span class="tax">(税込)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-section">
+            <a href="#" class="cta-button">ご予約はこちら</a>
+            <p class="cta-note">※ご予約はTableCheckにて受付中</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-concept">ここだけの美味しさ。ここだけのエンターテインメント。</p>
+            <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
+        </footer>
+    </div>
+</body>
+
+</html>
