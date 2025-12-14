@@ -12,26 +12,31 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf-yui-japanese-fonts@1.0.0/dist/NotoSansJP-normal.js"></script>
     <script>console.log('ChartDataLabels object after CDN load:', typeof ChartDataLabels !== 'undefined' ? ChartDataLabels : 'not defined');</script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Teko:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
-            --primary-color: #1A237E;
-            /* Deep Navy */
-            --secondary-color: #536DFE;
-            /* Lighter Blue */
-            --accent-color: #FBC02D;
-            /* Gold/Yellow */
-            --background-color: #ECEFF1;
-            /* Light Grey */
-            --text-color: #263238;
-            --light-text-color: #546E7A;
-            --border-color: #CFD8DC;
+            --primary-color: #0f172a;
+            /* Dark Navy */
+            --secondary-color: #B8995C;
+            /* Champagne Gold */
+            --accent-color: #D4AF37;
+            /* Rich Gold */
+            --background-color: #f8fafc;
+            /* Light Off-White */
+            --text-color: #1e293b;
+            --light-text-color: #64748b;
+            --border-color: #e2e8f0;
             --card-bg: #FFFFFF;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Noto Sans JP', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             margin: 0;
@@ -47,21 +52,33 @@
         header {
             text-align: center;
             margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .header-logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
         }
 
         header h1 {
-            font-family: 'Teko', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             color: var(--primary-color);
-            font-weight: 700;
-            font-size: 4rem;
+            font-weight: 800;
+            font-size: 2.2rem;
             margin: 0;
-            letter-spacing: 1.5px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
         header p {
-            color: var(--light-text-color);
+            color: var(--secondary-color);
             margin-top: 0.5rem;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
         }
 
         .card {
@@ -207,21 +224,25 @@
         }
 
         #calculate-btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 1.2rem 4rem;
-            font-size: 1.4rem;
-            font-weight: 700;
-            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(83, 109, 254, 0.4);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
         }
 
         #calculate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(83, 109, 254, 0.5);
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .result-dashboard {
@@ -297,41 +318,43 @@
         }
 
         #total-score {
-            font-family: 'Teko', sans-serif;
-            font-size: 7rem;
-            font-weight: 700;
-            color: var(--accent-color);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--secondary-color);
             line-height: 1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            letter-spacing: -0.02em;
         }
 
         .score-breakdown ul {
             list-style: none;
             padding: 0;
-            font-size: 1.1rem;
+            font-size: 1rem;
             text-align: center;
         }
 
         .advice-card {
-            background: linear-gradient(45deg, #1A237E, #3949AB);
+            background: var(--primary-color);
             color: white;
+            border: none;
         }
 
         .advice-card h3 {
-            color: white;
-            border-bottom-color: rgba(255, 255, 255, 0.5);
+            color: var(--secondary-color);
+            border-bottom-color: rgba(184, 153, 92, 0.3);
         }
 
         #advice-text {
-            font-size: 1.1rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.8;
         }
 
         #advice-text strong {
-            color: var(--accent-color);
+            color: var(--secondary-color);
             display: block;
             margin-bottom: 0.5rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         /* Modal Styles */
@@ -500,7 +523,7 @@
         /* Qualification Card Styles */
         .qual-card {
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -508,20 +531,21 @@
             align-items: center;
             justify-content: space-between;
             background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow);
         }
 
 
         .qual-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: var(--secondary-color);
+            box-shadow: var(--shadow-lg);
         }
 
         .qual-card.selected {
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            background: var(--primary-color);
             color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 12px rgba(83, 109, 254, 0.3);
+            border-color: var(--secondary-color);
+            box-shadow: 0 4px 12px rgba(184, 153, 92, 0.3);
         }
 
         .qual-card input {
@@ -531,17 +555,17 @@
 
         .qual-name {
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
         }
 
         .qual-points {
-            font-size: 0.8rem;
-            font-weight: bold;
-            background: #f0f0f0;
-            color: #555;
-            padding: 4px 8px;
-            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--secondary-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
             margin-left: 8px;
             white-space: nowrap;
         }
@@ -570,8 +594,9 @@
 <body>
     <div class="container">
         <header>
-            <h1>SVD TALENT INTELLIGENCE CALCULATOR</h1>
-            <p>v7.1 - The Coaching Model (FINAL)</p>
+            <img src="../logo/SVD_logo_Black.png" alt="SVD Logo" class="header-logo">
+            <h1>Talent Intelligence</h1>
+            <p>The Coaching Model v7.1</p>
         </header>
         <div class="card">
             <div class="user-info-grid">
