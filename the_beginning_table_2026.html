@@ -132,16 +132,48 @@
             letter-spacing: 0.1em;
         }
 
-        /* Venues */
+        /* Venue Category */
+        .venue-category {
+            margin-bottom: 60px;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .category-label {
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .category-price {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--gray);
+            letter-spacing: 0.1em;
+        }
+
+        /* Venues Grid */
         .venues-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             border-top: 1px solid var(--gray-light);
             border-left: 1px solid var(--gray-light);
         }
 
+        .venues-grid.four-col {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
         @media (max-width: 900px) {
-            .venues-grid {
+
+            .venues-grid,
+            .venues-grid.four-col {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -168,6 +200,11 @@
             opacity: 0.85;
         }
 
+        .venue-logo.large {
+            height: 120px;
+            max-width: 200px;
+        }
+
         .venue-name {
             font-size: 0.65rem;
             font-weight: 500;
@@ -186,7 +223,11 @@
             letter-spacing: 0.05em;
         }
 
-        /* Menu */
+        /* Menu Section */
+        .menu-section {
+            margin-bottom: 60px;
+        }
+
         .menu-header-bar {
             background: var(--gold);
             padding: 25px;
@@ -203,16 +244,38 @@
             color: var(--white);
         }
 
-        .menu-content {
+        .menu-tier {
             background: var(--bg);
-            padding: 60px 40px;
+            padding: 50px 40px;
+            margin-bottom: 2px;
+        }
+
+        .tier-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tier-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .tier-venues {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: var(--gray);
+            letter-spacing: 0.1em;
         }
 
         .menu-plans {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            max-width: 800px;
+            gap: 30px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
@@ -224,7 +287,7 @@
 
         .menu-plan {
             background: var(--white);
-            padding: 45px 35px;
+            padding: 40px 30px;
             text-align: center;
             border: 1px solid var(--gray-light);
         }
@@ -235,33 +298,33 @@
             color: var(--gold);
             letter-spacing: 0.35em;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .plan-price {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 500;
             color: var(--black);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             letter-spacing: 0.02em;
         }
 
         .plan-price .currency {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 400;
             color: var(--gray);
         }
 
         .plan-courses {
             list-style: none;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .plan-courses li {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--black);
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid var(--gray-light);
             letter-spacing: 0.03em;
         }
@@ -272,18 +335,18 @@
 
         .plan-drink {
             display: inline-block;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 500;
             color: var(--white);
             background: var(--gold);
-            padding: 10px 25px;
+            padding: 8px 20px;
             letter-spacing: 0.15em;
         }
 
         .plan-note {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--gray);
-            margin-top: 15px;
+            margin-top: 12px;
             letter-spacing: 0.05em;
         }
 
@@ -362,72 +425,136 @@
     </section>
 
     <div class="container">
-        <!-- Venues -->
+        <!-- Venues Section -->
         <div class="section-header">
             <p class="section-label">Participating Venues</p>
             <h2 class="section-title">参加店舗</h2>
         </div>
-        <div class="venues-grid">
-            <div class="venue-card">
-                <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
-                <p class="venue-name">THE JEWELS</p>
-                <p class="venue-location">藻岩山</p>
+
+        <!-- Premium Dining -->
+        <div class="venue-category">
+            <div class="category-header">
+                <p class="category-label">Premium Dining</p>
+                <p class="category-price">Dinner ¥11,000 / Lunch ¥6,600</p>
             </div>
-            <div class="venue-card">
-                <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo">
-                <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
-                <p class="venue-location">大倉山</p>
+            <div class="venues-grid">
+                <div class="venue-card">
+                    <img src="logo/NP_logo_white.png" alt="NOUVELLE POUSSE OKURAYAMA" class="venue-logo large">
+                    <p class="venue-name">NOUVELLE POUSSE<br>OKURAYAMA</p>
+                    <p class="venue-location">大倉山</p>
+                </div>
+                <div class="venue-card">
+                    <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo large">
+                    <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
+                    <p class="venue-location">赤れんが テラス</p>
+                </div>
             </div>
-            <div class="venue-card">
-                <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
-                <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
-                <p class="venue-location">テレビ塔</p>
+        </div>
+
+        <!-- Casual Dining -->
+        <div class="venue-category">
+            <div class="category-header">
+                <p class="category-label">Casual Dining</p>
+                <p class="category-price">Dinner ¥9,900 / Lunch ¥5,500</p>
             </div>
-            <div class="venue-card">
-                <img src="logo/BQ_logo_white.png" alt="LA BRIQUE SAPPORO" class="venue-logo">
-                <p class="venue-name">LA BRIQUE SAPPORO<br>赤れんが テラス</p>
-                <p class="venue-location">赤れんが テラス</p>
+            <div class="venues-grid">
+                <div class="venue-card">
+                    <img src="logo/JW_logo_white.png" alt="THE JEWELS" class="venue-logo">
+                    <p class="venue-name">THE JEWELS</p>
+                    <p class="venue-location">藻岩山</p>
+                </div>
+                <div class="venue-card">
+                    <img src="logo/GA_logo_ok.png" alt="THE GARDEN SAPPORO" class="venue-logo">
+                    <p class="venue-name">THE GARDEN SAPPORO<br>HOKKAIDO GRILLE</p>
+                    <p class="venue-location">テレビ塔</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Menu -->
-    <section class="menu-header-bar">
-        <p class="section-label">Menu</p>
-        <h2 class="section-title">THE BEGINNING COURSE</h2>
-    </section>
-    <div class="menu-content">
-        <div class="menu-plans">
-            <div class="menu-plan">
-                <p class="plan-type">Lunch</p>
-                <p class="plan-price"><span class="currency">¥</span>4,950</p>
-                <ul class="plan-courses">
-                    <li>ヒンナ（アミューズ）</li>
-                    <li>前菜</li>
-                    <li>魚料理</li>
-                    <li>肉料理</li>
-                    <li>デザート</li>
-                    <li>コーヒー</li>
-                </ul>
-                <p class="plan-drink">ドリンク 2杯付</p>
-                <p class="plan-note">ソフトドリンクへの変更可</p>
+    <!-- Menu Section -->
+    <section class="menu-section">
+        <div class="menu-header-bar">
+            <p class="section-label">Menu</p>
+            <h2 class="section-title">THE BEGINNING COURSE</h2>
+        </div>
+
+        <!-- Premium Tier -->
+        <div class="menu-tier">
+            <div class="tier-header">
+                <p class="tier-label">Premium Dining</p>
+                <p class="tier-venues">NOUVELLE POUSSE OKURAYAMA / LA BRIQUE SAPPORO</p>
             </div>
-            <div class="menu-plan">
-                <p class="plan-type">Dinner</p>
-                <p class="plan-price"><span class="currency">¥</span>9,900</p>
-                <ul class="plan-courses">
-                    <li>ヒンナ（アミューズ）</li>
-                    <li>前菜</li>
-                    <li>魚料理</li>
-                    <li>肉料理</li>
-                    <li>デザート</li>
-                    <li>コーヒー</li>
-                </ul>
-                <p class="plan-drink">ペアリング 3杯付</p>
-                <p class="plan-note">ソフトドリンクへの変更可</p>
+            <div class="menu-plans">
+                <div class="menu-plan">
+                    <p class="plan-type">Dinner</p>
+                    <p class="plan-price"><span class="currency">¥</span>11,000</p>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <p class="plan-drink">ペアリング 3杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
+                </div>
+                <div class="menu-plan">
+                    <p class="plan-type">Lunch</p>
+                    <p class="plan-price"><span class="currency">¥</span>6,600</p>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <p class="plan-drink">ドリンク 2杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- Casual Tier -->
+        <div class="menu-tier">
+            <div class="tier-header">
+                <p class="tier-label">Casual Dining</p>
+                <p class="tier-venues">THE JEWELS / THE GARDEN SAPPORO</p>
+            </div>
+            <div class="menu-plans">
+                <div class="menu-plan">
+                    <p class="plan-type">Dinner</p>
+                    <p class="plan-price"><span class="currency">¥</span>9,900</p>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <p class="plan-drink">ペアリング 3杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
+                </div>
+                <div class="menu-plan">
+                    <p class="plan-type">Lunch</p>
+                    <p class="plan-price"><span class="currency">¥</span>5,500</p>
+                    <ul class="plan-courses">
+                        <li>ヒンナ（アミューズ）</li>
+                        <li>前菜</li>
+                        <li>魚料理</li>
+                        <li>肉料理</li>
+                        <li>デザート</li>
+                        <li>コーヒー</li>
+                    </ul>
+                    <p class="plan-drink">ドリンク 2杯付</p>
+                    <p class="plan-note">ソフトドリンクへの変更可</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- CTA -->
     <section class="cta-section">
