@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD Cashless Payment Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --champagne-gold: #C5A572;
+            --dark-navy: #1A1F3D;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, var(--dark-navy) 0%, #2A2F4D 100%);
+            min-height: 100vh;
+            color: var(--white);
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(197, 165, 114, 0.3);
+        }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--champagne-gold);
+            letter-spacing: 2px;
+        }
+        .header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(197, 165, 114, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(197, 165, 114, 0.2);
+        }
+        .card-title {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .card-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--champagne-gold);
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(197, 165, 114, 0.3);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--champagne-gold);
+            color: var(--dark-navy);
+            border-color: var(--champagne-gold);
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(197, 165, 114, 0.15);
+        }
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            color: var(--champagne-gold);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        .store-content { display: none; }
+        .store-content.active { display: block; }
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(197, 165, 114, 0.2);
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .header { padding: 15px 20px; }
+            .container { padding: 15px; }
+            .card { padding: 16px; }
+            .card-value { font-size: 1.5rem; }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>SVD CASHLESS PAYMENT DASHBOARD</h1>
+        <p>キャッシュレス決済分析レポート｜2024-11-01 ～ 2025-10-31</p>
+    </header>
+    
+    <div class="container">
+        <div class="summary-cards">
+            <div class="card">
+                <div class="card-title">総売上高</div>
+                <div class="card-value">¥410,078,261</div>
+            </div>
+            <div class="card">
+                <div class="card-title">稼働店舗数</div>
+                <div class="card-value">7</div>
+            </div>
+            <div class="card">
+                <div class="card-title">決済カテゴリ数</div>
+                <div class="card-value">28</div>
+            </div>
+            <div class="card">
+                <div class="card-title">集計期間</div>
+                <div class="card-value" style="font-size: 1.3rem;">12ヶ月</div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showStore('all')">全店舗</button>
+            <button class="tab-btn" onclick="showStore('THE JEWELS')">JW</button><button class="tab-btn" onclick="showStore('ひつじにわいん')">ひつじにわいん</button><button class="tab-btn" onclick="showStore('THE GARDEN SAPPORO                 HOKKAIDO GRILLE')">THE GARDEN SAPPORO                 HOKKAIDO GRILLE</button><button class="tab-btn" onclick="showStore('ヌーベルプース大倉山 - REPOS')">ヌーベルプース大倉山 - REPOS</button><button class="tab-btn" onclick="showStore('LA BRIQUE SAPPORO Akarenga Terrace')">BQ</button><button class="tab-btn" onclick="showStore('カフェ セレステ')">カフェ セレステ</button><button class="tab-btn" onclick="showStore('ルスツ羊蹄ぶた by BRIQUE')">RYB</button>
+        </div>
+        
+        <div id="store-all" class="store-content active">
+            <div class="section">
+                <h2 class="section-title">月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="allMonthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">店舗別売上構成（略称）</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="allStoresChart"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="allCategoriesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div id="store-THE_JEWELS" class="store-content">
+            <div class="section">
+                <h2 class="section-title">JW - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-0"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-0"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥128,663,918</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-ひつじにわいん" class="store-content">
+            <div class="section">
+                <h2 class="section-title">ひつじにわいん - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-1"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-1"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥91,756,112</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-THE_GARDEN_SAPPORO_________________HOKKAIDO_GRILLE" class="store-content">
+            <div class="section">
+                <h2 class="section-title">THE GARDEN SAPPORO                 HOKKAIDO GRILLE - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-2"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-2"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥85,679,390</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-ヌーベルプース大倉山_-_REPOS" class="store-content">
+            <div class="section">
+                <h2 class="section-title">ヌーベルプース大倉山 - REPOS - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-3"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-3"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥62,505,658</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-LA_BRIQUE_SAPPORO_Akarenga_Terrace" class="store-content">
+            <div class="section">
+                <h2 class="section-title">BQ - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-4"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-4"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥22,730,583</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-カフェ_セレステ" class="store-content">
+            <div class="section">
+                <h2 class="section-title">カフェ セレステ - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-5"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-5"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥10,278,730</strong></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="store-ルスツ羊蹄ぶた_by_BRIQUE" class="store-content">
+            <div class="section">
+                <h2 class="section-title">RYB - 月別売上推移</h2>
+                <div class="chart-container">
+                    <canvas id="chart-monthly-6"></canvas>
+                </div>
+            </div>
+            <div class="charts-grid">
+                <div class="section">
+                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="chart-cat-6"></canvas>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">詳細情報</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 15px;">店舗合計: <strong style="color: var(--champagne-gold);">¥8,463,870</strong></p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <footer class="footer">
+        SAPPORO VIEWTIFUL DINING — ORIGIN<br>
+        Generated: 2025-12-15 13:52
+    </footer>
+    
+    <script>
+        const storesData = {"THE JEWELS": {"total": 128663918, "monthly": {"2024-11": 9941664, "2024-12": 13445520, "2025-01": 10720910, "2025-02": 9239845, "2025-03": 8337150, "2025-04": 3297830, "2025-05": 11579162, "2025-06": 11425170, "2025-07": 12266692, "2025-08": 13703720, "2025-09": 12201730, "2025-10": 12504525}, "categories": {"Alipay+": 1502780, "DISCOVER": 7460, "J-Coin Pay": 50530, "JCB": 17163740, "MasterCard": 21354960, "PayPay": 7385274, "QUICPay": 2393460, "VISA": 50216966, "WAON": 283440, "WeChat Pay": 2188580, "au PAY": 508770, "d払い": 2801454, "iD": 1677630, "nanaco": 37470, "その他クレジット": 9195360, "その他電子マネー": 996840, "アメリカン・エキスプレス": 8317752, "ダイナースクラブ": 885510, "メルペイ": 55650, "交通系電子マネー": 1053462, "楽天Edy": 53170, "銀聯": 533660}}, "ひつじにわいん": {"total": 91756112, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 173550, "2025-05": 2811790, "2025-06": 17755952, "2025-07": 31721210, "2025-08": 31937240, "2025-09": 7155470, "2025-10": 200900}, "categories": {"Alipay+": 274700, "DISCOVER": 8650, "JCB": 12772262, "MasterCard": 13537060, "PayPay": 10071360, "QUICPay": 4680390, "VISA": 30110700, "WAON": 674650, "WeChat Pay": 127500, "au PAY": 1007480, "d払い": 4011240, "iD": 2449360, "nanaco": 172880, "その他クレジット": 49650, "アメリカン・エキスプレス": 9441730, "ダイナースクラブ": 1342830, "メルペイ": 124100, "交通系電子マネー": 518140, "楽天Edy": 295030, "銀聯": 79150, "電子マネー１": 7250}}, "THE GARDEN SAPPORO                 HOKKAIDO GRILLE": {"total": 85679390, "monthly": {"2024-11": 5478826, "2024-12": 11366296, "2025-01": 6657354, "2025-02": 7759542, "2025-03": 6933799, "2025-04": 5366689, "2025-05": 7362568, "2025-06": 6725224, "2025-07": 7849371, "2025-08": 7525285, "2025-09": 5869816, "2025-10": 6784620}, "categories": {"Alipay+": 108820, "J-Coin Pay": 7760, "JCB": 16488173, "MasterCard": 11125979, "PayPay": 3117807, "QUICPay": 113680, "VISA": 42738647, "WAON": 60440, "WeChat Pay": 193610, "au PAY": 326200, "d払い": 1414644, "iD": 219310, "nanaco": 4510, "アメリカン・エキスプレス": 8100450, "ダイナースクラブ": 1542005, "メルペイ": 32905, "交通系電子マネー": 73760, "楽天Edy": 3650, "銀聯": 7040}}, "ヌーベルプース大倉山 - REPOS": {"total": 62505658, "monthly": {"2024-11": 4514836, "2024-12": 6967681, "2025-01": 3933673, "2025-02": 4962876, "2025-03": 5021933, "2025-04": 4534158, "2025-05": 4924946, "2025-06": 3917900, "2025-07": 5901295, "2025-08": 6945790, "2025-09": 5068880, "2025-10": 5811690}, "categories": {"Alipay": 40920, "Alipay+": 221260, "J-Coin Pay": 3900, "JCB": 12907449, "MUFGカード": 7090816, "MasterCard": 7905495, "PayPay": 3161887, "QUICPay": 389755, "VISA": 19541927, "WAON": 240121, "WeChat Pay": 42330, "au PAY": 259200, "d払い": 1029615, "iD": 392215, "nanaco": 48670, "その他クレジット": 1982790, "アメリカン・エキスプレス": 5868367, "ダイナースクラブ": 817171, "メルペイ": 84425, "交通系電子マネー": 434225, "楽天Edy": 43120}}, "LA BRIQUE SAPPORO Akarenga Terrace": {"total": 22730583, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 3607154, "2025-07": 5264866, "2025-08": 5866244, "2025-09": 4499306, "2025-10": 3493013}, "categories": {"DinersClub": 786152, "JCB": 3745214, "QUICPay": 13970, "VIsa,MasterCard": 14528210, "d払い": 79596, "iD": 33770, "その他電子マネー": 286088, "アメリカン・エキスプレス": 3257583}}, "カフェ セレステ": {"total": 10278730, "monthly": {"2024-11": 500070, "2024-12": 552360, "2025-01": 273790, "2025-02": 557550, "2025-03": 573660, "2025-04": 422230, "2025-05": 1065370, "2025-06": 1233890, "2025-07": 1434180, "2025-08": 1672620, "2025-09": 1093660, "2025-10": 899350}, "categories": {"Alipay": 3350, "Alipay+": 64220, "DISCOVER": 1410, "J-Coin Pay": 2200, "JCB": 540790, "MUFGカード": 115800, "MasterCard": 716970, "PayPay": 3074360, "QUICPay": 514990, "VISA": 1843060, "WAON": 292110, "WeChat Pay": 52910, "au PAY": 330370, "d払い": 688200, "iD": 401080, "nanaco": 87350, "その他クレジット": 2400, "アメリカン・エキスプレス": 345480, "ダイナースクラブ": 16250, "メルペイ": 53590, "交通系電子マネー": 1021800, "楽天Edy": 110040}}, "ルスツ羊蹄ぶた by BRIQUE": {"total": 8463870, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 1606528, "2025-07": 1906573, "2025-08": 1884333, "2025-09": 1424369, "2025-10": 1642067}, "categories": {"Alipay": 1600, "MasterCard": 1500, "PayPay": 284910, "QUICPay": 131530, "d払い": 158960, "iD": 180840, "その他クレジット": 3260724, "その他電子マネー": 4311946, "交通系IC": 13150, "交通系電子マネー": 89830, "楽天Edy": 28880}}};
+        const months = ["2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10"];
+        const storeMapping = {"THE JEWELS": "JW", "THE GARDEN SAPPORO HOKKAIDO GRILLE": "GA", "LA BRIQUE": "BQ", "LA BRIQUE SAPPORO Akarenga Terrace": "BQ", "ヌーベルプース大倉山": "NP", "NOUVELLE POUSSE": "NP", "ルスツ羊蹄ぶた": "RYB", "ルスツ羊蹄ぶた by BRIQUE": "RYB"};
+        
+        function getShortName(name) {
+            return storeMapping[name] || name;
+        }
+        
+        const categoryColors = [
+            '#C5A572', '#E8D5B7', '#6B8E7B', '#8FA4B8', '#D4A574',
+            '#9B7B6B', '#7BA8A8', '#B8A894', '#A89B8B', '#8B9BA8',
+            '#C9B896', '#7B9EA8', '#A8947B', '#8BA89B', '#B8A87B',
+            '#7BB8A8', '#A87B8B', '#8BA87B', '#B87BA8', '#A8B87B'
+        ];
+        
+        // Monthly chart
+        const allMonthlyData = months.map(m => {
+            let total = 0;
+            Object.values(storesData).forEach(s => {
+                if (s.monthly[m]) total += s.monthly[m];
+            });
+            return total;
+        });
+        
+        new Chart(document.getElementById('allMonthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: '売上金額',
+                    data: allMonthlyData,
+                    backgroundColor: 'rgba(197, 165, 114, 0.7)',
+                    borderColor: '#C5A572',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => '¥' + ctx.raw.toLocaleString()
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            color: 'rgba(255,255,255,0.7)',
+                            callback: val => '¥' + (val/1000000).toFixed(1) + 'M'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    x: {
+                        ticks: { color: 'rgba(255,255,255,0.7)' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+        
+        // Stores chart
+        new Chart(document.getElementById('allStoresChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(storesData).map(n => getShortName(n)),
+                datasets: [{
+                    data: Object.values(storesData).map(s => s.total),
+                    backgroundColor: categoryColors.slice(0, Object.keys(storesData).length)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: 'rgba(255,255,255,0.8)', font: { size: 11 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Categories chart
+        const allCatData = {};
+        Object.values(storesData).forEach(s => {
+            Object.entries(s.categories).forEach(([cat, val]) => {
+                allCatData[cat] = (allCatData[cat] || 0) + val;
+            });
+        });
+        const sortedCats = Object.entries(allCatData).sort((a,b) => b[1] - a[1]);
+        
+        new Chart(document.getElementById('allCategoriesChart'), {
+            type: 'doughnut',
+            data: {
+                labels: sortedCats.map(c => c[0]),
+                datasets: [{
+                    data: sortedCats.map(c => c[1]),
+                    backgroundColor: categoryColors.slice(0, sortedCats.length)
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Store-specific charts
+        let storeIndex = 0;
+        Object.entries(storesData).forEach(([name, data]) => {
+            const monthlyCanvas = document.getElementById('chart-monthly-' + storeIndex);
+            if (monthlyCanvas) {
+                new Chart(monthlyCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: '売上金額',
+                            data: months.map(m => data.monthly[m] || 0),
+                            backgroundColor: 'rgba(197, 165, 114, 0.7)',
+                            borderColor: '#C5A572',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    color: 'rgba(255,255,255,0.7)',
+                                    callback: val => '¥' + (val/1000000).toFixed(1) + 'M'
+                                },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: 'rgba(255,255,255,0.7)' },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            const catCanvas = document.getElementById('chart-cat-' + storeIndex);
+            if (catCanvas) {
+                const sortedStoreCats = Object.entries(data.categories).sort((a,b) => b[1] - a[1]);
+                new Chart(catCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: sortedStoreCats.map(c => c[0]),
+                        datasets: [{
+                            data: sortedStoreCats.map(c => c[1]),
+                            backgroundColor: categoryColors.slice(0, sortedStoreCats.length)
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                            }
+                        }
+                    }
+                });
+            }
+            storeIndex++;
+        });
+        
+        function showStore(storeKey) {
+            document.querySelectorAll('.store-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (storeKey === 'all') {
+                document.getElementById('store-all').classList.add('active');
+                document.querySelector('.tab-btn').classList.add('active');
+            } else {
+                const storeId = 'store-' + storeKey.replace(/ /g, '_').replace(/\//g, '_');
+                const el = document.getElementById(storeId);
+                if (el) el.classList.add('active');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    const shortName = getShortName(storeKey);
+                    if (btn.textContent.includes(shortName)) {
+                        btn.classList.add('active');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
