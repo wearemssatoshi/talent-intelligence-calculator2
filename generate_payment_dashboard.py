@@ -107,6 +107,10 @@ def generate_html_dashboard(df, output_path, period_label):
     
     monthly_summary = df.groupby('年月')['売上金額'].sum()
     
+    grand_total = int(df['売上金額'].sum())
+    months = sorted([str(m) for m in monthly_summary.index])
+
+    # 店舗別データの構築
     stores_data = {}
     for store_name in stores.index:
         store_df = df[df['店舗名'] == store_name]
@@ -115,14 +119,36 @@ def generate_html_dashboard(df, output_path, period_label):
         categories = store_df.groupby('決済カテゴリ')['売上金額'].sum()
         categories = categories[categories > 0]
         cat_dict = {k: int(v) for k, v in categories.items()}
+        
+        # 月ごとのカテゴリ別詳細データ
+        monthly_cats = {}
+        for m in months:
+            m_df = store_df[store_df['年月'].astype(str) == m]
+            if not m_df.empty:
+                cats = m_df.groupby('決済カテゴリ')['売上金額'].sum()
+                cats = cats[cats > 0]
+                monthly_cats[m] = {k: int(v) for k, v in cats.items()}
+            else:
+                monthly_cats[m] = {}
+
         stores_data[store_name] = {
             'total': int(store_df['売上金額'].sum()),
             'monthly': monthly_dict,
-            'categories': cat_dict
+            'categories': cat_dict,
+            'monthly_categories': monthly_cats
         }
-    
-    grand_total = int(df['売上金額'].sum())
-    months = sorted([str(m) for m in monthly_summary.index])
+
+    # 全店舗合算の月別カテゴリデータも作成
+    all_monthly_cats = {}
+    for m in months:
+        m_df = df[df['年月'].astype(str) == m]
+        if not m_df.empty:
+            cats = m_df.groupby('決済カテゴリ')['売上金額'].sum()
+            cats = cats[cats > 0]
+            all_monthly_cats[m] = {k: int(v) for k, v in cats.items()}
+        else:
+            all_monthly_cats[m] = {}
+
 
     # 店舗名マッピング
     store_mapping = {
@@ -164,10 +190,17 @@ def generate_html_dashboard(df, output_path, period_label):
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(''' + str(i) + ''', this.value, ''' + q + store + q + ''')">
+                            <option value="all">全期間</option>
+                            ''' + ''.join(['<option value="' + m + '">' + m + '</option>' for m in months]) + '''
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-''' + str(i) + '''"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-''' + str(i) + '''"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -179,6 +212,9 @@ def generate_html_dashboard(df, output_path, period_label):
         store_sections.append(section)
     store_html = ''.join(store_sections)
     
+    # 全店舗用の月選択オプション
+    all_month_options = ''.join(['<option value="' + m + '">' + m + '</option>' for m in months])
+
     html_content = '''<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -281,18 +317,40 @@ def generate_html_dashboard(df, output_path, period_label):
             margin-bottom: 30px;
             border: 1px solid rgba(197, 165, 114, 0.15);
         }
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+            padding-bottom: 10px;
+        }
         .section-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.3rem;
             color: var(--champagne-gold);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .month-select {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--white);
+            border: 1px solid rgba(197, 165, 114, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
         }
         .chart-container {
             position: relative;
             height: 400px;
             width: 100%;
+        }
+        .chart-total-label {
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+            color: rgba(255, 255, 255, 0.8);
         }
         .store-content { display: none; }
         .store-content.active { display: block; }
@@ -364,10 +422,17 @@ def generate_html_dashboard(df, output_path, period_label):
                     </div>
                 </div>
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateAllCategoriesChart(this.value)">
+                            <option value="all">全期間</option>
+                            ''' + all_month_options + '''
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="allCategoriesChart"></canvas>
                     </div>
+                    <div class="chart-total-label" id="all-cat-total"></div>
                 </div>
             </div>
         </div>
@@ -384,7 +449,16 @@ def generate_html_dashboard(df, output_path, period_label):
         const storesData = ''' + json.dumps(stores_data, ensure_ascii=False) + ''';
         const months = ''' + json.dumps(months) + ''';
         const storeMapping = ''' + json.dumps(store_mapping, ensure_ascii=False) + ''';
-        
+        const allMonthlyCats = ''' + json.dumps(all_monthly_cats, ensure_ascii=False) + ''';
+
+        // 全期間の全店舗カテゴリ集計も計算しておく
+        const allCatsTotal = {};
+        Object.values(storesData).forEach(s => {
+            Object.entries(s.categories).forEach(([cat, val]) => {
+                allCatsTotal[cat] = (allCatsTotal[cat] || 0) + val;
+            });
+        });
+
         function getShortName(name) {
             return storeMapping[name] || name;
         }
@@ -396,7 +470,7 @@ def generate_html_dashboard(df, output_path, period_label):
             '#7BB8A8', '#A87B8B', '#8BA87B', '#B87BA8', '#A8B87B'
         ];
         
-        // Monthly chart
+        // 全店舗 月別チャート
         const allMonthlyData = months.map(m => {
             let total = 0;
             Object.values(storesData).forEach(s => {
@@ -444,7 +518,7 @@ def generate_html_dashboard(df, output_path, period_label):
             }
         });
         
-        // Stores chart
+        // 全店舗 構成比チャート
         new Chart(document.getElementById('allStoresChart'), {
             type: 'doughnut',
             data: {
@@ -471,44 +545,65 @@ def generate_html_dashboard(df, output_path, period_label):
             }
         });
         
-        // Categories chart
-        const allCatData = {};
-        Object.values(storesData).forEach(s => {
-            Object.entries(s.categories).forEach(([cat, val]) => {
-                allCatData[cat] = (allCatData[cat] || 0) + val;
-            });
-        });
-        const sortedCats = Object.entries(allCatData).sort((a,b) => b[1] - a[1]);
-        
-        new Chart(document.getElementById('allCategoriesChart'), {
-            type: 'doughnut',
-            data: {
-                labels: sortedCats.map(c => c[0]),
-                datasets: [{
-                    data: sortedCats.map(c => c[1]),
-                    backgroundColor: categoryColors.slice(0, sortedCats.length)
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+        // 全店舗 カテゴリチャート（初期表示：全期間）
+        let allCategoriesChartInstance = null;
+
+        function renderAllCategoriesChart(dataObj) {
+            const ctx = document.getElementById('allCategoriesChart').getContext('2d');
+            const sortedCats = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
+            const totalVal = sortedCats.reduce((acc, cur) => acc + cur[1], 0);
+
+            if (allCategoriesChartInstance) {
+                allCategoriesChartInstance.destroy();
+            }
+
+            allCategoriesChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedCats.map(c => c[0]),
+                    datasets: [{
+                        data: sortedCats.map(c => c[1]),
+                        backgroundColor: categoryColors.slice(0, sortedCats.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+                            }
                         }
                     }
                 }
+            });
+            document.getElementById('all-cat-total').innerText = '表示期間合計: ¥' + totalVal.toLocaleString();
+        }
+
+        // 初期描画
+        renderAllCategoriesChart(allCatsTotal);
+
+        window.updateAllCategoriesChart = function(month) {
+            if (month === 'all') {
+                renderAllCategoriesChart(allCatsTotal);
+            } else {
+                const monthlyData = allMonthlyCats[month] || {};
+                renderAllCategoriesChart(monthlyData);
             }
-        });
-        
-        // Store-specific charts
+        };
+
+        // 個別店舗チャート管理用
+        const storeChartInstances = {};
+
+        // 店舗別チャート初期化
         let storeIndex = 0;
         Object.entries(storesData).forEach(([name, data]) => {
+            // 月別チャート
             const monthlyCanvas = document.getElementById('chart-monthly-' + storeIndex);
             if (monthlyCanvas) {
                 new Chart(monthlyCanvas, {
@@ -544,32 +639,63 @@ def generate_html_dashboard(df, output_path, period_label):
                 });
             }
             
-            const catCanvas = document.getElementById('chart-cat-' + storeIndex);
-            if (catCanvas) {
-                const sortedStoreCats = Object.entries(data.categories).sort((a,b) => b[1] - a[1]);
-                new Chart(catCanvas, {
-                    type: 'doughnut',
-                    data: {
-                        labels: sortedStoreCats.map(c => c[0]),
-                        datasets: [{
-                            data: sortedStoreCats.map(c => c[1]),
-                            backgroundColor: categoryColors.slice(0, sortedStoreCats.length)
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+            // カテゴリチャート（初期表示：全期間）
+            const catCanvasId = 'chart-cat-' + storeIndex;
+            renderStoreCategoryChart(storeIndex, data.categories);
+            
+            storeIndex++;
+        });
+
+        function renderStoreCategoryChart(index, dataObj) {
+            const ctx = document.getElementById('chart-cat-' + index).getContext('2d');
+            const sortedStoreCats = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
+            const totalVal = sortedStoreCats.reduce((acc, cur) => acc + cur[1], 0);
+
+            if (storeChartInstances[index]) {
+                storeChartInstances[index].destroy();
+            }
+
+            storeChartInstances[index] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedStoreCats.map(c => c[0]),
+                    datasets: [{
+                        data: sortedStoreCats.map(c => c[1]),
+                        backgroundColor: categoryColors.slice(0, sortedStoreCats.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
                             }
                         }
                     }
-                });
+                }
+            });
+            
+            const totalLabel = document.getElementById('chart-cat-total-' + index);
+            if (totalLabel) {
+                 totalLabel.innerText = '表示期間合計: ¥' + totalVal.toLocaleString();
             }
-            storeIndex++;
-        });
+        }
+
+        window.updateStoreChart = function(index, month, storeName) {
+            const data = storesData[storeName];
+            if (month === 'all') {
+                renderStoreCategoryChart(index, data.categories);
+            } else {
+                const monthlyData = data.monthly_categories[month] || {};
+                renderStoreCategoryChart(index, monthlyData);
+            }
+        };
         
         function showStore(storeKey) {
             document.querySelectorAll('.store-content').forEach(el => el.classList.remove('active'));

@@ -100,18 +100,40 @@
             margin-bottom: 30px;
             border: 1px solid rgba(197, 165, 114, 0.15);
         }
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+            padding-bottom: 10px;
+        }
         .section-title {
             font-family: 'Montserrat', sans-serif;
             font-size: 1.3rem;
             color: var(--champagne-gold);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .month-select {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--white);
+            border: 1px solid rgba(197, 165, 114, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
         }
         .chart-container {
             position: relative;
             height: 400px;
             width: 100%;
+        }
+        .chart-total-label {
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif;
+            color: rgba(255, 255, 255, 0.8);
         }
         .store-content { display: none; }
         .store-content.active { display: block; }
@@ -183,10 +205,17 @@
                     </div>
                 </div>
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateAllCategoriesChart(this.value)">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="allCategoriesChart"></canvas>
                     </div>
+                    <div class="chart-total-label" id="all-cat-total"></div>
                 </div>
             </div>
         </div>
@@ -201,10 +230,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(0, this.value, 'THE JEWELS')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-0"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-0"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -222,10 +258,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(1, this.value, 'ひつじにわいん')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-1"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-1"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -243,10 +286,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(2, this.value, 'THE GARDEN SAPPORO                 HOKKAIDO GRILLE')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-2"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-2"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -264,10 +314,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(3, this.value, 'ヌーベルプース大倉山 - REPOS')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-3"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-3"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -285,10 +342,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(4, this.value, 'LA BRIQUE SAPPORO Akarenga Terrace')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-4"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-4"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -306,10 +370,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(5, this.value, 'カフェ セレステ')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-5"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-5"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -327,10 +398,17 @@
             </div>
             <div class="charts-grid">
                 <div class="section">
-                    <h2 class="section-title">決済カテゴリ別構成</h2>
+                    <div class="section-header-row">
+                        <h2 class="section-title">決済カテゴリ別構成</h2>
+                        <select class="month-select" onchange="updateStoreChart(6, this.value, 'ルスツ羊蹄ぶた by BRIQUE')">
+                            <option value="all">全期間</option>
+                            <option value="2024-11">2024-11</option><option value="2024-12">2024-12</option><option value="2025-01">2025-01</option><option value="2025-02">2025-02</option><option value="2025-03">2025-03</option><option value="2025-04">2025-04</option><option value="2025-05">2025-05</option><option value="2025-06">2025-06</option><option value="2025-07">2025-07</option><option value="2025-08">2025-08</option><option value="2025-09">2025-09</option><option value="2025-10">2025-10</option>
+                        </select>
+                    </div>
                     <div class="chart-container" style="height: 350px;">
                         <canvas id="chart-cat-6"></canvas>
                     </div>
+                    <div class="chart-total-label" id="chart-cat-total-6"></div>
                 </div>
                 <div class="section">
                     <h2 class="section-title">詳細情報</h2>
@@ -343,14 +421,23 @@
     
     <footer class="footer">
         SAPPORO VIEWTIFUL DINING — ORIGIN<br>
-        Generated: 2025-12-15 13:52
+        Generated: 2025-12-15 14:00
     </footer>
     
     <script>
-        const storesData = {"THE JEWELS": {"total": 128663918, "monthly": {"2024-11": 9941664, "2024-12": 13445520, "2025-01": 10720910, "2025-02": 9239845, "2025-03": 8337150, "2025-04": 3297830, "2025-05": 11579162, "2025-06": 11425170, "2025-07": 12266692, "2025-08": 13703720, "2025-09": 12201730, "2025-10": 12504525}, "categories": {"Alipay+": 1502780, "DISCOVER": 7460, "J-Coin Pay": 50530, "JCB": 17163740, "MasterCard": 21354960, "PayPay": 7385274, "QUICPay": 2393460, "VISA": 50216966, "WAON": 283440, "WeChat Pay": 2188580, "au PAY": 508770, "d払い": 2801454, "iD": 1677630, "nanaco": 37470, "その他クレジット": 9195360, "その他電子マネー": 996840, "アメリカン・エキスプレス": 8317752, "ダイナースクラブ": 885510, "メルペイ": 55650, "交通系電子マネー": 1053462, "楽天Edy": 53170, "銀聯": 533660}}, "ひつじにわいん": {"total": 91756112, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 173550, "2025-05": 2811790, "2025-06": 17755952, "2025-07": 31721210, "2025-08": 31937240, "2025-09": 7155470, "2025-10": 200900}, "categories": {"Alipay+": 274700, "DISCOVER": 8650, "JCB": 12772262, "MasterCard": 13537060, "PayPay": 10071360, "QUICPay": 4680390, "VISA": 30110700, "WAON": 674650, "WeChat Pay": 127500, "au PAY": 1007480, "d払い": 4011240, "iD": 2449360, "nanaco": 172880, "その他クレジット": 49650, "アメリカン・エキスプレス": 9441730, "ダイナースクラブ": 1342830, "メルペイ": 124100, "交通系電子マネー": 518140, "楽天Edy": 295030, "銀聯": 79150, "電子マネー１": 7250}}, "THE GARDEN SAPPORO                 HOKKAIDO GRILLE": {"total": 85679390, "monthly": {"2024-11": 5478826, "2024-12": 11366296, "2025-01": 6657354, "2025-02": 7759542, "2025-03": 6933799, "2025-04": 5366689, "2025-05": 7362568, "2025-06": 6725224, "2025-07": 7849371, "2025-08": 7525285, "2025-09": 5869816, "2025-10": 6784620}, "categories": {"Alipay+": 108820, "J-Coin Pay": 7760, "JCB": 16488173, "MasterCard": 11125979, "PayPay": 3117807, "QUICPay": 113680, "VISA": 42738647, "WAON": 60440, "WeChat Pay": 193610, "au PAY": 326200, "d払い": 1414644, "iD": 219310, "nanaco": 4510, "アメリカン・エキスプレス": 8100450, "ダイナースクラブ": 1542005, "メルペイ": 32905, "交通系電子マネー": 73760, "楽天Edy": 3650, "銀聯": 7040}}, "ヌーベルプース大倉山 - REPOS": {"total": 62505658, "monthly": {"2024-11": 4514836, "2024-12": 6967681, "2025-01": 3933673, "2025-02": 4962876, "2025-03": 5021933, "2025-04": 4534158, "2025-05": 4924946, "2025-06": 3917900, "2025-07": 5901295, "2025-08": 6945790, "2025-09": 5068880, "2025-10": 5811690}, "categories": {"Alipay": 40920, "Alipay+": 221260, "J-Coin Pay": 3900, "JCB": 12907449, "MUFGカード": 7090816, "MasterCard": 7905495, "PayPay": 3161887, "QUICPay": 389755, "VISA": 19541927, "WAON": 240121, "WeChat Pay": 42330, "au PAY": 259200, "d払い": 1029615, "iD": 392215, "nanaco": 48670, "その他クレジット": 1982790, "アメリカン・エキスプレス": 5868367, "ダイナースクラブ": 817171, "メルペイ": 84425, "交通系電子マネー": 434225, "楽天Edy": 43120}}, "LA BRIQUE SAPPORO Akarenga Terrace": {"total": 22730583, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 3607154, "2025-07": 5264866, "2025-08": 5866244, "2025-09": 4499306, "2025-10": 3493013}, "categories": {"DinersClub": 786152, "JCB": 3745214, "QUICPay": 13970, "VIsa,MasterCard": 14528210, "d払い": 79596, "iD": 33770, "その他電子マネー": 286088, "アメリカン・エキスプレス": 3257583}}, "カフェ セレステ": {"total": 10278730, "monthly": {"2024-11": 500070, "2024-12": 552360, "2025-01": 273790, "2025-02": 557550, "2025-03": 573660, "2025-04": 422230, "2025-05": 1065370, "2025-06": 1233890, "2025-07": 1434180, "2025-08": 1672620, "2025-09": 1093660, "2025-10": 899350}, "categories": {"Alipay": 3350, "Alipay+": 64220, "DISCOVER": 1410, "J-Coin Pay": 2200, "JCB": 540790, "MUFGカード": 115800, "MasterCard": 716970, "PayPay": 3074360, "QUICPay": 514990, "VISA": 1843060, "WAON": 292110, "WeChat Pay": 52910, "au PAY": 330370, "d払い": 688200, "iD": 401080, "nanaco": 87350, "その他クレジット": 2400, "アメリカン・エキスプレス": 345480, "ダイナースクラブ": 16250, "メルペイ": 53590, "交通系電子マネー": 1021800, "楽天Edy": 110040}}, "ルスツ羊蹄ぶた by BRIQUE": {"total": 8463870, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 1606528, "2025-07": 1906573, "2025-08": 1884333, "2025-09": 1424369, "2025-10": 1642067}, "categories": {"Alipay": 1600, "MasterCard": 1500, "PayPay": 284910, "QUICPay": 131530, "d払い": 158960, "iD": 180840, "その他クレジット": 3260724, "その他電子マネー": 4311946, "交通系IC": 13150, "交通系電子マネー": 89830, "楽天Edy": 28880}}};
+        const storesData = {"THE JEWELS": {"total": 128663918, "monthly": {"2024-11": 9941664, "2024-12": 13445520, "2025-01": 10720910, "2025-02": 9239845, "2025-03": 8337150, "2025-04": 3297830, "2025-05": 11579162, "2025-06": 11425170, "2025-07": 12266692, "2025-08": 13703720, "2025-09": 12201730, "2025-10": 12504525}, "categories": {"Alipay+": 1502780, "DISCOVER": 7460, "J-Coin Pay": 50530, "JCB": 17163740, "MasterCard": 21354960, "PayPay": 7385274, "QUICPay": 2393460, "VISA": 50216966, "WAON": 283440, "WeChat Pay": 2188580, "au PAY": 508770, "d払い": 2801454, "iD": 1677630, "nanaco": 37470, "その他クレジット": 9195360, "その他電子マネー": 996840, "アメリカン・エキスプレス": 8317752, "ダイナースクラブ": 885510, "メルペイ": 55650, "交通系電子マネー": 1053462, "楽天Edy": 53170, "銀聯": 533660}, "monthly_categories": {"2024-11": {"Alipay+": 10200, "JCB": 1793180, "MasterCard": 1275770, "PayPay": 697680, "QUICPay": 184200, "VISA": 4032690, "WAON": 5750, "WeChat Pay": 69150, "au PAY": 56310, "d払い": 251782, "iD": 120710, "nanaco": 5740, "その他クレジット": 713630, "その他電子マネー": 30000, "アメリカン・エキスプレス": 525680, "ダイナースクラブ": 1900, "メルペイ": 8980, "交通系電子マネー": 65482, "楽天Edy": 2810, "銀聯": 90020}, "2024-12": {"Alipay+": 176710, "DISCOVER": 3430, "J-Coin Pay": 29900, "JCB": 1753480, "MasterCard": 2668420, "PayPay": 550570, "QUICPay": 288320, "VISA": 5696440, "WAON": 2450, "WeChat Pay": 325700, "au PAY": 28000, "d払い": 240370, "iD": 285800, "その他クレジット": 252680, "その他電子マネー": 34600, "アメリカン・エキスプレス": 948560, "ダイナースクラブ": 42250, "メルペイ": 3600, "交通系電子マネー": 107140, "楽天Edy": 1850, "銀聯": 5250}, "2025-01": {"Alipay+": 519260, "DISCOVER": 1980, "JCB": 1074670, "MasterCard": 2434740, "PayPay": 355546, "QUICPay": 220110, "VISA": 4650494, "WAON": 7150, "WeChat Pay": 445160, "au PAY": 22070, "d払い": 134530, "iD": 82720, "その他クレジット": 151340, "その他電子マネー": 59570, "アメリカン・エキスプレス": 415430, "メルペイ": 2880, "交通系電子マネー": 125340, "楽天Edy": 4280, "銀聯": 13640}, "2025-02": {"Alipay+": 157620, "J-Coin Pay": 17280, "JCB": 1051010, "MasterCard": 1716100, "PayPay": 640000, "QUICPay": 210800, "VISA": 3648700, "WAON": 5700, "WeChat Pay": 539550, "au PAY": 13650, "d払い": 120640, "iD": 29430, "nanaco": 830, "その他クレジット": 262790, "その他電子マネー": 900, "アメリカン・エキスプレス": 537420, "ダイナースクラブ": 22770, "メルペイ": 4200, "交通系電子マネー": 92185, "楽天Edy": 1330, "銀聯": 166940}, "2025-03": {"Alipay+": 36190, "JCB": 1224220, "MasterCard": 1334800, "PayPay": 436350, "QUICPay": 143540, "VISA": 3917440, "WAON": 39290, "WeChat Pay": 197450, "au PAY": 51280, "d払い": 52240, "iD": 68380, "nanaco": 3500, "その他クレジット": 153930, "その他電子マネー": 29700, "アメリカン・エキスプレス": 536400, "ダイナースクラブ": 61600, "メルペイ": 1800, "交通系電子マネー": 45440, "楽天Edy": 3600}, "2025-04": {"Alipay+": 12260, "DISCOVER": 950, "JCB": 355100, "MasterCard": 558580, "PayPay": 193370, "QUICPay": 7680, "VISA": 1163150, "WAON": 39070, "WeChat Pay": 53500, "au PAY": 2520, "d払い": 140120, "iD": 72740, "nanaco": 750, "その他クレジット": 202200, "アメリカン・エキスプレス": 382690, "ダイナースクラブ": 43910, "メルペイ": 350, "交通系電子マネー": 20440, "銀聯": 48450}, "2025-05": {"Alipay+": 46480, "J-Coin Pay": 1650, "JCB": 1633770, "MasterCard": 2063630, "PayPay": 757232, "QUICPay": 232760, "VISA": 4332310, "WAON": 28050, "WeChat Pay": 42720, "au PAY": 97000, "d払い": 432960, "iD": 230110, "nanaco": 5050, "その他クレジット": 554590, "アメリカン・エキスプレス": 891930, "ダイナースクラブ": 65650, "メルペイ": 8020, "交通系電子マネー": 114250, "楽天Edy": 7400, "銀聯": 33600}, "2025-06": {"Alipay+": 42420, "JCB": 1319660, "MasterCard": 1625590, "PayPay": 642120, "QUICPay": 133210, "VISA": 4727280, "WAON": 33370, "WeChat Pay": 67450, "au PAY": 75100, "d払い": 219760, "iD": 199690, "nanaco": 9750, "その他クレジット": 1116000, "その他電子マネー": 62710, "アメリカン・エキスプレス": 811100, "ダイナースクラブ": 196260, "メルペイ": 6750, "交通系電子マネー": 100630, "楽天Edy": 4050, "銀聯": 32270}, "2025-07": {"Alipay+": 13940, "J-Coin Pay": 800, "JCB": 1405910, "MasterCard": 1787010, "PayPay": 733386, "QUICPay": 188850, "VISA": 4344352, "WAON": 44760, "WeChat Pay": 41550, "au PAY": 12800, "d払い": 352652, "iD": 235950, "その他クレジット": 1927690, "その他電子マネー": 187270, "アメリカン・エキスプレス": 852452, "ダイナースクラブ": 39000, "メルペイ": 4000, "交通系電子マネー": 87370, "楽天Edy": 6950}, "2025-08": {"Alipay+": 99960, "DISCOVER": 1100, "JCB": 2150750, "MasterCard": 1545850, "PayPay": 794570, "QUICPay": 231020, "VISA": 4086280, "WAON": 21200, "WeChat Pay": 109440, "au PAY": 59420, "d払い": 238120, "iD": 148640, "nanaco": 5650, "その他クレジット": 2669340, "その他電子マネー": 368700, "アメリカン・エキスプレス": 909160, "ダイナースクラブ": 88200, "メルペイ": 5750, "交通系電子マネー": 73380, "楽天Edy": 8200, "銀聯": 88990}, "2025-09": {"Alipay+": 130360, "J-Coin Pay": 900, "JCB": 1814360, "MasterCard": 2083290, "PayPay": 795140, "QUICPay": 199580, "VISA": 4766700, "WAON": 34560, "WeChat Pay": 101680, "au PAY": 38100, "d払い": 427530, "iD": 157020, "nanaco": 1400, "その他クレジット": 420380, "その他電子マネー": 101500, "アメリカン・エキスプレス": 765060, "ダイナースクラブ": 220110, "メルペイ": 5700, "交通系電子マネー": 86040, "楽天Edy": 6550, "銀聯": 45770}, "2025-10": {"Alipay+": 257380, "JCB": 1587630, "MasterCard": 2261180, "PayPay": 789310, "QUICPay": 353390, "VISA": 4851130, "WAON": 22090, "WeChat Pay": 195230, "au PAY": 52520, "d払い": 190750, "iD": 46440, "nanaco": 4800, "その他クレジット": 770790, "その他電子マネー": 121890, "アメリカン・エキスプレス": 741870, "ダイナースクラブ": 103860, "メルペイ": 3620, "交通系電子マネー": 135765, "楽天Edy": 6150, "銀聯": 8730}}}, "ひつじにわいん": {"total": 91756112, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 173550, "2025-05": 2811790, "2025-06": 17755952, "2025-07": 31721210, "2025-08": 31937240, "2025-09": 7155470, "2025-10": 200900}, "categories": {"Alipay+": 274700, "DISCOVER": 8650, "JCB": 12772262, "MasterCard": 13537060, "PayPay": 10071360, "QUICPay": 4680390, "VISA": 30110700, "WAON": 674650, "WeChat Pay": 127500, "au PAY": 1007480, "d払い": 4011240, "iD": 2449360, "nanaco": 172880, "その他クレジット": 49650, "アメリカン・エキスプレス": 9441730, "ダイナースクラブ": 1342830, "メルペイ": 124100, "交通系電子マネー": 518140, "楽天Edy": 295030, "銀聯": 79150, "電子マネー１": 7250}, "monthly_categories": {"2024-11": {}, "2024-12": {}, "2025-01": {}, "2025-02": {}, "2025-03": {}, "2025-04": {"Alipay+": 800, "JCB": 16650, "MasterCard": 12800, "PayPay": 45700, "QUICPay": 5900, "VISA": 44800, "WAON": 4200, "au PAY": 3200, "d払い": 16850, "iD": 9200, "nanaco": 3100, "アメリカン・エキスプレス": 5500, "交通系電子マネー": 4850}, "2025-05": {"JCB": 269520, "MasterCard": 340150, "PayPay": 403700, "QUICPay": 274800, "VISA": 771690, "WAON": 40200, "au PAY": 39200, "d払い": 150250, "iD": 113350, "nanaco": 7600, "アメリカン・エキスプレス": 204780, "ダイナースクラブ": 62650, "メルペイ": 23700, "交通系電子マネー": 65900, "楽天Edy": 33300, "銀聯": 11000}, "2025-06": {"Alipay+": 37450, "JCB": 2377492, "MasterCard": 2493180, "PayPay": 1852840, "QUICPay": 980180, "VISA": 5418790, "WAON": 141440, "au PAY": 261150, "d払い": 962490, "iD": 688960, "nanaco": 24100, "その他クレジット": 16500, "アメリカン・エキスプレス": 2036200, "ダイナースクラブ": 307740, "メルペイ": 13450, "交通系電子マネー": 86690, "楽天Edy": 57300}, "2025-07": {"Alipay+": 98650, "JCB": 4304860, "MasterCard": 4583090, "PayPay": 3169370, "QUICPay": 1754310, "VISA": 11461970, "WAON": 273560, "WeChat Pay": 83550, "au PAY": 298880, "d払い": 1258450, "iD": 918860, "nanaco": 38900, "その他クレジット": 9550, "アメリカン・エキスプレス": 2896270, "ダイナースクラブ": 260000, "メルペイ": 14350, "交通系電子マネー": 151100, "楽天Edy": 112690, "銀聯": 25550, "電子マネー１": 7250}, "2025-08": {"Alipay+": 123700, "DISCOVER": 8650, "JCB": 4787780, "MasterCard": 4766280, "PayPay": 3833090, "QUICPay": 1323600, "VISA": 10049740, "WAON": 142400, "WeChat Pay": 43250, "au PAY": 283150, "d払い": 1299900, "iD": 585460, "nanaco": 74380, "その他クレジット": 15900, "アメリカン・エキスプレス": 3669480, "ダイナースクラブ": 617840, "メルペイ": 67100, "交通系電子マネー": 134550, "楽天Edy": 68390, "銀聯": 42600}, "2025-09": {"Alipay+": 9800, "JCB": 1013760, "MasterCard": 1319960, "PayPay": 735110, "QUICPay": 335800, "VISA": 2298310, "WAON": 67200, "WeChat Pay": 700, "au PAY": 108700, "d払い": 315650, "iD": 126480, "nanaco": 24800, "その他クレジット": 7700, "アメリカン・エキスプレス": 620250, "ダイナースクラブ": 94600, "メルペイ": 5500, "交通系電子マネー": 55650, "楽天Edy": 15500}, "2025-10": {"Alipay+": 4300, "JCB": 2200, "MasterCard": 21600, "PayPay": 31550, "QUICPay": 5800, "VISA": 65400, "WAON": 5650, "au PAY": 13200, "d払い": 7650, "iD": 7050, "アメリカン・エキスプレス": 9250, "交通系電子マネー": 19400, "楽天Edy": 7850}}}, "THE GARDEN SAPPORO                 HOKKAIDO GRILLE": {"total": 85679390, "monthly": {"2024-11": 5478826, "2024-12": 11366296, "2025-01": 6657354, "2025-02": 7759542, "2025-03": 6933799, "2025-04": 5366689, "2025-05": 7362568, "2025-06": 6725224, "2025-07": 7849371, "2025-08": 7525285, "2025-09": 5869816, "2025-10": 6784620}, "categories": {"Alipay+": 108820, "J-Coin Pay": 7760, "JCB": 16488173, "MasterCard": 11125979, "PayPay": 3117807, "QUICPay": 113680, "VISA": 42738647, "WAON": 60440, "WeChat Pay": 193610, "au PAY": 326200, "d払い": 1414644, "iD": 219310, "nanaco": 4510, "アメリカン・エキスプレス": 8100450, "ダイナースクラブ": 1542005, "メルペイ": 32905, "交通系電子マネー": 73760, "楽天Edy": 3650, "銀聯": 7040}, "monthly_categories": {"2024-11": {"Alipay+": 1700, "JCB": 1129900, "MasterCard": 824080, "PayPay": 185890, "QUICPay": 4440, "VISA": 2518429, "WAON": 500, "WeChat Pay": 29030, "au PAY": 45690, "d払い": 207250, "iD": 12280, "アメリカン・エキスプレス": 428845, "ダイナースクラブ": 82722, "メルペイ": 4720, "交通系電子マネー": 3350}, "2024-12": {"Alipay+": 4300, "JCB": 2432272, "MasterCard": 1260880, "PayPay": 508853, "QUICPay": 4470, "VISA": 5409733, "WAON": 9310, "WeChat Pay": 7750, "au PAY": 65090, "d払い": 66070, "iD": 30060, "アメリカン・エキスプレス": 1321050, "ダイナースクラブ": 238208, "メルペイ": 2750, "交通系電子マネー": 5500}, "2025-01": {"Alipay+": 9250, "JCB": 1443376, "MasterCard": 912205, "PayPay": 143320, "QUICPay": 4520, "VISA": 3065201, "WAON": 8030, "WeChat Pay": 94380, "au PAY": 24060, "d払い": 122634, "iD": 4120, "アメリカン・エキスプレス": 763873, "ダイナースクラブ": 43390, "メルペイ": 10455, "交通系電子マネー": 1500, "銀聯": 7040}, "2025-02": {"Alipay+": 46820, "JCB": 1404804, "MasterCard": 921876, "PayPay": 174670, "QUICPay": 350, "VISA": 4076253, "WAON": 4700, "WeChat Pay": 12510, "au PAY": 47690, "d払い": 167260, "iD": 24870, "アメリカン・エキスプレス": 705839, "ダイナースクラブ": 163680, "交通系電子マネー": 7870, "楽天Edy": 350}, "2025-03": {"Alipay+": 2750, "JCB": 1641808, "MasterCard": 916605, "PayPay": 236194, "QUICPay": 6350, "VISA": 3171434, "WAON": 3520, "WeChat Pay": 49940, "au PAY": 15290, "d払い": 162980, "iD": 6920, "アメリカン・エキスプレス": 657358, "ダイナースクラブ": 38060, "メルペイ": 350, "交通系電子マネー": 24240}, "2025-04": {"JCB": 1146665, "MasterCard": 714145, "PayPay": 193490, "QUICPay": 21120, "VISA": 2704449, "WAON": 1750, "au PAY": 7040, "d払い": 110220, "iD": 19640, "アメリカン・エキスプレス": 388320, "ダイナースクラブ": 56550, "楽天Edy": 3300}, "2025-05": {"JCB": 1420480, "MasterCard": 1008252, "PayPay": 216350, "QUICPay": 700, "VISA": 3967376, "WAON": 3520, "au PAY": 18540, "d払い": 67070, "iD": 21290, "アメリカン・エキスプレス": 394490, "ダイナースクラブ": 240700, "メルペイ": 2750, "交通系電子マネー": 1050}, "2025-06": {"JCB": 1233268, "MasterCard": 865806, "PayPay": 428100, "QUICPay": 16830, "VISA": 3494105, "WAON": 5500, "au PAY": 24880, "d払い": 91480, "iD": 8040, "nanaco": 4510, "アメリカン・エキスプレス": 455135, "ダイナースクラブ": 69300, "メルペイ": 3520, "交通系電子マネー": 24750}, "2025-07": {"JCB": 1355350, "MasterCard": 850880, "PayPay": 366210, "QUICPay": 29050, "VISA": 4445811, "WAON": 12500, "au PAY": 12270, "d払い": 81490, "iD": 63820, "アメリカン・エキスプレス": 583030, "ダイナースクラブ": 46210, "交通系電子マネー": 2750}, "2025-08": {"J-Coin Pay": 7760, "JCB": 984870, "MasterCard": 611620, "PayPay": 341250, "QUICPay": 13310, "VISA": 4060306, "WAON": 3520, "au PAY": 26310, "d払い": 100120, "iD": 20070, "アメリカン・エキスプレス": 1218644, "ダイナースクラブ": 134755, "メルペイ": 2750}, "2025-09": {"Alipay+": 44000, "JCB": 962260, "MasterCard": 786430, "PayPay": 205660, "QUICPay": 9020, "VISA": 2512910, "WAON": 4840, "au PAY": 21520, "d払い": 136720, "iD": 5450, "アメリカン・エキスプレス": 834776, "ダイナースクラブ": 337870, "メルペイ": 5610, "交通系電子マネー": 2750}, "2025-10": {"JCB": 1333120, "MasterCard": 1453200, "PayPay": 117820, "QUICPay": 3520, "VISA": 3312640, "WAON": 2750, "au PAY": 17820, "d払い": 101350, "iD": 2750, "アメリカン・エキスプレス": 349090, "ダイナースクラブ": 90560}}}, "ヌーベルプース大倉山 - REPOS": {"total": 62505658, "monthly": {"2024-11": 4514836, "2024-12": 6967681, "2025-01": 3933673, "2025-02": 4962876, "2025-03": 5021933, "2025-04": 4534158, "2025-05": 4924946, "2025-06": 3917900, "2025-07": 5901295, "2025-08": 6945790, "2025-09": 5068880, "2025-10": 5811690}, "categories": {"Alipay": 40920, "Alipay+": 221260, "J-Coin Pay": 3900, "JCB": 12907449, "MUFGカード": 7090816, "MasterCard": 7905495, "PayPay": 3161887, "QUICPay": 389755, "VISA": 19541927, "WAON": 240121, "WeChat Pay": 42330, "au PAY": 259200, "d払い": 1029615, "iD": 392215, "nanaco": 48670, "その他クレジット": 1982790, "アメリカン・エキスプレス": 5868367, "ダイナースクラブ": 817171, "メルペイ": 84425, "交通系電子マネー": 434225, "楽天Edy": 43120}, "monthly_categories": {"2024-11": {"JCB": 859397, "MUFGカード": 308975, "MasterCard": 531332, "PayPay": 130715, "QUICPay": 9915, "VISA": 1499610, "WAON": 7700, "au PAY": 35370, "d払い": 138345, "iD": 25570, "nanaco": 1900, "その他クレジット": 708900, "アメリカン・エキスプレス": 238457, "ダイナースクラブ": 6000, "交通系電子マネー": 9050, "楽天Edy": 3600}, "2024-12": {"Alipay": 12320, "JCB": 1111478, "MUFGカード": 605560, "MasterCard": 1006425, "PayPay": 330175, "QUICPay": 4550, "VISA": 1792391, "WAON": 7850, "WeChat Pay": 11310, "au PAY": 10870, "d払い": 99700, "iD": 163865, "nanaco": 3050, "その他クレジット": 266400, "アメリカン・エキスプレス": 1434801, "ダイナースクラブ": 68646, "メルペイ": 1700, "交通系電子マネー": 35240, "楽天Edy": 1350}, "2025-01": {"Alipay+": 34100, "JCB": 580305, "MUFGカード": 180435, "MasterCard": 648383, "PayPay": 183740, "QUICPay": 11020, "VISA": 1442965, "WAON": 26420, "WeChat Pay": 3450, "au PAY": 9400, "d払い": 38720, "iD": 22620, "nanaco": 10100, "その他クレジット": 142750, "アメリカン・エキスプレス": 502155, "ダイナースクラブ": 39540, "メルペイ": 2250, "交通系電子マネー": 49520, "楽天Edy": 5800}, "2025-02": {"J-Coin Pay": 2000, "JCB": 1214035, "MUFGカード": 541930, "MasterCard": 849249, "PayPay": 204085, "QUICPay": 12370, "VISA": 1296542, "WAON": 25750, "WeChat Pay": 1150, "au PAY": 29670, "d払い": 65860, "iD": 20420, "nanaco": 7100, "その他クレジット": 69740, "アメリカン・エキスプレス": 491330, "ダイナースクラブ": 56610, "メルペイ": 1870, "交通系電子マネー": 69265, "楽天Edy": 3900}, "2025-03": {"Alipay+": 1350, "JCB": 693889, "MUFGカード": 439866, "MasterCard": 1002179, "PayPay": 272452, "QUICPay": 77200, "VISA": 1591642, "WAON": 8350, "WeChat Pay": 7500, "au PAY": 25660, "d払い": 94186, "iD": 15550, "nanaco": 900, "その他クレジット": 284970, "アメリカン・エキスプレス": 381779, "ダイナースクラブ": 81255, "メルペイ": 20005, "交通系電子マネー": 19900, "楽天Edy": 3300}, "2025-04": {"JCB": 718790, "MUFGカード": 673880, "MasterCard": 438587, "PayPay": 235740, "QUICPay": 31800, "VISA": 1572891, "WAON": 10200, "WeChat Pay": 9570, "au PAY": 60240, "d払い": 67930, "iD": 8800, "nanaco": 3450, "その他クレジット": 223760, "アメリカン・エキスプレス": 340530, "ダイナースクラブ": 111700, "交通系電子マネー": 24390, "楽天Edy": 1900}, "2025-05": {"Alipay+": 1500, "J-Coin Pay": 1900, "JCB": 1406065, "MUFGカード": 826260, "MasterCard": 450370, "PayPay": 479710, "QUICPay": 36370, "VISA": 938110, "WAON": 48101, "au PAY": 27650, "d払い": 73610, "iD": 39250, "nanaco": 2450, "その他クレジット": 77950, "アメリカン・エキスプレス": 316200, "ダイナースクラブ": 136290, "メルペイ": 6400, "交通系電子マネー": 52440, "楽天Edy": 4320}, "2025-06": {"Alipay+": 450, "JCB": 899180, "MUFGカード": 782380, "MasterCard": 259090, "PayPay": 283300, "QUICPay": 52820, "VISA": 1125790, "WAON": 15650, "WeChat Pay": 450, "au PAY": 12320, "d払い": 68250, "iD": 14600, "nanaco": 4450, "その他クレジット": 35420, "アメリカン・エキスプレス": 276670, "ダイナースクラブ": 41900, "メルペイ": 11990, "交通系電子マネー": 32590, "楽天Edy": 600}, "2025-07": {"Alipay+": 900, "JCB": 1211100, "MUFGカード": 648060, "MasterCard": 934230, "PayPay": 325830, "QUICPay": 33850, "VISA": 1843360, "WAON": 26940, "WeChat Pay": 4050, "au PAY": 11250, "d払い": 155510, "iD": 14300, "nanaco": 1950, "その他クレジット": 94380, "アメリカン・エキスプレス": 555295, "交通系電子マネー": 35590, "楽天Edy": 4700}, "2025-08": {"Alipay+": 3600, "JCB": 1430080, "MUFGカード": 1428950, "MasterCard": 600400, "PayPay": 338200, "QUICPay": 75460, "VISA": 2091210, "WAON": 32160, "WeChat Pay": 450, "au PAY": 13820, "d払い": 115250, "iD": 28720, "nanaco": 3850, "その他クレジット": 56100, "アメリカン・エキスプレス": 556580, "ダイナースクラブ": 116610, "メルペイ": 2700, "交通系電子マネー": 45950, "楽天Edy": 5700}, "2025-09": {"Alipay": 28600, "Alipay+": 500, "JCB": 1466540, "MUFGカード": 163230, "MasterCard": 399590, "PayPay": 198420, "QUICPay": 23450, "VISA": 1971316, "WAON": 13100, "WeChat Pay": 2300, "au PAY": 13750, "d払い": 90754, "iD": 21470, "nanaco": 3150, "その他クレジット": 22420, "アメリカン・エキスプレス": 549770, "ダイナースクラブ": 61280, "メルペイ": 1050, "交通系電子マネー": 34990, "楽天Edy": 3200}, "2025-10": {"Alipay+": 178860, "JCB": 1316590, "MUFGカード": 491290, "MasterCard": 785660, "PayPay": 179520, "QUICPay": 20950, "VISA": 2376100, "WAON": 17900, "WeChat Pay": 2100, "au PAY": 9200, "d払い": 21500, "iD": 17050, "nanaco": 6320, "アメリカン・エキスプレス": 224800, "ダイナースクラブ": 97340, "メルペイ": 36460, "交通系電子マネー": 25300, "楽天Edy": 4750}}}, "LA BRIQUE SAPPORO Akarenga Terrace": {"total": 22730583, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 3607154, "2025-07": 5264866, "2025-08": 5866244, "2025-09": 4499306, "2025-10": 3493013}, "categories": {"DinersClub": 786152, "JCB": 3745214, "QUICPay": 13970, "VIsa,MasterCard": 14528210, "d払い": 79596, "iD": 33770, "その他電子マネー": 286088, "アメリカン・エキスプレス": 3257583}, "monthly_categories": {"2024-11": {}, "2024-12": {}, "2025-01": {}, "2025-02": {}, "2025-03": {}, "2025-04": {}, "2025-05": {}, "2025-06": {"DinersClub": 113740, "JCB": 378990, "VIsa,MasterCard": 2587830, "d払い": 52844, "その他電子マネー": 12980, "アメリカン・エキスプレス": 460770}, "2025-07": {"DinersClub": 116160, "JCB": 663526, "VIsa,MasterCard": 3643680, "d払い": 6490, "iD": 24970, "その他電子マネー": 28820, "アメリカン・エキスプレス": 781220}, "2025-08": {"DinersClub": 114012, "JCB": 1073720, "VIsa,MasterCard": 4107490, "iD": 4400, "その他電子マネー": 94430, "アメリカン・エキスプレス": 472192}, "2025-09": {"DinersClub": 201750, "JCB": 846606, "VIsa,MasterCard": 2288100, "d払い": 20262, "その他電子マネー": 84348, "アメリカン・エキスプレス": 1058240}, "2025-10": {"DinersClub": 240490, "JCB": 782372, "QUICPay": 13970, "VIsa,MasterCard": 1901110, "iD": 4400, "その他電子マネー": 65510, "アメリカン・エキスプレス": 485161}}}, "カフェ セレステ": {"total": 10278730, "monthly": {"2024-11": 500070, "2024-12": 552360, "2025-01": 273790, "2025-02": 557550, "2025-03": 573660, "2025-04": 422230, "2025-05": 1065370, "2025-06": 1233890, "2025-07": 1434180, "2025-08": 1672620, "2025-09": 1093660, "2025-10": 899350}, "categories": {"Alipay": 3350, "Alipay+": 64220, "DISCOVER": 1410, "J-Coin Pay": 2200, "JCB": 540790, "MUFGカード": 115800, "MasterCard": 716970, "PayPay": 3074360, "QUICPay": 514990, "VISA": 1843060, "WAON": 292110, "WeChat Pay": 52910, "au PAY": 330370, "d払い": 688200, "iD": 401080, "nanaco": 87350, "その他クレジット": 2400, "アメリカン・エキスプレス": 345480, "ダイナースクラブ": 16250, "メルペイ": 53590, "交通系電子マネー": 1021800, "楽天Edy": 110040}, "monthly_categories": {"2024-11": {"Alipay+": 1600, "J-Coin Pay": 950, "JCB": 20650, "MUFGカード": 2600, "MasterCard": 49850, "PayPay": 148360, "QUICPay": 7600, "VISA": 92000, "WAON": 9250, "WeChat Pay": 1700, "au PAY": 16100, "d払い": 29670, "iD": 24870, "nanaco": 3750, "アメリカン・エキスプレス": 35250, "ダイナースクラブ": 350, "メルペイ": 3050, "交通系電子マネー": 48970, "楽天Edy": 3500}, "2024-12": {"Alipay": 800, "Alipay+": 20870, "JCB": 17800, "MUFGカード": 17500, "MasterCard": 61150, "PayPay": 134590, "QUICPay": 9600, "VISA": 142810, "WAON": 8500, "WeChat Pay": 10750, "au PAY": 7150, "d払い": 17150, "iD": 15450, "nanaco": 800, "アメリカン・エキスプレス": 25570, "ダイナースクラブ": 900, "メルペイ": 1350, "交通系電子マネー": 54420, "楽天Edy": 5200}, "2025-01": {"Alipay+": 2150, "JCB": 9550, "MUFGカード": 7150, "MasterCard": 31250, "PayPay": 66100, "QUICPay": 3250, "VISA": 71020, "WAON": 7800, "WeChat Pay": 4350, "au PAY": 9650, "d払い": 9650, "iD": 9620, "nanaco": 2000, "アメリカン・エキスプレス": 5900, "交通系電子マネー": 29550, "楽天Edy": 4800}, "2025-02": {"Alipay+": 11700, "JCB": 26200, "MUFGカード": 10850, "MasterCard": 77720, "PayPay": 144170, "QUICPay": 13600, "VISA": 118340, "WAON": 5500, "WeChat Pay": 4950, "au PAY": 12440, "d払い": 20200, "iD": 17500, "nanaco": 3100, "アメリカン・エキスプレス": 28130, "メルペイ": 3000, "交通系電子マネー": 56450, "楽天Edy": 3700}, "2025-03": {"J-Coin Pay": 800, "JCB": 25120, "MUFGカード": 12300, "MasterCard": 52190, "PayPay": 167660, "QUICPay": 30000, "VISA": 114350, "WAON": 18650, "WeChat Pay": 1350, "au PAY": 16850, "d払い": 36350, "iD": 18150, "nanaco": 450, "アメリカン・エキスプレス": 12750, "メルペイ": 6850, "交通系電子マネー": 53690, "楽天Edy": 6150}, "2025-04": {"Alipay+": 900, "JCB": 26400, "MUFGカード": 2150, "MasterCard": 31450, "PayPay": 123120, "QUICPay": 26200, "VISA": 86820, "WAON": 6750, "WeChat Pay": 700, "au PAY": 8850, "d払い": 25900, "iD": 13020, "nanaco": 2300, "アメリカン・エキスプレス": 13750, "ダイナースクラブ": 1750, "メルペイ": 800, "交通系電子マネー": 45820, "楽天Edy": 5550}, "2025-05": {"Alipay+": 2250, "DISCOVER": 550, "J-Coin Pay": 450, "JCB": 45100, "MUFGカード": 8050, "MasterCard": 52630, "PayPay": 331910, "QUICPay": 81210, "VISA": 179220, "WAON": 33000, "WeChat Pay": 2700, "au PAY": 35050, "d払い": 90340, "iD": 48820, "nanaco": 7900, "アメリカン・エキスプレス": 13600, "ダイナースクラブ": 2550, "メルペイ": 6170, "交通系電子マネー": 111120, "楽天Edy": 12750}, "2025-06": {"Alipay+": 500, "JCB": 84970, "MUFGカード": 12950, "MasterCard": 39090, "PayPay": 400160, "QUICPay": 66390, "VISA": 191530, "WAON": 40080, "WeChat Pay": 3850, "au PAY": 48570, "d払い": 87270, "iD": 38140, "nanaco": 17000, "アメリカン・エキスプレス": 48120, "ダイナースクラブ": 1000, "メルペイ": 8600, "交通系電子マネー": 133900, "楽天Edy": 11770}, "2025-07": {"Alipay+": 2450, "DISCOVER": 860, "JCB": 66050, "MUFGカード": 7550, "MasterCard": 102820, "PayPay": 420370, "QUICPay": 74440, "VISA": 255040, "WAON": 44120, "WeChat Pay": 11720, "au PAY": 50490, "d払い": 92990, "iD": 60220, "nanaco": 5300, "アメリカン・エキスプレス": 49690, "ダイナースクラブ": 3800, "メルペイ": 6470, "交通系電子マネー": 158300, "楽天Edy": 21500}, "2025-08": {"Alipay+": 6350, "JCB": 129450, "MUFGカード": 9250, "MasterCard": 104560, "PayPay": 494840, "QUICPay": 91860, "VISA": 265660, "WAON": 76890, "WeChat Pay": 7540, "au PAY": 45020, "d払い": 139390, "iD": 72790, "nanaco": 20400, "その他クレジット": 2400, "アメリカン・エキスプレス": 48700, "ダイナースクラブ": 4400, "メルペイ": 9100, "交通系電子マネー": 126670, "楽天Edy": 17350}, "2025-09": {"Alipay": 850, "Alipay+": 5750, "JCB": 53100, "MUFGカード": 13850, "MasterCard": 50340, "PayPay": 349830, "QUICPay": 54850, "VISA": 179500, "WAON": 25850, "WeChat Pay": 1350, "au PAY": 47350, "d払い": 70500, "iD": 52150, "nanaco": 18100, "アメリカン・エキスプレス": 32720, "ダイナースクラブ": 1500, "メルペイ": 4500, "交通系電子マネー": 118000, "楽天Edy": 13570}, "2025-10": {"Alipay": 1700, "Alipay+": 9700, "JCB": 36400, "MUFGカード": 11600, "MasterCard": 63920, "PayPay": 293250, "QUICPay": 55990, "VISA": 146770, "WAON": 15720, "WeChat Pay": 1950, "au PAY": 32850, "d払い": 68790, "iD": 30350, "nanaco": 6250, "アメリカン・エキスプレス": 31300, "メルペイ": 3700, "交通系電子マネー": 84910, "楽天Edy": 4200}}}, "ルスツ羊蹄ぶた by BRIQUE": {"total": 8463870, "monthly": {"2024-11": 0, "2024-12": 0, "2025-01": 0, "2025-02": 0, "2025-03": 0, "2025-04": 0, "2025-05": 0, "2025-06": 1606528, "2025-07": 1906573, "2025-08": 1884333, "2025-09": 1424369, "2025-10": 1642067}, "categories": {"Alipay": 1600, "MasterCard": 1500, "PayPay": 284910, "QUICPay": 131530, "d払い": 158960, "iD": 180840, "その他クレジット": 3260724, "その他電子マネー": 4311946, "交通系IC": 13150, "交通系電子マネー": 89830, "楽天Edy": 28880}, "monthly_categories": {"2024-11": {}, "2024-12": {}, "2025-01": {}, "2025-02": {}, "2025-03": {}, "2025-04": {}, "2025-05": {}, "2025-06": {"Alipay": 1600, "MasterCard": 1500, "PayPay": 70190, "QUICPay": 18950, "d払い": 30460, "iD": 27600, "その他クレジット": 718404, "その他電子マネー": 710194, "交通系IC": 4200, "交通系電子マネー": 17850, "楽天Edy": 5580}, "2025-07": {"PayPay": 52500, "QUICPay": 36380, "d払い": 16950, "iD": 45600, "その他クレジット": 727004, "その他電子マネー": 1001789, "交通系IC": 5450, "交通系電子マネー": 16400, "楽天Edy": 4500}, "2025-08": {"PayPay": 42840, "QUICPay": 21800, "d払い": 24150, "iD": 58880, "その他クレジット": 737252, "その他電子マネー": 963481, "交通系電子マネー": 23630, "楽天Edy": 12300}, "2025-09": {"PayPay": 46130, "QUICPay": 30400, "d払い": 23950, "iD": 21630, "その他クレジット": 528859, "その他電子マネー": 748150, "交通系IC": 1100, "交通系電子マネー": 22650, "楽天Edy": 1500}, "2025-10": {"PayPay": 73250, "QUICPay": 24000, "d払い": 63450, "iD": 27130, "その他クレジット": 549205, "その他電子マネー": 888332, "交通系IC": 2400, "交通系電子マネー": 9300, "楽天Edy": 5000}}}};
         const months = ["2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10"];
         const storeMapping = {"THE JEWELS": "JW", "THE GARDEN SAPPORO HOKKAIDO GRILLE": "GA", "LA BRIQUE": "BQ", "LA BRIQUE SAPPORO Akarenga Terrace": "BQ", "ヌーベルプース大倉山": "NP", "NOUVELLE POUSSE": "NP", "ルスツ羊蹄ぶた": "RYB", "ルスツ羊蹄ぶた by BRIQUE": "RYB"};
-        
+        const allMonthlyCats = {"2024-11": {"Alipay+": 13500, "J-Coin Pay": 950, "JCB": 3803127, "MUFGカード": 311575, "MasterCard": 2681032, "PayPay": 1162645, "QUICPay": 206155, "VISA": 8142729, "WAON": 23200, "WeChat Pay": 99880, "au PAY": 153470, "d払い": 627047, "iD": 183430, "nanaco": 11390, "その他クレジット": 1422530, "その他電子マネー": 30000, "アメリカン・エキスプレス": 1228232, "ダイナースクラブ": 90972, "メルペイ": 16750, "交通系電子マネー": 126852, "楽天Edy": 9910, "銀聯": 90020}, "2024-12": {"Alipay": 13120, "Alipay+": 201880, "DISCOVER": 3430, "J-Coin Pay": 29900, "JCB": 5315030, "MUFGカード": 623060, "MasterCard": 4996875, "PayPay": 1524188, "QUICPay": 306940, "VISA": 13041374, "WAON": 28110, "WeChat Pay": 355510, "au PAY": 111110, "d払い": 423290, "iD": 495175, "nanaco": 3850, "その他クレジット": 519080, "その他電子マネー": 34600, "アメリカン・エキスプレス": 3729981, "ダイナースクラブ": 350004, "メルペイ": 9400, "交通系電子マネー": 202300, "楽天Edy": 8400, "銀聯": 5250}, "2025-01": {"Alipay+": 564760, "DISCOVER": 1980, "JCB": 3107901, "MUFGカード": 187585, "MasterCard": 4026578, "PayPay": 748706, "QUICPay": 238900, "VISA": 9229680, "WAON": 49400, "WeChat Pay": 547340, "au PAY": 65180, "d払い": 305534, "iD": 119080, "nanaco": 12100, "その他クレジット": 294090, "その他電子マネー": 59570, "アメリカン・エキスプレス": 1687358, "ダイナースクラブ": 82930, "メルペイ": 15585, "交通系電子マネー": 205910, "楽天Edy": 14880, "銀聯": 20680}, "2025-02": {"Alipay+": 216140, "J-Coin Pay": 19280, "JCB": 3696049, "MUFGカード": 552780, "MasterCard": 3564945, "PayPay": 1162925, "QUICPay": 237120, "VISA": 9139835, "WAON": 41650, "WeChat Pay": 558160, "au PAY": 103450, "d払い": 373960, "iD": 92220, "nanaco": 11030, "その他クレジット": 332530, "その他電子マネー": 900, "アメリカン・エキスプレス": 1762719, "ダイナースクラブ": 243060, "メルペイ": 9070, "交通系電子マネー": 225770, "楽天Edy": 9280, "銀聯": 166940}, "2025-03": {"Alipay+": 40290, "J-Coin Pay": 800, "JCB": 3585037, "MUFGカード": 452166, "MasterCard": 3305774, "PayPay": 1112656, "QUICPay": 257090, "VISA": 8794866, "WAON": 69810, "WeChat Pay": 256240, "au PAY": 109080, "d払い": 345756, "iD": 109000, "nanaco": 4850, "その他クレジット": 438900, "その他電子マネー": 29700, "アメリカン・エキスプレス": 1588287, "ダイナースクラブ": 180915, "メルペイ": 29005, "交通系電子マネー": 143270, "楽天Edy": 13050}, "2025-04": {"Alipay+": 13960, "DISCOVER": 950, "JCB": 2263605, "MUFGカード": 676030, "MasterCard": 1755562, "PayPay": 791420, "QUICPay": 92700, "VISA": 5572110, "WAON": 61970, "WeChat Pay": 63770, "au PAY": 81850, "d払い": 361020, "iD": 123400, "nanaco": 9600, "その他クレジット": 425960, "アメリカン・エキスプレス": 1130790, "ダイナースクラブ": 213910, "メルペイ": 1150, "交通系電子マネー": 95500, "楽天Edy": 10750, "銀聯": 48450}, "2025-05": {"Alipay+": 50230, "DISCOVER": 550, "J-Coin Pay": 4000, "JCB": 4774935, "MUFGカード": 834310, "MasterCard": 3915032, "PayPay": 2188902, "QUICPay": 625840, "VISA": 10188706, "WAON": 152871, "WeChat Pay": 45420, "au PAY": 217440, "d払い": 814230, "iD": 452820, "nanaco": 23000, "その他クレジット": 632540, "アメリカン・エキスプレス": 1821000, "ダイナースクラブ": 507840, "メルペイ": 47040, "交通系電子マネー": 344760, "楽天Edy": 57770, "銀聯": 44600}, "2025-06": {"Alipay": 1600, "Alipay+": 80820, "DinersClub": 113740, "JCB": 6293560, "MUFGカード": 795330, "MasterCard": 5284256, "PayPay": 3676710, "QUICPay": 1268380, "VISA": 14957495, "VIsa,MasterCard": 2587830, "WAON": 236040, "WeChat Pay": 71750, "au PAY": 422020, "d払い": 1512554, "iD": 977030, "nanaco": 59810, "その他クレジット": 1886324, "その他電子マネー": 785884, "アメリカン・エキスプレス": 4087995, "ダイナースクラブ": 616200, "メルペイ": 44310, "交通系IC": 4200, "交通系電子マネー": 396410, "楽天Edy": 79300, "銀聯": 32270}, "2025-07": {"Alipay+": 115940, "DISCOVER": 860, "DinersClub": 116160, "J-Coin Pay": 800, "JCB": 9006796, "MUFGカード": 655610, "MasterCard": 8258030, "PayPay": 5067666, "QUICPay": 2116880, "VISA": 22350533, "VIsa,MasterCard": 3643680, "WAON": 401880, "WeChat Pay": 140870, "au PAY": 385690, "d払い": 1964532, "iD": 1363720, "nanaco": 46150, "その他クレジット": 2758624, "その他電子マネー": 1217879, "アメリカン・エキスプレス": 5717957, "ダイナースクラブ": 349010, "メルペイ": 24820, "交通系IC": 5450, "交通系電子マネー": 451510, "楽天Edy": 150340, "銀聯": 25550, "電子マネー１": 7250}, "2025-08": {"Alipay+": 233610, "DISCOVER": 9750, "DinersClub": 114012, "J-Coin Pay": 7760, "JCB": 10556650, "MUFGカード": 1438200, "MasterCard": 7628710, "PayPay": 5844790, "QUICPay": 1757050, "VISA": 20553196, "VIsa,MasterCard": 4107490, "WAON": 276170, "WeChat Pay": 160680, "au PAY": 427720, "d払い": 1916930, "iD": 918960, "nanaco": 104280, "その他クレジット": 3480992, "その他電子マネー": 1426611, "アメリカン・エキスプレス": 6874756, "ダイナースクラブ": 961805, "メルペイ": 87400, "交通系電子マネー": 404180, "楽天Edy": 111940, "銀聯": 131590}, "2025-09": {"Alipay": 29450, "Alipay+": 190410, "DinersClub": 201750, "J-Coin Pay": 900, "JCB": 6156626, "MUFGカード": 177080, "MasterCard": 4639610, "PayPay": 2330290, "QUICPay": 653100, "VISA": 11728736, "VIsa,MasterCard": 2288100, "WAON": 145550, "WeChat Pay": 106030, "au PAY": 229420, "d払い": 1085366, "iD": 384200, "nanaco": 47450, "その他クレジット": 979359, "その他電子マネー": 933998, "アメリカン・エキスプレス": 3860816, "ダイナースクラブ": 715360, "メルペイ": 22360, "交通系IC": 1100, "交通系電子マネー": 320080, "楽天Edy": 40320, "銀聯": 45770}, "2025-10": {"Alipay": 1700, "Alipay+": 450240, "DinersClub": 240490, "JCB": 5058312, "MUFGカード": 502890, "MasterCard": 4585560, "PayPay": 1484700, "QUICPay": 477620, "VISA": 10752040, "VIsa,MasterCard": 1901110, "WAON": 64110, "WeChat Pay": 199280, "au PAY": 125590, "d払い": 453490, "iD": 135170, "nanaco": 17370, "その他クレジット": 1319995, "その他電子マネー": 1075732, "アメリカン・エキスプレス": 1841471, "ダイナースクラブ": 291760, "メルペイ": 43780, "交通系IC": 2400, "交通系電子マネー": 274675, "楽天Edy": 27950, "銀聯": 8730}};
+
+        // 全期間の全店舗カテゴリ集計も計算しておく
+        const allCatsTotal = {};
+        Object.values(storesData).forEach(s => {
+            Object.entries(s.categories).forEach(([cat, val]) => {
+                allCatsTotal[cat] = (allCatsTotal[cat] || 0) + val;
+            });
+        });
+
         function getShortName(name) {
             return storeMapping[name] || name;
         }
@@ -362,7 +449,7 @@
             '#7BB8A8', '#A87B8B', '#8BA87B', '#B87BA8', '#A8B87B'
         ];
         
-        // Monthly chart
+        // 全店舗 月別チャート
         const allMonthlyData = months.map(m => {
             let total = 0;
             Object.values(storesData).forEach(s => {
@@ -410,7 +497,7 @@
             }
         });
         
-        // Stores chart
+        // 全店舗 構成比チャート
         new Chart(document.getElementById('allStoresChart'), {
             type: 'doughnut',
             data: {
@@ -437,44 +524,65 @@
             }
         });
         
-        // Categories chart
-        const allCatData = {};
-        Object.values(storesData).forEach(s => {
-            Object.entries(s.categories).forEach(([cat, val]) => {
-                allCatData[cat] = (allCatData[cat] || 0) + val;
-            });
-        });
-        const sortedCats = Object.entries(allCatData).sort((a,b) => b[1] - a[1]);
-        
-        new Chart(document.getElementById('allCategoriesChart'), {
-            type: 'doughnut',
-            data: {
-                labels: sortedCats.map(c => c[0]),
-                datasets: [{
-                    data: sortedCats.map(c => c[1]),
-                    backgroundColor: categoryColors.slice(0, sortedCats.length)
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+        // 全店舗 カテゴリチャート（初期表示：全期間）
+        let allCategoriesChartInstance = null;
+
+        function renderAllCategoriesChart(dataObj) {
+            const ctx = document.getElementById('allCategoriesChart').getContext('2d');
+            const sortedCats = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
+            const totalVal = sortedCats.reduce((acc, cur) => acc + cur[1], 0);
+
+            if (allCategoriesChartInstance) {
+                allCategoriesChartInstance.destroy();
+            }
+
+            allCategoriesChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedCats.map(c => c[0]),
+                    datasets: [{
+                        data: sortedCats.map(c => c[1]),
+                        backgroundColor: categoryColors.slice(0, sortedCats.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
+                            }
                         }
                     }
                 }
+            });
+            document.getElementById('all-cat-total').innerText = '表示期間合計: ¥' + totalVal.toLocaleString();
+        }
+
+        // 初期描画
+        renderAllCategoriesChart(allCatsTotal);
+
+        window.updateAllCategoriesChart = function(month) {
+            if (month === 'all') {
+                renderAllCategoriesChart(allCatsTotal);
+            } else {
+                const monthlyData = allMonthlyCats[month] || {};
+                renderAllCategoriesChart(monthlyData);
             }
-        });
-        
-        // Store-specific charts
+        };
+
+        // 個別店舗チャート管理用
+        const storeChartInstances = {};
+
+        // 店舗別チャート初期化
         let storeIndex = 0;
         Object.entries(storesData).forEach(([name, data]) => {
+            // 月別チャート
             const monthlyCanvas = document.getElementById('chart-monthly-' + storeIndex);
             if (monthlyCanvas) {
                 new Chart(monthlyCanvas, {
@@ -510,32 +618,63 @@
                 });
             }
             
-            const catCanvas = document.getElementById('chart-cat-' + storeIndex);
-            if (catCanvas) {
-                const sortedStoreCats = Object.entries(data.categories).sort((a,b) => b[1] - a[1]);
-                new Chart(catCanvas, {
-                    type: 'doughnut',
-                    data: {
-                        labels: sortedStoreCats.map(c => c[0]),
-                        datasets: [{
-                            data: sortedStoreCats.map(c => c[1]),
-                            backgroundColor: categoryColors.slice(0, sortedStoreCats.length)
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+            // カテゴリチャート（初期表示：全期間）
+            const catCanvasId = 'chart-cat-' + storeIndex;
+            renderStoreCategoryChart(storeIndex, data.categories);
+            
+            storeIndex++;
+        });
+
+        function renderStoreCategoryChart(index, dataObj) {
+            const ctx = document.getElementById('chart-cat-' + index).getContext('2d');
+            const sortedStoreCats = Object.entries(dataObj).sort((a,b) => b[1] - a[1]);
+            const totalVal = sortedStoreCats.reduce((acc, cur) => acc + cur[1], 0);
+
+            if (storeChartInstances[index]) {
+                storeChartInstances[index].destroy();
+            }
+
+            storeChartInstances[index] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedStoreCats.map(c => c[0]),
+                    datasets: [{
+                        data: sortedStoreCats.map(c => c[1]),
+                        backgroundColor: categoryColors.slice(0, sortedStoreCats.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: 'rgba(255,255,255,0.8)', font: { size: 10 } }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ctx.label + ': ¥' + ctx.raw.toLocaleString()
                             }
                         }
                     }
-                });
+                }
+            });
+            
+            const totalLabel = document.getElementById('chart-cat-total-' + index);
+            if (totalLabel) {
+                 totalLabel.innerText = '表示期間合計: ¥' + totalVal.toLocaleString();
             }
-            storeIndex++;
-        });
+        }
+
+        window.updateStoreChart = function(index, month, storeName) {
+            const data = storesData[storeName];
+            if (month === 'all') {
+                renderStoreCategoryChart(index, data.categories);
+            } else {
+                const monthlyData = data.monthly_categories[month] || {};
+                renderStoreCategoryChart(index, monthlyData);
+            }
+        };
         
         function showStore(storeKey) {
             document.querySelectorAll('.store-content').forEach(el => el.classList.remove('active'));
