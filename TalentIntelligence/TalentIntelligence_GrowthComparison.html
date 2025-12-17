@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD Growth Comparison | 成長比較</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #B8995C;
+            --accent-color: #D4AF37;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-text-color: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --growth-positive: #10b981;
+            --growth-negative: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+
+        .header-logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        header p {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .input-group select,
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .comparison-table .row-header {
+            background: #f8fafc;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .growth-positive {
+            color: var(--growth-positive);
+            font-weight: 600;
+        }
+
+        .growth-negative {
+            color: var(--growth-negative);
+            font-weight: 600;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .chart-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-box h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        /* Results Dashboard */
+        #results-section {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--light-text-color);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--light-text-color);
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            color: var(--light-text-color);
+            letter-spacing: 0.15em;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .search-section {
+                flex-direction: column;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 1rem;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <img src="../logo/SVD_logo_Black.png" alt="SVD Logo" class="header-logo">
+            <h1>Growth Comparison</h1>
+            <p>成長比較レポート</p>
+        </header>
+
+        <!-- Search Section -->
+        <div class="card no-print">
+            <h3 class="section-title">スタッフ検索</h3>
+            <div class="search-section">
+                <div class="input-group">
+                    <label for="gas-url">GAS URL</label>
+                    <input type="text" id="gas-url" placeholder="Google Apps ScriptのURLを入力">
+                </div>
+                <div class="input-group">
+                    <label for="staff-select">スタッフ名</label>
+                    <select id="staff-select" disabled>
+                        <option value="">まずGAS URLを設定してください</option>
+                    </select>
+                </div>
+                <button class="btn" id="load-names-btn">名前を読込</button>
+                <button class="btn" id="search-btn" disabled>データ取得</button>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--light-text-color);">
+                ※ GAS URLを入力後「名前を読込」→ スタッフを選択 →「データ取得」の順で操作してください
+            </p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section">
+            <div class="card" id="comparison-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 class="section-title" style="margin-bottom: 0; border-bottom: none;">
+                        <span id="staff-name-display">スタッフ名</span> の成長推移
+                    </h3>
+                    <button class="btn btn-success no-print" id="download-pdf-btn">PDFで保存</button>
+                </div>
+
+                <!-- Comparison Table -->
+                <table class="comparison-table" id="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <!-- Dynamic headers will be inserted here -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                </table>
+
+                <!-- Charts -->
+                <div class="chart-container" id="chart-container">
+                    <!-- Charts will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>SAPPORO VIEWTIFUL DINING — ORIGIN</p>
+            <p style="margin-top: 0.5rem;">© 2024-2025 SVD. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Configuration
+        let GAS_URL = '';
+        let chartInstances = [];
+
+        // DOM Elements
+        const gasUrlInput = document.getElementById('gas-url');
+        const staffSelect = document.getElementById('staff-select');
+        const loadNamesBtn = document.getElementById('load-names-btn');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsSection = document.getElementById('results-section');
+
+        // Score categories for comparison
+        const scoreCategories = [
+            { key: 'totalScore', label: '総合スコア' },
+            { key: 'p', label: 'Performance Skills', items: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'] },
+            { key: 's', label: 'Service Skills', items: ['s1', 's2', 's3', 's4', 's5', 's6'] },
+            { key: 'e', label: 'Expertise Skills', items: ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] },
+            { key: 'm', label: 'Management Skills', items: ['m1', 'm2', 'm3', 'm4', 'm5', 'm6'] }
+        ];
+
+        // Load staff names
+        loadNamesBtn.addEventListener('click', async () => {
+            GAS_URL = gasUrlInput.value.trim();
+            if (!GAS_URL) {
+                alert('GAS URLを入力してください');
+                return;
+            }
+
+            loadNamesBtn.textContent = '読込中...';
+            loadNamesBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${GAS_URL}?action=list`);
+                const data = await response.json();
+
+                if (data.result === 'success' && data.names) {
+                    staffSelect.innerHTML = '<option value="">スタッフを選択</option>';
+                    data.names.forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        staffSelect.appendChild(option);
+                    });
+                    staffSelect.disabled = false;
+                    searchBtn.disabled = false;
+                } else {
+                    alert('データの取得に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('エラーが発生しました。URLを確認してください。');
+            } finally {
+                loadNamesBtn.textContent = '名前を読込';
+                loadNamesBtn.disabled = false;
+            }
+        });
+
+        // Search staff data
+        searchBtn.addEventListener('click', async () => {
+            const staffName = staffSelect.value;
+            if (!staffName) {
+                alert('スタッフを選択してください');
+                return;
+            }
+
+            searchBtn.textContent = '取得中...';
+            searchBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${GAS_URL}?action=search&name=${encodeURIComponent(staffName)}`);
+                const data = await response.json();
+
+                if (data.result === 'success' && data.data.length > 0) {
+                    displayResults(staffName, data.data);
+                } else {
+                    alert('該当するデータが見つかりませんでした');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            } finally {
+                searchBtn.textContent = 'データ取得';
+                searchBtn.disabled = false;
+            }
+        });
+
+        // Display results
+        function displayResults(staffName, records) {
+            document.getElementById('staff-name-display').textContent = staffName;
+            resultsSection.style.display = 'block';
+
+            // Build comparison table
+            buildComparisonTable(records);
+
+            // Build charts
+            buildCharts(records);
+        }
+
+        // Calculate category sum
+        function calculateCategorySum(record, items) {
+            return items.reduce((sum, key) => sum + (parseInt(record[key]) || 0), 0);
+        }
+
+        // Build comparison table
+        function buildComparisonTable(records) {
+            const table = document.getElementById('comparison-table');
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+
+            // Clear existing content
+            thead.innerHTML = '<th>項目</th>';
+            tbody.innerHTML = '';
+
+            // Add date headers
+            records.forEach(record => {
+                const date = new Date(record.Timestamp);
+                const th = document.createElement('th');
+                th.textContent = date.toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' });
+                thead.appendChild(th);
+            });
+
+            // Add growth column if more than 1 record
+            if (records.length > 1) {
+                const growthTh = document.createElement('th');
+                growthTh.textContent = '成長';
+                growthTh.style.background = '#10b981';
+                thead.appendChild(growthTh);
+            }
+
+            // Add rows
+            scoreCategories.forEach(cat => {
+                const tr = document.createElement('tr');
+                const labelTd = document.createElement('td');
+                labelTd.className = 'row-header';
+                labelTd.textContent = cat.label;
+                tr.appendChild(labelTd);
+
+                const values = [];
+                records.forEach(record => {
+                    const td = document.createElement('td');
+                    let value;
+                    if (cat.key === 'totalScore') {
+                        value = parseInt(record.totalScore) || 0;
+                    } else {
+                        value = calculateCategorySum(record, cat.items);
+                    }
+                    td.textContent = value;
+                    values.push(value);
+                    tr.appendChild(td);
+                });
+
+                // Add growth cell
+                if (records.length > 1) {
+                    const growthTd = document.createElement('td');
+                    const growth = values[0] - values[values.length - 1]; // newest - oldest
+                    growthTd.textContent = (growth >= 0 ? '+' : '') + growth;
+                    growthTd.className = growth >= 0 ? 'growth-positive' : 'growth-negative';
+                    tr.appendChild(growthTd);
+                }
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Build charts
+        function buildCharts(records) {
+            const container = document.getElementById('chart-container');
+            container.innerHTML = '';
+
+            // Destroy existing charts
+            chartInstances.forEach(chart => chart.destroy());
+            chartInstances = [];
+
+            // Take up to 2 most recent records for comparison
+            const compareRecords = records.slice(0, 2);
+
+            // Create overlaid radar chart
+            const chartBox = document.createElement('div');
+            chartBox.className = 'chart-box';
+            chartBox.style.gridColumn = '1 / -1';
+
+            const title = document.createElement('h4');
+            title.textContent = '診断比較レーダーチャート';
+            chartBox.appendChild(title);
+
+            const canvas = document.createElement('canvas');
+            canvas.id = 'comparison-radar';
+            chartBox.appendChild(canvas);
+            container.appendChild(chartBox);
+
+            // Prepare chart data
+            const labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3', 'S4', 'S5', 'S6',
+                'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
+            const keys = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 's1', 's2', 's3', 's4', 's5', 's6',
+                'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6'];
+
+            const colors = [
+                { bg: 'rgba(184, 153, 92, 0.3)', border: '#B8995C' },
+                { bg: 'rgba(15, 23, 42, 0.2)', border: '#0f172a' }
+            ];
+
+            const datasets = compareRecords.map((record, index) => {
+                const date = new Date(record.Timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short' });
+                return {
+                    label: date,
+                    data: keys.map(key => parseInt(record[key]) || 0),
+                    backgroundColor: colors[index].bg,
+                    borderColor: colors[index].border,
+                    borderWidth: 2,
+                    pointRadius: 3
+                };
+            });
+
+            const chart = new Chart(canvas, {
+                type: 'radar',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 5,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'top' }
+                    }
+                }
+            });
+
+            chartInstances.push(chart);
+        }
+
+        // PDF Download
+        document.getElementById('download-pdf-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('download-pdf-btn');
+            btn.textContent = '生成中...';
+            btn.disabled = true;
+
+            try {
+                const element = document.getElementById('comparison-card');
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape
+
+                const imgWidth = 287;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 5, imgWidth, imgHeight);
+
+                const staffName = document.getElementById('staff-name-display').textContent;
+                const date = new Date().toISOString().split('T')[0];
+                pdf.save(`SVD_Growth_${staffName}_${date}.pdf`);
+            } catch (error) {
+                console.error('PDF Error:', error);
+                alert('PDF生成中にエラーが発生しました');
+            } finally {
+                btn.textContent = 'PDFで保存';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
