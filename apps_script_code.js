@@ -50,7 +50,7 @@ function doGet(e) {
   var nameIndex = findHeaderIndex(['Name', 'user-name', 'name']);
   var affiliationIndex = findHeaderIndex(['Affiliation', 'user-affiliation', 'affiliation']);
   var jobTitleIndex = findHeaderIndex(['JobTitle', 'user-job-title', 'jobTitle']);
-  var typeIndex = findHeaderIndex(['TypeSelf', 'user-type-self', 'type']);
+  var typeIndex = findHeaderIndex(['TypeOther', 'user-type-other', 'TypeSelf', 'user-type-self', 'type']);
   var scoreIndex = findHeaderIndex(['TotalScore', 'totalScore', 'score']);
   var meisterIndex = findHeaderIndex(['MeisterRank', 'meisterRank']);
   var qualIndex = findHeaderIndex(['Qualifications', 'qualifications']);
