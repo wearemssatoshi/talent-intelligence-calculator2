@@ -358,8 +358,13 @@
             loadNamesBtn.disabled = true;
 
             try {
-                const response = await fetch(`${GAS_URL}?action=list`);
-                const data = await response.json();
+                const response = await fetch(`${GAS_URL}?action=list`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
+                const text = await response.text();
+                console.log('Response:', text);
+                const data = JSON.parse(text);
 
                 if (data.result === 'success' && data.names) {
                     staffSelect.innerHTML = '<option value="">スタッフを選択</option>';
@@ -371,12 +376,13 @@
                     });
                     staffSelect.disabled = false;
                     searchBtn.disabled = false;
+                    alert('スタッフ名を読み込みました！ (' + data.names.length + '名)');
                 } else {
-                    alert('データの取得に失敗しました');
+                    alert('データの取得に失敗しました: ' + JSON.stringify(data));
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('エラーが発生しました。URLを確認してください。');
+                alert('エラーが発生しました: ' + error.message + '\n\nURLを確認してください。また、GASが「ウェブアプリとしてデプロイ」→「全員がアクセス可能」に設定されているか確認してください。');
             } finally {
                 loadNamesBtn.textContent = '名前を読込';
                 loadNamesBtn.disabled = false;
