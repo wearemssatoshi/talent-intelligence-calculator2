@@ -693,12 +693,12 @@
             // Step 2: Synergy Multiplier (Pairwise Analysis)
             let totalMultiplier = 0;
             let pairCount = 0;
-            let synergyDetails = [];
+            let bestPairings = [];
+            let cautionPairings = [];
 
             if (teamMembers.length < 2) {
                 totalMultiplier = 1.0;
                 pairCount = 1;
-                synergyDetails.push("メンバーが1名のため、シナジー効果は発生しません。");
             } else {
                 for (let i = 0; i < teamMembers.length; i++) {
                     for (let j = i + 1; j < teamMembers.length; j++) {
@@ -710,15 +710,15 @@
                         let multiplier = 1.0;
 
                         // Check Synergy
-                        if (synergyData[type1] && (synergyData[type1].best.includes(type2) || synergyData[type2].best.includes(type1))) {
+                        if (synergyData[type1] && (synergyData[type1].best.includes(type2) || (synergyData[type2] && synergyData[type2].best.includes(type1)))) {
                             multiplier = 1.2;
-                            synergyDetails.push(`<span style="color:#2E7D32;">★ Best: ${m1.name} & ${m2.name} (1.2倍)</span>`);
-                        } else if (synergyData[type1] && (synergyData[type1].caution.includes(type2) || synergyData[type2].caution.includes(type1))) {
+                            bestPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 1.2 });
+                        } else if (synergyData[type1] && (synergyData[type1].caution.includes(type2) || (synergyData[type2] && synergyData[type2].caution.includes(type1)))) {
                             multiplier = 0.9;
-                            synergyDetails.push(`<span style="color:#C62828;">⚠ Warning: ${m1.name} & ${m2.name} (0.9倍)</span>`);
+                            cautionPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 0.9 });
                         } else if (type1 === type2) {
                             multiplier = 1.1;
-                            synergyDetails.push(`<span style="color:#1565C0;">☆ Better: ${m1.name} & ${m2.name} (1.1倍)</span>`);
+                            bestPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 1.1 });
                         }
 
                         totalMultiplier += multiplier;
@@ -737,39 +737,56 @@
             let bonusText = `Avg Score: ${avgScore.toFixed(2)} × Synergy: ${avgMultiplier.toFixed(2)}`;
             document.getElementById('synergy-bonus').innerHTML = bonusText;
 
-            // --- Scale-based Advice Logic ---
+            // --- Build Advice with separated Best and Caution pairings ---
             let scaleAdvice = "";
             const size = teamMembers.length;
 
             if (size <= 5) {
-                // Small Team (1-5)
                 scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E8F5E9; border-left:4px solid #4CAF50;">
                     <strong>Phase: Small (少数精鋭)</strong><br>
                     個々のスキルと相性が全てです。Synergy 1.1以上を目指しましょう。
                 </div>`;
             } else if (size <= 12) {
-                // Medium Team (6-12)
                 scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#FFF3E0; border-left:4px solid #FF9800;">
                     <strong>Phase: Medium (組織化)</strong><br>
                     バランスが重要です。Total Momentumを高めつつ、Warningペアのケアを行ってください。
                 </div>`;
             } else {
-                // Large Team (13+)
                 scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E3F2FD; border-left:4px solid #2196F3;">
                     <strong>Phase: Large (大組織)</strong><br>
-                    ハレーション防止が最優先です。Synergyが1.0を下回らないように注意し、司令塔（Balance/Emperor）を配置してください。
+                    ハレーション防止が最優先です。Synergyが1.0を下回らないように注意してください。
                 </div>`;
             }
 
             let adviceHtml = scaleAdvice;
-            adviceHtml += `<strong>詳細分析:</strong><br>`;
 
-            if (synergyDetails.length > 0) {
-                adviceHtml += synergyDetails.slice(0, 5).join('<br>');
-                if (synergyDetails.length > 5) adviceHtml += '<br>...他';
+            // Best Pairings (Top 3)
+            adviceHtml += `<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">`;
+
+            adviceHtml += `<div style="flex: 1; min-width: 200px; background: #E8F5E9; padding: 0.75rem; border-radius: 8px;">
+                <strong style="color: #2E7D32;">✨ Best Match (Top 3)</strong><br>`;
+            if (bestPairings.length > 0) {
+                bestPairings.slice(0, 3).forEach(p => {
+                    adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem;">★ ${p.name1} × ${p.name2}</div>`;
+                });
             } else {
-                adviceHtml += "特筆すべきシナジー・コンフリクトはありません。";
+                adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem; color: #666;">該当なし</div>`;
             }
+            adviceHtml += `</div>`;
+
+            // Caution Pairings (Top 3)
+            adviceHtml += `<div style="flex: 1; min-width: 200px; background: #FFEBEE; padding: 0.75rem; border-radius: 8px;">
+                <strong style="color: #C62828;">⚠️ Caution Match (Top 3)</strong><br>`;
+            if (cautionPairings.length > 0) {
+                cautionPairings.slice(0, 3).forEach(p => {
+                    adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem;">⚠ ${p.name1} × ${p.name2}</div>`;
+                });
+            } else {
+                adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem; color: #666;">該当なし</div>`;
+            }
+            adviceHtml += `</div>`;
+
+            adviceHtml += `</div>`;
 
             document.getElementById('team-advice').innerHTML = adviceHtml;
         }
