@@ -436,6 +436,18 @@
                 <div class="skills-container" id="skills-container">
                     <!-- Skills will be inserted here -->
                 </div>
+
+                <!-- Advice/Comment Box -->
+                <div
+                    style="margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 12px; border-left: 4px solid var(--secondary-color);">
+                    <h4
+                        style="font-family: 'Montserrat', sans-serif; margin-bottom: 1rem; color: var(--primary-color); font-size: 1rem;">
+                        💬 コメント・アドバイス
+                    </h4>
+                    <textarea id="advisor-comment"
+                        style="width: 100%; min-height: 100px; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 0.95rem; resize: vertical;"
+                        placeholder="スタッフへのアドバイスや評価コメントを入力してください..."></textarea>
+                </div>
             </div>
         </div>
 
@@ -918,31 +930,51 @@
             const guestExpA = pA * sA, teamDrivenA = eA * mA;
             const guestExpB = pB * sB, teamDrivenB = eB * mB;
 
+            // Format dates
+            const dateA = recordA.Timestamp ? new Date(recordA.Timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' }) : '日付不明';
+            const dateB = recordB.Timestamp ? new Date(recordB.Timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' }) : '日付不明';
+
             // VS Header Card
             const vsCard = document.createElement('div');
             vsCard.style.cssText = 'grid-column: 1 / -1; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 1rem;';
             vsCard.innerHTML = `
                 <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center;">
                     <div style="text-align: center;">
-                        <div style="font-size: 0.9rem; color: #3b82f6; margin-bottom: 0.5rem;">${nameA}</div>
-                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; color: ${totalA > totalB ? '#D4AF37' : '#94a3b8'};">${totalA.toFixed(2)}</div>
-                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
-                            <span style="color: #f59e0b;">GE</span> ${guestExpA.toFixed(2)} + <span style="color: #8b5cf6;">TD</span> ${teamDrivenA.toFixed(2)}
+                        <div style="font-size: 1.2rem; color: #3b82f6; font-weight: 700;">${nameA}</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.5rem;">📅 ${dateA}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: ${totalA > totalB ? '#D4AF37' : '#94a3b8'};">${totalA.toFixed(2)}</div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 600;">ゲストエクスペリエンス</span>
+                                <span style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: #f59e0b;">${guestExpA.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">チームドリブン</span>
+                                <span style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">${teamDrivenA.toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 3rem; color: #ef4444;">⚔️</div>
-                        <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">VS</div>
+                        <div style="font-size: 3.5rem; color: #ef4444;">⚔️</div>
+                        <div style="font-size: 0.9rem; color: #64748b; margin-top: 0.5rem; font-weight: 600;">VS</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 0.9rem; color: #ef4444; margin-bottom: 0.5rem;">${nameB}</div>
-                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; color: ${totalB > totalA ? '#D4AF37' : '#94a3b8'};">${totalB.toFixed(2)}</div>
-                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
-                            <span style="color: #f59e0b;">GE</span> ${guestExpB.toFixed(2)} + <span style="color: #8b5cf6;">TD</span> ${teamDrivenB.toFixed(2)}
+                        <div style="font-size: 1.2rem; color: #ef4444; font-weight: 700;">${nameB}</div>
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.5rem;">📅 ${dateB}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: ${totalB > totalA ? '#D4AF37' : '#94a3b8'};">${totalB.toFixed(2)}</div>
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 600;">ゲストエクスペリエンス</span>
+                                <span style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: #f59e0b;">${guestExpB.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">チームドリブン</span>
+                                <span style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">${teamDrivenB.toFixed(2)}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                ${totalA !== totalB ? `<div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #10b981;">🏆 ${totalA > totalB ? nameA : nameB} が ${Math.abs(totalA - totalB).toFixed(2)} 点リード</div>` : ''}
+                ${totalA !== totalB ? `<div style="text-align: center; margin-top: 1.5rem; font-size: 1rem; color: #10b981; font-weight: 600;">🏆 ${totalA > totalB ? nameA : nameB} が ${Math.abs(totalA - totalB).toFixed(2)} 点リード</div>` : ''}
             `;
             container.appendChild(vsCard);
 
@@ -1005,11 +1037,26 @@
 
             try {
                 const element = document.getElementById('comparison-card');
+
+                // Convert textarea to div for PDF
+                const textarea = document.getElementById('advisor-comment');
+                const commentText = textarea.value;
+                const commentDiv = document.createElement('div');
+                commentDiv.id = 'comment-for-pdf';
+                commentDiv.style.cssText = 'width: 100%; min-height: 60px; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; white-space: pre-wrap; background: white;';
+                commentDiv.textContent = commentText || '（コメントなし）';
+                textarea.style.display = 'none';
+                textarea.parentNode.insertBefore(commentDiv, textarea.nextSibling);
+
                 const canvas = await html2canvas(element, {
                     scale: 2,
                     useCORS: true,
                     backgroundColor: '#ffffff'
                 });
+
+                // Restore textarea
+                textarea.style.display = '';
+                commentDiv.remove();
 
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape
@@ -1017,14 +1064,39 @@
                 const imgWidth = 287;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 5, imgWidth, imgHeight);
+                // Handle multi-page if content is too tall
+                const pageHeight = 200;
+                if (imgHeight > pageHeight) {
+                    let position = 0;
+                    let remainingHeight = imgHeight;
+                    while (remainingHeight > 0) {
+                        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 5 - position, imgWidth, imgHeight);
+                        remainingHeight -= pageHeight;
+                        if (remainingHeight > 0) {
+                            pdf.addPage();
+                            position += pageHeight;
+                        }
+                    }
+                } else {
+                    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 5, 5, imgWidth, imgHeight);
+                }
 
-                const staffName = document.getElementById('staff-name-display').textContent;
+                // Get filename based on mode
+                let filename;
+                const titleEl = document.querySelector('#comparison-card > div:first-child > h3');
+                if (currentMode === 'vs') {
+                    const nameA = staffSelect.value || 'StaffA';
+                    const nameB = staffSelectB.value || 'StaffB';
+                    filename = `SVD_VS_${nameA}_vs_${nameB}`;
+                } else {
+                    const staffName = staffSelect.value || 'Staff';
+                    filename = `SVD_Growth_${staffName}`;
+                }
                 const date = new Date().toISOString().split('T')[0];
-                pdf.save(`SVD_Growth_${staffName}_${date}.pdf`);
+                pdf.save(`${filename}_${date}.pdf`);
             } catch (error) {
                 console.error('PDF Error:', error);
-                alert('PDF生成中にエラーが発生しました');
+                alert('PDF生成中にエラーが発生しました: ' + error.message);
             } finally {
                 btn.textContent = 'PDFで保存';
                 btn.disabled = false;
