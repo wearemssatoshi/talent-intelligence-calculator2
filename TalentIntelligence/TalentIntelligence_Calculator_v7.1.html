@@ -854,15 +854,1404 @@
             </div>
         </div>
 
-    <!-- Footer -->
-    <footer style="
+        <!-- Footer -->
+        <footer
+            style="text-align: center; margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-color);">
+            <p
+                style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--light-text-color); letter-spacing: 0.15em; text-transform: uppercase; margin: 0;">
+                SAPPORO VIEWTIFUL DINING — ORIGIN
+            </p>
+            <p style="font-size: 0.75rem; color: var(--light-text-color); margin: 0.5rem 0 0 0;">
+                © 2024-2025 SVD. All rights reserved.
+            </p>
+        </footer>
+
+        <script> // --- QUALIFICATION DATA ---
+            const qualificationData = [ // 5 pts (High Level)
+
+                {
+                    id: "q_jsa_exc", name: "J.S.A. ソムリエ・エクセレンス / WEエクセレンス", points: 5
+                }
+
+                ,
+                {
+                    id: "q_wset_l34", name: "WSET Level 3 / Level 4 (Diploma)", points: 5
+                }
+
+                ,
+                {
+                    id: "q_hrs_1", name: "HRS レストランサービス技能士 1級", points: 5
+                }
+
+                ,
+                {
+                    id: "q_hba_master", name: "HBA マスター / シニアバーテンダー", points: 5
+                }
+
+                ,
+                {
+                    id: "q_cook_special", name: "専門調理師・調理技能士", points: 5
+                }
+
+                ,
+
+                // 3 pts (Professional)
+                {
+                    id: "q_jsa_som", name: "J.S.A. ソムリエ / ワインエキスパート", points: 3
+                }
+
+                ,
+                {
+                    id: "q_wset_l2", name: "WSET Level 2", points: 3
+                }
+
+                ,
+                {
+                    id: "q_hrs_2", name: "HRS レストランサービス技能士 2級", points: 3
+                }
+
+                ,
+                {
+                    id: "q_hba_bar", name: "HBA バーテンダー", points: 3
+                }
+
+                ,
+                {
+                    id: "q_cook", name: "調理師免許", points: 3
+                }
+
+                ,
+                {
+                    id: "q_conf", name: "製菓衛生師 / 菓子製造技能士", points: 3
+                }
+
+                ,
+                {
+                    id: "q_sake", name: "唎酒師 / 焼酎唎酒師 / チーズプロ", points: 3
+                }
+
+                ,
+
+                // 1 pt (Basic / Essential)
+                {
+                    id: "q_wset_l1", name: "WSET Level 1", points: 1
+                }
+
+                ,
+                {
+                    id: "q_hrs_3", name: "HRS レストランサービス技能士 3級", points: 1
+                }
+
+                ,
+                {
+                    id: "q_hba_adv", name: "HBA カクテル / ビバレッジアドバイザー", points: 1
+                }
+
+                ,
+                {
+                    id: "q_food_safe", name: "食品衛生責任者", points: 1
+                }
+
+                ,
+                {
+                    id: "q_fire", name: "防火管理者 (甲種/乙種) / 防災管理者", points: 1
+                }
+
+                ,
+                {
+                    id: "q_aed", name: "救命技能認定 (AED)", points: 1
+                }
+
+            ];
+
+            function initQualifications() {
+                const container = document.getElementById('qualification-list');
+                container.innerHTML = ''; // Clear existing content
+
+                qualificationData.forEach(q => {
+                    const label = document.createElement('label');
+                    label.className = 'qual-card';
+
+                    label.innerHTML = ` <input type="checkbox" name="qualification" value="${q.id}" data-points="${q.points}" onchange="updateQualificationScore(this)" > <span class="qual-name" >${q.name}
+
+                    </span> <span class="qual-points" >${q.points}
+
+                    pt</span> `;
+                    container.appendChild(label);
+                });
+            }
+
+            function updateQualificationScore(changedCheckbox) {
+
+                // Toggle 'selected' class for the clicked card
+                if (changedCheckbox) {
+                    const card = changedCheckbox.closest('.qual-card');
+
+                    if (changedCheckbox.checked) {
+                        card.classList.add('selected');
+                    }
+
+                    else {
+                        card.classList.remove('selected');
+                    }
+                }
+
+                const checkboxes = document.querySelectorAll('input[name="qualification"]:checked');
+                let totalPoints = 0;
+                let qualNames = [];
+
+                checkboxes.forEach(cb => {
+                    totalPoints += parseInt(cb.dataset.points);
+                    const q = qualificationData.find(item => item.id === cb.value);
+                    if (q) qualNames.push(q.name);
+                });
+
+                // Update Score Display
+                const scoreEl = document.getElementById('qual-score');
+                // Simple animation for number change
+                animateValue(scoreEl, parseInt(scoreEl.textContent), totalPoints, 500);
+
+                let rank = "Rookie";
+                let color = "#546E7A"; // Default gray
+
+                if (totalPoints >= 13) {
+                    rank = "Master";
+                    color = "#FFD700"; // Gold
+                }
+
+                else if (totalPoints >= 8) {
+                    rank = "Expert";
+                    color = "#D84315"; // Red/Orange
+                }
+
+                else if (totalPoints >= 3) {
+                    rank = "Specialist";
+                    color = "#1565C0"; // Blue
+                }
+
+                else if (totalPoints >= 2) {
+                    rank = "Junior";
+                    color = "#43A047"; // Green
+                }
+
+                const rankEl = document.getElementById('meister-rank');
+                rankEl.textContent = rank;
+                rankEl.style.color = color;
+
+                const badgeEl = document.getElementById('qualification-badge');
+                badgeEl.textContent = rank;
+                badgeEl.style.background = color;
+                badgeEl.style.color = totalPoints >= 31 ? "black" : "white";
+            }
+
+            function animateValue(obj, start, end, duration) {
+                let startTimestamp = null;
+
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    obj.innerHTML = Math.floor(progress * (end - start) + start);
+
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                }
+
+                    ;
+                window.requestAnimationFrame(step);
+            }
+
+
+
+            // --- SVD 18 TYPES DATA ---
+            const svdTypes = {
+                "Balance": {
+                    name: "Balance (バランス)", desc: "汎用・適応"
+                }
+
+                ,
+                "Flare": {
+                    name: "Flare (フレア)", desc: "情熱・突破"
+                }
+
+                ,
+                "Flow": {
+                    name: "Flow (フロー)", desc: "柔軟・浸透"
+                }
+
+                ,
+                "Bloom": {
+                    name: "Bloom (ブルーム)", desc: "育成・調和"
+                }
+
+                ,
+                "Spark": {
+                    name: "Spark (スパーク)", desc: "閃き・革新"
+                }
+
+                ,
+                "Crystal": {
+                    name: "Crystal (クリスタル)", desc: "緻密・冷静"
+                }
+
+                ,
+                "Striker": {
+                    name: "Striker (ストライカー)", desc: "実直・技術"
+                }
+
+                ,
+                "Rogue": {
+                    name: "Rogue (ローグ)", desc: "改革・本質"
+                }
+
+                ,
+                "Ground": {
+                    name: "Ground (グラウンド)", desc: "安定・土台"
+                }
+
+                ,
+                "Wing": {
+                    name: "Wing (ウィング)", desc: "自由・俯瞰"
+                }
+
+                ,
+                "Seraph": {
+                    name: "Seraph (セラフ)", desc: "洞察・予知"
+                }
+
+                ,
+                "Craft": {
+                    name: "Craft (クラフト)", desc: "改善・適応"
+                }
+
+                ,
+                "Solid": {
+                    name: "Solid (ソリッド)", desc: "信念・伝統"
+                }
+
+                ,
+                "Shade": {
+                    name: "Shade (シェード)", desc: "献身・黒子"
+                }
+
+                ,
+                "Emperor": {
+                    name: "Emperor (エンペラー)", desc: "統率・圧倒"
+                }
+
+                ,
+                "Night Shift": {
+                    name: "Night Shift (ナイトシフト)", desc: "危機・実利"
+                }
+
+                ,
+                "Iron": {
+                    name: "Iron (アイアン)", desc: "鉄壁・規律"
+                }
+
+                ,
+                "Bliss": {
+                    name: "Bliss (ブリス)", desc: "愛嬌・浄化"
+                }
+            }
+
+                ;
+
+
+
+            const diagnosisQuestions = [{
+                id: 1, type: "Balance", text: "どんなタイプのお客様やスタッフとも、自然と波長を合わせることができますか？"
+            }
+
+                ,
+            {
+                id: 2, type: "Balance", text: "チームの中で調整役や相談役になることが多く、安心感があると言われますか？"
+            }
+
+                ,
+            {
+                id: 3, type: "Flare", text: "忙しいピークタイムやプレッシャーがかかる場面ほど、やる気が湧いてきますか？"
+            }
+
+                ,
+            {
+                id: 4, type: "Flare", text: "困難な状況でも、情熱を持ってチームを引っ張っていく自信がありますか？"
+            }
+
+                ,
+            {
+                id: 5, type: "Flow", text: "その場の状況やお客様の空気に合わせて、接客スタイルを柔軟に変えられますか？"
+            }
+
+                ,
+            {
+                id: 6, type: "Flow", text: "予期せぬトラブルが起きても、慌てずに冷静に対処することができますか？"
+            }
+
+                ,
+            {
+                id: 7, type: "Bloom", text: "自分の成功よりも、後輩やチームメンバーが成長する姿を見ることに喜びを感じますか？"
+            }
+
+                ,
+            {
+                id: 8, type: "Bloom", text: "長期的な視点で、チームの信頼関係や調和を大切に育てていきたいですか？"
+            }
+
+                ,
+            {
+                id: 9, type: "Spark", text: "マニュアル通りの対応よりも、その瞬間の閃きやサプライズで感動させたいですか？"
+            }
+
+                ,
+            {
+                id: 10, type: "Spark", text: "新しいアイデアや企画を思いつくのが得意で、変化を楽しめるタイプですか？"
+            }
+
+                ,
+            {
+                id: 11, type: "Crystal", text: "スピードよりも、1ミリの狂いもない美しい盛り付けや、完璧な準備に美学を感じますか？"
+            }
+
+                ,
+            {
+                id: 12, type: "Crystal", text: "騒がしい環境よりも、静かで落ち着いた環境で、緻密な作業に集中したいですか？"
+            }
+
+                ,
+            {
+                id: 13, type: "Striker", text: "口で語るよりも、背中で語りたい。圧倒的な技術や実力こそが信頼の証だと思いますか？"
+            }
+
+                ,
+            {
+                id: 14, type: "Striker", text: "一つのスキルや技術を、納得いくまでとことん磨き上げることにやりがいを感じますか？"
+            }
+
+                ,
+            {
+                id: 15, type: "Rogue", text: "チームのためになるなら、嫌われることを恐れずに「それは違う」と指摘できますか？"
+            }
+
+                ,
+            {
+                id: 16, type: "Rogue", text: "形式的なルールや慣習にとらわれず、本質的な改善や改革を提案したいですか？"
+            }
+
+                ,
+            {
+                id: 17, type: "Ground", text: "目立つことよりも、チームの土台として安定したパフォーマンスを出し続けることに誇りを感じますか？"
+            }
+
+                ,
+            {
+                id: 18, type: "Ground", text: "どんな時でも動じない忍耐強さがあり、周囲から「堅実だ」と信頼されていますか？"
+            }
+
+                ,
+            {
+                id: 19, type: "Wing", text: "一つの場所に留まるより、フロア全体を飛び回り、広い視野で動くのが好きですか？"
+            }
+
+                ,
+            {
+                id: 20, type: "Wing", text: "変化の激しい状況でも、フットワーク軽く、スピーディーに対応できますか？"
+            }
+
+                ,
+            {
+                id: 21, type: "Seraph", text: "お客様が言葉にする前に、何を求めているか直感的にわかることが多いですか？"
+            }
+
+                ,
+            {
+                id: 22, type: "Seraph", text: "相手の些細な表情や声のトーンから、感情やニーズを深く読み取ることができますか？"
+            }
+
+                ,
+            {
+                id: 23, type: "Craft", text: "日々の業務の中で小さな無駄を見つけ、少しずつ改善（カイゼン）していくのが好きですか？"
+            }
+
+                ,
+            {
+                id: 24, type: "Craft", text: "細部へのこだわりが強く、小さな変化や工夫を積み重ねることに喜びを感じますか？"
+            }
+
+                ,
+            {
+                id: 25, type: "Solid", text: "SVDの伝統や格式、ブランドのルールを守り抜くことこそが、価値を高めると思いますか？"
+            }
+
+                ,
+            {
+                id: 26, type: "Solid", text: "一度決めた信念や目標は、何があっても揺るがずに貫き通す強さがありますか？"
+            }
+
+                ,
+            {
+                id: 27, type: "Shade", text: "表舞台には出なくても、洗い場や仕込みなど、裏方でチームを支えることに居心地の良さを感じますか？"
+            }
+
+                ,
+            {
+                id: 28, type: "Shade", text: "誰にも気づかれないような場所でも、完璧な準備やサポートをすることに誇りを持っていますか？"
+            }
+
+                ,
+            {
+                id: 29, type: "Emperor", text: "「この人についていきたい」と思わせるような、強いオーラやリーダーシップがあると言われますか？"
+            }
+
+                ,
+            {
+                id: 30, type: "Emperor", text: "圧倒的な存在感で、その場にいるだけでチームの士気を高めることができますか？"
+            }
+
+                ,
+            {
+                id: 31, type: "Night Shift", text: "綺麗事だけでなく、利益や数字という結果にコミットし、冷静な判断ができますか？"
+            }
+
+                ,
+            {
+                id: 32, type: "Night Shift", text: "危機的な状況でも、感情に流されず、最も効果的な解決策を導き出せますか？"
+            }
+
+                ,
+            {
+                id: 33, type: "Iron", text: "ミスは許せないタイプですか？完璧な準備や管理によって、鉄壁の守りを固めたいですか？"
+            }
+
+                ,
+            {
+                id: 34, type: "Iron", text: "ルールや規律を重んじ、組織全体が正しく機能するように管理するのが得意ですか？"
+            }
+
+                ,
+            {
+                id: 35, type: "Bliss", text: "あなたがその場にいるだけで、チームの雰囲気が明るくなったり、お客様が笑顔になったりしますか？"
+            }
+
+                ,
+            {
+                id: 36, type: "Bliss", text: "難しい理屈よりも、愛嬌やユーモアで、場の空気を和ませるのが得意ですか？"
+            }
+
+            ];
+
+            // Populate Select Options
+            function populateTypeSelects() {
+                const selfSelect = document.getElementById('user-type-self');
+                const otherSelect = document.getElementById('user-type-other');
+                let optionsHtml = '';
+
+                for (const key in svdTypes) {
+                    optionsHtml += `<option value="${key}">${svdTypes[key].name}
+
+                </option>`;
+                }
+
+                selfSelect.innerHTML = '<option value="" disabled selected>→ 右の「診断」ボタンから設問に答えてください</option>' + optionsHtml;
+                otherSelect.innerHTML = '<option value="" disabled selected>上司が判断したタイプを選択</option>' + optionsHtml;
+            }
+
+            // Diagnosis Logic
+            // Diagnosis Logic
+            function openDiagnosisModal() {
+                console.log('Opening Diagnosis Modal...');
+                const container = document.getElementById('diagnosis-questions-container');
+
+                if (!container) {
+                    console.error('Diagnosis container not found!');
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                diagnosisQuestions.forEach((q, index) => {
+                    const div = document.createElement('div');
+                    div.style.marginBottom = '1.5rem';
+                    div.style.padding = '1rem';
+                    div.style.background = '#f9f9f9';
+                    div.style.borderRadius = '8px';
+
+                    div.innerHTML = ` <p style="font-weight:bold; margin-bottom:0.5rem;" >Q${index + 1}
+
+                    . ${q.text}
+
+                    </p> <div style="display:flex; justify-content:space-between; max-width:400px;" > <label><input type="radio" name="q${q.id}" value="5" > 5</label> <label><input type="radio" name="q${q.id}" value="4" > 4</label> <label><input type="radio" name="q${q.id}" value="3" > 3</label> <label><input type="radio" name="q${q.id}" value="2" > 2</label> <label><input type="radio" name="q${q.id}" value="1" > 1</label> </div> <div style="display:flex; justify-content:space-between; max-width:400px; font-size:0.8rem; color:#666; margin-top:0.2rem;" > <span>かなり</span><span>全く</span> </div> `;
+                    container.appendChild(div);
+                });
+
+                document.getElementById('diagnosis-modal').style.display = 'block';
+            }
+
+            function closeDiagnosisModal() {
+                document.getElementById('diagnosis-modal').style.display = 'none';
+            }
+
+            function calculateDiagnosis() {
+                const scores = {}
+
+                    ;
+
+                for (const key in svdTypes) {
+                    scores[key] = 0;
+                }
+
+                const form = document.getElementById('diagnosis-form');
+                const formData = new FormData(form);
+
+                // Check if all answered (optional, skipping for now for ease of testing)
+
+                let hasAnswers = false;
+                diagnosisQuestions.forEach(q => {
+                    const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                    if (selected) {
+                        scores[q.type] += parseInt(selected.value);
+                        hasAnswers = true;
+                    }
+                });
+
+                if (!hasAnswers) {
+                    alert("回答が検出されませんでした。すべての質問に回答してください。");
+                    return;
+                }
+
+                // Sort scores
+                const sortedTypes = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+                const top3 = sortedTypes.slice(0, 3);
+
+                // Display Top 3 in the UI
+                const resultDisplay = document.getElementById('diagnosis-result-display');
+                let resultHtml = '<strong>【診断結果 Top 3】</strong><br>';
+
+                top3.forEach((type, i) => {
+                    resultHtml += `${i + 1}
+
+                    . ${svdTypes[type].name}
+
+                    (${scores[type]}
+
+                        pt)<br>`;
+                });
+                resultDisplay.innerHTML = resultHtml;
+                resultDisplay.style.display = 'block';
+
+                // Set the top result to the select box
+                document.getElementById('user-type-self').value = top3[0];
+
+                alert("診断が完了しました！\n結果はSelf-Perception欄に表示されています。");
+                closeDiagnosisModal();
+            }
+
+            // window.onload removed to avoid conflict with DOMContentLoaded listener below
+
+            // --- DATA ---
+            const skillData = {
+                "パーソル力": {
+
+                    prefix: 'p',
+                    subCategories: {
+                        "自己成長/学習意欲": ["指示された業務を覚えることに集中している", "自身の業務範囲内で、分からないことを自ら質問できる", "自身のスキルアップのために、マニュアルを読み返したり、先輩の技術を観察したりしている", "上位者から与えられた課題やフィードバックに対し、素直に受け止め、改善しようと努力している", "自身の業務範囲外の知識やスキル（例: 他部門の業務、業界のトレンド）にも興味を持ち、情報収集している", "自身の弱みを克服するため、または強みを伸ばすために、具体的な目標を設定し、学習計画を立てて実行している（例: 書籍購入、セミナー参加）", "習得した知識やスキルを、自身の業務改善やチームへの貢献に活かしている", "チームや店舗の目標達成に必要な新しい知識やスキルを特定し、チーム全体の学習を促進する活動（例: 勉強会の企画）を主導できる", "業界の枠を超えた幅広い分野から学び、SVDの既存のやり方にとらわれない新しいアイデアや視点をもたらすことができる", "常に自己変革を続け、その姿勢が周囲の模範となっている。組織全体の「学習する文化」を醸成し、牽引している"],
+                        "協調性/チームワーク": ["自身の業務を滞りなく行い、チームに迷惑をかけないように努めている", "チームメンバーからの依頼に対し、快く協力できる", "チーム内のコミュニケーションを円滑にするため、積極的に挨拶や声かけを行っている", "自身の意見を伝えつつ、チームの決定には従い、協力して業務を遂行できる", "チーム内の課題や目標に対し、自身の役割を理解し、積極的に貢献しようと努めている", "チームメンバーの強みや弱みを理解し、互いに補完し合えるような関係性を築ける", "チーム内の意見の対立や衝突があった際に、中立的な立場で調整し、建設的な解決に導ける", "チームの目標達成のために、部門や役割の垣根を越えて他チームと連携し、協力体制を構築できる", "チーム全体のパフォーマンスを最大化するため、メンバーのモチベーション向上や、新しいチームワークの仕組みを提案・実行できる", "SVD全体の組織目標達成のため、複数のチームや部門を横断するプロジェクトを主導し、全社的な協調体制を構築・推進できる"],
+                        "ストレス耐性/柔軟性": ["予期せぬ出来事やプレッシャーを感じると、業務に集中しづらくなることがある", "プレッシャーを感じつつも、指示された業務は最後まで遂行できる", "業務の優先順位が変更された際、戸惑いつつも対応できる", "繁忙時や予期せぬトラブルが発生した際も、冷静さを保ち、自身の業務を遂行できる", "業務内容や役割の変更に対し、前向きに受け入れ、適応しようと努力できる", "ストレスを感じた際に、自身の感情をコントロールし、適切な対処法（例: 休憩、相談）を見つけられる", "チームメンバーがストレスを感じている状況を察知し、サポートや声かけができる", "複数の困難な状況や変化が同時に発生しても、冷静に状況を分析し、優先順位を付けて対応できる", "組織全体の大きな変革や困難なプロジェクトにおいて、その変化を前向きに捉え、チームを鼓舞し、適応を促せる", "どのような逆境や未曾有の事態においても、常に冷静沈着で、変化を成長の機会と捉え、組織全体を力強く牽引できる"],
+                        "当事者意識/責任感": ["指示された業務を、決められた手順通りに遂行する", "自身の業務において、ミスなく完了させる責任感を持っている", "自身の業務範囲で発生した問題に対し、他責にせず、自身の問題として捉えることができる", "自身の業務を「作業」としてではなく、「目的」を理解した上で遂行できる", "自身の役割や業務が、チームや店舗全体の目標にどう貢献するかを理解し、行動している", "担当業務の範囲を超えて、店舗全体の課題や問題点を「自分ごと」として捉え、改善策を提案できる", "チームやプロジェクトのリーダーとして、その成果に対して全責任を負う覚悟を持っている", "チームや店舗で発生した失敗やクレームに対し、自らが矢面に立ち、責任者として対応できる", "店舗や事業の成功を自身の成功と捉え、その達成のためにあらゆる困難を引き受け、最後までやり遂げる", "SVD全体の成功と発展を自身の使命と捉え、いかなる役割や立場であっても、組織全体の課題を「自分ごと」として解決に導く"],
+                        "共感力/傾聴力": ["相手の話を遮らずに聞くことができる", "相手の表情や声のトーンから、感情を読み取ろうと努めている", "相手の話の内容を理解し、適切に相槌を打つことができる", "相手の言葉の裏にある意図や感情を推測し、共感的な返答ができる", "顧客や同僚の抱える問題に対し、相手の立場に立って考え、寄り添うことができる", "相手が本当に伝えたいこと（ニーズ、不満、期待）を、言葉だけでなく非言語情報からも深く理解できる", "チーム内の意見の対立や顧客のクレームに対し、双方の感情や背景を深く理解し、共感を示しながら解決の糸口を見つけられる", "顧客や同僚の潜在的なニーズや、まだ言語化されていない感情を察知し、先回りして行動できる", "異なる文化や価値観を持つ人々に対しても、深い共感と理解を示し、信頼関係を構築できる", "SVDの顧客や従業員、パートナー企業など、あらゆるステークホルダーの感情やニーズを深く理解し、それらをSVDのサービスや戦略に反映させることで、組織全体の共感力を高める"],
+                        "SVD理念への共鳴": ["SVDの理念や行動指針について、説明を聞いたことがある", "SVDのブランドコンセプト「ここだけの美味しさ。ここだけのエンターテインメント。」を理解し、説明できる", "自身の業務において、SVDの理念を意識して行動しようと努めている", "自身の行動や判断が、SVDのブランドイメージにどう影響するかを考えている", "SVDの理念やビジョンを自身の言葉で語り、後輩に伝えることができる", "SVDの理念を体現するような、新しいサービスや改善案を自ら提案できる", "チームや店舗の目標を、SVDの理念と結びつけて設定し、メンバーの共感を呼ぶことができる", "SVDの理念に反するような事象や慣習を発見した際に、それを改善するための具体的な行動を起こせる", "SVDの理念やブランド価値を、社外のパートナーや顧客に対しても魅力的に伝え、ファンを増やすことができる", "SVDの理念そのものを時代に合わせて発展させ、組織の未来を創り出す。SVDの「生きる理念」そのものである"]
+                    }
+                }
+
+                ,
+                "サービススキル": {
+
+                    prefix: 's',
+                    subCategories: {
+                        "トータルスキル": ["指示された業務を、指導を受けながら遂行できる（研修生レベル）", "基本的な業務（配膳、バッシング等）を、監督下で一人で遂行できる", "小規模な担当範囲（1〜2テーブル）を、一人で責任を持って担当できる", "担当範囲の顧客の基本的なニーズを先読みし、プロアクティブに動ける", "標準的な担当範囲（3〜4テーブル）を、効率的かつ安定して管理できる", "繁忙時や広範囲のセクションでも、冷静に優先順位を判断し、高い品質を維持できる", "後輩スタッフへの実地指導（OJT）を行い、チーム全体のサービス品質向上に貢献できる", "フロアリーダーとして、予期せぬトラブルやクレームにも一次対応し、解決に導ける", "サービス全体の流れを俯瞰し、フロア全体のオペレーションを円滑に管理・指揮できる", "既存のサービスフローの課題を発見し、改善策を提案・実行することで、店舗全体の顧客体験を革新できる"],
+                        "専門スキル（料理知識）": ["料理名を正確に覚えている", "主な食材が何かを答えることができる", "簡単な調理法（焼く、煮るなど）を説明できる", "食材の産地や特徴、こだわりのポイントを説明できる", "一般的なアレルギーに関する質問に、正確に回答・確認ができる", "料理の風味、食感、味わいの構成を、自身の言葉で表現豊かに説明できる", "顧客の好みや状況（量、気分、予算）をヒアリングし、最適な料理を提案できる", "シェフの料理哲学や、コース全体のストーリーを理解し、顧客に伝えることができる", "専門知識を持つ顧客と、調理技術や食材について対等に会話ができる", "顧客からのフィードバックを的確に収集・分析し、キッチンに建設的な意見としてフィードバックできる"],
+                        "専門スキル（ドリンク知識 ※ワイン除く）": ["ドリンクメニューの品目を覚えている", "標準的なソフトドリンク、ビール、スピリッツの注文を正確に受けられる", "簡単なミックスドリンク（ハイボール等）を作成できる", "提供しているビールやスピリッツの種類と、その特徴を説明できる", "料理に合わせたノンアルコールドリンクのペアリングを提案できる", "定番カクテル（ジントニック、モスコミュール等）をレシピ通りに作成できる", "プレミアムスピリッツの背景（蒸留所、製法）を語り、その価値を伝えることができる", "顧客の好みに合わせて、メニューにないカスタムカクテルを作成・提案できる", "バーの在庫管理に関わり、新しいドリンクメニューの導入を提案できる", "店舗のコンセプトを体現する、シグネチャーカクテルを開発できる"],
+                        "専門スキル（ワイン）": ["赤・白・泡の基本的な違いを理解している", "指示通りにワインの抜栓・提供ができる", "主要なブドウ品種（カベルネ、シャルドネ等）の特徴を簡単に説明できる", "グラスワインリストの各ワインの味わいや特徴を説明できる", "顧客の簡単な好み（重い、軽い等）に応じて、ボトルワインを数種類提案できる", "主要なワイン産地（仏、伊、米等）の特色を理解し、説明できる", "デキャンタージュや、古酒の取り扱いを適切に行うことができる", "コース料理全体を通して、ワインペアリングを自信を持って提案できる", "ワインセラーの一部管理を任され、仕入れや在庫管理に関与する", "ソムリエとして、ワインリスト全体の構築、ペアリングコースの開発、仕入れ戦略の策定を担う"],
+                        "顧客対応力": ["笑顔で挨拶し、基本的な接客用語を正しく使える", "顧客からの簡単な依頼（水、おしぼり等）に、丁寧かつ迅速に対応できる", "顧客の名前を覚え、自然な形で会話に取り入れることができる", "顧客との会話の中で、相手の興味や背景を察し、適切な話題を提供できる", "顧客のニーズを先回りして察知し、言われる前にサービスを提供できる", "軽微なクレームや要望に対し、冷静かつ共感的に対応し、顧客の不満を解消できる", "顧客との間に信頼関係を築き、再来店に繋がる「ファン」を作ることができる", "VIPや特別な配慮が必要な顧客に対し、常に落ち着いて、期待を超えるサービスを提供できる", "重大なクレームや予期せぬ事態に対し、機転を利かせた対応で、逆に顧客の感動を呼ぶ経験を創出できる", "店舗のブランドアンバサダーとして、自身の立ち居振る舞いそのもので、店の格を体現できる"],
+                        "テクニカル対応力": ["POSシステムの基本的な画面構成を理解している", "正確に注文を入力し、会計処理（現金、クレジット）を一人で行える", "割引、分割会計、注文取消しなど、特殊な会計処理をマニュアルを見ずに対応できる", "予約システムの基本操作（新規予約、変更、キャンセル）を正確に行える", "POSやプリンターの軽微なトラブル（ロール紙交換、再起動等）を自己解決できる", "POSから日次・月次の基本的な売上レポートを出力し、内容を理解できる", "新人スタッフに対し、POSや予約システムの操作方法を分かりやすく指導できる", "予約システムのテーブル管理機能を使い、最適な配席や在庫管理を行える", "システムから得られるデータを分析し、オペレーション上の課題や改善点を指摘できる", "外部業者と連携し、システムの導入やアップデート、カスタマイズを主導できる"]
+                    }
+                }
+
+                ,
+                "経験・資格": {
+
+                    prefix: 'e',
+                    subCategories: {
+                        "業界経験年数": ["業界経験1年未満", "業界経験1年", "業界経験2年", "業界経験3年", "業界経験5年", "業界経験7年", "業界経験10年", "業界経験15年", "業界経験20年", "業界経験25年以上"],
+                        "SVD在籍経験": ["在籍1年未満", "在籍1年", "在籍2年", "在籍3年。SVDの理念や文化を深く理解している", "在籍5年。または、2つ以上のSVD店舗での勤務経験がある", "在籍7年。または、異なる業態のSVDブランドでの勤務経験がある", "在籍10年。SVDの歴史や各店舗の背景を理解し、自身の言葉で語ることができる", "新規開店やリニューアルプロジェクトの立ち上げメンバーとしての経験がある", "複数店舗の運営に横断的に関わった経験がある（例: エリアマネジャー、ブランドマネジャー）", "SVDの経営層として、全社の意思決定に関与した経験がある"],
+                        "専門資格保有": ["専門資格なし", "専門分野に関する基礎的な知識を習得中", "専門分野に関する基礎的な資格を1つ保有（例: ワイン検定ブロンズクラス）", "専門分野に関する基礎的な資格を複数保有。または、中級資格を1つ保有（例: ワイン検定シルバークラス）", "ホテル・レストラン・サービス技能士2級、J.S.A. ワインエキスパート、利き酒師など、主要な専門資格を1つ保有", "バーテンダー呼称技能認定、調理師免許、製菓衛生師など、より業務に直結する主要な専門資格を保有", "複数の主要な専門資格を保有。または、ホテル・レストラン・サービス技能士1級を保有。", "J.S.A. ソムリエ呼称資格を保有", "J.S.A. ソムリエ・エクセレンス（旧シニアソムリエ）の資格を保有。または、国内の主要なコンクールでの表彰など、それに準ずる実績がある", "国際的な専門資格（例: WSET Level 3以上）を保有。または、国内外のコンクールで顕著な実績がある"],
+                        "汎用実務スキル": ["基本的なPC操作ができる", "文書作成ソフトや表計算ソフトの基本的な操作ができる", "TableCheckの基本操作（予約入力、顧客情報確認）ができる", "Illustratorの基本操作ができ、簡単なメニューやPOPの作成・修正ができる", "表計算ソフトの高度な機能を用いて、業務効率化に繋がるデータ分析や管理表を作成できる", "TableCheckの応用操作（テーブル管理、在庫設定、顧客メモの活用）ができる", "Illustratorの応用操作ができ、新規メニューブックのデザインや、後輩への指導ができる", "TableCheckの管理者として、店舗の設定変更やスタッフへの指導ができる", "動画編集ツールを用いて、SNS投稿用や社内研修用のショート動画を作成・編集できる", "社内の業務システム全体の課題を特定し、外部業者と連携して要件定義や改善を主導できる"],
+                        "役職経験": ["役職経験なし", "特定の業務リーダーの経験がある", "シフトリーダーやセクションリーダーの経験がある", "キャプテンまたはアシスタントマネジャーとして、上位者の補佐やチーム管理の経験がある", "マネジャーまたは副支配人として、特定部門や小規模店舗の責任者経験がある", "支配人として、一つの店舗全体の運営責任者としての経験がある", "エリア支配人として、複数店舗を統括した経験がある", "上級エリア支配人またはブランドマネジャーとして、より広域なエリアやブランド全体の運営戦略を担った経験がある", "統括支配人として、複数のエリアやブランドを横断する大規模な戦略や組織運営を担った経験がある", "総支配人（GM）として、SVDの運営チームの中核を担い、事業全体を推進した経験がある"],
+                        "実績/表彰": ["特筆すべき実績や表彰なし", "チーム内での小さな貢献が認められた経験がある", "店舗内での表彰（例: 月間MVP）を受けた経験がある", "顧客からの感謝状や、SNSでの高評価など、外部からの具体的な評価を得た経験がある", "SVDグループ内での表彰（例: 年間優秀社員賞）を受けた経験がある", "業務改善プロジェクトを主導し、具体的な成果を出した経験がある", "業界団体主催のコンクールやイベントで入賞・入選した経験がある", "SVDのブランド価値向上に大きく貢献するプロジェクトを主導し、顕著な実績を上げた経験がある", "国内外の主要なコンクールで上位入賞、または社外で広く認知されるような高い評価を獲得した経験がある", "業界最高峰の目標達成に向けて、常に具体的な計画と情熱を持ち、チームを牽引している"]
+                    }
+                }
+
+                ,
+                "マネジメントスキル": {
+
+                    prefix: 'm',
+                    subCategories: {
+                        "計数管理能力": ["店舗の基本的な営業数値に関心を持っている", "自身の行動がコストにどう影響するかを意識して業務にあたる", "日報や基本的なレポートを読み、前日・前週との数値の差異を説明できる", "担当カテゴリーの原価計算ができ、原価率を理解している", "FLコストの概念を理解し、日々のオペレーションにおいて、その最適化を意識した行動が取れる", "月次PLの主要項目を理解し、自店舗の数値を他店舗や予算と比較して説明できる", "PLの数値変動から、店舗が抱える経営上の課題を特定し、具体的な改善アクションを複数提案できる", "競合や市場の動向、過去のデータを基に、月単位での売上・利益の着地予測を立て、その達成に向けた具体的な計画を策定できる", "投資対効果（ROI）の観点から、新規設備投資や大規模な販促企画の妥当性を評価・判断し、事業計画を策定できる", "複数店舗やブランド全体の財務データを横断的に分析し、SVD全体の経営戦略に対し、財務的観点から提言・貢献できる"],
+                        "チームビルディング/育成力": ["チームの一員として、他のスタッフと協力的に業務を遂行できる", "新人や後輩に対し、自身の担当業務について手本を見せ、基本的な手順を教えることができる", "チーム内の良好な雰囲気作りに貢献し、ポジティブな声がけや挨拶を率先して行える", "後輩の小さな成長や変化に気づき、具体的に褒めたり、悩みに寄り添ったりすることができる", "担当範囲において、後輩へのタスクの割り振りや、簡単なOJTを計画・実行できる", "スタッフ一人ひとりの特性を理解し、個々に合わせた指導や動機付けができる", "チームの目標を設定し、メンバーの役割を明確にし、目標達成に向けてチームを一つにまとめることができる", "スタッフのキャリアプランについて相談に乗り、成長の機会を設計・提供できる。チーム内の対立を仲裁し、解決に導く", "店舗の理念やビジョンに基づいた採用計画を策定し、将来のリーダー候補を発掘・育成する仕組みを構築・運用できる", "SVD全体の組織文化を醸成する。ブランドや店舗の垣根を越えた人材の交流・育成や、次世代の経営幹部候補を育成するサクセッションプランを設計・実行する"],
+                        "オペレーション管理能力": ["サービスの一連の流れを学ぶ。指示された持ち場の準備や片付けを正確に行える。", "担当セクションの基本的な維持管理を、シェフ・ド・ランの指示のもとで遂行できる。", "シェフ・ド・ランを完全に補助し、料理やドリンクの提供、バッシングを迅速かつ静かに行える。", "小規模なセクションの責任者として、簡単なオーダーテイクや料理説明ができる。", "標準的なセクションの責任者として、オーダーテイクから会計までの一連のサービスを一人で完結できる。", "コミ・ド・ランを効果的に指導・管理しながら、自身のセクションで高いサービス品質と効率を両立できる。", "ダイニングの特定エリアを統括し、複数のシェフ・ド・ランの動きを監督・調整する。", "メートル・ド・テルを補佐する副責任者として、ダイニング運営の中核を担う。", "ダイニング全体の最高責任者として、全サービスの指揮、スタッフの採用・教育、顧客満足度の管理に責任を持つ。", "レストラン全体の総支配人として、サービス・キッチンと連携し、店舗全体の経営に責任を持つ。"],
+                        "戦略立案/課題解決力": ["問題を発見し、5W1Hを用いて正確に状況を報告できる", "発生した問題に対し、根本原因分析の初歩的な手法を用いて、直接的な原因を特定できる", "自身の担当業務やチームのタスクにおいて、特定された課題に対し、PDCAサイクルを適用し、改善策を立案・実行できる", "繰り返し発生する問題に対し、特性要因図を用いて、考えられる原因を構造的に洗い出せる", "担当セクションや特定サービスに対し、SWOT分析を行い、具体的な改善アクションプランを立案できる", "3C分析を用いて競合や市場の状況を分析し、4P/4Cの観点から具体的な販促企画やマーケティングプランを立案・提案できる", "店舗の中期計画策定において、PEST分析やファイブフォース分析を用い、外部環境を評価し、戦略に反映させることができる", "ビジネスモデルキャンバスを用いて、新規事業や大規模な店舗改善の計画を策定する。OKRを設定し、店舗全体の戦略実行を管理する", "ブルー・オーシャン戦略などの思考フレームに基づき、既存の競争を抜け出す革新的な事業コンセプトやサービスを立案する。", "SVD全体の経営課題に対し、複数の事業部門を横断する複雑な問題を構造化し、持続的な企業価値向上に繋がる全社戦略を策定・提言する"],
+                        "リーダーシップ": ["チームの目標や指示を理解し、自身の役割を果たすことで貢献できる", "チームの規範やルールを遵守し、他のメンバーに良い影響を与える行動ができる", "自身の意見やアイデアを建設的に発信し、チームの議論に貢献できる", "チーム内の課題やメンバーの困り事を察知し、積極的にサポートや提案ができる", "チームの目標達成に向けて、メンバーを巻き込み、協調性を生み出すことができる", "困難な状況や変化の局面において、自身の役割を明確にし、チームを鼓舞し、前向きな行動を促せる", "店舗のビジョンや目標を明確に言語化し、メンバーに浸透させることで、自律的な行動を引き出せる", "チームの多様性を尊重し、異なる意見や価値観を統合しながら、より良い意思決定を導き出せる", "自身の行動や言動を通じて、SVDの理念や文化を体現し、店舗内外のステークホルダーから信頼と尊敬を集めることができる", "SVD全体の未来を構想し、そのビジョンを内外に発信することで、組織全体を牽引し、業界に新たな価値を創造できる"],
+                        "顧客創造/ブランド構築力": ["店舗のブランドコンセプトやターゲット顧客を理解し、自身の言葉で説明できる", "店舗のSNSアカウントで、ブランドイメージに沿った基本的な情報発信ができる", "お客様の声を収集し、ポジティブ/ネガティブな意見を要約してチームに共有できる", "店舗の販促物のデザインや文言について、ブランドコンセプトに基づいた改善案を提案できる", "小規模なイベントやキャンペーンの企画から実行、結果報告までを担当できる", "プレスリリースのドラフト作成や、メディア向け資料の準備ができる。地域のメディアやインフルエンサーとの関係を構築する", "CRMツール等を活用して顧客データを分析し、リピート率向上のための施策を立案・実行できる", "店舗の年間マーケティングプランと予算を策定し、実行を管理し、施策の効果測定（ROI）までを責任を持って行うことができる", "異業種コラボレーションや大型タイアップ企画など、ブランドの認知度を飛躍的に高めるための戦略的なPR・マーケティング活動を主導する", "SVD全体のブランド戦略を策定する。SVDを業界や社会における一つの「文化」として確立させるための活動を牽引する"]
+                    }
+                }
+            }
+
+                ;
+
+            const skillAdvice = {
+                "パーソル力": {
+                    "自己成長/学習意欲": "まずは日々の業務の中で「なぜ？」と問いを持つことから始めましょう。慣れた作業にも、新しい発見があるはずです。興味のある分野の書籍を1冊読んでみるのも良いスタートです。",
+                    "協調性/チームワーク": "自分から「何か手伝うことはありますか？」と一声かける習慣をつけましょう。相手の仕事に関心を持つことが、チームワークの第一歩です。",
+                    "ストレス耐性/柔軟性": "予期せぬ事態が起きても、まずは深呼吸を一つ。変えられることと変えられないことを見極め、今できることに集中する訓練をしてみましょう。",
+                    "当事者意識/責任感": "担当業務の「目的」を上司に確認してみましょう。作業の背景を知ることで、仕事が「自分ごと」になり、責任感とやりがいが生まれます。",
+                    "共感力/傾聴力": "相手の話を聞くとき、「次に何を話そうか」と考えるのを一度やめてみましょう。ただ相手の言葉に集中し、相槌を打つだけでも、関係は大きく変わります。",
+                    "SVD理念への共鳴": "SVDのブランドコンセプトを、お客様に自分の言葉で説明する練習をしてみましょう。理念が自分の言葉になった時、行動が変わります。"
+                }
+
+                ,
+                "サービススキル": {
+                    "トータルスキル": "担当範囲だけでなく、隣のセクションやフロア全体を5分間だけ観察してみましょう。全体の流れを意識することで、次に行うべきことが見えてきます。",
+                    "専門スキル（料理知識）": "メニューの料理を一品選び、その食材や調理法についてシェフに質問してみましょう。料理の背景にあるストーリーを知ることで、お客様への言葉に深みが出ます。",
+                    "専門スキル（ドリンク知識 ※ワイン除く）": "バックバーにあるスピリッツのラベルを一つ、スマートフォンで調べてみましょう。その歴史や製法を知るだけで、お客様への提案の幅が広がります。",
+                    "専門スキル（ワイン）": "今日のグラスワインを全てテイスティングし、それぞれの特徴を自分の言葉でノートに書き出してみましょう。言葉にする訓練が、表現力を高めます。",
+                    "顧客対応力": "お客様の名前を覚える努力をしてみましょう。一日一人でも構いません。名前で呼ばれたお客様の満足度は劇的に向上します。",
+                    "テクニカル対応力": "POSや予約システムで、普段使わない機能を一つ試してみましょう。新しい発見が、業務効率化のヒントになるかもしれません。"
+                }
+
+                ,
+                "経験・資格": {
+                    "業界経験年数": "経験は日々の積み重ねです。一日一つの新しい学びや発見を意識することで、経験の質が高まります。",
+                    "SVD在籍経験": "今所属している店舗以外のSVDのレストランに、お客様として足を運んでみましょう。SVDの多様性と共通の価値観を肌で感じることができます。",
+                    "専門資格保有": "まずは興味のある分野の入門資格（ワイン検定など）のテキストを眺めてみましょう。目標ができると、日々の業務の視点が変わります。",
+                    "汎用実務スキル": "ExcelやPowerPointのショートカットキーを5つ覚えてみましょう。小さな時間短縮の積み重ねが、大きな差を生みます。",
+                    "役職経験": "もし自分が今の自分の上司だったら、どんな指示を出すか、どんなアドバイスをするか、という視点で物事を考えてみましょう。",
+                    "実績/表彰": "日々の業務で「ありがとう」と言われた経験をメモしてみましょう。小さな成功体験の積み重ねが、大きな実績へと繋がります。"
+                }
+
+                ,
+                "マネジメントスキル": {
+                    "計数管理能力": "自店舗の日報に毎日目を通し、売上や客数の数字を意識することから始めましょう。数字はレストランの健康状態を示すカルテです。",
+                    "チームビルディング/育成力": "後輩や同僚の素晴らしい仕事を一つ見つけ、具体的に褒めてみましょう。ポジティブなフィードバックが、チームの文化を創ります。",
+                    "オペレーション管理能力": "自身の業務の流れを書き出し、一つでも無駄な動きがないか探してみましょう。改善は、まず現状把握から始まります。",
+                    "戦略立案/課題解決力": "「なぜこの問題が起きたのか？」を一度だけ深く考えてみましょう。表面的な事象の奥にある原因を探る癖をつけることが重要です。",
+                    "リーダーシップ": "チームのミーティングで、最初に発言してみる、あるいは最後まで人の意見を聞くなど、いつもと違う役割を意識的に演じてみましょう。",
+                    "顧客創造/ブランド構築力": "競合店や人気店のSNSを分析し、お客様を惹きつけているポイントは何かを考えてみましょう。良いアイデアは、まず模倣から始まります。"
+                }
+            }
+
+                ;
+
+            // --- UI CREATION ---
+            function createSkillMatrixUI() {
+                const matrixContainer = document.getElementById('skill-matrix');
+                let html = '';
+
+                for (const category in skillData) {
+                    html += ` <div class="accordion-item"><div class="accordion-header">${category}
+
+                <span class="arrow">▼</span></div><div class="accordion-content"><div class="skill-group">`;
+                    let i = 1;
+
+                    for (const subCategory in skillData[category].subCategories) {
+                        const id = `${skillData[category].prefix}${i}`;
+
+                        html += `<div class="skill-item">
+                                <label for="${id}">${subCategory}</label>
+                                <span class="info-icon" data-category="${category}" data-subcategory="${subCategory}">i</span>
+                                <select name="${id}" id="${id}">
+                                    ${Array.from({ length: 10 }, (_, j) => `<option value="${j + 1}">Lv ${j + 1}</option>`).join('')}
+                                </select>
+                            </div>`;
+                        i++;
+                    }
+
+                    html += ` </div></div></div>`;
+                }
+
+                matrixContainer.innerHTML = html;
+            }
+
+            // --- MODAL LOGIC ---
+            function showModal(category, subCategory, selectId) {
+                const modal = document.getElementById('description-modal');
+                const titleEl = document.getElementById('modal-title');
+                const listEl = document.getElementById('modal-list');
+
+                modal.dataset.selectId = selectId; // Store the ID of the select element
+
+                const descriptions = skillData[category].subCategories[subCategory];
+
+                titleEl.textContent = subCategory;
+
+                listEl.innerHTML = descriptions.map((desc, index) => `<li data-level="${index + 1}" style="cursor: pointer;" ><strong>Lv ${index + 1}
+
+                :</strong> ${desc}
+
+                </li>`).join('');
+
+                modal.style.display = 'block';
+            }
+
+            // --- ACCORDION LOGIC ---
+            function toggleAccordion(id) {
+                const content = document.getElementById(id);
+
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                }
+
+                else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            }
+
+            // --- CALCULATION & CHART LOGIC ---
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylwBwxUjqQlrolic8ISUJBU84_uWEeoz9C4YL3UHrmZz_EBzOQvR20pEgwLGmrtjxg/exec';
+
+            function submitData() {
+                const formData = new FormData();
+                const calculateBtn = document.getElementById('calculate-btn');
+                const originalBtnText = calculateBtn.innerHTML;
+
+                formData.append('Timestamp', new Date().toLocaleString('ja-JP'));
+                formData.append('user-name', document.getElementById('user-name').value);
+                formData.append('user-affiliation', document.getElementById('user-affiliation').value);
+                formData.append('user-job-title', document.getElementById('user-job-title').value);
+                formData.append('TypeSelf', document.getElementById('user-type-self').value);
+                formData.append('TypeOther', document.getElementById('user-type-other').value);
+
+                // Qualifications
+                const qualCheckboxes = document.querySelectorAll('input[name="qualification"]:checked');
+                let qualNames = [];
+                let qualScore = 0;
+
+                qualCheckboxes.forEach(cb => {
+                    const q = qualificationData.find(item => item.id === cb.value);
+
+                    if (q) {
+                        qualNames.push(q.name);
+                        qualScore += q.points;
+                    }
+                });
+                formData.append('qualifications', qualNames.join(', '));
+                formData.append('qualificationScore', qualScore);
+                formData.append('meisterRank', document.getElementById('meister-rank').textContent);
+
+                const prefixes = ['p',
+                    's',
+                    'e',
+                    'm'];
+
+                prefixes.forEach(prefix => {
+                    for (let i = 1; i <= 6; i++) {
+                        const id = prefix + i;
+                        formData.append(id, document.getElementById(id).value);
+                    }
+                });
+
+                formData.append('totalScore', document.getElementById('total-score').textContent);
+
+                calculateBtn.innerHTML = '記録中...';
+                calculateBtn.disabled = true;
+
+                // Debug logging
+                for (let [key, value] of formData.entries()) {
+                    console.log(`${key}: ${value}`);
+                }
+
+                fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+
+                }).then(response => response.json()).then(data => {
+                    if (data.result === 'success') {
+                        console.log('Data submitted successfully:', data.row);
+                        calculateBtn.innerHTML = '記録しました！';
+                    }
+
+                    else {
+                        throw new Error('Submission failed');
+                    }
+
+                }).catch(error => {
+                    console.error('Error submitting data:', error);
+                    calculateBtn.innerHTML = '記録に失敗';
+
+                }).finally(() => {
+                    setTimeout(() => {
+                        calculateBtn.innerHTML = originalBtnText;
+                        calculateBtn.disabled = false;
+                    }
+
+                        , 3000);
+                });
+            }
+
+            let chartInstances = {}
+
+                ;
+
+            try {
+                if (typeof ChartDataLabels !== 'undefined') {
+                    Chart.register(ChartDataLabels);
+                    console.log('ChartDataLabels registered successfully.');
+                }
+
+                else {
+                    console.warn('ChartDataLabels plugin not found. Charts will render without data labels.');
+                }
+            }
+
+            catch (e) {
+                console.error('Error registering ChartDataLabels:', e);
+            }
+
+            console.log('jspdf available:', typeof window.jspdf !== 'undefined'); // Debug log
+            console.log('jspdf available:', typeof window.jspdf !== 'undefined'); // Debug log
+            console.log('html2canvas available:', typeof html2canvas !== 'undefined'); // Debug log
+
+
+
+            function calculateAndDraw() {
+                try {
+                    const userName = document.getElementById('user-name').value || '診断者';
+
+                    document.getElementById('result-name').textContent = `${userName}さんの診断結果`;
+
+                    const rawScores = {}
+
+                        ;
+
+                    const normalizedScores = {}
+
+                        ;
+
+                    // Calculate scores
+                    for (const category in skillData) {
+                        let total = 0;
+
+                        const subCategoryScores = {}
+
+                            ;
+                        let i = 1;
+
+                        for (const subCategory in skillData[category].subCategories) {
+                            const id = `${skillData[category].prefix}${i}`;
+                            const element = document.getElementById(id);
+
+                            if (!element) {
+                                console.error(`Element with ID '${id}' not found !`);
+                                continue;
+                            }
+
+                            const level = parseInt(element.value, 10);
+                            subCategoryScores[subCategory] = level;
+                            total += level;
+                            i++;
+                        }
+
+                        rawScores[category] = subCategoryScores;
+                        normalizedScores[category] = total / 6;
+                    }
+
+                    // Final score calculation
+                    const product1 = normalizedScores["パーソル力"] * normalizedScores["サービススキル"];
+                    const product2 = normalizedScores["経験・資格"] * normalizedScores["マネジメントスキル"];
+                    const finalScore = isNaN(product1) || isNaN(product2) ? 0 : product1 + product2;
+
+                    // Update total score display
+                    document.getElementById('total-score').textContent = finalScore.toFixed(2);
+
+                    // Update score breakdown display with clear formula
+                    const breakdownList = document.getElementById('score-breakdown-list');
+                    const p = normalizedScores["パーソル力"].toFixed(2);
+                    const s = normalizedScores["サービススキル"].toFixed(2);
+                    const e = normalizedScores["経験・資格"].toFixed(2);
+                    const m = normalizedScores["マネジメントスキル"].toFixed(2);
+
+                    breakdownList.innerHTML = `
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #f59e0b;">P</strong> パーソル力: <strong>${p}</strong></li>
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #10b981;">S</strong> サービススキル: <strong>${s}</strong></li>
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #3b82f6;">E</strong> 経験・資格: <strong>${e}</strong></li>
+                        <li style="margin-bottom: 1rem;"><strong style="color: #8b5cf6;">M</strong> マネジメントスキル: <strong>${m}</strong></li>
+                        <hr style="border: none; border-top: 1px dashed #64748b; margin: 1rem 0;">
+                        <li style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 0.3rem;"><strong>ゲストエクスペリエンス</strong> (P × S)</li>
+                        <li style="margin-bottom: 0.5rem;">${p} × ${s} = <strong>${product1.toFixed(2)}</strong></li>
+                        <li style="font-size: 0.85rem; color: #8b5cf6; margin-bottom: 0.3rem;"><strong>チームドリブン</strong> (E × M)</li>
+                        <li style="margin-bottom: 0.5rem;">${e} × ${m} = <strong>${product2.toFixed(2)}</strong></li>
+                        <hr style="border: none; border-top: 2px solid #B8995C; margin: 1rem 0;">
+                        <li style="font-size: 1.1rem; font-weight: 700; color: var(--primary-color);">${product1.toFixed(2)} + ${product2.toFixed(2)} = <span style="color: #D4AF37; font-size: 1.3rem;">${finalScore.toFixed(2)}</span></li>
+                    `;
+
+                    // Generate and display advice
+                    let lowestMainCategory = '';
+                    let lowestMainScore = 11;
+
+                    for (const category in normalizedScores) {
+                        if (normalizedScores[category] < lowestMainScore) {
+                            lowestMainScore = normalizedScores[category];
+                            lowestMainCategory = category;
+                        }
+                    }
+
+                    let lowestSubCategory = '';
+                    let lowestSubScore = 11;
+
+                    if (lowestMainCategory && rawScores[lowestMainCategory]) {
+                        const subScores = rawScores[lowestMainCategory];
+
+                        for (const subCategory in subScores) {
+                            if (subScores[subCategory] < lowestSubScore) {
+                                lowestSubScore = subScores[subCategory];
+                                lowestSubCategory = subCategory;
+                            }
+                        }
+                    }
+
+                    const adviceText = document.getElementById('advice-text');
+
+                    if (lowestMainCategory && lowestSubCategory) {
+                        adviceText.innerHTML = `<strong>「${lowestSubCategory}
+
+                    」を伸ばしましょう</strong><br>${skillAdvice[lowestMainCategory][lowestSubCategory]}
+
+                    `;
+                    }
+
+                    else {
+                        adviceText.innerHTML = '高得点のため、アドバイスはありません。';
+                    }
+
+                    // --- CHART RENDERING (Robust version) ---
+                    const computedStyle = getComputedStyle(document.body);
+                    const lightTextColor = computedStyle.getPropertyValue('--light-text-color').trim();
+
+                    const chartGrid = document.getElementById('chart-grid');
+                    chartGrid.innerHTML = '';
+
+                    for (const chartId in chartInstances) {
+                        if (chartInstances[chartId]) {
+                            chartInstances[chartId].destroy();
+                        }
+                    }
+
+                    chartInstances = {}
+
+                        ;
+
+                    // Skill definitions with Japanese labels and colors
+                    const skillDefinitions = {
+                        'パーソル力': {
+                            title: 'Performance',
+                            subtitle: '実行力',
+                            color: '#f59e0b',
+                            skills: ['活気', '迅速', '連携', '正確', '柔軟', '判断']
+                        },
+                        'サービススキル': {
+                            title: 'Service',
+                            subtitle: '接客力',
+                            color: '#10b981',
+                            skills: ['笑顔', '傾聴', '提案', '配慮', '記憶', '演出']
+                        },
+                        '経験・資格': {
+                            title: 'Expertise',
+                            subtitle: '専門性',
+                            color: '#3b82f6',
+                            skills: ['商品知識', '技術', '衛生', '効率', '改善', '学習']
+                        },
+                        'マネジメントスキル': {
+                            title: 'Management',
+                            subtitle: '管理力',
+                            color: '#8b5cf6',
+                            skills: ['計画', '指導', '調整', '分析', '決断', '責任']
+                        }
+                    };
+
+                    for (const category in rawScores) {
+                        const def = skillDefinitions[category];
+                        if (!def) continue;
+
+                        const card = document.createElement('div');
+                        card.className = 'card skill-category-card';
+                        card.style.borderLeftColor = def.color;
+
+                        // Category title
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'skill-category-title';
+                        titleDiv.innerHTML = `
+                            <span style="color: ${def.color};">${def.title}</span>
+                            <span style="font-weight: 400; color: var(--light-text-color);">${def.subtitle}</span>
+                        `;
+                        card.appendChild(titleDiv);
+
+                        // Get sub-category names and scores
+                        const subCatNames = Object.keys(rawScores[category]);
+                        const subCatScores = Object.values(rawScores[category]);
+
+                        subCatNames.forEach((subCatName, index) => {
+                            const score = subCatScores[index];
+                            const skillLabel = def.skills[index] || subCatName;
+                            const percentage = (score / 10) * 100;
+
+                            const skillDiv = document.createElement('div');
+                            skillDiv.className = 'skill-progress-item';
+                            skillDiv.innerHTML = `
+                                <div class="skill-progress-label">
+                                    <span class="skill-progress-name">${subCatName} <span>${skillLabel}</span></span>
+                                    <span class="skill-progress-value" style="color: ${def.color};">${score}</span>
+                                </div>
+                                <div class="skill-progress-bar">
+                                    <div class="skill-progress-fill" style="width: ${percentage}%; background: linear-gradient(90deg, ${def.color}, ${def.color}88);"></div>
+                                </div>
+                            `;
+                            card.appendChild(skillDiv);
+                        });
+
+                        chartGrid.appendChild(card);
+                    }
+
+                    // Show the entire results dashboard
+                    const dashboard = document.getElementById('result-dashboard');
+                    dashboard.style.display = 'block';
+
+                    // Submit data to Google Sheet
+                    submitData();
+
+                    dashboard.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+
+                }
+
+                catch (error) {
+                    console.error("診断中にエラーが発生しました:", error);
+
+                    alert(`致命的なエラーが発生しました。開発者にご連絡ください。\n\n${error.stack}
+
+                `);
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+            document.addEventListener('DOMContentLoaded', () => {
+                createSkillMatrixUI();
+                populateTypeSelects();
+                initQualifications();
+                updateQualificationScore();
+
+                const calculateBtn = document.getElementById('calculate-btn');
+
+                if (calculateBtn) {
+                    calculateBtn.addEventListener('click', calculateAndDraw);
+                }
+
+                const startDiagnosisBtn = document.getElementById('start-diagnosis-btn');
+
+                if (startDiagnosisBtn) {
+                    startDiagnosisBtn.addEventListener('click', openDiagnosisModal);
+                }
+
+                else {
+                    console.error('Start Diagnosis Button not found in DOM');
+                }
+
+                // Accordion and Modal listeners
+                const skillMatrix = document.getElementById('skill-matrix');
+
+                skillMatrix.addEventListener('click', function (e) {
+                    const target = e.target;
+
+                    if (target.classList.contains('info-icon')) {
+                        const category = target.dataset.category;
+                        const subCategory = target.dataset.subcategory;
+                        const selectId = target.nextElementSibling.id;
+                        showModal(category, subCategory, selectId);
+                    }
+
+                    else if (target.classList.contains('accordion-header')) {
+                        const item = target.parentElement;
+                        const content = item.querySelector('.accordion-content');
+
+                        if (item.classList.contains('active')) {
+                            item.classList.remove('active');
+                            content.style.maxHeight = '0';
+                        }
+
+                        else {
+
+                            // Close other accordions
+                            document.querySelectorAll('.accordion-item.active').forEach(other => {
+                                other.classList.remove('active');
+                                other.querySelector('.accordion-content').style.maxHeight = '0';
+                            });
+                            item.classList.add('active');
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                        }
+                    }
+                });
+
+                const modal = document.getElementById('description-modal');
+                const closeBtn = document.querySelector('.close-btn');
+
+                // Add click listener for level selection in modal
+                const modalList = document.getElementById('modal-list');
+
+                modalList.addEventListener('click', function (e) {
+                    const li = e.target.closest('li');
+                    if (!li) return;
+
+                    const selectId = modal.dataset.selectId;
+                    const level = li.dataset.level;
+
+                    if (selectId && level) {
+                        const selectEl = document.getElementById(selectId);
+
+                        if (selectEl) {
+                            selectEl.value = level;
+                        }
+
+                        modal.style.display = 'none';
+                    }
+                });
+
+                closeBtn.onclick = () => {
+                    modal.style.display = 'none';
+                }
+
+                    ;
+
+                window.onclick = (event) => {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+
+                    ;
+
+                // PDF Download functionality
+                const downloadPdfBtn = document.getElementById('download-pdf-btn');
+                downloadPdfBtn.addEventListener('click', downloadPdf);
+            });
+
+            async function downloadPdf() {
+                console.log('PDFダウンロード処理を開始します (v8 - Footer Added)');
+                const resultDashboard = document.getElementById('result-dashboard');
+
+                if (resultDashboard.style.display === 'none') {
+                    alert('診断結果が表示されていません。まず診断を実行してください。');
+                    return;
+                }
+
+                const downloadPdfBtn = document.getElementById('download-pdf-btn');
+                const originalBtnText = downloadPdfBtn.textContent;
+                downloadPdfBtn.textContent = 'PDF作成中...';
+                downloadPdfBtn.disabled = true;
+
+                // 一時的にスクロールをトップに戻す
+                window.scrollTo(0, 0);
+
+                try {
+                    const {
+                        jsPDF
+                    }
+
+                        = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const margin = 10;
+                    const contentWidth = pdfWidth - (margin * 2);
+
+                    let currentY = margin;
+
+                    // ヘッダー追加関数
+                    const addHeader = () => {
+                        pdf.setFontSize(10);
+                        pdf.setTextColor(100, 100, 100);
+                        pdf.text("SVD Talent Intelligence Report", margin, margin - 2);
+                        currentY = margin + 5; // ヘッダー下の開始位置
+                    }
+
+                        ;
+
+                    // 初期ページにヘッダー追加
+                    addHeader();
+
+                    const elementsToCapture = [];
+
+                    // 1. Total Score Card (Top)
+                    const totalScoreCard = resultDashboard.querySelector('.total-score-card');
+
+                    if (totalScoreCard) elementsToCapture.push({
+                        element: totalScoreCard, forceGrid: false, type: 'score'
+                    });
+
+                    // 2. Summary Grid (Breakdown + Advice)
+                    const summaryGrid = resultDashboard.querySelector('.result-grid:not(#chart-grid)');
+
+                    if (summaryGrid) elementsToCapture.push({
+                        element: summaryGrid, forceGrid: true, type: 'summary'
+                    });
+
+                    // 3. Chart Grid (4 Charts)
+                    const chartGrid = document.getElementById('chart-grid');
+
+                    if (chartGrid) elementsToCapture.push({
+                        element: chartGrid, forceGrid: true, type: 'charts'
+                    });
+
+                    for (const item of elementsToCapture) {
+                        const element = item.element;
+                        const forceGrid = item.forceGrid;
+                        const type = item.type;
+
+                        const canvas = await html2canvas(element, {
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: true,
+                            backgroundColor: null,
+                            logging: false,
+                            windowWidth: 1280, // ベースはPC幅
+
+                            onclone: (clonedDoc) => {
+
+                                // キャプチャ時に強制的に2カラムにする
+                                if (forceGrid) {
+                                    // クローンされた要素自身が grid の場合と、子が grid の場合がある
+                                    // 今回のロジックでは element そのものが .result-grid なので、直接スタイルを当てる
+                                    // ただし html2canvas はクローンされたDOMの特定の要素を見つけるのが少し難しい場合がある
+                                    // ここでは element の classList を頼りに特定する
+
+                                    // クローンされたドキュメントから、元の要素と同じクラスを持つ要素を探す
+                                    // (elementがIDを持っていればIDで、なければクラスで)
+                                    let target;
+
+                                    if (element.id) {
+                                        target = clonedDoc.getElementById(element.id);
+                                    }
+
+                                    else {
+                                        // IDがない場合（summaryGridなど）、クラスで検索して該当しそうなものを探す
+                                        // ここでは簡易的に、clonedDoc内の該当クラスを持つ要素すべてに適用してしまうのが安全
+                                        const grids = clonedDoc.querySelectorAll('.result-grid');
+
+                                        grids.forEach(grid => {
+                                            grid.style.gridTemplateColumns = '1fr 1fr';
+                                        });
+                                        return;
+                                    }
+
+                                    if (target) {
+                                        target.style.gridTemplateColumns = '1fr 1fr';
+                                    }
+                                }
+                            }
+                        });
+
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgWidth = contentWidth;
+                        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                        // 改ページ判定
+                        if (currentY + imgHeight > pdfHeight - margin) {
+                            pdf.addPage();
+                            addHeader();
+                        }
+
+                        pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+                        currentY += imgHeight + 5;
+
+                        // Summary Grid (1ページ目の最後) の後にフッターを追加
+                        if (type === 'summary') {
+                            // フッター領域の確保 (ページ下部から40mm)
+                            const footerHeight = 40;
+                            const footerY = pdfHeight - margin - footerHeight;
+
+                            // もし現在のY位置がフッター領域に被っていたら、フッターは諦めるか改ページするが
+                            // 基本的には収まる想定。念のためチェックはしない（強制描画）
+
+                            // 1. 日付 (右寄せ)
+                            const now = new Date();
+
+                            const dateStr = `Date: ${now.getFullYear()}
+
+            .${(now.getMonth() + 1).toString().padStart(2, '0')}
+
+            .${now.getDate().toString().padStart(2, '0')}
+
+            `;
+                            pdf.setFontSize(11);
+                            pdf.setTextColor(50, 50, 50);
+
+                            pdf.text(dateStr, pdfWidth - margin, footerY - 2, {
+                                align: 'right'
+                            });
+
+                            // 2. Message Box
+                            pdf.setDrawColor(200, 200, 200); // 薄いグレーの枠線
+                            pdf.setLineWidth(0.5);
+                            pdf.rect(margin, footerY, contentWidth, footerHeight);
+
+                            // Message Label
+                            pdf.setFontSize(10);
+                            pdf.setTextColor(100, 100, 100);
+                            pdf.text("Message", margin + 2, footerY + 5);
+
+                            // 次の要素（チャート）のために改ページを強制する
+                            // (チャートは必ず2ページ目のトップから始めたい)
+                            pdf.addPage();
+                            addHeader();
+                            currentY = margin + 5; // リセット
+                        }
+                    }
+
+                    const userName = document.getElementById('user-name').value || '診断者';
+                    const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+
+                    pdf.save(`${userName}_SVD_TI_${dateStr}.pdf`);
+                    alert('PDFのダウンロードが完了しました！');
+
+                }
+
+                catch (error) {
+                    console.error("PDF生成中にエラーが発生しました:", error);
+
+                    alert(`PDF作成に失敗しました。\n\n${error.message}
+
+                `);
+                }
+
+                finally {
+                    downloadPdfBtn.textContent = originalBtnText;
+                    downloadPdfBtn.disabled = false;
+                }
+            }
+
+
+
+
+
+        </script>
+
+        <!-- Footer -->
+        <footer style="
         text-align: center;
         padding: 40px 20px;
         margin-top: 60px;
         border-top: 1px solid rgba(212, 175, 55, 0.2);
         background: linear-gradient(180deg, transparent, rgba(10, 25, 47, 0.5));
     ">
-        <p style="
+            <p style="
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
             font-weight: 500;
@@ -870,7 +2259,7 @@
             color: #D4AF37;
             margin: 0;
         ">SAPPORO VIEWTIFUL DINING — ORIGIN</p>
-    </footer>
+        </footer>
 </body>
 
 </html>
