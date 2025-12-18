@@ -443,6 +443,71 @@
             margin-bottom: 0.3rem;
         }
 
+        /* Skill Progress Bars for Calculator */
+        .skill-category-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .skill-category-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-progress-item {
+            margin-bottom: 1rem;
+        }
+
+        .skill-progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .skill-progress-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .skill-progress-name span {
+            font-weight: 400;
+            color: var(--light-text-color);
+            margin-left: 0.3rem;
+        }
+
+        .skill-progress-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .skill-progress-bar {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .skill-progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+
         @keyframes slideIn {
             from {
                 transform: translateY(-50px);
@@ -1707,22 +1772,26 @@
                     // Update total score display
                     document.getElementById('total-score').textContent = finalScore.toFixed(2);
 
-                    // Update score breakdown display
+                    // Update score breakdown display with clear formula
                     const breakdownList = document.getElementById('score-breakdown-list');
+                    const p = normalizedScores["パーソル力"].toFixed(2);
+                    const s = normalizedScores["サービススキル"].toFixed(2);
+                    const e = normalizedScores["経験・資格"].toFixed(2);
+                    const m = normalizedScores["マネジメントスキル"].toFixed(2);
 
-                    breakdownList.innerHTML = ` <li>パーソル力: ${normalizedScores["パーソル力"].toFixed(2)}
-
-                </li><li>サービススキル: ${normalizedScores["サービススキル"].toFixed(2)}
-
-                </li><li>経験・資格: ${normalizedScores["経験・資格"].toFixed(2)}
-
-                </li><li>マネジメントスキル: ${normalizedScores["マネジメントスキル"].toFixed(2)}
-
-                </li><hr><li>(パーソル力 × サービススキル): ${product1.toFixed(2)}
-
-                </li><li>(経験・資格 × マネジメントスキル): ${product2.toFixed(2)}
-
-                </li>`;
+                    breakdownList.innerHTML = `
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #f59e0b;">P</strong> パーソル力: <strong>${p}</strong></li>
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #10b981;">S</strong> サービススキル: <strong>${s}</strong></li>
+                        <li style="margin-bottom: 0.5rem;"><strong style="color: #3b82f6;">E</strong> 経験・資格: <strong>${e}</strong></li>
+                        <li style="margin-bottom: 1rem;"><strong style="color: #8b5cf6;">M</strong> マネジメントスキル: <strong>${m}</strong></li>
+                        <hr style="border: none; border-top: 1px dashed #64748b; margin: 1rem 0;">
+                        <li style="font-size: 0.85rem; color: #f59e0b; margin-bottom: 0.3rem;"><strong>ゲストエクスペリエンス</strong> (P × S)</li>
+                        <li style="margin-bottom: 0.5rem;">${p} × ${s} = <strong>${product1.toFixed(2)}</strong></li>
+                        <li style="font-size: 0.85rem; color: #8b5cf6; margin-bottom: 0.3rem;"><strong>チームドリブン</strong> (E × M)</li>
+                        <li style="margin-bottom: 0.5rem;">${e} × ${m} = <strong>${product2.toFixed(2)}</strong></li>
+                        <hr style="border: none; border-top: 2px solid #B8995C; margin: 1rem 0;">
+                        <li style="font-size: 1.1rem; font-weight: 700; color: var(--primary-color);">${product1.toFixed(2)} + ${product2.toFixed(2)} = <span style="color: #D4AF37; font-size: 1.3rem;">${finalScore.toFixed(2)}</span></li>
+                    `;
 
                     // Generate and display advice
                     let lowestMainCategory = '';
@@ -1780,151 +1849,75 @@
 
                         ;
 
-                    for (const category in rawScores) {
-                        const card = document.createElement('div');
-                        card.className = 'card';
-                        const title = document.createElement('h3');
-                        title.textContent = category;
-                        const canvas = document.createElement('canvas');
-
-                        const chartLabels = [];
-                        const originalChartData = []; // Store original values for custom labels
-                        const legendItems = []; // For the new legend
-
-                        const labelNumbers = ["①",
-                            "②",
-                            "③",
-                            "④",
-                            "⑤",
-                            "⑥"]; // Numbered labels
-                        let index = 0;
-
-                        for (const subCatName in rawScores[category]) {
-                            chartLabels.push(labelNumbers[index]); // Use numbered labels for chart
-                            originalChartData.push(rawScores[category][subCatName]);
-
-                            legendItems.push(`${labelNumbers[index]}: ${subCatName}`); // For the legend
-                            index++;
+                    // Skill definitions with Japanese labels and colors
+                    const skillDefinitions = {
+                        'パーソル力': {
+                            title: 'Performance',
+                            subtitle: '実行力',
+                            color: '#f59e0b',
+                            skills: ['活気', '迅速', '連携', '正確', '柔軟', '判断']
+                        },
+                        'サービススキル': {
+                            title: 'Service',
+                            subtitle: '接客力',
+                            color: '#10b981',
+                            skills: ['笑顔', '傾聴', '提案', '配慮', '記憶', '演出']
+                        },
+                        '経験・資格': {
+                            title: 'Expertise',
+                            subtitle: '専門性',
+                            color: '#3b82f6',
+                            skills: ['商品知識', '技術', '衛生', '効率', '改善', '学習']
+                        },
+                        'マネジメントスキル': {
+                            title: 'Management',
+                            subtitle: '管理力',
+                            color: '#8b5cf6',
+                            skills: ['計画', '指導', '調整', '分析', '決断', '責任']
                         }
+                    };
 
-                        card.appendChild(title);
-                        card.appendChild(canvas);
+                    for (const category in rawScores) {
+                        const def = skillDefinitions[category];
+                        if (!def) continue;
 
-                        const legendList = document.createElement('ul');
-                        legendList.className = 'chart-legend';
+                        const card = document.createElement('div');
+                        card.className = 'card skill-category-card';
+                        card.style.borderLeftColor = def.color;
 
-                        legendItems.forEach(item => {
-                            const li = document.createElement('li');
-                            li.textContent = item;
-                            legendList.appendChild(li);
+                        // Category title
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'skill-category-title';
+                        titleDiv.innerHTML = `
+                            <span style="color: ${def.color};">${def.title}</span>
+                            <span style="font-weight: 400; color: var(--light-text-color);">${def.subtitle}</span>
+                        `;
+                        card.appendChild(titleDiv);
+
+                        // Get sub-category names and scores
+                        const subCatNames = Object.keys(rawScores[category]);
+                        const subCatScores = Object.values(rawScores[category]);
+
+                        subCatNames.forEach((subCatName, index) => {
+                            const score = subCatScores[index];
+                            const skillLabel = def.skills[index] || subCatName;
+                            const percentage = (score / 10) * 100;
+
+                            const skillDiv = document.createElement('div');
+                            skillDiv.className = 'skill-progress-item';
+                            skillDiv.innerHTML = `
+                                <div class="skill-progress-label">
+                                    <span class="skill-progress-name">${subCatName} <span>${skillLabel}</span></span>
+                                    <span class="skill-progress-value" style="color: ${def.color};">${score}</span>
+                                </div>
+                                <div class="skill-progress-bar">
+                                    <div class="skill-progress-fill" style="width: ${percentage}%; background: linear-gradient(90deg, ${def.color}, ${def.color}88);"></div>
+                                </div>
+                            `;
+                            card.appendChild(skillDiv);
                         });
-                        card.appendChild(legendList); // Append the new legend
 
                         chartGrid.appendChild(card);
-
-                        const ctx = canvas.getContext('2d');
-
-                        chartInstances[category] = new Chart(ctx, {
-
-                            type: 'radar',
-                            data: {
-
-                                labels: chartLabels,
-                                datasets: [{
-                                    data: originalChartData,
-                                    backgroundColor: 'rgba(184, 153, 92, 0.15)', // Gold with transparency
-                                    borderColor: 'rgba(184, 153, 92, 1)', // Solid Gold
-                                    borderWidth: 2,
-                                    pointBackgroundColor: 'rgba(15, 23, 42, 1)', // Dark Navy
-                                    pointBorderColor: '#fff',
-                                    pointRadius: 5,
-                                    pointHoverRadius: 7
-                                }
-
-                                ]
-                            }
-
-                            ,
-                            options: {
-
-                                responsive: true,
-                                maintainAspectRatio: true,
-                                scales: {
-                                    r: {
-                                        angleLines: {
-                                            color: 'rgba(0, 0, 0, 0.1)'
-                                        }
-
-                                        ,
-                                        grid: {
-                                            color: 'rgba(0, 0, 0, 0.1)'
-                                        }
-
-                                        ,
-                                        pointLabels: {
-                                            font: {
-                                                size: 14, weight: 'bold', family: 'Montserrat'
-                                            }
-
-                                            , color: '#0f172a',
-                                            padding: 15
-                                        }
-
-                                        ,
-                                        beginAtZero: true, // Ensure scale starts at 0
-                                        min: 0, // Explicitly set minimum value
-                                        max: 11, // Extended to give space for labels when data is 10
-
-                                        ticks: {
-                                            backdropColor: 'transparent',
-                                            color: '#94a3b8',
-                                            stepSize: 2,
-                                            // Only show ticks up to 10
-                                            callback: function (value) {
-                                                return value <= 10 ? value : '';
-                                            },
-                                            min: 0,
-                                            max: 10
-                                        },
-                                        suggestedMax: 11
-                                    }
-                                }
-
-                                ,
-                                plugins: {
-                                    legend: {
-                                        display: false
-                                    }
-
-                                    ,
-                                    datalabels: {
-
-                                        color: '#0f172a',
-                                        font: {
-                                            weight: 'bold',
-                                            size: 12,
-                                            family: 'Montserrat'
-                                        }
-
-                                        ,
-                                        formatter: function (value, context) {
-                                            return value;
-                                        }
-
-                                        ,
-                                        anchor: 'center',
-                                        align: 'center',
-                                        offset: 0,
-                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                        borderRadius: 4,
-                                        padding: 4
-                                    }
-                                }
-                            }
-
-                            ,
-                            plugins: [ChartDataLabels] // Register the official datalabels plugin
-                        });
                     }
 
                     // Show the entire results dashboard
