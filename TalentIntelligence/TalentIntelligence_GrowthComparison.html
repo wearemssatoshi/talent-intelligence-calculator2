@@ -182,24 +182,126 @@
             font-weight: 600;
         }
 
-        /* Chart Section */
-        .chart-container {
+        /* Progress Bars Section */
+        .skills-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
         }
 
-        .chart-box {
-            background: white;
+        .skill-category {
+            background: #f8fafc;
             padding: 1.5rem;
             border-radius: 12px;
-            box-shadow: var(--shadow);
+            border-left: 4px solid var(--secondary-color);
         }
 
-        .chart-box h4 {
-            text-align: center;
-            margin-bottom: 1rem;
+        .skill-category-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
             color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .skill-name span {
+            font-weight: 400;
+            color: var(--light-text-color);
+            margin-left: 0.3rem;
+        }
+
+        .skill-values {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .skill-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar-label {
+            font-size: 0.65rem;
+            color: var(--light-text-color);
+            width: 40px;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-fill-before {
+            height: 100%;
+            background: linear-gradient(90deg, #94a3b8, #cbd5e1);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .bar-fill-after {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+
+        .growth-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .growth-badge.positive {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--growth-positive);
+        }
+
+        .growth-badge.negative {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--growth-negative);
+        }
+
+        .growth-badge.neutral {
+            background: rgba(100, 116, 139, 0.15);
+            color: var(--light-text-color);
         }
 
         /* Results Dashboard */
@@ -270,21 +372,37 @@
         <!-- Search Section -->
         <div class="card no-print">
             <h3 class="section-title">スタッフ検索</h3>
+
+            <!-- Mode Tabs -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                <button id="mode-growth" class="btn" style="flex: 1; background: var(--primary-color);">📈 成長推移</button>
+                <button id="mode-vs" class="btn" style="flex: 1; background: #64748b;">⚔️ VS比較</button>
+            </div>
+
             <div class="search-section">
                 <div class="input-group">
                     <label for="gas-url">GAS URL</label>
                     <input type="text" id="gas-url" placeholder="Google Apps ScriptのURLを入力">
                 </div>
                 <div class="input-group">
-                    <label for="staff-select">スタッフ名</label>
+                    <label for="staff-select">スタッフ名 <span id="staff-label-suffix"></span></label>
                     <select id="staff-select" disabled>
+                        <option value="">まずGAS URLを設定してください</option>
+                    </select>
+                </div>
+                <!-- VS Mode: Second Staff -->
+                <div class="input-group" id="staff-b-group" style="display: none;">
+                    <label for="staff-select-b">VS スタッフ名</label>
+                    <select id="staff-select-b" disabled>
                         <option value="">まずGAS URLを設定してください</option>
                     </select>
                 </div>
                 <button class="btn" id="load-names-btn">名前を読込</button>
                 <button class="btn" id="search-btn" disabled>データ取得</button>
+                <button class="btn" id="vs-compare-btn" disabled style="display: none; background: #ef4444;">⚔️
+                    VS比較実行</button>
             </div>
-            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--light-text-color);">
+            <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--light-text-color);" id="mode-instruction">
                 ※ GAS URLを入力後「名前を読込」→ スタッフを選択 →「データ取得」の順で操作してください
             </p>
         </div>
@@ -312,9 +430,11 @@
                     </tbody>
                 </table>
 
-                <!-- Charts -->
-                <div class="chart-container" id="chart-container">
-                    <!-- Charts will be inserted here -->
+                <!-- Skill Progress Bars -->
+                <h4 style="font-family: 'Montserrat', sans-serif; margin-bottom: 1.5rem; color: var(--primary-color);">
+                    📊 スキル詳細比較</h4>
+                <div class="skills-container" id="skills-container">
+                    <!-- Skills will be inserted here -->
                 </div>
             </div>
         </div>
@@ -333,13 +453,43 @@
         // DOM Elements
         const gasUrlInput = document.getElementById('gas-url');
         const staffSelect = document.getElementById('staff-select');
+        const staffSelectB = document.getElementById('staff-select-b');
+        const staffBGroup = document.getElementById('staff-b-group');
         const loadNamesBtn = document.getElementById('load-names-btn');
         const searchBtn = document.getElementById('search-btn');
+        const vsCompareBtn = document.getElementById('vs-compare-btn');
         const resultsSection = document.getElementById('results-section');
+        const modeGrowthBtn = document.getElementById('mode-growth');
+        const modeVsBtn = document.getElementById('mode-vs');
+        const modeInstruction = document.getElementById('mode-instruction');
+
+        // Current mode: 'growth' or 'vs'
+        let currentMode = 'growth';
+
+        // Mode switching
+        modeGrowthBtn.addEventListener('click', () => {
+            currentMode = 'growth';
+            modeGrowthBtn.style.background = 'var(--primary-color)';
+            modeVsBtn.style.background = '#64748b';
+            staffBGroup.style.display = 'none';
+            searchBtn.style.display = '';
+            vsCompareBtn.style.display = 'none';
+            modeInstruction.textContent = '※ GAS URLを入力後「名前を読込」→ スタッフを選択 →「データ取得」の順で操作してください';
+        });
+
+        modeVsBtn.addEventListener('click', () => {
+            currentMode = 'vs';
+            modeGrowthBtn.style.background = '#64748b';
+            modeVsBtn.style.background = '#ef4444';
+            staffBGroup.style.display = '';
+            searchBtn.style.display = 'none';
+            vsCompareBtn.style.display = '';
+            modeInstruction.textContent = '※ 2人のスタッフを選択して「VS比較実行」をクリックしてください';
+        });
 
         // Score categories for comparison
         const scoreCategories = [
-            { key: 'totalScore', label: '総合スコア' },
+            { key: 'TotalScore', label: '総合スコア' },
             { key: 'p', label: 'Performance Skills', items: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'] },
             { key: 's', label: 'Service Skills', items: ['s1', 's2', 's3', 's4', 's5', 's6'] },
             { key: 'e', label: 'Expertise Skills', items: ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'] },
@@ -367,15 +517,16 @@
                 const data = JSON.parse(text);
 
                 if (data.result === 'success' && data.names) {
-                    staffSelect.innerHTML = '<option value="">スタッフを選択</option>';
-                    data.names.forEach(name => {
-                        const option = document.createElement('option');
-                        option.value = name;
-                        option.textContent = name;
-                        staffSelect.appendChild(option);
-                    });
+                    // Update both dropdowns
+                    const options = '<option value="">スタッフを選択</option>' +
+                        data.names.map(name => `<option value="${name}">${name}</option>`).join('');
+                    staffSelect.innerHTML = options;
+                    staffSelectB.innerHTML = options;
+
                     staffSelect.disabled = false;
+                    staffSelectB.disabled = false;
                     searchBtn.disabled = false;
+                    vsCompareBtn.disabled = false;
                     alert('スタッフ名を読み込みました！ (' + data.names.length + '名)');
                 } else {
                     alert('データの取得に失敗しました: ' + JSON.stringify(data));
@@ -418,16 +569,78 @@
             }
         });
 
-        // Display results
+        // VS Compare button handler
+        vsCompareBtn.addEventListener('click', async () => {
+            const staffNameA = staffSelect.value;
+            const staffNameB = staffSelectB.value;
+
+            if (!staffNameA || !staffNameB) {
+                alert('2人のスタッフを選択してください');
+                return;
+            }
+
+            if (staffNameA === staffNameB) {
+                alert('異なるスタッフを選択してください');
+                return;
+            }
+
+            vsCompareBtn.textContent = '比較中...';
+            vsCompareBtn.disabled = true;
+
+            try {
+                // Fetch both staff data
+                const [responseA, responseB] = await Promise.all([
+                    fetch(`${GAS_URL}?action=search&name=${encodeURIComponent(staffNameA)}`),
+                    fetch(`${GAS_URL}?action=search&name=${encodeURIComponent(staffNameB)}`)
+                ]);
+
+                const dataA = await responseA.json();
+                const dataB = await responseB.json();
+
+                if (dataA.result === 'success' && dataA.data.length > 0 &&
+                    dataB.result === 'success' && dataB.data.length > 0) {
+                    // Get the latest record for each staff
+                    const latestA = dataA.data[0];
+                    const latestB = dataB.data[0];
+                    displayVsResults(staffNameA, latestA, staffNameB, latestB);
+                } else {
+                    alert('該当するデータが見つかりませんでした');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('エラーが発生しました');
+            } finally {
+                vsCompareBtn.textContent = '⚔️ VS比較実行';
+                vsCompareBtn.disabled = false;
+            }
+        });
+
+        // Display results (Growth mode)
         function displayResults(staffName, records) {
             document.getElementById('staff-name-display').textContent = staffName;
+            document.querySelector('#comparison-card > div:first-child > h3').innerHTML = `<span id="staff-name-display">${staffName}</span> の成長推移`;
             resultsSection.style.display = 'block';
+
+            // Show comparison table (hidden in VS mode)
+            document.getElementById('comparison-table').style.display = '';
 
             // Build comparison table
             buildComparisonTable(records);
 
             // Build charts
             buildCharts(records);
+        }
+
+        // Display VS Results
+        function displayVsResults(nameA, recordA, nameB, recordB) {
+            document.querySelector('#comparison-card > div:first-child > h3').innerHTML = `<span style="color: #3b82f6;">${nameA}</span> ⚔️ <span style="color: #ef4444;">${nameB}</span>`;
+            resultsSection.style.display = 'block';
+
+            // Hide normal comparison table
+            document.getElementById('comparison-table').style.display = 'none';
+
+            // Build VS comparison
+            buildVsComparison(nameA, recordA, nameB, recordB);
         }
 
         // Calculate category sum
@@ -473,12 +686,13 @@
                 records.forEach(record => {
                     const td = document.createElement('td');
                     let value;
-                    if (cat.key === 'totalScore') {
-                        value = parseInt(record.totalScore) || 0;
+                    if (cat.key === 'TotalScore') {
+                        value = parseFloat(record.TotalScore) || 0;
+                        td.textContent = value.toFixed(2);
                     } else {
                         value = calculateCategorySum(record, cat.items);
+                        td.textContent = value;
                     }
-                    td.textContent = value;
                     values.push(value);
                     tr.appendChild(td);
                 });
@@ -487,7 +701,11 @@
                 if (records.length > 1) {
                     const growthTd = document.createElement('td');
                     const growth = values[0] - values[values.length - 1]; // newest - oldest
-                    growthTd.textContent = (growth >= 0 ? '+' : '') + growth;
+                    if (cat.key === 'TotalScore') {
+                        growthTd.textContent = (growth >= 0 ? '+' : '') + growth.toFixed(2);
+                    } else {
+                        growthTd.textContent = (growth >= 0 ? '+' : '') + growth;
+                    }
                     growthTd.className = growth >= 0 ? 'growth-positive' : 'growth-negative';
                     tr.appendChild(growthTd);
                 }
@@ -496,74 +714,287 @@
             });
         }
 
-        // Build charts
+        // Build skill progress bars
         function buildCharts(records) {
-            const container = document.getElementById('chart-container');
+            const container = document.getElementById('skills-container');
             container.innerHTML = '';
-
-            // Destroy existing charts
-            chartInstances.forEach(chart => chart.destroy());
-            chartInstances = [];
 
             // Take up to 2 most recent records for comparison
             const compareRecords = records.slice(0, 2);
+            const newest = compareRecords[0] || {};
+            const oldest = compareRecords[1] || compareRecords[0] || {};
 
-            // Create overlaid radar chart
-            const chartBox = document.createElement('div');
-            chartBox.className = 'chart-box';
-            chartBox.style.gridColumn = '1 / -1';
+            // Get date labels
+            const newestDate = newest.Timestamp ? new Date(newest.Timestamp).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }) : '最新';
+            const oldestDate = oldest.Timestamp && oldest !== newest ? new Date(oldest.Timestamp).toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' }) : '前回';
 
-            const title = document.createElement('h4');
-            title.textContent = '診断比較レーダーチャート';
-            chartBox.appendChild(title);
+            // Total Score Card (prominent display) with formula breakdown
+            const beforeTotal = parseFloat(oldest.TotalScore) || 0;
+            const afterTotal = parseFloat(newest.TotalScore) || 0;
+            const totalGrowth = afterTotal - beforeTotal;
+            const totalGrowthClass = totalGrowth > 0 ? 'positive' : (totalGrowth < 0 ? 'negative' : 'neutral');
+            const totalGrowthText = totalGrowth > 0 ? `+${totalGrowth.toFixed(2)}` : (totalGrowth < 0 ? totalGrowth.toFixed(2) : '±0');
 
-            const canvas = document.createElement('canvas');
-            canvas.id = 'comparison-radar';
-            chartBox.appendChild(canvas);
-            container.appendChild(chartBox);
+            // Calculate category averages for formula display
+            const calcAvg = (record, prefix) => {
+                let sum = 0;
+                for (let i = 1; i <= 6; i++) {
+                    sum += parseInt(record[`${prefix}${i}`]) || 0;
+                }
+                return (sum / 6).toFixed(2);
+            };
 
-            // Prepare chart data
-            const labels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'S1', 'S2', 'S3', 'S4', 'S5', 'S6',
-                'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
-            const keys = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 's1', 's2', 's3', 's4', 's5', 's6',
-                'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6'];
+            const oldP = calcAvg(oldest, 'p'), oldS = calcAvg(oldest, 's'), oldE = calcAvg(oldest, 'e'), oldM = calcAvg(oldest, 'm');
+            const newP = calcAvg(newest, 'p'), newS = calcAvg(newest, 's'), newE = calcAvg(newest, 'e'), newM = calcAvg(newest, 'm');
+            const oldPS = (parseFloat(oldP) * parseFloat(oldS)).toFixed(2);
+            const oldEM = (parseFloat(oldE) * parseFloat(oldM)).toFixed(2);
+            const newPS = (parseFloat(newP) * parseFloat(newS)).toFixed(2);
+            const newEM = (parseFloat(newE) * parseFloat(newM)).toFixed(2);
 
-            const colors = [
-                { bg: 'rgba(184, 153, 92, 0.3)', border: '#B8995C' },
-                { bg: 'rgba(15, 23, 42, 0.2)', border: '#0f172a' }
+            const totalScoreCard = document.createElement('div');
+            totalScoreCard.style.cssText = 'grid-column: 1 / -1; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 1rem;';
+            totalScoreCard.innerHTML = `
+                <div style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: #B8995C; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; text-align: center;">総合スコア</div>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.3rem;">${oldestDate}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 800; color: #94a3b8;">${beforeTotal.toFixed(2)}</div>
+                    </div>
+                    <div style="font-size: 2rem; color: #B8995C;">→</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.75rem; color: #B8995C; margin-bottom: 0.3rem;">${newestDate}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: #D4AF37;">${afterTotal.toFixed(2)}</div>
+                    </div>
+                    <div style="background: ${totalGrowth >= 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}; padding: 0.5rem 1rem; border-radius: 8px;">
+                        <div style="font-size: 0.7rem; color: ${totalGrowth >= 0 ? '#10b981' : '#ef4444'}; margin-bottom: 0.2rem;">成長</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: ${totalGrowth >= 0 ? '#10b981' : '#ef4444'};">${totalGrowthText}</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; font-size: 0.8rem;">
+                    <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                        <div style="color: #94a3b8; margin-bottom: 0.5rem; font-weight: 600;">${oldestDate} の計算式</div>
+                        <div style="color: #64748b; margin-bottom: 0.3rem;"><span style="color: #f59e0b;">ゲストエクスペリエンス</span> P×S = ${oldPS}</div>
+                        <div style="color: #64748b; margin-bottom: 0.3rem;"><span style="color: #8b5cf6;">チームドリブン</span> E×M = ${oldEM}</div>
+                        <div style="color: #94a3b8; font-weight: 600; margin-top: 0.5rem;">${oldPS} + ${oldEM} = ${beforeTotal.toFixed(2)}</div>
+                    </div>
+                    <div style="background: rgba(184, 153, 92, 0.1); padding: 1rem; border-radius: 8px; border: 1px solid rgba(184, 153, 92, 0.3);">
+                        <div style="color: #B8995C; margin-bottom: 0.5rem; font-weight: 600;">${newestDate} の計算式</div>
+                        <div style="color: #94a3b8; margin-bottom: 0.3rem;"><span style="color: #f59e0b;">ゲストエクスペリエンス</span> P×S = ${newPS}</div>
+                        <div style="color: #94a3b8; margin-bottom: 0.3rem;"><span style="color: #8b5cf6;">チームドリブン</span> E×M = ${newEM}</div>
+                        <div style="color: #D4AF37; font-weight: 600; margin-top: 0.5rem;">${newPS} + ${newEM} = ${afterTotal.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(totalScoreCard);
+
+            // Skill definitions with Japanese labels
+            const skillCategories = [
+                {
+                    key: 'p',
+                    title: 'Performance',
+                    subtitle: '実行力',
+                    color: '#f59e0b',
+                    skills: [
+                        { id: 'p1', name: 'P1', label: '活気' },
+                        { id: 'p2', name: 'P2', label: '迅速' },
+                        { id: 'p3', name: 'P3', label: '連携' },
+                        { id: 'p4', name: 'P4', label: '正確' },
+                        { id: 'p5', name: 'P5', label: '柔軟' },
+                        { id: 'p6', name: 'P6', label: '判断' }
+                    ]
+                },
+                {
+                    key: 's',
+                    title: 'Service',
+                    subtitle: '接客力',
+                    color: '#10b981',
+                    skills: [
+                        { id: 's1', name: 'S1', label: '笑顔' },
+                        { id: 's2', name: 'S2', label: '傾聴' },
+                        { id: 's3', name: 'S3', label: '提案' },
+                        { id: 's4', name: 'S4', label: '配慮' },
+                        { id: 's5', name: 'S5', label: '記憶' },
+                        { id: 's6', name: 'S6', label: '演出' }
+                    ]
+                },
+                {
+                    key: 'e',
+                    title: 'Expertise',
+                    subtitle: '専門性',
+                    color: '#3b82f6',
+                    skills: [
+                        { id: 'e1', name: 'E1', label: '商品知識' },
+                        { id: 'e2', name: 'E2', label: '技術' },
+                        { id: 'e3', name: 'E3', label: '衛生' },
+                        { id: 'e4', name: 'E4', label: '効率' },
+                        { id: 'e5', name: 'E5', label: '改善' },
+                        { id: 'e6', name: 'E6', label: '学習' }
+                    ]
+                },
+                {
+                    key: 'm',
+                    title: 'Management',
+                    subtitle: '管理力',
+                    color: '#8b5cf6',
+                    skills: [
+                        { id: 'm1', name: 'M1', label: '計画' },
+                        { id: 'm2', name: 'M2', label: '指導' },
+                        { id: 'm3', name: 'M3', label: '調整' },
+                        { id: 'm4', name: 'M4', label: '分析' },
+                        { id: 'm5', name: 'M5', label: '決断' },
+                        { id: 'm6', name: 'M6', label: '責任' }
+                    ]
+                }
             ];
 
-            const datasets = compareRecords.map((record, index) => {
-                const date = new Date(record.Timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short' });
-                return {
-                    label: date,
-                    data: keys.map(key => parseInt(record[key]) || 0),
-                    backgroundColor: colors[index].bg,
-                    borderColor: colors[index].border,
-                    borderWidth: 2,
-                    pointRadius: 3
-                };
-            });
+            skillCategories.forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'skill-category';
+                categoryDiv.style.borderLeftColor = category.color;
 
-            const chart = new Chart(canvas, {
-                type: 'radar',
-                data: { labels, datasets },
-                options: {
-                    responsive: true,
-                    scales: {
-                        r: {
-                            min: 0,
-                            max: 5,
-                            ticks: { stepSize: 1 }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'top' }
-                    }
+                categoryDiv.innerHTML = `
+                    <div class="skill-category-title">
+                        <span style="color: ${category.color};">${category.title}</span>
+                        <span style="font-weight: 400; color: var(--light-text-color);">${category.subtitle}</span>
+                    </div>
+                `;
+
+                category.skills.forEach(skill => {
+                    const beforeVal = parseInt(oldest[skill.id]) || 0;
+                    const afterVal = parseInt(newest[skill.id]) || 0;
+                    const growth = afterVal - beforeVal;
+                    const growthClass = growth > 0 ? 'positive' : (growth < 0 ? 'negative' : 'neutral');
+                    const growthText = growth > 0 ? `+${growth}` : (growth < 0 ? growth : '±0');
+
+                    const skillDiv = document.createElement('div');
+                    skillDiv.className = 'skill-item';
+                    skillDiv.innerHTML = `
+                        <div class="skill-label">
+                            <span class="skill-name">${skill.name} <span>${skill.label}</span></span>
+                            <span class="growth-badge ${growthClass}">${growthText}</span>
+                        </div>
+                        <div class="skill-bars">
+                            <div class="bar-row">
+                                <span class="bar-label">${oldestDate}</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill-before" style="width: ${(beforeVal / 10) * 100}%;"></div>
+                                </div>
+                                <span style="font-size: 0.7rem; font-weight: 600; width: 20px; text-align: right;">${beforeVal}</span>
+                            </div>
+                            <div class="bar-row">
+                                <span class="bar-label">${newestDate}</span>
+                                <div class="bar-track">
+                                    <div class="bar-fill-after" style="width: ${(afterVal / 10) * 100}%;"></div>
+                                </div>
+                                <span style="font-size: 0.7rem; font-weight: 600; width: 20px; text-align: right; color: ${category.color};">${afterVal}</span>
+                            </div>
+                        </div>
+                    `;
+                    categoryDiv.appendChild(skillDiv);
+                });
+
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        // Build VS Comparison view
+        function buildVsComparison(nameA, recordA, nameB, recordB) {
+            const container = document.getElementById('skills-container');
+            container.innerHTML = '';
+
+            // Calculate scores
+            const calcAvg = (record, prefix) => {
+                let sum = 0;
+                for (let i = 1; i <= 6; i++) {
+                    sum += parseInt(record[`${prefix}${i}`]) || 0;
                 }
-            });
+                return sum / 6;
+            };
 
-            chartInstances.push(chart);
+            const totalA = parseFloat(recordA.TotalScore) || 0;
+            const totalB = parseFloat(recordB.TotalScore) || 0;
+            const pA = calcAvg(recordA, 'p'), sA = calcAvg(recordA, 's'), eA = calcAvg(recordA, 'e'), mA = calcAvg(recordA, 'm');
+            const pB = calcAvg(recordB, 'p'), sB = calcAvg(recordB, 's'), eB = calcAvg(recordB, 'e'), mB = calcAvg(recordB, 'm');
+            const guestExpA = pA * sA, teamDrivenA = eA * mA;
+            const guestExpB = pB * sB, teamDrivenB = eB * mB;
+
+            // VS Header Card
+            const vsCard = document.createElement('div');
+            vsCard.style.cssText = 'grid-column: 1 / -1; background: linear-gradient(135deg, #0f172a, #1e293b); color: white; padding: 2rem; border-radius: 16px; margin-bottom: 1rem;';
+            vsCard.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #3b82f6; margin-bottom: 0.5rem;">${nameA}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; color: ${totalA > totalB ? '#D4AF37' : '#94a3b8'};">${totalA.toFixed(2)}</div>
+                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
+                            <span style="color: #f59e0b;">GE</span> ${guestExpA.toFixed(2)} + <span style="color: #8b5cf6;">TD</span> ${teamDrivenA.toFixed(2)}
+                        </div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 3rem; color: #ef4444;">⚔️</div>
+                        <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">VS</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9rem; color: #ef4444; margin-bottom: 0.5rem;">${nameB}</div>
+                        <div style="font-family: 'Montserrat', sans-serif; font-size: 3rem; font-weight: 800; color: ${totalB > totalA ? '#D4AF37' : '#94a3b8'};">${totalB.toFixed(2)}</div>
+                        <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.5rem;">
+                            <span style="color: #f59e0b;">GE</span> ${guestExpB.toFixed(2)} + <span style="color: #8b5cf6;">TD</span> ${teamDrivenB.toFixed(2)}
+                        </div>
+                    </div>
+                </div>
+                ${totalA !== totalB ? `<div style="text-align: center; margin-top: 1rem; font-size: 0.9rem; color: #10b981;">🏆 ${totalA > totalB ? nameA : nameB} が ${Math.abs(totalA - totalB).toFixed(2)} 点リード</div>` : ''}
+            `;
+            container.appendChild(vsCard);
+
+            // Skill categories for VS comparison
+            const skillCategories = [
+                { key: 'p', title: 'Performance', subtitle: '実行力', color: '#f59e0b', skills: ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'], labels: ['活気', '迅速', '連携', '正確', '柔軟', '判断'] },
+                { key: 's', title: 'Service', subtitle: '接客力', color: '#10b981', skills: ['s1', 's2', 's3', 's4', 's5', 's6'], labels: ['笑顔', '傾聴', '提案', '配慮', '記憶', '演出'] },
+                { key: 'e', title: 'Expertise', subtitle: '専門性', color: '#3b82f6', skills: ['e1', 'e2', 'e3', 'e4', 'e5', 'e6'], labels: ['商品知識', '技術', '衛生', '効率', '改善', '学習'] },
+                { key: 'm', title: 'Management', subtitle: '管理力', color: '#8b5cf6', skills: ['m1', 'm2', 'm3', 'm4', 'm5', 'm6'], labels: ['計画', '指導', '調整', '分析', '決断', '責任'] }
+            ];
+
+            skillCategories.forEach(cat => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'skill-category';
+                categoryCard.style.borderLeftColor = cat.color;
+
+                let skillsHtml = '';
+                cat.skills.forEach((skillId, idx) => {
+                    const valA = parseInt(recordA[skillId]) || 0;
+                    const valB = parseInt(recordB[skillId]) || 0;
+                    const winner = valA > valB ? 'A' : (valB > valA ? 'B' : '');
+
+                    skillsHtml += `
+                        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; padding: 0.3rem 0; ${idx < cat.skills.length - 1 ? 'border-bottom: 1px solid #e2e8f0;' : ''}">
+                            <div style="display: flex; align-items: center; gap: 0.3rem;">
+                                <div style="width: 60%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${(valA / 10) * 100}%; height: 100%; background: ${winner === 'A' ? '#3b82f6' : '#94a3b8'}; border-radius: 4px;"></div>
+                                </div>
+                                <span style="font-weight: 600; color: ${winner === 'A' ? '#3b82f6' : '#64748b'}; min-width: 20px;">${valA}</span>
+                            </div>
+                            <div style="text-align: center; font-size: 0.75rem; color: ${cat.color}; font-weight: 600;">
+                                ${cat.skills[idx].toUpperCase()}<br><span style="font-weight: 400; color: #64748b;">${cat.labels[idx]}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.3rem; justify-content: flex-end;">
+                                <span style="font-weight: 600; color: ${winner === 'B' ? '#ef4444' : '#64748b'}; min-width: 20px;">${valB}</span>
+                                <div style="width: 60%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${(valB / 10) * 100}%; height: 100%; background: ${winner === 'B' ? '#ef4444' : '#94a3b8'}; border-radius: 4px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                categoryCard.innerHTML = `
+                    <div class="skill-category-title">
+                        <span style="color: ${cat.color};">${cat.title}</span>
+                        <span style="font-weight: 400; color: var(--light-text-color);">${cat.subtitle}</span>
+                    </div>
+                    ${skillsHtml}
+                `;
+                container.appendChild(categoryCard);
+            });
         }
 
         // PDF Download
