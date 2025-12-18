@@ -344,6 +344,37 @@
                 grid-template-columns: 1fr !important;
             }
         }
+
+        /* Animation keyframes for stacking chart */
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(184, 153, 92, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 5px rgba(184, 153, 92, 0.2);
+            }
+        }
+
+        #chart-container {
+            animation: pulseGlow 3s ease-in-out infinite;
+            border-radius: 12px;
+            padding: 1rem;
+        }
     </style>
 </head>
 
@@ -447,6 +478,20 @@
                         style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
                         <!-- Team members will be added here -->
                     </ul>
+                </div>
+
+                <!-- TIER 3: Individual Skill Stacking Chart (NEW) -->
+                <div style="grid-column: 1 / -1; margin-top: 1.5rem;">
+                    <h3
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem;">
+                        <span
+                            style="background: linear-gradient(135deg, #B8995C, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📊</span>
+                        Individual Skill Breakdown
+                    </h3>
+                    <div id="stacking-chart-container"
+                        style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
+                        <p style="text-align:center; color:#94a3b8;">メンバーを選択してください</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -799,18 +844,17 @@
 
         function drawTeamRadarChart() {
             const ctx = document.getElementById('team-radar-chart').getContext('2d');
-            const categories = ["パーソル力", "サービススキル", "経験・資格", "マネジメントスキル"];
+            const categories = ["Performance", "Service", "Expertise", "Management"];
             const teamCategoryScores = [0, 0, 0, 0];
+            const individualData = []; // For stacking chart
 
             teamMembers.forEach(m => {
-                // detailedScores is expected to be an array of 24 numbers
-                // If fetching from sheet, it might be a comma-separated string or array
                 let scores = m.detailedScores;
                 if (typeof scores === 'string') {
                     scores = scores.split(',').map(Number);
                 }
 
-                if (!scores || scores.length < 24) return; // Safety check
+                if (!scores || scores.length < 24) return;
 
                 let p = 0, s = 0, e = 0, mg = 0;
                 for (let i = 0; i < 6; i++) p += scores[i];
@@ -818,10 +862,22 @@
                 for (let i = 12; i < 18; i++) e += scores[i];
                 for (let i = 18; i < 24; i++) mg += scores[i];
 
-                teamCategoryScores[0] += (p / 6);
-                teamCategoryScores[1] += (s / 6);
-                teamCategoryScores[2] += (e / 6);
-                teamCategoryScores[3] += (mg / 6);
+                const pAvg = p / 6;
+                const sAvg = s / 6;
+                const eAvg = e / 6;
+                const mgAvg = mg / 6;
+
+                teamCategoryScores[0] += pAvg;
+                teamCategoryScores[1] += sAvg;
+                teamCategoryScores[2] += eAvg;
+                teamCategoryScores[3] += mgAvg;
+
+                individualData.push({
+                    name: m.name,
+                    type: m.type,
+                    p: pAvg, s: sAvg, e: eAvg, m: mgAvg,
+                    total: Number(m.score)
+                });
             });
 
             const count = teamMembers.length || 1;
@@ -831,68 +887,170 @@
                 teamRadarChart.destroy();
             }
 
+            // Create gradient for radar chart
+            const gradient = ctx.createRadialGradient(150, 150, 0, 150, 150, 150);
+            gradient.addColorStop(0, 'rgba(184, 153, 92, 0.6)');
+            gradient.addColorStop(1, 'rgba(184, 153, 92, 0.1)');
+
             teamRadarChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
                     labels: categories,
                     datasets: [{
-                        label: 'チーム平均',
+                        label: 'Team Average',
                         data: avgData,
-                        backgroundColor: 'rgba(184, 153, 92, 0.2)',
-                        borderColor: 'rgba(184, 153, 92, 1)',
+                        backgroundColor: gradient,
+                        borderColor: '#B8995C',
                         borderWidth: 3,
                         pointBackgroundColor: '#0f172a',
-                        pointBorderColor: '#fff',
-                        pointRadius: 6,
-                        pointHoverRadius: 8
+                        pointBorderColor: '#B8995C',
+                        pointBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHoverRadius: 12,
+                        pointHoverBackgroundColor: '#B8995C',
+                        pointHoverBorderColor: '#fff',
+                        fill: true
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
+                    },
                     scales: {
                         r: {
                             beginAtZero: true,
                             min: 0,
-                            max: 11,
+                            max: 5,
                             ticks: {
-                                stepSize: 2,
+                                stepSize: 1,
                                 color: '#64748b',
                                 backdropColor: 'transparent',
-                                callback: function (value) {
-                                    return value <= 10 ? value : '';
-                                }
+                                font: { size: 11 }
                             },
                             pointLabels: {
                                 font: {
-                                    size: 14,
-                                    weight: 'bold',
+                                    size: 13,
+                                    weight: '700',
                                     family: 'Montserrat'
                                 },
                                 color: '#0f172a',
-                                padding: 15
+                                padding: 20
                             },
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+                                color: 'rgba(15, 23, 42, 0.08)',
+                                lineWidth: 1
                             },
                             angleLines: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+                                color: 'rgba(15, 23, 42, 0.15)',
+                                lineWidth: 2
                             }
                         }
                     },
                     plugins: {
                         legend: {
-                            display: true,
-                            labels: {
-                                font: {
-                                    family: 'Montserrat',
-                                    weight: '600'
-                                },
-                                color: '#0f172a'
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Montserrat', weight: '700' },
+                            bodyFont: { family: 'Inter' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label}: ${context.raw.toFixed(2)}`;
+                                }
                             }
+                        },
+                        datalabels: {
+                            display: true,
+                            color: '#0f172a',
+                            font: { weight: 'bold', size: 12, family: 'Montserrat' },
+                            anchor: 'end',
+                            align: 'end',
+                            offset: 8,
+                            formatter: (value) => value.toFixed(1)
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels]
+            });
+
+            // Draw individual stacking chart
+            drawStackingChart(individualData);
+        }
+
+        // NEW: Individual Skill Stacking Chart
+        function drawStackingChart(data) {
+            const container = document.getElementById('stacking-chart-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8;">メンバーを選択してください</p>';
+                return;
+            }
+
+            // Sort by total score descending
+            data.sort((a, b) => b.total - a.total);
+
+            const maxP = Math.max(...data.map(d => d.p), 1);
+            const maxS = Math.max(...data.map(d => d.s), 1);
+            const maxE = Math.max(...data.map(d => d.e), 1);
+            const maxM = Math.max(...data.map(d => d.m), 1);
+            const maxTotal = Math.max(maxP + maxS + maxE + maxM);
+
+            const colors = {
+                p: { bg: 'linear-gradient(90deg, #f59e0b, #fbbf24)', label: 'P' },
+                s: { bg: 'linear-gradient(90deg, #10b981, #34d399)', label: 'S' },
+                e: { bg: 'linear-gradient(90deg, #3b82f6, #60a5fa)', label: 'E' },
+                m: { bg: 'linear-gradient(90deg, #8b5cf6, #a78bfa)', label: 'M' }
+            };
+
+            // Legend
+            const legend = document.createElement('div');
+            legend.style.cssText = 'display:flex; justify-content:center; gap:1.5rem; margin-bottom:1rem; font-size:0.85rem;';
+            legend.innerHTML = `
+                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:2px;margin-right:4px;"></span>Performance</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(90deg,#10b981,#34d399);border-radius:2px;margin-right:4px;"></span>Service</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;margin-right:4px;"></span>Expertise</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:linear-gradient(90deg,#8b5cf6,#a78bfa);border-radius:2px;margin-right:4px;"></span>Management</span>
+            `;
+            container.appendChild(legend);
+
+            data.forEach((member, index) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex; align-items:center; margin-bottom:0.75rem; animation: fadeInRight 0.5s ease-out forwards; opacity:0;';
+                row.style.animationDelay = `${index * 0.1}s`;
+
+                const nameLabel = document.createElement('div');
+                nameLabel.style.cssText = 'width:100px; font-size:0.85rem; font-weight:600; color:#0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;';
+                nameLabel.innerHTML = `${member.name}<br><span style="font-size:0.7rem;color:#64748b;">${member.type || '-'}</span>`;
+
+                const barContainer = document.createElement('div');
+                barContainer.style.cssText = 'flex:1; display:flex; height:28px; background:#f1f5f9; border-radius:6px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);';
+
+                const totalWidth = member.p + member.s + member.e + member.m;
+                ['p', 's', 'e', 'm'].forEach(key => {
+                    const segment = document.createElement('div');
+                    const width = (member[key] / (totalWidth || 1)) * 100;
+                    segment.style.cssText = `width:${width}%; background:${colors[key].bg}; display:flex; align-items:center; justify-content:center; color:white; font-size:0.7rem; font-weight:bold; text-shadow:0 1px 2px rgba(0,0,0,0.3); transition: width 0.8s ease-out;`;
+                    if (width > 15) segment.textContent = member[key].toFixed(1);
+                    barContainer.appendChild(segment);
+                });
+
+                const scoreLabel = document.createElement('div');
+                scoreLabel.style.cssText = 'width:60px; text-align:right; font-family:Montserrat; font-size:1.1rem; font-weight:800; color:#B8995C;';
+                scoreLabel.textContent = member.total.toFixed(1);
+
+                row.appendChild(nameLabel);
+                row.appendChild(barContainer);
+                row.appendChild(scoreLabel);
+                container.appendChild(row);
             });
         }
 
