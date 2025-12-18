@@ -2218,11 +2218,7 @@
                     const userName = document.getElementById('user-name').value || '診断者';
                     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
-                    pdf.save(`${userName}
-
-            _SVD_TI_${dateStr}
-
-            .pdf`);
+                    pdf.save(`${userName}_SVD_TI_${dateStr}.pdf`);
                     alert('PDFのダウンロードが完了しました！');
 
                 }
