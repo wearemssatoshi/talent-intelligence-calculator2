@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Momentum Peaks | SVD Dashboard</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f1420;
+            --bg-panel: rgba(22, 28, 45, 0.7);
+            --gold-primary: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent-blue: #3182ce;
+            --accent-red: #e53e3e;
+            --accent-green: #38a169;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(49, 130, 206, 0.1) 0%, transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        header {
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-img {
+            height: 48px;
+            /* Filter to ensure it looks good on dark bg if needed */
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+        }
+
+        .app-subtitle {
+            font-size: 0.8rem;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Main Grid */
+        main {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 8px;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Sidebar / Controls */
+        .controls-panel {
+            grid-row: 1 / -1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group h3 {
+            margin: 0 0 12px 0;
+            font-size: 0.9rem;
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* Score Card (Big MP Display) */
+        .score-card {
+            text-align: center;
+            padding: 10px 8px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gold-primary);
+            box-shadow: 0 0 15px var(--gold-primary);
+        }
+
+        .mp-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .mp-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .mp-sub {
+            font-size: 1.2rem;
+            color: var(--gold-primary);
+            margin-top: 8px;
+        }
+
+        /* Strategy Zone */
+        .strategy-zone {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .strategy-title {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .strategy-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+
+        /* Top Metrics Row */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .metric-card {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .metric-trend {
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up {
+            color: var(--accent-green);
+        }
+
+        .trend-down {
+            color: var(--accent-red);
+        }
+
+        /* Main Chart Area */
+        .chart-panel {
+            padding: 8px;
+            min-height: 150px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Helper Classes */
+        .text-gold {
+            color: var(--gold-primary);
+        }
+
+        .text-white {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <!-- Use relative path assuming logo folder is at root or similar -->
+            <img src="../logo/SVD_logo_white1.png" alt="SVD Logo" class="logo-img">
+            <div>
+                <div class="app-subtitle">SAPPORO VIEWTIFUL DINING</div>
+                <div class="app-title">MOMENTUM PEAKS DASHBOARD</div>
+            </div>
+        </div>
+        <div class="user-profile">
+            <!-- User Icon or Date Display -->
+            <span id="currentDateDisplay" style="color: var(--text-secondary);">2025-12-23</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sidebar Controls -->
+        <aside class="glass-panel controls-panel">
+            <div class="control-group">
+                <h3>Select Base</h3>
+                <select id="baseSelect">
+                    <option value="MOIWAYAMA">MOIWAYAMA (藻岩山)</option>
+                    <option value="OKURAYAMA">OKURAYAMA (大倉山)</option>
+                    <option value="TV_TOWER">TV TOWER (さっぽろテレビ塔)</option>
+                    <option value="AKARENGA">AKARENGA (赤れんがテラス)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h3>Select Month</h3>
+                <input type="month" id="monthPicker" value="2025-12">
+            </div>
+
+            <!-- Current MP Score Display -->
+            <div class="score-card">
+                <div class="mp-label">TODAY'S MOMENTUM SCORE</div>
+                <div class="mp-value" id="mpScoreValue">4.85</div>
+                <div class="mp-sub">EXTREME HIGH</div>
+            </div>
+
+            <!-- Strategy Advice -->
+            <div class="strategy-zone" id="strategyZone">
+                <div class="strategy-title">STRATEGY: 刈り取り戦 (HARVEST)</div>
+                <div class="strategy-text">
+                    環境ポテンシャルは最高潮です。取りこぼしは許されません。
+                    オペレーション効率を最大化し、回転率を高めてください。
+                </div>
+            </div>
+
+            <div style="margin-top: auto; font-size: 0.8rem; color: #666;">
+                Logic Ver: 1.0 (Constitution Based)
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+
+            <!-- Key Metrics -->
+            <div class="metrics-row">
+                <div class="glass-panel metric-card">
+                    <div class="metric-label">TOTAL SALES (Monthly)</div>
+                    <div class="metric-value">¥12,450,000</div>
+                    <div class="metric-trend trend-up">▲ 105% vs Budget</div>
+                </div>
+                <div class="glass-panel metric-card">
+                    <div class="metric-label">TOTAL VISITORS</div>
+                    <div class="metric-value">4,280 <span style="font-size:1rem">ppl</span></div>
+                    <div class="metric-trend trend-up">▲ 102% vs Budget</div>
+                </div>
+                <div class="glass-panel metric-card">
+                    <div class="metric-label">AVG. MP SCORE</div>
+                    <div class="metric-value text-gold">3.8</div>
+                    <div class="metric-trend">High Season</div>
+                </div>
+                <div class="glass-panel metric-card">
+                    <div class="metric-label">WIN RATE</div>
+                    <div class="metric-value text-gold">85%</div>
+                    <div class="metric-trend">17 Wins / 3 Losses</div>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="glass-panel chart-panel">
+                <div class="chart-header">
+                    <div class="chart-title">Momentum Wave vs Sales Performance</div>
+                    <div style="display:flex; gap:10px;">
+                        <button
+                            style="padding:5px 15px; background:rgba(255,255,255,0.1); color:white; border:none; border-radius:4px;">Daily</button>
+                        <button
+                            style="padding:5px 15px; background:transparent; color:#888; border:none;">Weekly</button>
+                    </div>
+                </div>
+                <canvas id="mainChart"></canvas>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <!-- Secondary Chart 1 -->
+                <div class="glass-panel chart-panel" style="min-height: 180px;">
+                    <div class="chart-title" style="margin-bottom:15px;">Channel Balance</div>
+                    <canvas id="radarChart"></canvas>
+                </div>
+                <!-- Secondary Chart 2 -->
+                <div class="glass-panel chart-panel" style="min-height: 180px;">
+                    <div class="chart-title" style="margin-bottom:15px;">Night View Points Correlation</div>
+                    <canvas id="scatterChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        SAPPORO VIEWTIFUL DINING — ORIGIN
+    </footer>
+
+    <script>
+        // Mock Data Initialization for Visualization
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        const mainChart = new Chart(ctxMain, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 31 }, (_, i) => i + 1), // 1 to 31
+                datasets: [
+                    {
+                        label: 'Momentum Score (Potential)',
+                        data: [3, 3, 4, 4.5, 5, 5, 4, 3, 2, 2, 3, 3.5, 4, 4, 3, 3, 2, 2, 3, 4, 4.5, 5, 5, 4, 3, 2, 2, 3, 4, 4, 3],
+                        borderColor: '#d4af37', // Gold
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        yAxisID: 'y1',
+                        fill: true
+                    },
+                    {
+                        label: 'Actual Sales Performance (Index)',
+                        data: [3.2, 3.1, 4.2, 4.4, 4.8, 5, 3.9, 2.8, 2.5, 2.8, 3.2, 3.8, 4.1, 3.9, 3.2, 3.5, 2.2, 2.5, 3.2, 4.1, 4.8, 4.9, 5, 4.1, 3.2, 2.5, 2.8, 3.5, 4.2, 3.9, 3.2],
+                        borderColor: '#3182ce', // Blue
+                        borderWidth: 2,
+                        tension: 0.4,
+                        yAxisID: 'y1',
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        min: 0,
+                        max: 6,
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#a0aec0' } }
+                }
+            }
+        });
+
+        // Radar Chart Mock
+        const ctxRadar = document.getElementById('radarChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['JEWELS Sales', 'JEWELS Visitors', 'TakeOut Sales', 'TakeOut Visitors', 'Efficiency'],
+                datasets: [{
+                    label: 'Current Performance',
+                    data: [4.2, 3.8, 2.5, 3.0, 4.5],
+                    backgroundColor: 'rgba(49, 130, 206, 0.2)',
+                    borderColor: '#3182ce',
+                    pointBackgroundColor: '#3182ce'
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255,255,255,0.1)' },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        pointLabels: { color: '#a0aec0' },
+                        suggestedMin: 0,
+                        suggestedMax: 5
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Scatter Chart Mock (Night View vs Sales)
+        const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+        new Chart(ctxScatter, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Night View Points vs Sales Index',
+                    data: [
+                        { x: 80, y: 4.2 }, { x: 90, y: 4.8 }, { x: 60, y: 3.0 },
+                        { x: 100, y: 5.0 }, { x: 40, y: 2.5 }, { x: 1669, y: 5.0 } // Himurock!
+                    ],
+                    backgroundColor: '#d4af37'
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Night View Points', color: '#a0aec0' },
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Sales Index', color: '#a0aec0' },
+                        min: 0, max: 6,
+                        grid: { color: 'rgba(255,255,255,0.1)' }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Setup Date
+        document.getElementById('currentDateDisplay').textContent = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+
+    </script>
+</body>
+
+</html>

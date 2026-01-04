@@ -1,0 +1,53 @@
+{
+    "MOIWAYAMA": {
+        "4": {
+            "seasonal": 1,
+            "visitor": 4.0
+        },
+        "5": {
+            "seasonal": 3,
+            "visitor": 3.7
+        },
+        "6": {
+            "seasonal": 4,
+            "visitor": 3.6
+        },
+        "7": {
+            "seasonal": 5,
+            "visitor": 4.1
+        },
+        "8": {
+            "seasonal": 5,
+            "visitor": 5.0
+        },
+        "9": {
+            "seasonal": 5,
+            "visitor": 5.0
+        },
+        "10": {
+            "seasonal": 5,
+            "visitor": 5.0
+        },
+        "11": {
+            "seasonal": 3,
+            "visitor": 3.5
+        },
+        "12": {
+            "seasonal": 5,
+            "visitor": 3.9
+        },
+        "1": {
+            "seasonal": 2,
+            "visitor": 2.5
+        },
+        "2": {
+            "seasonal": 3,
+            "visitor": 4.4
+        },
+        "3": {
+            "seasonal": 3,
+            "visitor": 3.8
+        }
+    },
+    "note": "Visitor indices are rounded from the Excel source. Day index is calculated dynamically."
+}
