@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SVD MINDFUL</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --light-gray: #F5F5F5;
+            --navy: #1E3A5F;
+            --navy-dark: #0F2A4A;
+            --gold: #C9A962;
+            --gold-light: rgba(201, 169, 98, 0.15);
+            --gold-glow: rgba(201, 169, 98, 0.3);
+            --text-dark: #1E3A5F;
+            --text-gray: #6B7B8C;
+            --border: rgba(30, 58, 95, 0.1);
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Shippori Mincho', serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .logo-container {
+            margin-bottom: 8px;
+        }
+
+        .logo-container img {
+            height: 45px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--navy);
+        }
+
+        .header-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .user-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 10px;
+            padding: 5px 14px;
+            background: var(--light-gray);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 22px;
+            overflow-y: auto;
+            padding-bottom: 120px;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        /* REGISTRATION */
+        .register-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .register-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .register-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .text-input {
+            width: 100%;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+        }
+
+        .text-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .base-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .base-option {
+            padding: 16px 12px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .base-option:hover {
+            border-color: var(--gold);
+        }
+
+        .base-option.selected {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .base-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .base-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .base-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--text-gray);
+            letter-spacing: 0.1em;
+            margin-top: 3px;
+        }
+
+        /* PRINCIPLES */
+        .principle-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .principle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .principle-num {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            font-weight: 600;
+        }
+
+        .principle-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 5px 0;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .principle-desc {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* HEALTH CHECK */
+        .health-check-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .health-check-card.complete {
+            border-color: rgba(34, 197, 94, 0.4);
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.05), var(--white));
+        }
+
+        .health-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .health-title .icon {
+            font-size: 18px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-label {
+            font-size: 13px;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .check-toggle {
+            display: flex;
+            gap: 6px;
+        }
+
+        .toggle-btn {
+            padding: 7px 14px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--light-gray);
+            color: var(--text-gray);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.ok.selected {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .toggle-btn.ng.selected {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .toggle-btn.selected {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+
+        .health-status {
+            text-align: center;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .health-status.ok {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .health-status.incomplete {
+            background: var(--light-gray);
+            color: var(--text-gray);
+        }
+
+        .health-status.ng {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        /* DRAW AREA */
+        .draw-area {
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 12px;
+        }
+
+        .draw-area.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .draw-card-back {
+            width: 140px;
+            height: 190px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, var(--navy), var(--navy-dark));
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 25px rgba(30, 58, 95, 0.2), 0 0 20px var(--gold-glow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .draw-card-back::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px solid rgba(201, 169, 98, 0.4);
+            border-radius: 8px;
+        }
+
+        .draw-card-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(30, 58, 95, 0.25), 0 0 30px var(--gold-glow);
+        }
+
+        .draw-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .draw-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.2em;
+            margin-top: 5px;
+        }
+
+        .draw-hint {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            margin-top: 18px;
+            opacity: 0.7;
+        }
+
+        /* QUEST CARDS CONTAINER */
+        .quest-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-card {
+            background: linear-gradient(145deg, var(--navy), var(--navy-dark));
+            border: 1px solid var(--gold);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(30, 58, 95, 0.15);
+            animation: revealCard 0.5s ease;
+            display: none;
+        }
+
+        .quest-card.revealed {
+            display: block;
+        }
+
+        @keyframes revealCard {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotateY(90deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02) rotateY(0deg);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .quest-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            font-weight: 600;
+        }
+
+        .quest-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--gold-glow);
+            margin: 4px 0;
+        }
+
+        .quest-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+            color: white;
+        }
+
+        .quest-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .quest-philosophy {
+            font-size: 12px;
+            line-height: 1.7;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* BUTTONS */
+        .btn-main {
+            background: var(--gold);
+            color: var(--navy-dark);
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: all 0.2s;
+            margin-top: 18px;
+        }
+
+        .btn-main:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .btn-main:hover:not(:disabled) {
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        .btn-main:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-gray);
+            padding: 11px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ACTIVE DAY */
+        .active-quests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .active-quest-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-quest-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .active-quest-card .quest-number {
+            font-size: 36px;
+            color: var(--navy);
+            text-shadow: none;
+        }
+
+        .active-quest-card .quest-title {
+            color: var(--navy);
+            font-size: 14px;
+        }
+
+        .active-quest-card .quest-subtitle {
+            color: var(--text-gray);
+            font-size: 11px;
+        }
+
+        .active-quest-card .quest-philosophy {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            font-size: 11px;
+        }
+
+        .countdown-section {
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .countdown-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            letter-spacing: 0.2em;
+        }
+
+        .countdown-time {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-top: 5px;
+        }
+
+        /* REFLECTION */
+        .reflection-prompt {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.7;
+            color: var(--navy);
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .star {
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--light-gray);
+            transition: all 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .memo-input {
+            width: 100%;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--text-dark);
+            font-family: 'Shippori Mincho', serif;
+            font-size: 13px;
+            resize: none;
+            height: 90px;
+            line-height: 1.7;
+        }
+
+        .memo-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .memo-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* COMPLETION */
+        .completion-icon {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .completion-message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 6px;
+            color: var(--navy);
+        }
+
+        .completion-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        /* HISTORY */
+        .history-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .history-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .history-quest {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .history-stars {
+            color: var(--gold);
+            font-size: 12px;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            color: var(--text-gray);
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 11px 0;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            letter-spacing: 0.05em;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        /* SENDING OVERLAY */
+        .sending-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .sending-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sending-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 15px;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo/SVD_logo_standard.png" alt="SVD" onerror="this.style.display='none'">
+        </div>
+        <h1>MINDFUL</h1>
+        <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
+        <div class="user-badge" id="userBadge" style="display: none;"></div>
+    </header>
+
+    <main>
+        <!-- SCREEN 0: REGISTRATION -->
+        <div class="screen" id="screen-register">
+            <div class="register-card">
+                <div class="register-title">Welcome to MINDFUL</div>
+                <div class="register-sub">あなたの情報を登録してください</div>
+                <div class="input-group">
+                    <label class="input-label">YOUR NAME</label>
+                    <input type="text" class="text-input" id="inputName" placeholder="例: 山田太郎">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">YOUR BASE</label>
+                    <div class="base-selector">
+                        <div class="base-option" data-base="moiwayama" onclick="selectBase(this)">
+                            <div class="base-icon">🏔️</div>
+                            <div class="base-name">藻岩山</div>
+                            <div class="base-code">MOIWAYAMA</div>
+                        </div>
+                        <div class="base-option" data-base="okurayama" onclick="selectBase(this)">
+                            <div class="base-icon">⛷️</div>
+                            <div class="base-name">大倉山</div>
+                            <div class="base-code">OKURAYAMA</div>
+                        </div>
+                        <div class="base-option" data-base="tvtower" onclick="selectBase(this)">
+                            <div class="base-icon">🗼</div>
+                            <div class="base-name">テレビ塔</div>
+                            <div class="base-code">TV TOWER</div>
+                        </div>
+                        <div class="base-option" data-base="akarenga" onclick="selectBase(this)">
+                            <div class="base-icon">🧱</div>
+                            <div class="base-name">赤れんが</div>
+                            <div class="base-code">AKARENGA</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-main" id="registerBtn" onclick="register()" disabled>REGISTER</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 1: MORNING RITUAL -->
+        <div class="screen" id="screen-morning">
+            <div class="section-title">Three Principles</div>
+            <div class="principle-card">
+                <div class="principle-num">PRINCIPLE I</div>
+                <div class="principle-title">Purpose</div>
+                <div class="principle-desc">2030年、「レストランの仕事」が子どもたちの憧れの職業になる社会を創る。</div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-num">PRINCIPLE II</div>
+                <div class="principle-title">Entertainment</div>
+                <div class="principle-desc">北海道No.1のエンターテインメントを届ける。妥協なき美学を追求する。</div>
+            </div>
+            <div class="principle-card">
+                <div class="principle-num">PRINCIPLE III</div>
+                <div class="principle-title">Unity</div>
+                <div class="principle-desc">競争から共創へ。仲間と共に、街と共に、未来を創る。</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">Health Check</div>
+            <div class="health-check-card" id="healthCheckCard">
+                <div class="health-title"><span class="icon">🩺</span> 就業前チェックシート</div>
+                <div class="check-item">
+                    <div class="check-label">体調は良好ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="condition"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng"
+                            data-field="condition" onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">体温は37.5℃未満ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="temp"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="temp"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">体がだるくないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="fatigue"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="fatigue"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">胸のむかつき・吐き気はないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="nausea"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="nausea"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">爪の手入れはできていますか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="nails"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="nails"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">手指に火傷や手荒れはないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="hands"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="hands"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">制服・頭髪・靴は清潔ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="uniform"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="uniform"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="health-status incomplete" id="healthStatus">すべての項目を確認してください</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Mind Check</div>
+            <div class="health-check-card" id="mindCheckCard">
+                <div class="health-title"><span class="icon">💭</span> 心のセルフチェック</div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">最近1週間で、仕事を楽しいと感じたことがある</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'many')">たくさんある</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'yes')">ある</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'neutral')">どちらとも</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'no')">ない</button>
+                    </div>
+                </div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">朝、仕事に向かうときの第一感情は？</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'excited')">楽しみ</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'normal')">普通</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'heavy')">少し重い</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'very_heavy')">かなり重い</button>
+                    </div>
+                </div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">相談したいことは？</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'urgent')">すぐにでも</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'sometime')">折を見て</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'notyet')">まだ大丈夫</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'none')">ない</button>
+                    </div>
+                </div>
+                <div class="health-status incomplete" id="mindStatus">心の状態も確認してください</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Today's Quests</div>
+            <div class="draw-area disabled" id="drawArea">
+                <div class="draw-card-back" onclick="drawQuests()">
+                    <div class="draw-logo">SVD</div>
+                    <div class="draw-subtitle">PLAYBOOK 100</div>
+                </div>
+                <div class="draw-hint">全項目OKで3枚のカードを引けます</div>
+            </div>
+
+            <div class="quest-cards-container" id="questCardsContainer"></div>
+            <button class="btn-main" id="startBtn" style="display: none;" onclick="startDay()">START TODAY</button>
+        </div>
+
+        <!-- SCREEN 2: ACTIVE DAY -->
+        <div class="screen" id="screen-active">
+            <div class="section-title">Today's Shift</div>
+            <div class="health-check-card" style="padding: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <select id="shiftStartSelect" onchange="shiftTimes.start = this.value"
+                        style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
+                        <option value="">開始</option>
+                        <option value="08:00">8:00</option>
+                        <option value="08:30">8:30</option>
+                        <option value="09:00">9:00</option>
+                        <option value="09:30">9:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:30">12:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:00">17:00</option>
+                    </select>
+                    <span style="font-weight: 700; color: var(--navy); font-size: 18px;">〜</span>
+                    <select id="shiftEndSelect" onchange="shiftTimes.end = this.value"
+                        style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
+                        <option value="">終了</option>
+                        <option value="17:00">17:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="18:00">18:00</option>
+                        <option value="18:30">18:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="19:30">19:30</option>
+                        <option value="20:00">20:00</option>
+                        <option value="20:30">20:30</option>
+                        <option value="21:00">21:00</option>
+                        <option value="21:30">21:30</option>
+                        <option value="22:00">22:00</option>
+                        <option value="22:30">22:30</option>
+                        <option value="23:00">23:00</option>
+                        <option value="23:30">23:30</option>
+                        <option value="00:00">0:00</option>
+                        <option value="00:30">0:30</option>
+                        <option value="01:00">1:00</option>
+                        <option value="01:30">1:30</option>
+                        <option value="02:00">2:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Today's Focus</div>
+            <div class="active-quests-container" id="activeQuestsContainer"></div>
+            <button class="btn-main" onclick="showReflection()">REFLECTION →</button>
+        </div>
+
+        <!-- SCREEN 3: REFLECTION -->
+        <div class="screen" id="screen-reflection">
+            <div class="reflection-prompt">今日の3つのQuest<br><span style="color: var(--gold);"
+                    id="reflectionQuestTitles"></span><br>を意識できましたか？</div>
+            <div class="star-rating" id="starRating"><span class="star" data-value="1">★</span><span class="star"
+                    data-value="2">★</span><span class="star" data-value="3">★</span><span class="star"
+                    data-value="4">★</span><span class="star" data-value="5">★</span></div>
+            <textarea class="memo-input" id="memoInput" placeholder="今日の気づきや学びをメモ（任意）"></textarea>
+            <button class="btn-main" onclick="submitReflection()">COMPLETE</button>
+        </div>
+
+        <!-- SCREEN 4: COMPLETION -->
+        <div class="screen" id="screen-completion">
+            <div class="completion-icon">✨</div>
+            <div class="completion-message">Great Work!</div>
+            <div class="completion-sub">今日もMINDFULな一日を過ごしましたね。<br>この積み重ねが、あなたを伝説にします。</div>
+            <button class="btn-main" onclick="resetApp()">NEXT DAY →</button>
+            <button class="btn-secondary" onclick="showHistory()">VIEW HISTORY</button>
+        </div>
+
+        <!-- SCREEN 5: HISTORY -->
+        <div class="screen" id="screen-history">
+            <div class="section-title">My Mindful Log</div>
+            <div id="historyList"></div>
+            <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
+        </div>
+    </main>
+
+    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN</footer>
+
+    <nav>
+        <div class="nav-item active" onclick="showScreen('screen-morning')">
+            <div class="nav-icon">🌅</div>
+            <div>MORNING</div>
+        </div>
+        <div class="nav-item" onclick="showScreen('screen-active')">
+            <div class="nav-icon">🎯</div>
+            <div>TODAY</div>
+        </div>
+        <div class="nav-item" onclick="showScreen('screen-history')">
+            <div class="nav-icon">📜</div>
+            <div>HISTORY</div>
+        </div>
+        <div class="nav-item" onclick="editProfile()">
+            <div class="nav-icon">👤</div>
+            <div>PROFILE</div>
+        </div>
+    </nav>
+
+    <div class="sending-overlay" id="sendingOverlay">
+        <div class="spinner"></div>
+        <div class="sending-text">SENDING DATA...</div>
+    </div>
+
+    <script>
+        const SCRIPT_URLS = { moiwayama: 'YOUR_MOIWAYAMA_SCRIPT_URL', okurayama: 'YOUR_OKURAYAMA_SCRIPT_URL', tvtower: 'YOUR_TVTOWER_SCRIPT_URL', akarenga: 'YOUR_AKARENGA_SCRIPT_URL' };
+        const BASE_NAMES = { moiwayama: '藻岩山', okurayama: '大倉山', tvtower: 'テレビ塔', akarenga: '赤れんが' };
+
+        const playbook = [
+            { id: "001", titleEn: "MAGIC MOMENT CAPTURE", titleJp: "マジック・モーメント・キャプチャ", action: "感動的な瞬間が生まれた時、インカムで「マジック！」と共有する。チーム全員でその喜びを味わおう。" },
+            { id: "002", titleEn: "FIRST SMILE", titleJp: "ファースト・スマイル", action: "ゲストと目が合った瞬間、自分から先に笑顔を届ける。その一瞬がすべての始まり。" },
+            { id: "003", titleEn: "THE ENTRANCE ENERGY", titleJp: "エントランス・エナジー", action: "お店に入る瞬間、「今日も最高のショーを届けるぞ」と心の中で宣言。スイッチを入れよう。" },
+            { id: "006", titleEn: "THE FIRST 10 SECONDS", titleJp: "ザ・ファースト・テン", action: "ゲスト着席後の最初の10秒で、必ず「予想外のプラスアクション」を一つ入れる。" },
+            { id: "010", titleEn: "TEAM HIGH FIVE", titleJp: "チーム・ハイファイブ", action: "仲間のナイスプレーを見たら、心の中で「ナイス！」と称える。帰り際にその一言を伝えよう。" },
+            { id: "019", titleEn: "WARM FAREWELL", titleJp: "ウォーム・フェアウェル", action: "お見送りは最高の笑顔で。「また会いたい」と思ってもらえる、心からの「ありがとうございました」を。" },
+            { id: "031", titleEn: "THE HUDDLE", titleJp: "ザ・ハドル", action: "ピークタイム直前、チームで顔を合わせて「今日も行こう！」の一声。気持ちを一つに。" },
+            { id: "035", titleEn: "THE SILENT PASS", titleJp: "サイレント・パス", action: "仲間の視線の先を読み、頼まれる前にサポート。言葉なしで通じる連携は最高のチームワーク。" },
+            { id: "050", titleEn: "SMILING THROUGH CHAOS", titleJp: "スマイリング・スルー・カオス", action: "どれだけ忙しくても、ゲストの前では涼しい笑顔。プロの演技力を磨こう。" },
+            { id: "100", titleEn: "ONE PURPOSE", titleJp: "ワン・パーパス", action: "「レストランの仕事が子どもたちの憧れになる」。その未来を、今日の自分が創っている。" }
+        ];
+
+
+        let currentQuests = [];
+        let currentRating = 0;
+        let selectedBase = null;
+        const checkFields = ['condition', 'temp', 'fatigue', 'nausea', 'nails', 'hands', 'uniform'];
+        const mindFields = ['mind_enjoy', 'mind_morning', 'mind_consult'];
+        let checks = {};
+        let mindChecks = {};
+        let shiftTimes = { start: '', end: '' };
+
+        function setShiftTime(type, time) {
+            shiftTimes[type] = time;
+            const container = type === 'start' ? document.getElementById('shiftStartBtns') : document.getElementById('shiftEndBtns');
+            container.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function init() {
+            checkFields.forEach(f => checks[f] = null);
+            mindFields.forEach(f => mindChecks[f] = null);
+            loadHistory();
+            setupStarRating();
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (profile) { showUserBadge(profile); showScreen('screen-morning'); }
+            else { showScreen('screen-register'); }
+        }
+
+
+        function selectBase(el) {
+            document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedBase = el.dataset.base;
+            validateRegistration();
+        }
+
+        function validateRegistration() {
+            const name = document.getElementById('inputName').value.trim();
+            document.getElementById('registerBtn').disabled = !(name && selectedBase);
+        }
+        document.getElementById('inputName').addEventListener('input', validateRegistration);
+
+        function register() {
+            const name = document.getElementById('inputName').value.trim();
+            if (name && selectedBase) {
+                const profile = { name, base: selectedBase };
+                localStorage.setItem('mindful_profile', JSON.stringify(profile));
+                showUserBadge(profile);
+                showScreen('screen-morning');
+            }
+        }
+
+        function showUserBadge(profile) {
+            const badge = document.getElementById('userBadge');
+            badge.textContent = `${profile.name} @ ${BASE_NAMES[profile.base]}`;
+            badge.style.display = 'inline-block';
+        }
+
+        function editProfile() {
+            if (confirm('プロフィールを編集しますか？')) {
+                localStorage.removeItem('mindful_profile');
+                selectedBase = null;
+                document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
+                document.getElementById('inputName').value = '';
+                document.getElementById('userBadge').style.display = 'none';
+                showScreen('screen-register');
+            }
+        }
+
+        function setCheck(btn, value) {
+            const field = btn.dataset.field;
+            checks[field] = value;
+            btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            validateHealth();
+        }
+
+        function validateHealth() {
+            const statusEl = document.getElementById('healthStatus');
+            const drawArea = document.getElementById('drawArea');
+            const card = document.getElementById('healthCheckCard');
+            const allAnswered = checkFields.every(f => checks[f] !== null);
+            const allOk = checkFields.every(f => checks[f] === 'ok');
+
+            if (!allAnswered) {
+                statusEl.className = 'health-status incomplete'; statusEl.textContent = 'すべての項目を確認してください';
+                card.classList.remove('complete');
+            } else if (!allOk) {
+                statusEl.className = 'health-status ng'; statusEl.textContent = '⚠️ 要確認：管理者に報告してください';
+                card.classList.remove('complete');
+            } else {
+                statusEl.className = 'health-status ok'; statusEl.textContent = '✓ 確認完了';
+                card.classList.add('complete');
+            }
+            updateDrawArea();
+        }
+
+        function setMindCheck(btn, value) {
+            const field = btn.dataset.field;
+            mindChecks[field] = value;
+            btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            validateMind();
+        }
+
+        function validateMind() {
+            const statusEl = document.getElementById('mindStatus');
+            const card = document.getElementById('mindCheckCard');
+            const allAnswered = mindFields.every(f => mindChecks[f] !== null);
+
+            if (!allAnswered) {
+                statusEl.className = 'health-status incomplete'; statusEl.textContent = '心の状態も確認してください';
+                card.classList.remove('complete');
+            } else {
+                statusEl.className = 'health-status ok'; statusEl.textContent = '✓ 心の確認完了';
+                card.classList.add('complete');
+                // 要フォローの場合のみメッセージ変更
+                if (mindChecks.mind_consult === 'urgent' || mindChecks.mind_consult === 'sometime') {
+                    statusEl.textContent = '💬 いつでも相談してね';
+                }
+            }
+            updateDrawArea();
+        }
+
+        function updateDrawArea() {
+            const drawArea = document.getElementById('drawArea');
+            const healthOk = checkFields.every(f => checks[f] === 'ok');
+            const mindAnswered = mindFields.every(f => mindChecks[f] !== null);
+
+            if (healthOk && mindAnswered) {
+                drawArea.classList.remove('disabled');
+                drawArea.querySelector('.draw-hint').textContent = 'タップして3枚のカードを引く';
+            } else {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
+            }
+        }
+
+        function drawQuests() {
+            if (document.getElementById('drawArea').classList.contains('disabled')) return;
+
+            // Draw 3 random quests
+            const shuffled = [...playbook].sort(() => Math.random() - 0.5);
+            currentQuests = shuffled.slice(0, 3);
+
+            document.getElementById('drawArea').style.display = 'none';
+            const container = document.getElementById('questCardsContainer');
+            container.innerHTML = currentQuests.map((q, i) => `
+            <div class="quest-card revealed" style="animation-delay: ${i * 0.15}s;">
+                <div class="quest-label">QUEST ${i + 1}</div>
+                <div class="quest-number">#${q.id}</div>
+                <div class="quest-title">${q.titleEn}</div>
+                <div class="quest-subtitle">${q.titleJp}</div>
+                <div class="quest-philosophy">${q.action}</div>
+            </div>
+        `).join('');
+            document.getElementById('startBtn').style.display = 'block';
+        }
+
+        function startDay() {
+            const container = document.getElementById('activeQuestsContainer');
+            container.innerHTML = currentQuests.map((q, i) => `
+            <div class="active-quest-card">
+                <div class="quest-label">QUEST ${i + 1}</div>
+                <div class="quest-number">#${q.id}</div>
+                <div class="quest-title">${q.titleEn}</div>
+                <div class="quest-subtitle">${q.titleJp}</div>
+                <div class="quest-philosophy">${q.action}</div>
+            </div>
+        `).join('');
+            sendToSheets('healthcheck');
+            showScreen('screen-active');
+        }
+
+        function showReflection() {
+            document.getElementById('reflectionQuestTitles').innerHTML = currentQuests.map(q => q.titleEn).join('<br>');
+            showScreen('screen-reflection');
+        }
+
+        function setupStarRating() {
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.value);
+                    document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < currentRating));
+                });
+            });
+        }
+
+        function submitReflection() {
+            const memo = document.getElementById('memoInput').value;
+            const today = new Date().toISOString().split('T')[0];
+            const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
+            history.unshift({ date: today, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo });
+            localStorage.setItem('mindful_history', JSON.stringify(history.slice(0, 30)));
+            sendToSheets('reflection');
+            showScreen('screen-completion');
+        }
+
+        async function sendToSheets(type) {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (!profile) return;
+            const url = SCRIPT_URLS[profile.base];
+            if (!url || url.startsWith('YOUR_')) { console.log('Sheets URL not configured'); return; }
+            document.getElementById('sendingOverlay').classList.add('active');
+            const payload = { type, timestamp: new Date().toISOString(), name: profile.name, base: profile.base, shiftStart: shiftTimes.start, shiftEnd: shiftTimes.end, checks, mindChecks, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo: document.getElementById('memoInput')?.value || '' };
+            try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
+            setTimeout(() => { document.getElementById('sendingOverlay').classList.remove('active'); }, 800);
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
+            const container = document.getElementById('historyList');
+            container.innerHTML = history.length === 0 ? '<p style="color: var(--text-gray); text-align: center; font-size: 12px;">No history yet.</p>' : history.map(item => `
+            <div class="history-item">
+                <div>
+                    <div class="history-date">${item.date}</div>
+                    <div class="history-quest">${item.quests ? item.quests.map(q => '#' + q.id).join(', ') : '#' + item.questId}</div>
+                </div>
+                <div class="history-stars">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</div>
+            </div>
+        `).join('');
+        }
+
+        function showHistory() { loadHistory(); showScreen('screen-history'); }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach((n, i) => { n.classList.toggle('active', (screenId === 'screen-morning' && i === 0) || (screenId === 'screen-active' && i === 1) || (screenId === 'screen-history' && i === 2)); });
+        }
+
+        function resetApp() {
+            currentRating = 0; currentQuests = [];
+            checkFields.forEach(f => checks[f] = null);
+            mindFields.forEach(f => mindChecks[f] = null);
+            document.getElementById('memoInput').value = '';
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('healthStatus').className = 'health-status incomplete';
+            document.getElementById('healthStatus').textContent = 'すべての項目を確認してください';
+            document.getElementById('healthCheckCard').classList.remove('complete');
+            document.getElementById('mindStatus').className = 'health-status incomplete';
+            document.getElementById('mindStatus').textContent = '心の状態も確認してください';
+            document.getElementById('mindCheckCard').classList.remove('complete');
+            document.getElementById('drawArea').style.display = 'block';
+            document.getElementById('drawArea').classList.add('disabled');
+            document.getElementById('drawArea').querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
+            document.getElementById('questCardsContainer').innerHTML = '';
+            document.getElementById('startBtn').style.display = 'none';
+            showScreen('screen-morning');
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
