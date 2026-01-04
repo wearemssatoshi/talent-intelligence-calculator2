@@ -1,0 +1,24 @@
+ from docx import Document
+    2     import sys
+    3 
+    4     def read_docx_text(file_path):
+    5         """
+    6         Wordファイル (.docx) からすべてのテキストを読み込み、結合して返します。
+    7         """
+    8         try:
+    9             document = Document(file_path)
+   10             full_text = []
+   11             for paragraph in document.paragraphs:
+   12                 full_text.append(paragraph.text)
+   13             return '\n'.join(full_text)
+   14         except Exception as e:
+   15             return f"エラー: ファイルの読み込み中に問題が発生しました - {e}"
+   16 
+   17     if __name__ == "__main__":
+   18         if len(sys.argv) < 2:
+   19             print("使用法: python read_word_doc.py <Wordファイルのパス>")
+   20             sys.exit(1)
+   21 
+   22         word_file_path = sys.argv[1]
+   23         text_content = read_docx_text(word_file_path)
+   24         print(text_content)

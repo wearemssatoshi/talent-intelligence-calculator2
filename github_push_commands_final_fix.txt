@@ -1,0 +1,4 @@
+cd /Users/satoshiiga/svd-portfolio
+git add .
+git commit -m "Fix: PDF生成ロジックをスクリーンショット方式に変更"
+git push

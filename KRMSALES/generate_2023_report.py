@@ -1,6 +1,7 @@
+
 import csv
 from collections import defaultdict
-
+[]
 def generate_report():
     # Step 1: Read the source CSV data
     all_rows = []

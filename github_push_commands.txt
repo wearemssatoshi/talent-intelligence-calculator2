@@ -1,0 +1,4 @@
+cd /Users/satoshiiga/svd-portfolio
+git add .
+git commit -m "Fix: PDF generation quality, colors, and missing titles"
+git push

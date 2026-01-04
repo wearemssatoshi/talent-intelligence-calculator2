@@ -1,6 +1,24 @@
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Python
 export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 
+# 
+     Go
+export PATH="$HOME/bin:$PATH"
+
+# API Keys
+export GOOGLE_API_KEY='***REMOVED***'
+export
+     GEMINI_API_KEY='***REMOVED***'
+
+# nvm (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/Cellar/nvm/0.40.3/nvm.sh" ] && \. "/opt/homebrew/Cellar/nvm/0.40.3/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/Cellar/nvm/0.40.3/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/Cellar/nvm/0.40.3/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-alias gemini='gemini-cli'
+[ -s "$NVM_DIR
+     /nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+
+# Added by Antigravity
+export PATH="/Users/satoshiiga/.antigravity/antigravity/bin:$PATH"
+export PATH="~/.npm-global/bin:$PATH"

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logical Tasting Infographic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Noto+Serif+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #722F37;
+            /* Wine Red */
+            --secondary-color: #556B2F;
+            /* Olive Green */
+            --accent-color: #F4E04D;
+            /* Banana Yellow - for highlights */
+            --bg-color: #FAFAFA;
+            --text-color: #333;
+            --light-gray: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #e0e0e0;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            /* A4 */
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Noto Serif JP', serif;
+            margin: 0;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 24px;
+            background-color: var(--accent-color);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-box {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .content-box strong {
+            color: var(--secondary-color);
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(244, 224, 77, 0.3) 0%, rgba(244, 224, 77, 0.3) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 40%;
+            background-position: 0 88%;
+            font-weight: bold;
+        }
+
+        .grape-bg {
+            position: absolute;
+            width: 300px;
+            opacity: 0.15;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .grape-bg.top-right {
+            top: -20px;
+            right: -20px;
+            transform: rotate(15deg);
+        }
+
+        .grape-bg.bottom-left {
+            bottom: -20px;
+            left: -20px;
+            transform: rotate(-15deg) scaleX(-1);
+        }
+
+        .diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .arrow-box {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .arrow-box::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            color: var(--primary-color);
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .arrow-box:last-child::after {
+            display: none;
+        }
+
+        .color-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            vertical-align: middle;
+            border: 1px solid #ccc;
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+
+            .page {
+                box-shadow: none;
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Page 1 -->
+    <div class="page">
+        <img src="grape_vine.png" class="grape-bg top-right" alt="Grape Vine">
+
+        <h1>Logical Tasting Methodology</h1>
+
+        <div class="section">
+            <h2>1. 核心概念 (Core Concept)</h2>
+            <div class="content-box">
+                <p><strong>テイスティングの本来の目的</strong></p>
+                <ul>
+                    <li><span class="highlight">目的:</span> 銘柄当て（Guessing）ではなく、他者への伝達手段</li>
+                    <li><span class="highlight">ゴール:</span> ワインの特性をわかりやすく言語化する</li>
+                    <li><span class="highlight">鉄則:</span> 常に「同じフォーム（型）」で分析し、ブレをなくす</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>2. 外観の分析 (Appearance)</h2>
+            <p>「何が見えるか」＋「なぜそう見えるのか」を追求する。</p>
+            <div class="content-box">
+                <p><strong>思考の起点:</strong> 原因と結果の追求（例：気泡＝なぜ？）</p>
+                <p><strong>Point:</strong> 色調は後の推論(酸・熟成度)のアンカーとなる</p>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <p><strong>白ワイン (White Wine)</strong></p>
+                <div class="color-scale">
+                    <span><span class="color-dot" style="background:#E8F5E9;"></span>レモングリーン(若)</span>
+                    <span>↔</span>
+                    <span><span class="color-dot" style="background:#FFD700;"></span>ゴールド</span>
+                    <span>↔</span>
+                    <span><span class="color-dot" style="background:#FFBF00;"></span>アンバー(熟成)</span>
+                </div>
+            </div>
+            <div style="margin-top: 10px;">
+                <p><strong>赤ワイン (Red Wine)</strong></p>
+                <div class="color-scale">
+                    <span><span class="color-dot" style="background:#9B111E;"></span>ルビー</span>
+                    <span>↔</span>
+                    <span><span class="color-dot" style="background:#722F37;"></span>ガーネット</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>3. 香りの分析 (Nose)</h2>
+            <p>香りの因数分解：由来ごとの分類</p>
+            <div class="content-box">
+                <ul>
+                    <li><strong>プライマリー (Primary):</strong> ブドウ品種・アルコール発酵由来 (果実、花)</li>
+                    <li><strong>セカンダリー (Secondary):</strong> 発酵後の醸造過程由来 (MLF、酵母、澱)</li>
+                    <li><strong>ターシャリー (Tertiary):</strong> 熟成由来 (樽、瓶内熟成、酸化のブーケ)</li>
+                </ul>
+            </div>
+            <p><strong>表現順序</strong></p>
+            <div class="diagram">
+                <div class="arrow-box">果実</div>
+                <div class="arrow-box">花</div>
+                <div class="arrow-box">草/ハーブ</div>
+                <div class="arrow-box">土/スパイス</div>
+                <div class="arrow-box">根</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Page 1 / 2 - Logical Tasting Summary
+        </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page">
+        <img src="grape_vine.png" class="grape-bg bottom-left" alt="Grape Vine">
+
+        <div class="section" style="margin-top: 40px;">
+            <h2>4. 味わいの分析 (Palate)</h2>
+            <p>時間軸（3幕構成）と質の評価</p>
+
+            <div class="content-box">
+                <h3>時間軸 (Time Axis)</h3>
+                <ul>
+                    <li><strong>第1幕 (アタック):</strong> 第一印象、ボリューム感</li>
+                    <li><strong>第2幕 (ミドル):</strong> 味わいの中心展開</li>
+                    <li><strong>第3幕 (アフター):</strong> 余韻の長さよりも「強度(パワー)」</li>
+                </ul>
+            </div>
+
+            <div class="content-box" style="border-left-color: var(--primary-color);">
+                <h3>質 (Quality)</h3>
+                <p><span class="highlight">量より質。</span> 酸の鋭さ、タンニンの緻密さを評価する。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>5. 結論・総合評価 (Conclusion)</h2>
+            <p>情報の統合と論理的帰結</p>
+
+            <div class="content-box">
+                <ul>
+                    <li><strong>推論:</strong> マクロ(気候・新旧世界) → ミクロ(産地・畑)</li>
+                    <li><strong>評価:</strong> 品質、熟成ポテンシャル、飲み頃</li>
+                    <li><strong>提案:</strong> サービス温度、グラス形状、料理ペアリング</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" style="text-align: center; margin-top: 50px;">
+            <div
+                style="border: 2px dashed var(--primary-color); padding: 20px; border-radius: 10px; display: inline-block;">
+                <h3 style="color: var(--primary-color);">Logical Tasting Goal</h3>
+                <p style="font-size: 18px; margin-top: 10px;">
+                    ワインの声を聴き、<br>
+                    その物語を正確に翻訳する。
+                </p>
+            </div>
+        </div>
+
+        <div class="footer">
+            Page 2 / 2 - Logical Tasting Summary
+        </div>
+    </div>
+
+</body>
+
+</html>
