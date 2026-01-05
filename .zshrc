@@ -8,10 +8,8 @@ export PATH="$HOME/Library/Python/3.9/bin:$PATH"
      Go
 export PATH="$HOME/bin:$PATH"
 
-# API Keys
-export GOOGLE_API_KEY='AIzaSyCViuYMYzbxb-90HAL9ZIy_0wfsMtJYbrc'
-export
-     GEMINI_API_KEY='AIzaSyCViuYMYzbxb-90HAL9ZIy_0wfsMtJYbrc'
+# API Keys (loaded from .zshrc.local for security - do not commit keys here!)
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 # nvm (Node Version Manager)
 export NVM_DIR="$HOME/.nvm"
