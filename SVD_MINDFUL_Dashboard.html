@@ -296,7 +296,30 @@
     </header>
 
     <main>
-        <div class="date-display" id="dateDisplay"></div>
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+            <div class="date-display" id="dateDisplay" style="margin-bottom: 0;"></div>
+            <input type="date" id="datePicker" style="
+                padding: 8px 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 12px;
+                color: var(--navy);
+                background: var(--white);
+                cursor: pointer;
+            " onchange="changeDate(this.value)">
+            <button onclick="goToToday()" style="
+                padding: 8px 16px;
+                border: 1px solid var(--gold);
+                border-radius: 8px;
+                background: var(--gold-light);
+                color: var(--navy);
+                font-family: 'Montserrat', sans-serif;
+                font-size: 11px;
+                font-weight: 500;
+                cursor: pointer;
+            ">今日</button>
+        </div>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -325,7 +348,7 @@
             </div>
         </div>
 
-        <div class="section-title">TODAY'S HEALTH CHECKS</div>
+        <div class="section-title"><span id="sectionDateLabel"></span> HEALTH CHECKS</div>
         <div class="table-container">
             <table id="healthTable">
                 <thead>
@@ -347,7 +370,7 @@
             </table>
         </div>
 
-        <div class="section-title" style="margin-top: 35px;">TODAY'S REFLECTIONS</div>
+        <div class="section-title" style="margin-top: 35px;"><span id="sectionDateLabel2"></span> REFLECTIONS</div>
         <div class="table-container">
             <table id="reflectionTable">
                 <thead>
@@ -384,16 +407,36 @@
         };
 
         let currentBase = 'moiwayama';
+        let selectedDate = new Date().toISOString().split('T')[0];
 
         function init() {
+            document.getElementById('datePicker').value = selectedDate;
             setDateDisplay();
             loadData();
         }
 
         function setDateDisplay() {
-            const today = new Date();
+            const date = new Date(selectedDate + 'T00:00:00');
             const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('dateDisplay').textContent = today.toLocaleDateString('ja-JP', options);
+            document.getElementById('dateDisplay').textContent = date.toLocaleDateString('ja-JP', options);
+
+            const isToday = selectedDate === new Date().toISOString().split('T')[0];
+            const label = isToday ? "TODAY'S" : date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
+            document.getElementById('sectionDateLabel').textContent = label;
+            document.getElementById('sectionDateLabel2').textContent = label;
+        }
+
+        function changeDate(dateStr) {
+            selectedDate = dateStr;
+            setDateDisplay();
+            loadData();
+        }
+
+        function goToToday() {
+            selectedDate = new Date().toISOString().split('T')[0];
+            document.getElementById('datePicker').value = selectedDate;
+            setDateDisplay();
+            loadData();
         }
 
         function selectBase(base) {
@@ -458,10 +501,16 @@
         }
 
         function renderData(data) {
-            const todayStr = new Date().toISOString().split('T')[0];
-            const todayChecks = data.healthChecks.filter(c => new Date(c.timestamp).toISOString().split('T')[0] === todayStr);
+            const targetDate = selectedDate;
+            const todayChecks = data.healthChecks.filter(c => {
+                const ts = new Date(c.timestamp).toISOString().split('T')[0];
+                return ts === targetDate;
+            });
             const okChecks = todayChecks.filter(c => c.allOk === 'OK');
-            const todayReflections = data.reflections.filter(r => new Date(r.timestamp).toISOString().split('T')[0] === todayStr);
+            const todayReflections = data.reflections.filter(r => {
+                const ts = new Date(r.timestamp).toISOString().split('T')[0];
+                return ts === targetDate;
+            });
             const avgRating = todayReflections.length > 0 ? (todayReflections.reduce((sum, r) => sum + r.rating, 0) / todayReflections.length).toFixed(1) : '--';
 
             document.getElementById('statCheckins').textContent = todayChecks.length;
