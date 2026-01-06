@@ -1613,7 +1613,7 @@
                 payload.tokenBreakdown = tokenData.breakdown.map(b => `${b.label}:+${b.amount}`).join(', ');
             }
 
-            try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
+            try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
             setTimeout(() => { document.getElementById('sendingOverlay').classList.remove('active'); }, 800);
         }
 
