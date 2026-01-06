@@ -413,8 +413,30 @@
 
             try {
                 const response = await fetch(url);
-                const data = await response.json();
-                renderData(data);
+                const result = await response.json();
+
+                // バックエンドの生データをダッシュボード形式に変換
+                const rows = result.data || [];
+                const healthChecks = rows.filter(r => r.Type === 'healthcheck').map(r => ({
+                    timestamp: r.Timestamp,
+                    name: r.Name,
+                    allOk: (r.Condition === 'ok' && r.Temp === 'ok' && r.Fatigue === 'ok' &&
+                        r.Nausea === 'ok' && r.Nails === 'ok' && r.Hands === 'ok' && r.Uniform === 'ok') ? 'OK' : 'NG',
+                    questId: r.Quests ? r.Quests.split(',')[0].replace('#', '').trim() : '',
+                    questTitle: ''
+                }));
+
+                const reflections = rows.filter(r => r.Type === 'reflection').map(r => ({
+                    timestamp: r.Timestamp,
+                    name: r.Name,
+                    questId: r.Quests ? r.Quests.split(',')[0].replace('#', '').trim() : '',
+                    questTitle: '',
+                    rating: parseInt(r.Rating) || 0,
+                    memo: r.Memo || '',
+                    tokenEarned: parseInt(r['Token Earned']) || 0
+                }));
+
+                renderData({ healthChecks, reflections });
             } catch (e) {
                 console.error('Failed to load data:', e);
                 showDemoData();
