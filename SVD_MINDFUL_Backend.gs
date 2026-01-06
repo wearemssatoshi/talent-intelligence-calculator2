@@ -21,15 +21,34 @@ function doPost(e) {
     let sheet = ss.getSheetByName('MINDFUL_Log');
     if (!sheet) {
       sheet = ss.insertSheet('MINDFUL_Log');
-      // ヘッダーを設定
-      sheet.getRange(1, 1, 1, 20).setValues([[
+      // ヘッダーを設定（トークン列追加）
+      sheet.getRange(1, 1, 1, 22).setValues([[
         'Timestamp', 'Type', 'Name', 'Base',
         'Shift Start', 'Shift End',
         'Condition', 'Temp', 'Fatigue', 'Nausea', 'Nails', 'Hands', 'Uniform',
         'Mind Enjoy', 'Mind Morning', 'Mind Consult',
-        'Quests', 'Rating', 'Memo'
+        'Quests', 'Rating', 'Memo',
+        'Token Earned', 'Token Balance', 'Token Breakdown'
       ]]);
-      sheet.getRange(1, 1, 1, 20).setFontWeight('bold');
+      sheet.getRange(1, 1, 1, 22).setFontWeight('bold');
+    }
+    
+    // トークン残高を計算（ユーザー別累計）
+    let tokenBalance = 0;
+    const tokenEarned = data.tokenEarned || 0;
+    
+    if (data.type === 'reflection' && tokenEarned > 0) {
+      // 既存データからユーザーの累計トークンを取得
+      const allData = sheet.getDataRange().getValues();
+      for (let i = 1; i < allData.length; i++) {
+        if (allData[i][2] === data.name && allData[i][3] === data.base) {
+          const prevBalance = allData[i][20]; // Token Balance列
+          if (prevBalance && !isNaN(prevBalance)) {
+            tokenBalance = Math.max(tokenBalance, prevBalance);
+          }
+        }
+      }
+      tokenBalance += tokenEarned;
     }
     
     // データを追加
@@ -52,12 +71,18 @@ function doPost(e) {
       data.mindChecks?.mind_consult || '',
       data.quests ? data.quests.map(q => `#${q.id}`).join(', ') : '',
       data.rating || '',
-      data.memo || ''
+      data.memo || '',
+      tokenEarned || '',
+      tokenBalance || '',
+      data.tokenBreakdown || ''
     ];
     
     sheet.appendRow(row);
     
-    return ContentService.createTextOutput(JSON.stringify({ success: true }))
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      tokenBalance: tokenBalance 
+    }))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
