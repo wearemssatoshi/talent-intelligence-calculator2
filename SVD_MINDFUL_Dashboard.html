@@ -315,6 +315,14 @@
                 <div class="stat-label">Avg Rating</div>
                 <div class="stat-value" id="statAvgRating">--</div>
             </div>
+            <div class="stat-card" style="border-color: var(--gold);">
+                <div class="stat-label">🪙 Today's Tokens</div>
+                <div class="stat-value" style="color: var(--gold);" id="statTodayTokens">--</div>
+            </div>
+            <div class="stat-card" style="border-color: var(--gold);">
+                <div class="stat-label">🏆 Total Tokens</div>
+                <div class="stat-value" style="color: var(--gold);" id="statTotalTokens">--</div>
+            </div>
         </div>
 
         <div class="section-title">TODAY'S HEALTH CHECKS</div>
@@ -348,12 +356,13 @@
                         <th>Name</th>
                         <th>Quest</th>
                         <th>Rating</th>
+                        <th>🪙 Token</th>
                         <th>Memo</th>
                     </tr>
                 </thead>
                 <tbody id="reflectionBody">
                     <tr>
-                        <td colspan="5" class="empty-state">
+                        <td colspan="6" class="empty-state">
                             <div class="icon">💭</div>
                             <div>No reflections yet.</div>
                         </td>
@@ -368,9 +377,9 @@
     <script>
         // --- CONFIG: Replace with your actual Apps Script URLs ---
         const SCRIPT_URLS = {
-            moiwayama: 'YOUR_MOIWAYAMA_SCRIPT_URL',
+            moiwayama: 'https://script.google.com/macros/s/AKfycbxGL8p3a8-k7xnhz2jfmyq39fXplB0qGI55urinPg9tRBWmbmKEEWcqZNSpUxhs5K3T/exec',
             okurayama: 'YOUR_OKURAYAMA_SCRIPT_URL',
-            tvtower: 'YOUR_TVTOWER_SCRIPT_URL',
+            tvtower: 'https://script.google.com/macros/s/AKfycbwrn55ViDefshkq54UUimaVjxLFkt0cG1YtaYF-eHCvU_Y5-aVBFtLcfyJkskZkSweI/exec',
             akarenga: 'YOUR_AKARENGA_SCRIPT_URL'
         };
 
@@ -438,6 +447,12 @@
             document.getElementById('statReflections').textContent = todayReflections.length;
             document.getElementById('statAvgRating').textContent = avgRating;
 
+            // トークン統計
+            const todayTokens = todayReflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
+            const totalTokens = data.reflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
+            document.getElementById('statTodayTokens').textContent = todayTokens > 0 ? '+' + todayTokens : '--';
+            document.getElementById('statTotalTokens').textContent = totalTokens > 0 ? totalTokens : '--';
+
             const healthBody = document.getElementById('healthBody');
             if (todayChecks.length === 0) {
                 healthBody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="icon">📋</div><div>本日のチェックインはまだありません</div></td></tr>';
@@ -462,6 +477,7 @@
                     <td>${r.name}</td>
                     <td>#${r.questId} ${r.questTitle}</td>
                     <td><span class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span></td>
+                    <td style="color: var(--gold); font-weight: 600;">${r.tokenEarned ? '+' + r.tokenEarned : '-'}</td>
                     <td>${r.memo || '-'}</td>
                 </tr>
             `).join('');
