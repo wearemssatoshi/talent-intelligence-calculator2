@@ -1518,7 +1518,7 @@
             addTokens(tokenReward.total);
             displayTokenReward(tokenReward);
 
-            sendToSheets('reflection');
+            sendToSheets('reflection', tokenReward);
             showScreen('screen-completion');
         }
 
@@ -1586,13 +1586,33 @@
             }
         }
 
-        async function sendToSheets(type) {
+        async function sendToSheets(type, tokenData = null) {
             const profile = JSON.parse(localStorage.getItem('mindful_profile'));
             if (!profile) return;
             const url = SCRIPT_URLS[profile.base];
             if (!url || url.startsWith('YOUR_')) { console.log('Sheets URL not configured'); return; }
             document.getElementById('sendingOverlay').classList.add('active');
-            const payload = { type, timestamp: new Date().toISOString(), name: profile.name, base: profile.base, shiftStart: shiftTimes.start, shiftEnd: shiftTimes.end, checks, mindChecks, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo: document.getElementById('memoInput')?.value || '' };
+
+            const payload = {
+                type,
+                timestamp: new Date().toISOString(),
+                name: profile.name,
+                base: profile.base,
+                shiftStart: shiftTimes.start,
+                shiftEnd: shiftTimes.end,
+                checks,
+                mindChecks,
+                quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })),
+                rating: currentRating,
+                memo: document.getElementById('memoInput')?.value || ''
+            };
+
+            // トークン情報を追加
+            if (tokenData) {
+                payload.tokenEarned = tokenData.total;
+                payload.tokenBreakdown = tokenData.breakdown.map(b => `${b.label}:+${b.amount}`).join(', ');
+            }
+
             try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
             setTimeout(() => { document.getElementById('sendingOverlay').classList.remove('active'); }, 800);
         }
