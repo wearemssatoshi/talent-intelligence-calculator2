@@ -1308,6 +1308,47 @@
             <div id="historyList"></div>
             <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
         </div>
+
+        <!-- SCREEN 6: PROFILE VIEW -->
+        <div class="screen" id="screen-profile">
+            <div class="section-title">My Profile</div>
+            <div class="register-card">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 60px; margin-bottom: 10px;">👤</div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 600; color: var(--navy);"
+                        id="profileName">-</div>
+                    <div style="font-size: 13px; color: var(--text-gray); margin-top: 5px;" id="profileBase">-</div>
+                </div>
+
+                <div
+                    style="background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 10px; font-weight: 600;">
+                        📌 MY VISION</div>
+                    <div style="font-size: 13px; color: var(--navy); margin-bottom: 10px;">
+                        <strong>今年の目標：</strong><br>
+                        <span id="profileGoalThisYear" style="color: var(--text-gray);">-</span>
+                    </div>
+                    <div style="font-size: 13px; color: var(--navy);">
+                        <strong>SVDで叶えたい夢：</strong><br>
+                        <span id="profileGoalFuture" style="color: var(--text-gray);">-</span>
+                    </div>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: var(--light-gray); border-radius: 10px; margin-bottom: 20px;">
+                    <span class="token-icon">🪙</span>
+                    <span
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 24px; color: var(--gold);"
+                        id="profileTokens">0</span>
+                    <span
+                        style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: var(--text-gray);">TOKEN</span>
+                </div>
+
+                <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
+                <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+            </div>
+        </div>
     </main>
 
     <footer>SAPPORO VIEWTIFUL DINING — ORIGIN</footer>
@@ -1325,7 +1366,7 @@
             <div class="nav-icon">📜</div>
             <div>HISTORY</div>
         </div>
-        <div class="nav-item" onclick="editProfile()">
+        <div class="nav-item" onclick="showProfile()">
             <div class="nav-icon">👤</div>
             <div>PROFILE</div>
         </div>
@@ -1419,8 +1460,25 @@
             badge.style.display = 'inline-block';
         }
 
-        function editProfile() {
-            if (confirm('プロフィールを編集しますか？')) {
+        function showProfile() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) {
+                showScreen('screen-register');
+                return;
+            }
+
+            // プロフィール画面に情報を表示
+            document.getElementById('profileName').textContent = profile.name;
+            document.getElementById('profileBase').textContent = BASE_NAMES[profile.base] || profile.base;
+            document.getElementById('profileGoalThisYear').textContent = profile.goalThisYear || '未設定';
+            document.getElementById('profileGoalFuture').textContent = profile.goalFuture || '未設定';
+            document.getElementById('profileTokens').textContent = getTokenBalance();
+
+            showScreen('screen-profile');
+        }
+
+        function confirmEditProfile() {
+            if (confirm('プロフィールを編集しますか？\n（現在の登録情報は削除されます）')) {
                 localStorage.removeItem('mindful_profile');
                 localStorage.removeItem('mindful_checkin_time');
                 selectedBase = null;
@@ -1432,6 +1490,11 @@
                 document.getElementById('goalsDisplay').style.display = 'none';
                 showScreen('screen-register');
             }
+        }
+
+        // Legacy function - redirects to showProfile
+        function editProfile() {
+            showProfile();
         }
 
         function showGoalsDisplay(profile) {
@@ -1757,7 +1820,14 @@
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach((n, i) => { n.classList.toggle('active', (screenId === 'screen-morning' && i === 0) || (screenId === 'screen-active' && i === 1) || (screenId === 'screen-history' && i === 2)); });
+            document.querySelectorAll('.nav-item').forEach((n, i) => {
+                n.classList.toggle('active',
+                    (screenId === 'screen-morning' && i === 0) ||
+                    (screenId === 'screen-active' && i === 1) ||
+                    (screenId === 'screen-history' && i === 2) ||
+                    (screenId === 'screen-profile' && i === 3)
+                );
+            });
         }
 
         function resetApp() {
