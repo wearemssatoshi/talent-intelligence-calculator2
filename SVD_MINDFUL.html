@@ -1009,6 +1009,19 @@
                 <span class="token-label">TOKEN</span>
             </div>
         </div>
+        <!-- Goals Display -->
+        <div id="goalsDisplay"
+            style="display: none; margin-top: 12px; padding: 12px 16px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; text-align: left; max-width: 350px; margin-left: auto; margin-right: auto;">
+            <div
+                style="font-family: 'Montserrat', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 6px; font-weight: 600;">
+                📌 MY VISION</div>
+            <div style="font-size: 12px; color: var(--navy); margin-bottom: 8px;">
+                <strong>今年の目標：</strong><span id="goalThisYear">-</span>
+            </div>
+            <div style="font-size: 12px; color: var(--navy);">
+                <strong>SVDで叶えたい夢：</strong><span id="goalFuture">-</span>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -1045,6 +1058,14 @@
                             <div class="base-code">AKARENGA</div>
                         </div>
                     </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">今年の目標</label>
+                    <input type="text" class="text-input" id="inputGoalThisYear" placeholder="例: サービスマスター取得">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">将来の夢・SVDで叶えたいキャリア</label>
+                    <input type="text" class="text-input" id="inputGoalFuture" placeholder="例: THE JEWELSのマネージャーになる">
                 </div>
                 <button class="btn-main" id="registerBtn" onclick="register()" disabled>REGISTER</button>
             </div>
@@ -1175,7 +1196,7 @@
             </div>
 
             <div class="quest-cards-container" id="questCardsContainer"></div>
-            <button class="btn-main" id="startBtn" style="display: none;" onclick="startDay()">START TODAY</button>
+            <button class="btn-main" id="startBtn" style="display: none;" onclick="startDay()">CHECK IN ✓</button>
         </div>
 
         <!-- SCREEN 2: ACTIVE DAY -->
@@ -1235,13 +1256,19 @@
 
             <div class="section-title">Today's Focus</div>
             <div class="active-quests-container" id="activeQuestsContainer"></div>
-            <button class="btn-main" onclick="showReflection()">REFLECTION →</button>
+            <button class="btn-main" id="reflectionBtn" onclick="showReflection()">CHECK OUT →</button>
+            <div id="reflectionNotice"
+                style="display: none; margin-top: 12px; padding: 10px; background: rgba(201, 169, 98, 0.1); border: 1px solid var(--gold); border-radius: 8px; text-align: center; font-size: 12px; color: var(--navy);">
+                ⏰ 業務終わりに振り返りをしてください<br>
+                <span id="reflectionTimer" style="font-family: 'Montserrat', sans-serif; font-weight: 600;"></span>
+            </div>
         </div>
 
         <!-- SCREEN 3: REFLECTION -->
         <div class="screen" id="screen-reflection">
             <div class="reflection-prompt">今日の3つのQuest<br><span style="color: var(--gold);"
-                    id="reflectionQuestTitles"></span><br>を意識できましたか？</div>
+                    id="reflectionQuestTitles"></span><br>を意識できましたか？<br><span
+                    style="font-size: 13px; color: var(--text-gray);">★で評価してください</span></div>
             <div class="star-rating" id="starRating"><span class="star" data-value="1">★</span><span class="star"
                     data-value="2">★</span><span class="star" data-value="3">★</span><span class="star"
                     data-value="4">★</span><span class="star" data-value="5">★</span></div>
@@ -1253,7 +1280,7 @@
         <div class="screen" id="screen-completion">
             <div class="completion-icon">✨</div>
             <div class="completion-message">Great Work!</div>
-            <div class="completion-sub">今日もMINDFULな一日を過ごしましたね。<br>この積み重ねが、あなたを伝説にします。</div>
+            <div class="completion-sub">今日もMINDFULな一日を過ごしましたね。<br>この積み重ねがあなたを未来へと運びます。</div>
 
             <div class="token-earned-container" id="tokenEarnedContainer">
                 <div class="token-earned-badge">
@@ -1342,7 +1369,13 @@
             loadHistory();
             setupStarRating();
             const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
-            if (profile) { showUserBadge(profile); updateTokenDisplay(); showScreen('screen-morning'); }
+            if (profile) {
+                showUserBadge(profile);
+                updateTokenDisplay();
+                showGoalsDisplay(profile);
+                checkActiveSession();
+                showScreen('screen-morning');
+            }
             else { showScreen('screen-register'); }
         }
 
@@ -1362,10 +1395,13 @@
 
         function register() {
             const name = document.getElementById('inputName').value.trim();
+            const goalThisYear = document.getElementById('inputGoalThisYear').value.trim();
+            const goalFuture = document.getElementById('inputGoalFuture').value.trim();
             if (name && selectedBase) {
-                const profile = { name, base: selectedBase };
+                const profile = { name, base: selectedBase, goalThisYear, goalFuture };
                 localStorage.setItem('mindful_profile', JSON.stringify(profile));
                 showUserBadge(profile);
+                showGoalsDisplay(profile);
                 showScreen('screen-morning');
             }
         }
@@ -1379,11 +1415,84 @@
         function editProfile() {
             if (confirm('プロフィールを編集しますか？')) {
                 localStorage.removeItem('mindful_profile');
+                localStorage.removeItem('mindful_checkin_time');
                 selectedBase = null;
                 document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
                 document.getElementById('inputName').value = '';
+                document.getElementById('inputGoalThisYear').value = '';
+                document.getElementById('inputGoalFuture').value = '';
                 document.getElementById('userBadge').style.display = 'none';
+                document.getElementById('goalsDisplay').style.display = 'none';
                 showScreen('screen-register');
+            }
+        }
+
+        function showGoalsDisplay(profile) {
+            const container = document.getElementById('goalsDisplay');
+            if (profile.goalThisYear || profile.goalFuture) {
+                container.style.display = 'block';
+                document.getElementById('goalThisYear').textContent = profile.goalThisYear || '-';
+                document.getElementById('goalFuture').textContent = profile.goalFuture || '-';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function checkActiveSession() {
+            const checkinTime = localStorage.getItem('mindful_checkin_time');
+            if (checkinTime) {
+                const savedQuests = JSON.parse(localStorage.getItem('mindful_active_quests') || '[]');
+                if (savedQuests.length > 0) {
+                    currentQuests = savedQuests;
+                    const container = document.getElementById('activeQuestsContainer');
+                    container.innerHTML = currentQuests.map((q, i) => `
+                        <div class="active-quest-card">
+                            <div class="quest-label">QUEST ${i + 1}</div>
+                            <div class="quest-number">#${q.id}</div>
+                            <div class="quest-title">${q.titleEn}</div>
+                            <div class="quest-subtitle">${q.titleJp}</div>
+                            <div class="quest-philosophy">${q.action}</div>
+                        </div>
+                    `).join('');
+                    updateReflectionButton();
+                    showScreen('screen-active');
+                }
+            }
+        }
+
+        function updateReflectionButton() {
+            const checkinTime = localStorage.getItem('mindful_checkin_time');
+            const reflectionBtn = document.getElementById('reflectionBtn');
+            const reflectionNotice = document.getElementById('reflectionNotice');
+            const reflectionTimer = document.getElementById('reflectionTimer');
+
+            if (!checkinTime) {
+                reflectionBtn.disabled = false;
+                reflectionNotice.style.display = 'none';
+                return;
+            }
+
+            const checkinDate = new Date(checkinTime);
+            const now = new Date();
+            const diffMs = now - checkinDate;
+            const diffHours = diffMs / (1000 * 60 * 60);
+            const MIN_HOURS = 3;
+
+            if (diffHours >= MIN_HOURS) {
+                reflectionBtn.disabled = false;
+                reflectionBtn.style.opacity = '1';
+                reflectionNotice.style.display = 'none';
+            } else {
+                reflectionBtn.disabled = true;
+                reflectionBtn.style.opacity = '0.5';
+                reflectionNotice.style.display = 'block';
+                const remainingMs = (MIN_HOURS * 60 * 60 * 1000) - diffMs;
+                const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
+                const remainingMins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+                reflectionTimer.textContent = `あと ${remainingHours}時間 ${remainingMins}分`;
+
+                // Update every minute
+                setTimeout(updateReflectionButton, 60000);
             }
         }
 
@@ -1478,6 +1587,10 @@
         }
 
         function startDay() {
+            // Save check-in time and quests for session persistence
+            localStorage.setItem('mindful_checkin_time', new Date().toISOString());
+            localStorage.setItem('mindful_active_quests', JSON.stringify(currentQuests));
+
             const container = document.getElementById('activeQuestsContainer');
             container.innerHTML = currentQuests.map((q, i) => `
             <div class="active-quest-card">
@@ -1489,6 +1602,7 @@
             </div>
         `).join('');
             sendToSheets('healthcheck');
+            updateReflectionButton();
             showScreen('screen-active');
         }
 
@@ -1640,6 +1754,10 @@
         }
 
         function resetApp() {
+            // Clear session data
+            localStorage.removeItem('mindful_checkin_time');
+            localStorage.removeItem('mindful_active_quests');
+
             currentRating = 0; currentQuests = [];
             checkFields.forEach(f => checks[f] = null);
             mindFields.forEach(f => mindChecks[f] = null);
@@ -1657,6 +1775,7 @@
             document.getElementById('drawArea').querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
             document.getElementById('questCardsContainer').innerHTML = '';
             document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('reflectionNotice').style.display = 'none';
             showScreen('screen-morning');
         }
 
