@@ -1440,6 +1440,9 @@
                         <div id="profileGoalsFuture"
                             style="margin-top: 4px; color: var(--text-gray); line-height: 1.6;">-</div>
                     </div>
+                    <button onclick="openGoalsEditor()"
+                        style="margin-top: 12px; width: 100%; padding: 10px; background: var(--gold); color: var(--navy-dark); border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; cursor: pointer;">✏️
+                        目標・夢を更新する</button>
                 </div>
 
                 <div
@@ -1454,6 +1457,39 @@
 
                 <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
                 <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+            </div>
+        </div>
+
+        <!-- GOALS EDIT MODAL -->
+        <div id="goalsEditModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto;">
+            <div
+                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 500px; margin: 20px auto;">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: var(--navy); text-align: center; margin-bottom: 20px;">
+                    🎯 MY VISION を更新
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label class="input-label">🎯 今年の目標（3つまで）</label>
+                    <input type="text" class="text-input" id="editGoalThisYear1" placeholder="目標 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalThisYear2" placeholder="目標 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalThisYear3" placeholder="目標 3（任意）">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <label class="input-label">✨ 将来の夢（3つまで）</label>
+                    <input type="text" class="text-input" id="editGoalFuture1" placeholder="夢 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalFuture2" placeholder="夢 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalFuture3" placeholder="夢 3（任意）">
+                </div>
+
+                <button onclick="saveGoalsEdit()" class="btn-main" style="margin-top: 0;">保存する</button>
+                <button onclick="closeGoalsEditor()" class="btn-secondary">キャンセル</button>
             </div>
         </div>
     </main>
@@ -1647,6 +1683,57 @@
         // Legacy function - redirects to showProfile
         function editProfile() {
             showProfile();
+        }
+
+        // 目標・夢の編集機能
+        function openGoalsEditor() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            // 既存データを編集フィールドに読み込み（配列形式対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            document.getElementById('editGoalThisYear1').value = goalsThisYear[0] || '';
+            document.getElementById('editGoalThisYear2').value = goalsThisYear[1] || '';
+            document.getElementById('editGoalThisYear3').value = goalsThisYear[2] || '';
+            document.getElementById('editGoalFuture1').value = goalsFuture[0] || '';
+            document.getElementById('editGoalFuture2').value = goalsFuture[1] || '';
+            document.getElementById('editGoalFuture3').value = goalsFuture[2] || '';
+
+            document.getElementById('goalsEditModal').style.display = 'block';
+        }
+
+        function closeGoalsEditor() {
+            document.getElementById('goalsEditModal').style.display = 'none';
+        }
+
+        function saveGoalsEdit() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            // 編集フィールドから配列を収集（空でないもののみ）
+            profile.goalsThisYear = [
+                document.getElementById('editGoalThisYear1').value.trim(),
+                document.getElementById('editGoalThisYear2').value.trim(),
+                document.getElementById('editGoalThisYear3').value.trim()
+            ].filter(g => g !== '');
+            profile.goalsFuture = [
+                document.getElementById('editGoalFuture1').value.trim(),
+                document.getElementById('editGoalFuture2').value.trim(),
+                document.getElementById('editGoalFuture3').value.trim()
+            ].filter(g => g !== '');
+
+            // 古い形式のデータを削除
+            delete profile.goalThisYear;
+            delete profile.goalFuture;
+
+            localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+            // 表示を更新
+            showGoalsDisplay(profile);
+            showProfile();
+            closeGoalsEditor();
         }
 
         function handlePhotoUpload(event) {
