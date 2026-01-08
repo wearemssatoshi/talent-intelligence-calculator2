@@ -1314,8 +1314,24 @@
             <div class="section-title">My Profile</div>
             <div class="register-card">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 60px; margin-bottom: 10px;">👤</div>
-                    <div style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 600; color: var(--navy);"
+                    <!-- Profile Photo -->
+                    <div style="position: relative; display: inline-block;">
+                        <div id="profilePhotoContainer"
+                            style="width: 100px; height: 100px; border-radius: 50%; background: var(--light-gray); border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: all 0.2s;"
+                            onclick="document.getElementById('photoInput').click()">
+                            <img id="profilePhoto" src=""
+                                style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <span id="profilePhotoPlaceholder" style="font-size: 40px;">👤</span>
+                        </div>
+                        <div style="position: absolute; bottom: 0; right: 0; background: var(--gold); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
+                            onclick="document.getElementById('photoInput').click()">
+                            <span style="font-size: 14px;">📷</span>
+                        </div>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;"
+                        onchange="handlePhotoUpload(event)">
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 8px;">タップして写真を変更</div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 600; color: var(--navy); margin-top: 12px;"
                         id="profileName">-</div>
                     <div style="font-size: 13px; color: var(--text-gray); margin-top: 5px;" id="profileBase">-</div>
                 </div>
@@ -1474,6 +1490,9 @@
             document.getElementById('profileGoalFuture').textContent = profile.goalFuture || '未設定';
             document.getElementById('profileTokens').textContent = getTokenBalance();
 
+            // 写真を読み込み
+            loadProfilePhoto();
+
             showScreen('screen-profile');
         }
 
@@ -1481,6 +1500,7 @@
             if (confirm('プロフィールを編集しますか？\n（現在の登録情報は削除されます）')) {
                 localStorage.removeItem('mindful_profile');
                 localStorage.removeItem('mindful_checkin_time');
+                localStorage.removeItem('mindful_photo');
                 selectedBase = null;
                 document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
                 document.getElementById('inputName').value = '';
@@ -1495,6 +1515,59 @@
         // Legacy function - redirects to showProfile
         function editProfile() {
             showProfile();
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('画像サイズは2MB以下にしてください');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const maxSize = 200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxSize) { height *= maxSize / width; width = maxSize; }
+                    } else {
+                        if (height > maxSize) { width *= maxSize / height; height = maxSize; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    localStorage.setItem('mindful_photo', dataUrl);
+                    loadProfilePhoto();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadProfilePhoto() {
+            const photoData = localStorage.getItem('mindful_photo');
+            const photoEl = document.getElementById('profilePhoto');
+            const placeholderEl = document.getElementById('profilePhotoPlaceholder');
+
+            if (photoData && photoEl && placeholderEl) {
+                photoEl.src = photoData;
+                photoEl.style.display = 'block';
+                placeholderEl.style.display = 'none';
+            } else if (photoEl && placeholderEl) {
+                photoEl.style.display = 'none';
+                placeholderEl.style.display = 'block';
+            }
         }
 
         function showGoalsDisplay(profile) {
