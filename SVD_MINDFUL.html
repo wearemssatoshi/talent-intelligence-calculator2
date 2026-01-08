@@ -1117,6 +1117,37 @@
 
         <!-- SCREEN 1: MORNING RITUAL -->
         <div class="screen" id="screen-morning">
+            <!-- Today's Work Location Selector -->
+            <div class="section-title">📍 TODAY'S LOCATION</div>
+            <div class="health-check-card" id="todayLocationCard" style="margin-bottom: 20px;">
+                <div class="health-title"><span class="icon">🏢</span> 今日はどこで働きますか？</div>
+                <div class="base-selector" style="margin-top: 12px;">
+                    <div class="base-option today-base" data-base="moiwayama" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🏔️</div>
+                        <div class="base-name">藻岩山</div>
+                        <div class="base-code">MOIWAYAMA</div>
+                    </div>
+                    <div class="base-option today-base" data-base="okurayama" onclick="selectTodayBase(this)">
+                        <div class="base-icon">⛷️</div>
+                        <div class="base-name">大倉山</div>
+                        <div class="base-code">OKURAYAMA</div>
+                    </div>
+                    <div class="base-option today-base" data-base="tvtower" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🗼</div>
+                        <div class="base-name">テレビ塔</div>
+                        <div class="base-code">TV TOWER</div>
+                    </div>
+                    <div class="base-option today-base" data-base="akarenga" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🧱</div>
+                        <div class="base-name">赤れんが</div>
+                        <div class="base-code">AKARENGA</div>
+                    </div>
+                </div>
+                <div id="todayLocationStatus"
+                    style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-gray);">勤務先を選択してください
+                </div>
+            </div>
+
             <div class="section-title">PRINCIPLE</div>
             <div class="principle-card" onclick="this.classList.toggle('expanded')">
                 <div class="principle-num">01 PURPOSE</div>
@@ -1462,6 +1493,7 @@
         let currentQuests = [];
         let currentRating = 0;
         let selectedBase = null;
+        let todayBase = null; // その日の勤務先
         const checkFields = ['condition', 'temp', 'fatigue', 'nausea', 'nails', 'hands', 'uniform'];
         const mindFields = ['mind_enjoy', 'mind_morning', 'mind_consult'];
         let checks = {};
@@ -1520,8 +1552,25 @@
 
         function showUserBadge(profile) {
             const badge = document.getElementById('userBadge');
-            badge.textContent = `${profile.name} @ ${BASE_NAMES[profile.base]}`;
+            if (todayBase && todayBase !== profile.base) {
+                badge.innerHTML = `${profile.name} <span style="font-size: 10px; opacity: 0.7;">🏠${BASE_NAMES[profile.base]}</span> → <span style="color: var(--gold);">📍${BASE_NAMES[todayBase]}</span>`;
+            } else if (todayBase) {
+                badge.textContent = `${profile.name} @ ${BASE_NAMES[todayBase]}`;
+            } else {
+                badge.textContent = `${profile.name} @ ${BASE_NAMES[profile.base]}`;
+            }
             badge.style.display = 'inline-block';
+        }
+
+        function selectTodayBase(el) {
+            document.querySelectorAll('.base-option.today-base').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            todayBase = el.dataset.base;
+            localStorage.setItem('mindful_today_base', todayBase);
+            document.getElementById('todayLocationStatus').innerHTML = `<span style="color: var(--gold); font-weight: 600;">✓ 今日は ${BASE_NAMES[todayBase]} で勤務します</span>`;
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (profile) showUserBadge(profile);
+            validateHealthCheck();
         }
 
         function showProfile() {
@@ -1759,10 +1808,14 @@
             const drawArea = document.getElementById('drawArea');
             const healthOk = checkFields.every(f => checks[f] === 'ok');
             const mindAnswered = mindFields.every(f => mindChecks[f] !== null);
+            const locationSelected = todayBase !== null;
 
-            if (healthOk && mindAnswered) {
+            if (healthOk && mindAnswered && locationSelected) {
                 drawArea.classList.remove('disabled');
                 drawArea.querySelector('.draw-hint').textContent = 'タップして3枚のカードを引く';
+            } else if (!locationSelected) {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '📍 まず今日の勤務先を選択してください';
             } else {
                 drawArea.classList.add('disabled');
                 drawArea.querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
@@ -1907,7 +1960,9 @@
         async function sendToSheets(type, tokenData = null) {
             const profile = JSON.parse(localStorage.getItem('mindful_profile'));
             if (!profile) return;
-            const url = SCRIPT_URLS[profile.base];
+            // 今日の勤務先があればそちらを使用、なければ所属拠点
+            const targetBase = todayBase || profile.base;
+            const url = SCRIPT_URLS[targetBase];
             if (!url || url.startsWith('YOUR_')) { console.log('Sheets URL not configured'); return; }
             document.getElementById('sendingOverlay').classList.add('active');
 
@@ -1915,7 +1970,9 @@
                 type,
                 timestamp: new Date().toISOString(),
                 name: profile.name,
-                base: profile.base,
+                homeBase: profile.base,
+                todayBase: todayBase || profile.base,
+                base: todayBase || profile.base, // 後方互換性のため
                 shiftStart: shiftTimes.start,
                 shiftEnd: shiftTimes.end,
                 checks,
@@ -1968,13 +2025,17 @@
             // Clear session data
             localStorage.removeItem('mindful_checkin_time');
             localStorage.removeItem('mindful_active_quests');
+            localStorage.removeItem('mindful_today_base'); // Clear today's work location
 
             currentRating = 0; currentQuests = [];
+            todayBase = null; // Reset today's work location
             checkFields.forEach(f => checks[f] = null);
             mindFields.forEach(f => mindChecks[f] = null);
             document.getElementById('memoInput').value = '';
             document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.base-option.today-base').forEach(o => o.classList.remove('selected')); // Reset location selector
+            document.getElementById('todayLocationStatus').innerHTML = '<span style="color: var(--text-gray);">勤務先を選択してください</span>';
             document.getElementById('healthStatus').className = 'health-status incomplete';
             document.getElementById('healthStatus').textContent = 'すべての項目を確認してください';
             document.getElementById('healthCheckCard').classList.remove('complete');
@@ -1983,10 +2044,13 @@
             document.getElementById('mindCheckCard').classList.remove('complete');
             document.getElementById('drawArea').style.display = 'block';
             document.getElementById('drawArea').classList.add('disabled');
-            document.getElementById('drawArea').querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
+            document.getElementById('drawArea').querySelector('.draw-hint').textContent = '📍 まず今日の勤務先を選択してください';
             document.getElementById('questCardsContainer').innerHTML = '';
             document.getElementById('startBtn').style.display = 'none';
             document.getElementById('reflectionNotice').style.display = 'none';
+            // Update badge to show only home base
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (profile) showUserBadge(profile);
             showScreen('screen-morning');
         }
 
