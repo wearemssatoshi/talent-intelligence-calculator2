@@ -8,7 +8,7 @@
     "theme_color": "#1E3A5F",
     "icons": [
         {
-            "src": "logo/SVD_logo_standard.png",
+            "src": "logo/SVD_icon_square.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any"
