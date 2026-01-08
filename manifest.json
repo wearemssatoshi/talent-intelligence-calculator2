@@ -1,0 +1,17 @@
+{
+    "name": "SVD MINDFUL",
+    "short_name": "MINDFUL",
+    "description": "SVD MINDFULアプリ - 毎日のマインドフルネスを記録しよう",
+    "start_url": "./SVD_MINDFUL.html",
+    "display": "standalone",
+    "background_color": "#FAFAFA",
+    "theme_color": "#1E3A5F",
+    "icons": [
+        {
+            "src": "logo/SVD_logo_standard.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
