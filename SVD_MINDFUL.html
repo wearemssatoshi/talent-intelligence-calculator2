@@ -1049,19 +1049,21 @@
             <div
                 style="font-family: 'Montserrat', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 8px; font-weight: 600;">
                 📌 MY VISION</div>
-            <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
                 <!-- Photo in MY VISION -->
                 <div id="goalsPhotoContainer"
                     style="width: 50px; height: 50px; border-radius: 50%; background: var(--light-gray); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
                     <img id="goalsPhoto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
                     <span id="goalsPhotoPlaceholder" style="font-size: 24px;">👤</span>
                 </div>
-                <div style="flex: 1;">
-                    <div style="font-size: 12px; color: var(--navy); margin-bottom: 6px;">
-                        <strong>今年の目標：</strong><span id="goalThisYear">-</span>
+                <div style="flex: 1; font-size: 11px;">
+                    <div style="color: var(--navy); margin-bottom: 6px;">
+                        <strong style="color: var(--gold);">🎯 今年の目標</strong>
+                        <div id="goalsThisYearList" style="margin-top: 3px; color: var(--text-gray);">-</div>
                     </div>
-                    <div style="font-size: 12px; color: var(--navy);">
-                        <strong>SVDで叶えたい夢：</strong><span id="goalFuture">-</span>
+                    <div style="color: var(--navy);">
+                        <strong style="color: var(--gold);">✨ 将来の夢</strong>
+                        <div id="goalsFutureList" style="margin-top: 3px; color: var(--text-gray);">-</div>
                     </div>
                 </div>
             </div>
@@ -1104,12 +1106,20 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label class="input-label">今年の目標</label>
-                    <input type="text" class="text-input" id="inputGoalThisYear" placeholder="例: ソムリエ資格取得・毎日笑顔と元気！">
+                    <label class="input-label">🎯 今年の目標（3つまで）</label>
+                    <input type="text" class="text-input" id="inputGoalThisYear1" placeholder="目標 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalThisYear2" placeholder="目標 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalThisYear3" placeholder="目標 3（任意）">
                 </div>
                 <div class="input-group">
-                    <label class="input-label">将来の夢・SVDで叶えたいキャリア</label>
-                    <input type="text" class="text-input" id="inputGoalFuture" placeholder="例: 三つ星ギャルソン・アジアベストソムリエなど">
+                    <label class="input-label">✨ 将来の夢・SVDで叶えたいキャリア（3つまで）</label>
+                    <input type="text" class="text-input" id="inputGoalFuture1" placeholder="夢 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalFuture2" placeholder="夢 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalFuture3" placeholder="夢 3（任意）">
                 </div>
                 <button class="btn-main" id="registerBtn" onclick="register()" disabled>REGISTER</button>
             </div>
@@ -1420,13 +1430,15 @@
                     <div
                         style="font-family: 'Montserrat', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 10px; font-weight: 600;">
                         📌 MY VISION</div>
-                    <div style="font-size: 13px; color: var(--navy); margin-bottom: 10px;">
-                        <strong>今年の目標：</strong><br>
-                        <span id="profileGoalThisYear" style="color: var(--text-gray);">-</span>
+                    <div style="font-size: 13px; color: var(--navy); margin-bottom: 12px;">
+                        <strong style="color: var(--gold);">🎯 今年の目標</strong>
+                        <div id="profileGoalsThisYear"
+                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6;">-</div>
                     </div>
                     <div style="font-size: 13px; color: var(--navy);">
-                        <strong>SVDで叶えたい夢：</strong><br>
-                        <span id="profileGoalFuture" style="color: var(--text-gray);">-</span>
+                        <strong style="color: var(--gold);">✨ 将来の夢</strong>
+                        <div id="profileGoalsFuture"
+                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6;">-</div>
                     </div>
                 </div>
 
@@ -1539,10 +1551,19 @@
 
         function register() {
             const name = document.getElementById('inputName').value.trim();
-            const goalThisYear = document.getElementById('inputGoalThisYear').value.trim();
-            const goalFuture = document.getElementById('inputGoalFuture').value.trim();
+            // 目標と夢を配列として収集（空でないもののみ）
+            const goalsThisYear = [
+                document.getElementById('inputGoalThisYear1').value.trim(),
+                document.getElementById('inputGoalThisYear2').value.trim(),
+                document.getElementById('inputGoalThisYear3').value.trim()
+            ].filter(g => g !== '');
+            const goalsFuture = [
+                document.getElementById('inputGoalFuture1').value.trim(),
+                document.getElementById('inputGoalFuture2').value.trim(),
+                document.getElementById('inputGoalFuture3').value.trim()
+            ].filter(g => g !== '');
             if (name && selectedBase) {
-                const profile = { name, base: selectedBase, goalThisYear, goalFuture };
+                const profile = { name, base: selectedBase, goalsThisYear, goalsFuture };
                 localStorage.setItem('mindful_profile', JSON.stringify(profile));
                 showUserBadge(profile);
                 showGoalsDisplay(profile);
@@ -1583,8 +1604,18 @@
             // プロフィール画面に情報を表示
             document.getElementById('profileName').textContent = profile.name;
             document.getElementById('profileBase').textContent = BASE_NAMES[profile.base] || profile.base;
-            document.getElementById('profileGoalThisYear').textContent = profile.goalThisYear || '未設定';
-            document.getElementById('profileGoalFuture').textContent = profile.goalFuture || '未設定';
+
+            // 目標と夢を表示（配列形式対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            document.getElementById('profileGoalsThisYear').innerHTML = goalsThisYear.length > 0
+                ? goalsThisYear.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                : '未設定';
+            document.getElementById('profileGoalsFuture').innerHTML = goalsFuture.length > 0
+                ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                : '未設定';
+
             document.getElementById('profileTokens').textContent = getTokenBalance();
 
             // 写真を読み込み
@@ -1601,8 +1632,12 @@
                 selectedBase = null;
                 document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
                 document.getElementById('inputName').value = '';
-                document.getElementById('inputGoalThisYear').value = '';
-                document.getElementById('inputGoalFuture').value = '';
+                document.getElementById('inputGoalThisYear1').value = '';
+                document.getElementById('inputGoalThisYear2').value = '';
+                document.getElementById('inputGoalThisYear3').value = '';
+                document.getElementById('inputGoalFuture1').value = '';
+                document.getElementById('inputGoalFuture2').value = '';
+                document.getElementById('inputGoalFuture3').value = '';
                 document.getElementById('userBadge').style.display = 'none';
                 document.getElementById('goalsDisplay').style.display = 'none';
                 showScreen('screen-register');
@@ -1669,10 +1704,20 @@
 
         function showGoalsDisplay(profile) {
             const container = document.getElementById('goalsDisplay');
-            if (profile.goalThisYear || profile.goalFuture) {
+            // 配列形式の目標・夢を取得（後方互換性のため古い形式も対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            if (goalsThisYear.length > 0 || goalsFuture.length > 0) {
                 container.style.display = 'block';
-                document.getElementById('goalThisYear').textContent = profile.goalThisYear || '-';
-                document.getElementById('goalFuture').textContent = profile.goalFuture || '-';
+
+                // 番号付きリストで表示
+                document.getElementById('goalsThisYearList').innerHTML = goalsThisYear.length > 0
+                    ? goalsThisYear.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                    : '-';
+                document.getElementById('goalsFutureList').innerHTML = goalsFuture.length > 0
+                    ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                    : '-';
 
                 // MY VISIONに写真を表示
                 const photoData = localStorage.getItem('mindful_photo');
