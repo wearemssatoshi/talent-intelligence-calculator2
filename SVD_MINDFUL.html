@@ -1408,10 +1408,10 @@
             <!-- Today's Work Location Selector -->
             <div class="section-title">📍 TODAY'S LOCATION</div>
             <div class="health-check-card" id="todayLocationCard" style="margin-bottom: 20px;">
-                <div class="health-title"><span class="icon">📅</span> 日付を選択</div>
-                <div style="margin-top: 10px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="font-size: 11px; color: var(--text-gray);">📅 日付</span>
                     <input type="date" id="workDateInput"
-                        style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;"
+                        style="padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600;"
                         onchange="updateWorkDate(this.value)">
                 </div>
                 <div class="health-title"><span class="icon">🏢</span> 今日はどこで働きますか？</div>
