@@ -95,6 +95,24 @@ function doGet(e) {
   try {
     const action = e?.parameter?.action || 'data';
     
+    // バージョン確認
+    if (action === 'version') {
+      return ContentService.createTextOutput(JSON.stringify({
+        version: '2.0.0',
+        name: 'SATOSHI AI with SAT Philosophy',
+        geminiModel: 'gemini-3-flash-preview',
+        features: [
+          '100年続くレストラン',
+          'レストランには幸せしかない',
+          '人材版グランドホテルシステム',
+          'モメンタムピークス×タレントインテリジェンス',
+          'サービスの本質（ファースト・スマイル等）',
+          'チームビルディング思想'
+        ],
+        deployedAt: '2026-01-09T21:20:00+09:00'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
