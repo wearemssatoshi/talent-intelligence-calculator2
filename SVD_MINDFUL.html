@@ -1619,14 +1619,9 @@
             <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
         </div>
 
-        <!-- SCREEN 6: INSIGHT (記事 + AI相談) -->
+        <!-- SCREEN 6: INSIGHT (AI相談 + 記事) -->
         <div class="screen" id="screen-insight">
-            <div class="section-title">📰 FOCUS NEWS</div>
-            <div id="articleCarousel" class="article-carousel">
-                <div class="article-loading">記事を読み込み中...</div>
-            </div>
-
-            <div class="section-title" style="margin-top: 25px;">🤖 SATOSHI AI</div>
+            <div class="section-title">🤖 SATOSHI AI</div>
             <div class="ai-chat-card"
                 style="font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;">
                 <div class="ai-intro" style="text-align: center;">
@@ -1644,6 +1639,11 @@
                         onkeypress="if(event.key==='Enter')sendToAI()">
                     <button id="sendAIBtn" onclick="sendToAI()">送信</button>
                 </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">📰 FOCUS NEWS</div>
+            <div id="articleCarousel" class="article-carousel">
+                <div class="article-loading">記事を読み込み中...</div>
             </div>
 
             <button class="btn-secondary" style="margin-top: 20px;" onclick="showScreen('screen-morning')">BACK</button>
