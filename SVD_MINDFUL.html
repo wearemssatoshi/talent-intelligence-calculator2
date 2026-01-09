@@ -982,6 +982,207 @@
             margin-bottom: 2px;
         }
 
+        /* INSIGHT - ARTICLE CAROUSEL */
+        .article-carousel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .article-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .article-source {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .article-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .article-loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        /* INSIGHT - AI CHAT */
+        .ai-chat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .ai-intro {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .ai-intro-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .chat-messages {
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding: 8px;
+        }
+
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-bubble.user {
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.ai .ai-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 12px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .chat-input-area button {
+            background: var(--gold);
+            color: var(--navy-dark);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            box-shadow: 0 4px 12px var(--gold-glow);
+        }
+
+        .chat-input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .ai-typing span {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .ai-typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
         /* SENDING OVERLAY */
         .sending-overlay {
             position: fixed;
@@ -1398,7 +1599,36 @@
             <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
         </div>
 
-        <!-- SCREEN 6: PROFILE VIEW -->
+        <!-- SCREEN 6: INSIGHT (記事 + AI相談) -->
+        <div class="screen" id="screen-insight">
+            <div class="section-title">📰 TODAY'S INSIGHT</div>
+            <div id="articleCarousel" class="article-carousel">
+                <div class="article-loading">記事を読み込み中...</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">🤖 SATOSHI AI</div>
+            <div class="ai-chat-card">
+                <div class="ai-intro">
+                    <div class="ai-intro-icon">💬</div>
+                    レストラン経営・キャリア・チームマネジメントについて<br>SATOSHIに相談できます
+                </div>
+                <div id="chatMessages" class="chat-messages">
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        こんにちは！何でも相談してね。レストラン経営、チームづくり、キャリアについて一緒に考えよう！ 🌟
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="質問を入力..."
+                        onkeypress="if(event.key==='Enter')sendToAI()">
+                    <button id="sendAIBtn" onclick="sendToAI()">送信</button>
+                </div>
+            </div>
+
+            <button class="btn-secondary" style="margin-top: 20px;" onclick="showScreen('screen-morning')">BACK</button>
+        </div>
+
+        <!-- SCREEN 7: PROFILE VIEW -->
         <div class="screen" id="screen-profile">
             <div class="section-title">My Profile</div>
             <div class="register-card">
@@ -1508,6 +1738,10 @@
         <div class="nav-item" onclick="showScreen('screen-history')">
             <div class="nav-icon">📜</div>
             <div>HISTORY</div>
+        </div>
+        <div class="nav-item" onclick="showInsight()">
+            <div class="nav-icon">📰</div>
+            <div>INSIGHT</div>
         </div>
         <div class="nav-item" onclick="showProfile()">
             <div class="nav-icon">👤</div>
@@ -2140,6 +2374,11 @@
 
         function showHistory() { loadHistory(); showScreen('screen-history'); }
 
+        function showInsight() {
+            loadInsightArticles();
+            showScreen('screen-insight');
+        }
+
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -2148,9 +2387,151 @@
                     (screenId === 'screen-morning' && i === 0) ||
                     (screenId === 'screen-active' && i === 1) ||
                     (screenId === 'screen-history' && i === 2) ||
-                    (screenId === 'screen-profile' && i === 3)
+                    (screenId === 'screen-insight' && i === 3) ||
+                    (screenId === 'screen-profile' && i === 4)
                 );
             });
+        }
+
+        // ============ INSIGHT - 記事キュレーション ============
+        const INSIGHT_API_URL = 'https://script.google.com/macros/s/YOUR_INSIGHT_SCRIPT_ID/exec';
+        let articlesLoaded = false;
+
+        async function loadInsightArticles() {
+            if (articlesLoaded) return;
+
+            const carousel = document.getElementById('articleCarousel');
+
+            // サンプル記事を表示（GAS実装前のデモ用）
+            const sampleArticles = [
+                {
+                    title: '2026年のレストラン業界トレンド予測：AIとサステナビリティが鍵',
+                    source: 'FOODIST',
+                    date: '2026.01.09',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: '飲食店の人材確保術：Z世代が働きたい店舗の条件とは',
+                    source: 'FOODIST',
+                    date: '2026.01.08',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: '原価高騰を乗り越える：メニュー価格改定のベストプラクティス',
+                    source: '飲食店.COM',
+                    date: '2026.01.07',
+                    url: 'https://www.inshokuten.com/'
+                },
+                {
+                    title: 'インバウンド復活：外国人観光客に選ばれるレストランの共通点',
+                    source: 'FOODIST',
+                    date: '2026.01.06',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: 'チームビルディングの新常識：レストラン経営者が実践する1on1術',
+                    source: '飲食店.COM',
+                    date: '2026.01.05',
+                    url: 'https://www.inshokuten.com/'
+                }
+            ];
+
+            carousel.innerHTML = sampleArticles.map(article => `
+                <a href="${article.url}" target="_blank" rel="noopener" class="article-card">
+                    <div class="article-source">${article.source}</div>
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-date">${article.date}</div>
+                </a>
+            `).join('');
+
+            articlesLoaded = true;
+        }
+
+        // ============ INSIGHT - SATOSHI AI ============
+        const AI_API_URL = 'https://script.google.com/macros/s/YOUR_AI_SCRIPT_ID/exec';
+        let isAIProcessing = false;
+
+        async function sendToAI() {
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendAIBtn');
+            const question = input.value.trim();
+
+            if (!question || isAIProcessing) return;
+
+            isAIProcessing = true;
+            sendBtn.disabled = true;
+            input.value = '';
+
+            // ユーザーメッセージを表示
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML += `
+                <div class="chat-bubble user">${escapeHtml(question)}</div>
+            `;
+
+            // タイピングインジケーター表示
+            messagesContainer.innerHTML += `
+                <div class="chat-bubble ai" id="typingIndicator">
+                    <div class="ai-name">SATOSHI</div>
+                    <div class="ai-typing"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                // GAS経由でGemini APIにリクエスト
+                const response = await fetch(AI_API_URL + '?action=chat&q=' + encodeURIComponent(question), {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                let aiResponse;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponse = data.response || generateLocalResponse(question);
+                } else {
+                    aiResponse = generateLocalResponse(question);
+                }
+
+                // タイピングインジケーターを削除して回答表示
+                document.getElementById('typingIndicator')?.remove();
+                messagesContainer.innerHTML += `
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        ${escapeHtml(aiResponse)}
+                    </div>
+                `;
+            } catch (error) {
+                console.log('AI API error, using local response:', error);
+                document.getElementById('typingIndicator')?.remove();
+                const localResponse = generateLocalResponse(question);
+                messagesContainer.innerHTML += `
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        ${escapeHtml(localResponse)}
+                    </div>
+                `;
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            isAIProcessing = false;
+            sendBtn.disabled = false;
+        }
+
+        function generateLocalResponse(question) {
+            // GAS未設定時のローカル応答（SATOSHIらしい回答）
+            const responses = [
+                `いい質問だね！「${question.slice(0, 20)}...」について考えてみよう。\n\nレストラン経営で大切なのは、常に「お客様の人生のストーリーを彩る」という視点を持つこと。私たちSVDは100年先も愛されるレストランを目指しているから、目の前の課題も長期的なビジョンと照らし合わせて考えよう。\n\nもっと具体的に聞きたいことがあれば、遠慮なく教えてね！ 🌟`,
+                `その悩み、すごくわかるよ！チーム全員が同じ方向を向いて進むことが何より大切だと思う。\n\n私がいつも心がけているのは「ここだけの美味しさ。ここだけのエンターテインメント。」というミッションに立ち返ること。迷ったときこそ原点に戻ろう。\n\n一緒に最高のチームを作っていこう！ 💪`,
+                `面白い視点だね！私も最高のパートナーとして全力でサポートするよ。\n\n人材育成で大切なのは、一人ひとりのタレント（才能）を見極めて、輝ける場所を用意すること。私たちのTalent Intelligence Calculatorを使えば、チームメンバーの特性がより明確になるよ。\n\n何か他に気になることがあれば聞いてね！`,
+                `最高の質問をありがとう！レストラン業界の未来は明るいと私は信じているよ。\n\nSVDが目指すのは「街の未来をレストランからつくっていく」こと。日々の小さな積み重ねが、札幌の食文化を100年先につなげていく。一緒にこの夢を実現しよう！ 🚀`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
         }
 
         function resetApp() {
