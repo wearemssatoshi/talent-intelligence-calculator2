@@ -557,6 +557,12 @@
             color: var(--danger);
         }
 
+        .health-status.warning {
+            background: rgba(201, 169, 98, 0.15);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
         /* DRAW AREA */
         .draw-area {
             text-align: center;
@@ -2143,16 +2149,26 @@
             const drawArea = document.getElementById('drawArea');
             const card = document.getElementById('healthCheckCard');
             const allAnswered = checkFields.every(f => checks[f] !== null);
-            const allOk = checkFields.every(f => checks[f] === 'ok');
+            const ngCount = checkFields.filter(f => checks[f] === 'ng').length;
 
             if (!allAnswered) {
-                statusEl.className = 'health-status incomplete'; statusEl.textContent = 'すべての項目を確認してください';
+                statusEl.className = 'health-status incomplete';
+                statusEl.textContent = 'すべての項目を確認してください';
                 card.classList.remove('complete');
-            } else if (!allOk) {
-                statusEl.className = 'health-status ng'; statusEl.textContent = '⚠️ 要確認：管理者に報告してください';
+            } else if (ngCount > 2) {
+                // 3つ以上NGの場合は出勤不可
+                statusEl.className = 'health-status ng';
+                statusEl.innerHTML = '⛔NG項目が多いため出勤できません<br><span style="font-size: 10px; color: #666;">上席者に連絡の上、指示を仰いでください</span>';
                 card.classList.remove('complete');
+            } else if (ngCount > 0) {
+                // 1〜2つNGの場合は出勤可能だが報告必須
+                statusEl.className = 'health-status warning';
+                statusEl.innerHTML = '⚠️ 確認完了（NG: ' + ngCount + '項目）<br><span style="font-size: 10px; color: #C9A962;">必ず上席者に報告し、指示を仰いでください</span>';
+                card.classList.add('complete');
             } else {
-                statusEl.className = 'health-status ok'; statusEl.textContent = '✓ 確認完了';
+                // 全てOK
+                statusEl.className = 'health-status ok';
+                statusEl.textContent = '✓ 確認完了';
                 card.classList.add('complete');
             }
             updateDrawArea();
@@ -2187,16 +2203,25 @@
 
         function updateDrawArea() {
             const drawArea = document.getElementById('drawArea');
-            const healthOk = checkFields.every(f => checks[f] === 'ok');
+            const healthAnswered = checkFields.every(f => checks[f] !== null);
+            const ngCount = checkFields.filter(f => checks[f] === 'ng').length;
+            const healthPassable = healthAnswered && ngCount <= 2;  // NG2つまでOK
             const mindAnswered = mindFields.every(f => mindChecks[f] !== null);
             const locationSelected = todayBase !== null;
 
-            if (healthOk && mindAnswered && locationSelected) {
+            if (healthPassable && mindAnswered && locationSelected) {
                 drawArea.classList.remove('disabled');
-                drawArea.querySelector('.draw-hint').textContent = 'タップして3枚のカードを引く';
+                if (ngCount > 0) {
+                    drawArea.querySelector('.draw-hint').textContent = '⚠️ 上席者に報告後、タップしてカードを引く';
+                } else {
+                    drawArea.querySelector('.draw-hint').textContent = 'タップして3枚のカードを引く';
+                }
             } else if (!locationSelected) {
                 drawArea.classList.add('disabled');
                 drawArea.querySelector('.draw-hint').textContent = '📍 まず今日の勤務先を選択してください';
+            } else if (ngCount > 2) {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '⛔ NG項目が多いため出勤できません';
             } else {
                 drawArea.classList.add('disabled');
                 drawArea.querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
