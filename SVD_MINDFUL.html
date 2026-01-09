@@ -1108,6 +1108,17 @@
             margin-bottom: 6px;
         }
 
+        .ai-token-notice {
+            margin-top: 10px;
+            padding: 6px 10px;
+            background: rgba(201, 169, 98, 0.15);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--gold);
+            font-weight: 600;
+            text-align: center;
+        }
+
         .chat-input-area {
             display: flex;
             gap: 10px;
@@ -2511,6 +2522,34 @@
         // ============ INSIGHT - SATOSHI AI ============
         const AI_API_URL = 'https://script.google.com/macros/s/AKfycbw655OvGtlygwrjWsgKm-3tXpetrTWgXnv5uALe07t-_Fr886F4uZPN6bZX9OsgDmgW/exec';
         let isAIProcessing = false;
+        const AI_DAILY_TOKEN_LIMIT = 10;
+
+        function getAITokensToday() {
+            const data = JSON.parse(localStorage.getItem('mindful_ai_tokens') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            if (data.date !== today) {
+                return 0;
+            }
+            return data.count || 0;
+        }
+
+        function addAIToken() {
+            const today = new Date().toISOString().split('T')[0];
+            let data = JSON.parse(localStorage.getItem('mindful_ai_tokens') || '{}');
+
+            if (data.date !== today) {
+                data = { date: today, count: 0 };
+            }
+
+            if (data.count >= AI_DAILY_TOKEN_LIMIT) {
+                return { success: false, remaining: 0 };
+            }
+
+            data.count++;
+            localStorage.setItem('mindful_ai_tokens', JSON.stringify(data));
+            addTokens(1);
+            return { success: true, remaining: AI_DAILY_TOKEN_LIMIT - data.count };
+        }
 
         async function sendToAI() {
             const input = document.getElementById('chatInput');
@@ -2555,20 +2594,42 @@
 
                 // タイピングインジケーターを削除して回答表示
                 document.getElementById('typingIndicator')?.remove();
+
+                // トークン付与処理
+                const tokenResult = addAIToken();
+                let tokenNotice = '';
+                if (tokenResult.success) {
+                    tokenNotice = `<div class="ai-token-notice">🪙 +1 TOKEN（本日残り: ${tokenResult.remaining}回）</div>`;
+                } else {
+                    tokenNotice = `<div class="ai-token-notice" style="color: var(--text-gray);">📌 本日のトークン上限（${AI_DAILY_TOKEN_LIMIT}回）に達しました</div>`;
+                }
+
                 messagesContainer.innerHTML += `
                     <div class="chat-bubble ai">
                         <div class="ai-name">SATOSHI</div>
                         ${escapeHtml(aiResponse)}
+                        ${tokenNotice}
                     </div>
                 `;
             } catch (error) {
                 console.log('AI API error, using local response:', error);
                 document.getElementById('typingIndicator')?.remove();
                 const localResponse = generateLocalResponse(question);
+
+                // トークン付与処理（ローカルレスポンスでも付与）
+                const tokenResult = addAIToken();
+                let tokenNotice = '';
+                if (tokenResult.success) {
+                    tokenNotice = `<div class="ai-token-notice">🪙 +1 TOKEN（本日残り: ${tokenResult.remaining}回）</div>`;
+                } else {
+                    tokenNotice = `<div class="ai-token-notice" style="color: var(--text-gray);">📌 本日のトークン上限（${AI_DAILY_TOKEN_LIMIT}回）に達しました</div>`;
+                }
+
                 messagesContainer.innerHTML += `
                     <div class="chat-bubble ai">
                         <div class="ai-name">SATOSHI</div>
                         ${escapeHtml(localResponse)}
+                        ${tokenNotice}
                     </div>
                 `;
             }
