@@ -2360,9 +2360,32 @@
         function drawQuests() {
             if (document.getElementById('drawArea').classList.contains('disabled')) return;
 
-            // Draw 3 random quests
-            const shuffled = [...playbook].sort(() => Math.random() - 0.5);
+            // 履歴読み込み
+            let history = JSON.parse(localStorage.getItem('mindful_quest_history') || '[]');
+
+            // 履歴に含まれないクエストを抽出
+            let candidates = playbook.filter(q => !history.includes(q.id));
+
+            // 候補が3つ未満なら、履歴をクリアして全員敗者復活（全件から抽選）
+            if (candidates.length < 3) {
+                console.log('Resetting quest history');
+                history = [];
+                candidates = [...playbook];
+            }
+
+            // Shuffle candidates
+            const shuffled = candidates.sort(() => Math.random() - 0.5);
             currentQuests = shuffled.slice(0, 3);
+
+            // 履歴更新（今回選ばれた3つを追加）
+            const newIds = currentQuests.map(q => q.id);
+            history = [...history, ...newIds];
+
+            // 履歴制限（過去15件＝5日分だけ保持）
+            if (history.length > 15) {
+                history = history.slice(history.length - 15);
+            }
+            localStorage.setItem('mindful_quest_history', JSON.stringify(history));
 
             document.getElementById('drawArea').style.display = 'none';
             const container = document.getElementById('questCardsContainer');
