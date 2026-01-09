@@ -212,7 +212,7 @@ function askSatoshiAI(question) {
     };
     
     const response = UrlFetchApp.fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + GEMINI_API_KEY,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=' + GEMINI_API_KEY,
       {
         method: 'POST',
         contentType: 'application/json',
@@ -221,7 +221,12 @@ function askSatoshiAI(question) {
       }
     );
     
-    const result = JSON.parse(response.getContentText());
+    const responseText = response.getContentText();
+    console.log('API Response:', responseText);
+    
+    const result = JSON.parse(responseText);
+    console.log('Parsed result:', JSON.stringify(result));
+    
     const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || generateLocalSatoshiResponse(question);
     
     return ContentService.createTextOutput(JSON.stringify({ 
@@ -246,4 +251,21 @@ function generateLocalSatoshiResponse(question) {
     '最高の質問をありがとう！SVDが目指すのは「街の未来をレストランからつくっていく」こと。日々の小さな積み重ねが、札幌の食文化を100年先につなげていくんだ。一緒にこの夢を実現しよう！ 🚀'
   ];
   return responses[Math.floor(Math.random() * responses.length)];
+}
+
+// テスト用関数
+function testGemini() {
+  const key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+  console.log('API Key exists:', !!key);
+  console.log('Key starts with:', key ? key.substring(0, 10) : 'null');
+  
+  if (key) {
+    const result = askSatoshiAI('レストランで働く若者へのキャリアアドバイスを3つ教えて');
+    console.log('Result:', result.getContent());
+  }
+}
+
+function forceAuth() {
+  const test = UrlFetchApp.fetch('https://www.google.com');
+  console.log('Success!', test.getResponseCode());
 }
