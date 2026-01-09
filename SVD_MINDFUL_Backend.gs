@@ -266,7 +266,7 @@ SVDは長年蓄積してきたデータを「資産」として活用し、AIベ
     };
     
     const response = UrlFetchApp.fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-flash-preview:generateContent?key=' + GEMINI_API_KEY,
       {
         method: 'POST',
         contentType: 'application/json',
