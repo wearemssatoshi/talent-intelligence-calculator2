@@ -1847,11 +1847,46 @@
         function updateWorkDate(value) {
             workDate = value;
             localStorage.setItem('mindful_work_date', workDate);
-            // 日付表示を更新
-            const dateObj = new Date(value);
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
-            const formattedDate = dateObj.toLocaleDateString('ja-JP', options);
-            console.log('Work date updated:', formattedDate);
+
+            // その日付で既にC/INしているかチェック
+            const checkedDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
+            const alreadyCheckedIn = checkedDates.includes(workDate);
+
+            const statusEl = document.getElementById('todayLocationStatus');
+            const drawArea = document.getElementById('drawArea');
+
+            if (alreadyCheckedIn) {
+                if (statusEl) {
+                    statusEl.innerHTML = '⚠️ この日付は既にC/IN済みです（1日1回）';
+                    statusEl.style.color = 'var(--gold)';
+                }
+                if (drawArea) {
+                    drawArea.style.pointerEvents = 'none';
+                    drawArea.style.opacity = '0.5';
+                }
+            } else {
+                if (statusEl && todayBase) {
+                    statusEl.innerHTML = `✓ ${todayBase.toUpperCase()} にC/IN予定`;
+                    statusEl.style.color = 'var(--success)';
+                } else if (statusEl) {
+                    statusEl.innerHTML = '勤務先を選択してください';
+                    statusEl.style.color = 'var(--text-gray)';
+                }
+                if (drawArea) {
+                    drawArea.style.pointerEvents = 'auto';
+                    drawArea.style.opacity = '1';
+                }
+            }
+
+            console.log('Work date updated:', value, 'Already checked in:', alreadyCheckedIn);
+        }
+
+        function markDateAsCheckedIn(date) {
+            const checkedDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
+            if (!checkedDates.includes(date)) {
+                checkedDates.push(date);
+                localStorage.setItem('mindful_checked_dates', JSON.stringify(checkedDates));
+            }
         }
 
         function init() {
@@ -2298,6 +2333,9 @@
             // Save check-in time and quests for session persistence
             localStorage.setItem('mindful_checkin_time', new Date().toISOString());
             localStorage.setItem('mindful_active_quests', JSON.stringify(currentQuests));
+
+            // この日付をC/IN済みとしてマーク（1日1回制限）
+            markDateAsCheckedIn(workDate);
 
             const container = document.getElementById('activeQuestsContainer');
             container.innerHTML = currentQuests.map((q, i) => `
