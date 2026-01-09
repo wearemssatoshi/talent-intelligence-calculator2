@@ -1244,27 +1244,41 @@
                 <span class="token-label">TOKEN</span>
             </div>
         </div>
-        <!-- Goals Display -->
+        <!-- Goals Display - Accordion Style -->
         <div id="goalsDisplay"
-            style="display: none; margin-top: 12px; padding: 12px 16px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; text-align: left; max-width: 350px; margin-left: auto; margin-right: auto;">
-            <div
-                style="font-family: 'Montserrat', sans-serif; font-size: 9px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 8px; font-weight: 600;">
-                📌 MY VISION</div>
-            <div style="display: flex; align-items: flex-start; gap: 12px;">
-                <!-- Photo in MY VISION -->
-                <div id="goalsPhotoContainer"
-                    style="width: 50px; height: 50px; border-radius: 50%; background: var(--light-gray); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                    <img id="goalsPhoto" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                    <span id="goalsPhotoPlaceholder" style="font-size: 24px;">👤</span>
-                </div>
-                <div style="flex: 1; font-size: 11px;">
-                    <div style="color: var(--navy); margin-bottom: 6px;">
-                        <strong style="color: var(--gold);">🎯 今年の目標</strong>
-                        <div id="goalsThisYearList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+            style="display: none; margin-top: 12px; max-width: 350px; margin-left: auto; margin-right: auto;">
+            <div id="goalsAccordionHeader"
+                style="padding: 12px 16px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; cursor: pointer; transition: all 0.3s;"
+                onclick="toggleGoalsAccordion()">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div id="goalsPhotoContainerHeader"
+                            style="width: 36px; height: 36px; border-radius: 50%; background: var(--light-gray); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                            <img id="goalsPhotoHeader" src=""
+                                style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <span id="goalsPhotoPlaceholderHeader" style="font-size: 18px;">👤</span>
+                        </div>
+                        <div
+                            style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.1em; font-weight: 600;">
+                            📌 MY VISION
+                        </div>
                     </div>
-                    <div style="color: var(--navy);">
-                        <strong style="color: var(--gold);">✨ SVDで叶えたいキャリアまたは将来の夢</strong>
-                        <div id="goalsFutureList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+                    <span id="goalsAccordionArrow"
+                        style="font-size: 12px; color: var(--gold); transition: transform 0.3s;">▼</span>
+                </div>
+            </div>
+            <div id="goalsAccordionContent"
+                style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: var(--gold-light); border: 1px solid var(--gold); border-top: none; border-radius: 0 0 12px 12px; margin-top: -1px;">
+                <div style="padding: 12px 16px;">
+                    <div style="font-size: 11px;">
+                        <div style="color: var(--navy); margin-bottom: 10px;">
+                            <strong style="color: var(--gold);">🎯 今年の目標</strong>
+                            <div id="goalsThisYearList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+                        </div>
+                        <div style="color: var(--navy);">
+                            <strong style="color: var(--gold);">✨ SVDで叶えたいキャリアまたは将来の夢</strong>
+                            <div id="goalsFutureList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2040,17 +2054,17 @@
                     ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
                     : '-';
 
-                // MY VISIONに写真を表示
+                // MY VISIONに写真を表示（アコーディオンヘッダー用）
                 const photoData = localStorage.getItem('mindful_photo');
-                const goalsPhoto = document.getElementById('goalsPhoto');
-                const goalsPhotoPlaceholder = document.getElementById('goalsPhotoPlaceholder');
-                if (photoData && goalsPhoto && goalsPhotoPlaceholder) {
-                    goalsPhoto.src = photoData;
-                    goalsPhoto.style.display = 'block';
-                    goalsPhotoPlaceholder.style.display = 'none';
-                } else if (goalsPhoto && goalsPhotoPlaceholder) {
-                    goalsPhoto.style.display = 'none';
-                    goalsPhotoPlaceholder.style.display = 'block';
+                const goalsPhotoHeader = document.getElementById('goalsPhotoHeader');
+                const goalsPhotoPlaceholderHeader = document.getElementById('goalsPhotoPlaceholderHeader');
+                if (photoData && goalsPhotoHeader && goalsPhotoPlaceholderHeader) {
+                    goalsPhotoHeader.src = photoData;
+                    goalsPhotoHeader.style.display = 'block';
+                    goalsPhotoPlaceholderHeader.style.display = 'none';
+                } else if (goalsPhotoHeader && goalsPhotoPlaceholderHeader) {
+                    goalsPhotoHeader.style.display = 'none';
+                    goalsPhotoPlaceholderHeader.style.display = 'block';
                 }
             } else {
                 container.style.display = 'none';
@@ -2373,6 +2387,27 @@
         }
 
         function showHistory() { loadHistory(); showScreen('screen-history'); }
+
+        // ============ MY VISION Accordion ============
+        let goalsAccordionOpen = false;
+
+        function toggleGoalsAccordion() {
+            const content = document.getElementById('goalsAccordionContent');
+            const arrow = document.getElementById('goalsAccordionArrow');
+            const header = document.getElementById('goalsAccordionHeader');
+
+            goalsAccordionOpen = !goalsAccordionOpen;
+
+            if (goalsAccordionOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                arrow.style.transform = 'rotate(180deg)';
+                header.style.borderRadius = '12px 12px 0 0';
+            } else {
+                content.style.maxHeight = '0';
+                arrow.style.transform = 'rotate(0deg)';
+                header.style.borderRadius = '12px';
+            }
+        }
 
         function showInsight() {
             loadInsightArticles();
