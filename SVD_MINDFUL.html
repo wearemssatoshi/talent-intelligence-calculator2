@@ -1362,6 +1362,12 @@
             <!-- Today's Work Location Selector -->
             <div class="section-title">📍 TODAY'S LOCATION</div>
             <div class="health-check-card" id="todayLocationCard" style="margin-bottom: 20px;">
+                <div class="health-title"><span class="icon">📅</span> 日付を選択</div>
+                <div style="margin-top: 10px; margin-bottom: 15px;">
+                    <input type="date" id="workDateInput"
+                        style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;"
+                        onchange="updateWorkDate(this.value)">
+                </div>
                 <div class="health-title"><span class="icon">🏢</span> 今日はどこで働きますか？</div>
                 <div class="base-selector" style="margin-top: 12px;">
                     <div class="base-option today-base" data-base="moiwayama" onclick="selectTodayBase(this)">
@@ -1812,6 +1818,7 @@
         let currentRating = 0;
         let selectedBase = null;
         let todayBase = null; // その日の勤務先
+        let workDate = null; // 勤務日
         const checkFields = ['condition', 'temp', 'fatigue', 'nausea', 'nails', 'hands', 'uniform'];
         const mindFields = ['mind_enjoy', 'mind_morning', 'mind_consult'];
         let checks = {};
@@ -1825,11 +1832,34 @@
             event.target.classList.add('selected');
         }
 
+        function initWorkDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            workDate = `${yyyy}-${mm}-${dd}`;
+            const dateInput = document.getElementById('workDateInput');
+            if (dateInput) {
+                dateInput.value = workDate;
+            }
+        }
+
+        function updateWorkDate(value) {
+            workDate = value;
+            localStorage.setItem('mindful_work_date', workDate);
+            // 日付表示を更新
+            const dateObj = new Date(value);
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' };
+            const formattedDate = dateObj.toLocaleDateString('ja-JP', options);
+            console.log('Work date updated:', formattedDate);
+        }
+
         function init() {
             checkFields.forEach(f => checks[f] = null);
             mindFields.forEach(f => mindChecks[f] = null);
             loadHistory();
             setupStarRating();
+            initWorkDate(); // 日付を初期化
             const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
             if (profile) {
                 showUserBadge(profile);
@@ -2389,7 +2419,8 @@
 
             const payload = {
                 type,
-                timestamp: new Date().toISOString(),
+                timestamp: workDate ? new Date(workDate + 'T' + new Date().toTimeString().slice(0, 8)).toISOString() : new Date().toISOString(),
+                workDate: workDate || new Date().toISOString().split('T')[0],
                 name: profile.name,
                 homeBase: profile.base,
                 todayBase: todayBase || profile.base,
