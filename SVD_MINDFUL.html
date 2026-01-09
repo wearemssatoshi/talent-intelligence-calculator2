@@ -649,6 +649,30 @@
             box-shadow: 0 4px 20px rgba(30, 58, 95, 0.15);
             animation: revealCard 0.5s ease;
             display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background-image: url('logo/SVD_logo_standard.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .quest-card>* {
+            position: relative;
+            z-index: 1;
         }
 
         .quest-card.revealed {
@@ -783,11 +807,33 @@
         .active-quest-card::before {
             content: '';
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            background-image: url('logo/SVD_logo_standard.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .active-quest-card::after {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 3px;
             background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .active-quest-card>* {
+            position: relative;
+            z-index: 1;
         }
 
         .active-quest-card .quest-number {
