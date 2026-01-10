@@ -1592,10 +1592,26 @@
 
         <!-- SCREEN 2: ACTIVE DAY -->
         <div class="screen" id="screen-active">
+            <!-- ON STAGE Status -->
+            <div id="onStageStatus"
+                style="text-align: center; margin-bottom: 20px; padding: 20px; background: linear-gradient(145deg, var(--navy), var(--navy-dark)); border-radius: 16px; border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 169, 98, 0.2);">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 6px; font-weight: 500;">
+                    YOU ARE NOW</div>
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(255,255,255,0.3);">
+                    ON STAGE</div>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 4px;">舞台に立っています</div>
+                <div id="shiftTimeDisplay"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--gold); margin-top: 12px; font-weight: 600;">
+                    <!-- シフト時間がここに表示される -->
+                </div>
+            </div>
+
             <div class="section-title">Today's Shift</div>
             <div class="health-check-card" style="padding: 16px; margin-bottom: 20px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <select id="shiftStartSelect" onchange="shiftTimes.start = this.value"
+                    <select id="shiftStartSelect" onchange="shiftTimes.start = this.value; updateShiftTimeDisplay();"
                         style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
                         <option value="">開始</option>
                         <option value="08:00">8:00</option>
@@ -1619,7 +1635,7 @@
                         <option value="17:00">17:00</option>
                     </select>
                     <span style="font-weight: 700; color: var(--navy); font-size: 18px;">〜</span>
-                    <select id="shiftEndSelect" onchange="shiftTimes.end = this.value"
+                    <select id="shiftEndSelect" onchange="shiftTimes.end = this.value; updateShiftTimeDisplay();"
                         style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
                         <option value="">終了</option>
                         <option value="17:00">17:00</option>
@@ -1964,6 +1980,21 @@
             const container = type === 'start' ? document.getElementById('shiftStartBtns') : document.getElementById('shiftEndBtns');
             container.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
             event.target.classList.add('selected');
+        }
+
+        function updateShiftTimeDisplay() {
+            const display = document.getElementById('shiftTimeDisplay');
+            if (display) {
+                if (shiftTimes.start && shiftTimes.end) {
+                    display.innerHTML = `🕐 ${shiftTimes.start} 〜 ${shiftTimes.end}`;
+                } else if (shiftTimes.start) {
+                    display.innerHTML = `🕐 ${shiftTimes.start} 〜`;
+                } else if (shiftTimes.end) {
+                    display.innerHTML = `🕐 〜 ${shiftTimes.end}`;
+                } else {
+                    display.innerHTML = '';
+                }
+            }
         }
 
         function initWorkDate() {
