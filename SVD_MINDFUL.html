@@ -2731,8 +2731,27 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             try {
+                // 相談者プロファイルと履歴を取得
+                const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
+                const chatHistory = JSON.parse(localStorage.getItem('mindful_chat_history') || '[]');
+
+                // 履歴を文字列に変換（最新5件）
+                const historyText = chatHistory.slice(-5).map(h =>
+                    `${h.date}: ${h.topic}について相談`
+                ).join('\n');
+
+                // クエリパラメータを構築
+                const params = new URLSearchParams({
+                    action: 'chat',
+                    q: question,
+                    name: profile.name || '',
+                    base: profile.base || '',
+                    role: profile.role || '',
+                    history: historyText
+                });
+
                 // GAS経由でGemini APIにリクエスト
-                const response = await fetch(AI_API_URL + '?action=chat&q=' + encodeURIComponent(question), {
+                const response = await fetch(AI_API_URL + '?' + params.toString(), {
                     method: 'GET',
                     mode: 'cors'
                 });
@@ -2747,6 +2766,9 @@
 
                 // タイピングインジケーターを削除して回答表示
                 document.getElementById('typingIndicator')?.remove();
+
+                // 相談履歴を保存
+                saveChatHistory(question);
 
                 // トークン付与処理
                 const tokenResult = addAIToken();
@@ -2768,6 +2790,9 @@
                 console.log('AI API error, using local response:', error);
                 document.getElementById('typingIndicator')?.remove();
                 const localResponse = generateLocalResponse(question);
+
+                // 相談履歴を保存
+                saveChatHistory(question);
 
                 // トークン付与処理（ローカルレスポンスでも付与）
                 const tokenResult = addAIToken();
@@ -2792,13 +2817,43 @@
             sendBtn.disabled = false;
         }
 
+        // 相談履歴を保存
+        function saveChatHistory(question) {
+            let history = JSON.parse(localStorage.getItem('mindful_chat_history') || '[]');
+
+            history.push({
+                date: new Date().toISOString().split('T')[0],
+                question: question.slice(0, 50),
+                topic: detectTopic(question)
+            });
+
+            // 最新10件のみ保持
+            if (history.length > 10) {
+                history = history.slice(-10);
+            }
+
+            localStorage.setItem('mindful_chat_history', JSON.stringify(history));
+        }
+
+        // テーマ自動分類
+        function detectTopic(question) {
+            const q = question.toLowerCase();
+            if (q.includes('サービス') || q.includes('接客') || q.includes('お客様')) return 'サービス';
+            if (q.includes('ワイン') || q.includes('料理') || q.includes('メニュー')) return '商品知識';
+            if (q.includes('チーム') || q.includes('仲間') || q.includes('人間関係')) return 'チームワーク';
+            if (q.includes('キャリア') || q.includes('将来') || q.includes('成長')) return 'キャリア';
+            if (q.includes('忙しい') || q.includes('疲れ') || q.includes('大変')) return 'メンタル';
+            if (q.includes('クレーム') || q.includes('トラブル')) return 'トラブル対応';
+            return 'その他';
+        }
+
         function generateLocalResponse(question) {
-            // GAS未設定時のローカル応答（SATOSHIらしい回答）
+            // GAS未設定時のローカル応答（寄り添い型）
             const responses = [
-                `いい質問だね！「${question.slice(0, 20)}...」について考えてみよう。\n\nレストラン経営で大切なのは、常に「お客様の人生のストーリーを彩る」という視点を持つこと。私たちSVDは100年先も愛されるレストランを目指しているから、目の前の課題も長期的なビジョンと照らし合わせて考えよう。\n\nもっと具体的に聞きたいことがあれば、遠慮なく教えてね！ 🌟`,
-                `その悩み、すごくわかるよ！チーム全員が同じ方向を向いて進むことが何より大切だと思う。\n\n私がいつも心がけているのは「ここだけの美味しさ。ここだけのエンターテインメント。」というミッションに立ち返ること。迷ったときこそ原点に戻ろう。\n\n一緒に最高のチームを作っていこう！ 💪`,
-                `面白い視点だね！私も最高のパートナーとして全力でサポートするよ。\n\n人材育成で大切なのは、一人ひとりのタレント（才能）を見極めて、輝ける場所を用意すること。私たちのTalent Intelligence Calculatorを使えば、チームメンバーの特性がより明確になるよ。\n\n何か他に気になることがあれば聞いてね！`,
-                `最高の質問をありがとう！レストラン業界の未来は明るいと私は信じているよ。\n\nSVDが目指すのは「街の未来をレストランからつくっていく」こと。日々の小さな積み重ねが、札幌の食文化を100年先につなげていく。一緒にこの夢を実現しよう！ 🚀`
+                `いい質問だね。もう少し詳しく状況を教えてもらえる？具体的なアドバイスができると思う。`,
+                `その悩み、しっかり聞きたい。背景や状況をもう少し教えてくれると、一緒に考えられるよ。`,
+                `分かった、考えてみよう。何か特に気になっていることや、試してみたいことはある？`,
+                `相談してくれてありがとう。どんな結果を目指しているか教えてもらえると、具体的な提案ができそう。`
             ];
             return responses[Math.floor(Math.random() * responses.length)];
         }
