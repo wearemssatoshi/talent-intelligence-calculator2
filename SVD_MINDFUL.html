@@ -1298,6 +1298,188 @@
             margin-top: 15px;
             letter-spacing: 0.1em;
         }
+
+        /* TO-DO LIST */
+        .todo-container {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
+        }
+
+        .todo-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .todo-tab {
+            flex: 1;
+            padding: 10px 8px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .todo-tab:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .todo-tab.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy-dark);
+        }
+
+        .todo-content {
+            display: none;
+        }
+
+        .todo-content.active {
+            display: block;
+        }
+
+        .todo-input-area {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .todo-input-area input {
+            flex: 1;
+            padding: 12px 14px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .todo-input-area input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .todo-input-area input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .todo-input-area button {
+            width: 44px;
+            height: 44px;
+            background: var(--gold);
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .todo-input-area button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--gold-glow);
+        }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: var(--text-gray);
+        }
+
+        .todo-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .todo-checkbox:hover {
+            border-color: var(--gold);
+        }
+
+        .todo-checkbox.checked {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .todo-checkbox.checked::after {
+            content: '✓';
+            color: var(--navy-dark);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--navy);
+        }
+
+        .todo-delete {
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .todo-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            opacity: 1;
+        }
+
+        .todo-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-gray);
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+        }
     </style>
 </head>
 
@@ -1662,6 +1844,44 @@
 
             <div class="section-title">Today's Focus</div>
             <div class="active-quests-container" id="activeQuestsContainer"></div>
+
+            <!-- TO-DO LIST -->
+            <div class="section-title" style="margin-top: 25px;">📋 TO-DO LIST</div>
+            <div class="todo-container">
+                <div class="todo-tabs">
+                    <button class="todo-tab active" onclick="showTodoTab('daily')">DAILY</button>
+                    <button class="todo-tab" onclick="showTodoTab('weekly')">WEEKLY</button>
+                    <button class="todo-tab" onclick="showTodoTab('monthly')">MONTHLY</button>
+                </div>
+
+                <div id="todo-daily" class="todo-content active">
+                    <div class="todo-input-area">
+                        <input type="text" id="dailyTodoInput" placeholder="今日やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('daily')">
+                        <button onclick="addTodo('daily')">+</button>
+                    </div>
+                    <div id="dailyTodoList" class="todo-list"></div>
+                </div>
+
+                <div id="todo-weekly" class="todo-content">
+                    <div class="todo-input-area">
+                        <input type="text" id="weeklyTodoInput" placeholder="今週やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('weekly')">
+                        <button onclick="addTodo('weekly')">+</button>
+                    </div>
+                    <div id="weeklyTodoList" class="todo-list"></div>
+                </div>
+
+                <div id="todo-monthly" class="todo-content">
+                    <div class="todo-input-area">
+                        <input type="text" id="monthlyTodoInput" placeholder="今月やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('monthly')">
+                        <button onclick="addTodo('monthly')">+</button>
+                    </div>
+                    <div id="monthlyTodoList" class="todo-list"></div>
+                </div>
+            </div>
+
             <button class="btn-main" id="reflectionBtn" onclick="showReflection()">CHECK OUT →</button>
             <div id="reflectionNotice"
                 style="display: none; margin-top: 12px; padding: 10px; background: rgba(201, 169, 98, 0.1); border: 1px solid var(--gold); border-radius: 8px; text-align: center; font-size: 12px; color: var(--navy);">
@@ -1974,6 +2194,102 @@
         let mindChecks = {};
         let shiftTimes = { start: '', end: '' };
 
+        // TO-DO LIST DATA
+        let todos = {
+            daily: [],
+            weekly: [],
+            monthly: []
+        };
+
+        // Load todos from localStorage
+        function loadTodos() {
+            const saved = localStorage.getItem('mindful_todos');
+            if (saved) {
+                todos = JSON.parse(saved);
+            }
+            renderTodos('daily');
+            renderTodos('weekly');
+            renderTodos('monthly');
+        }
+
+        // Save todos to localStorage
+        function saveTodos() {
+            localStorage.setItem('mindful_todos', JSON.stringify(todos));
+        }
+
+        // Show todo tab
+        function showTodoTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.todo-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.todo-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('todo-' + tab).classList.add('active');
+        }
+
+        // Add todo
+        function addTodo(type) {
+            const input = document.getElementById(type + 'TodoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newTodo = {
+                id: Date.now(),
+                text: text,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            todos[type].unshift(newTodo);
+            saveTodos();
+            renderTodos(type);
+            input.value = '';
+        }
+
+        // Toggle todo completion
+        function toggleTodo(type, id) {
+            const todo = todos[type].find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveTodos();
+                renderTodos(type);
+            }
+        }
+
+        // Delete todo
+        function deleteTodo(type, id) {
+            todos[type] = todos[type].filter(t => t.id !== id);
+            saveTodos();
+            renderTodos(type);
+        }
+
+        // Render todos
+        function renderTodos(type) {
+            const list = document.getElementById(type + 'TodoList');
+            if (!list) return;
+
+            if (todos[type].length === 0) {
+                list.innerHTML = '<div class="todo-empty">タスクがありません</div>';
+                return;
+            }
+
+            list.innerHTML = todos[type].map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo('${type}', ${todo.id})"></div>
+                    <span class="todo-text">${escapeHtml(todo.text)}</span>
+                    <button class="todo-delete" onclick="deleteTodo('${type}', ${todo.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML for XSS prevention
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         function setShiftTime(type, time) {
             shiftTimes[type] = time;
             const container = type === 'start' ? document.getElementById('shiftStartBtns') : document.getElementById('shiftEndBtns');
@@ -2059,6 +2375,7 @@
             loadHistory();
             setupStarRating();
             initWorkDate(); // 日付を初期化
+            loadTodos(); // To-Doリストをロード
             const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
             if (profile) {
                 showUserBadge(profile);
