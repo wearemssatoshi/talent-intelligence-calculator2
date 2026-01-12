@@ -2781,8 +2781,11 @@
             // Reset button text
             reflectionBtn.textContent = 'CHECK OUT →';
 
+            // No check-in recorded - disable button
             if (!checkinTime) {
-                reflectionBtn.disabled = false;
+                reflectionBtn.disabled = true;
+                reflectionBtn.style.opacity = '0.5';
+                reflectionBtn.textContent = 'まずC/INを完了してください';
                 reflectionNotice.style.display = 'none';
                 return;
             }
