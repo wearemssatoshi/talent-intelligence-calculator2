@@ -1,0 +1,3455 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SVD MINDFUL</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SVD MINDFUL">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo/SVD_icon_square.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="logo/SVD_icon_square.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="logo/SVD_icon_square.png">
+    <link rel="apple-touch-icon" href="logo/SVD_icon_square.png">
+    <link rel="icon" type="image/png" href="logo/SVD_icon_square.png">
+    <link rel="manifest" href="manifest.json">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --light-gray: #F5F5F5;
+            --navy: #1E3A5F;
+            --navy-dark: #0F2A4A;
+            --gold: #C9A962;
+            --gold-light: rgba(201, 169, 98, 0.15);
+            --gold-glow: rgba(201, 169, 98, 0.3);
+            --text-dark: #1E3A5F;
+            --text-gray: #6B7B8C;
+            --border: rgba(30, 58, 95, 0.1);
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Shippori Mincho', serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 9999;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            margin-bottom: 8px;
+        }
+
+        .logo-container img {
+            height: 45px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            color: var(--navy);
+        }
+
+        .header-sub {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .user-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: 10px;
+            padding: 5px 14px;
+            background: var(--light-gray);
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* TOKEN SYSTEM */
+        .token-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.15), rgba(201, 169, 98, 0.05));
+            border: 1px solid var(--gold);
+            padding: 6px 14px;
+            border-radius: 25px;
+            margin-top: 10px;
+            margin-left: 8px;
+        }
+
+        .token-icon {
+            font-size: 16px;
+            animation: coinSpin 3s linear infinite;
+        }
+
+        @keyframes coinSpin {
+
+            0%,
+            100% {
+                transform: rotateY(0deg);
+            }
+
+            50% {
+                transform: rotateY(180deg);
+            }
+        }
+
+        .token-balance {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--gold);
+        }
+
+        .token-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            color: var(--text-gray);
+        }
+
+        /* TOKEN EARNED ANIMATION */
+        .token-earned-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .token-earned-badge {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 30px;
+            background: linear-gradient(145deg, var(--navy), var(--navy-dark));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            box-shadow: 0 0 30px var(--gold-glow);
+            animation: tokenPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes tokenPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--gold-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 40px var(--gold), 0 0 60px var(--gold-glow);
+            }
+        }
+
+        .token-earned-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            animation: tokenBounce 0.6s ease-out;
+        }
+
+        @keyframes tokenBounce {
+            0% {
+                transform: scale(0) rotate(-45deg);
+            }
+
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
+
+        .token-earned-amount {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .token-earned-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 4px;
+        }
+
+        .token-breakdown {
+            margin-top: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .token-breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 22px;
+            overflow-y: auto;
+            padding-bottom: 120px;
+            position: relative;
+            z-index: 0;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        /* REGISTRATION */
+        .register-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .register-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .register-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .text-input {
+            width: 100%;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+        }
+
+        .text-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .base-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .base-option {
+            padding: 16px 12px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .base-option:hover {
+            border-color: var(--gold);
+        }
+
+        .base-option.selected {
+            border-color: var(--gold);
+            background: var(--gold-light);
+        }
+
+        .base-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .base-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .base-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--text-gray);
+            letter-spacing: 0.1em;
+            margin-top: 3px;
+        }
+
+        /* PRINCIPLES */
+        .principle-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .principle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .principle-num {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .principle-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 2px 0 8px 0;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .principle-desc {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.7;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding-top 0.3s ease;
+            padding-top: 0;
+        }
+
+        .principle-card.expanded .principle-desc {
+            max-height: 300px;
+            padding-top: 10px;
+        }
+
+        .principle-card {
+            cursor: pointer;
+        }
+
+        .principle-card::after {
+            content: '▼';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 10px;
+            color: var(--gold);
+            transition: transform 0.3s ease;
+        }
+
+        .principle-card.expanded::after {
+            transform: rotate(180deg);
+        }
+
+        /* HEALTH CHECK */
+        .health-check-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .health-check-card.complete {
+            border-color: rgba(34, 197, 94, 0.4);
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.05), var(--white));
+        }
+
+        .health-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.05em;
+            color: var(--navy);
+        }
+
+        .health-title .icon {
+            font-size: 18px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .check-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-label {
+            font-size: 13px;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .check-toggle {
+            display: flex;
+            gap: 6px;
+        }
+
+        .toggle-btn {
+            padding: 7px 14px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            background: var(--light-gray);
+            color: var(--text-gray);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.ok.selected {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .toggle-btn.ng.selected {
+            background: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+
+        .toggle-btn.selected {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+
+        .health-status {
+            text-align: center;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .health-status.ok {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .health-status.incomplete {
+            background: var(--light-gray);
+            color: var(--text-gray);
+        }
+
+        .health-status.ng {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .health-status.warning {
+            background: rgba(201, 169, 98, 0.15);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
+        /* DRAW AREA */
+        .draw-area {
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 12px;
+        }
+
+        .draw-area.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .draw-card-back {
+            width: 140px;
+            height: 190px;
+            margin: 0 auto;
+            background: var(--white);
+            background-image: url('logo/SVD_logo_standard.png');
+            background-size: 85%;
+            background-repeat: no-repeat;
+            background-position: center 35%;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .draw-card-back::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .draw-card-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: var(--gold);
+        }
+
+        .draw-logo {
+            display: none;
+        }
+
+        .draw-subtitle {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            color: var(--navy);
+            letter-spacing: 0.2em;
+            margin-top: 5px;
+        }
+
+        .draw-hint {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            margin-top: 18px;
+            opacity: 0.7;
+        }
+
+        /* QUEST CARDS CONTAINER */
+        .quest-cards-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quest-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            animation: revealCard 0.5s ease;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            background-image: url('logo/SVD_logo_standard.png');
+            background-size: 77%;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .quest-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .quest-card.revealed {
+            display: block;
+        }
+
+        @keyframes revealCard {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotateY(90deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.02) rotateY(0deg);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .quest-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            font-weight: 600;
+        }
+
+        .quest-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--navy);
+            text-shadow: none;
+            margin: 4px 0;
+        }
+
+        .quest-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            letter-spacing: 0.02em;
+            color: var(--navy);
+        }
+
+        .quest-subtitle {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .quest-philosophy {
+            font-size: 12px;
+            line-height: 1.7;
+            background: rgba(245, 247, 250, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            color: var(--navy);
+            font-weight: 500;
+        }
+
+        /* BUTTONS */
+        .btn-main {
+            background: var(--gold);
+            color: var(--navy-dark);
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.1em;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--gold-glow);
+            transition: all 0.2s;
+            margin-top: 18px;
+        }
+
+        .btn-main:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        .btn-main:hover:not(:disabled) {
+            box-shadow: 0 6px 20px var(--gold-glow);
+        }
+
+        .btn-main:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-gray);
+            padding: 11px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ACTIVE DAY */
+        .active-quests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .active-quest-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-quest-card::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            background-image: url('logo/SVD_logo_standard.png');
+            background-size: 77%;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.10;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .active-quest-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .active-quest-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .active-quest-card .quest-number {
+            font-size: 36px;
+            color: var(--navy);
+            text-shadow: none;
+        }
+
+        .active-quest-card .quest-title {
+            color: var(--navy);
+            font-size: 14px;
+        }
+
+        .active-quest-card .quest-subtitle {
+            color: var(--text-gray);
+            font-size: 11px;
+        }
+
+        .active-quest-card .quest-philosophy {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            font-size: 11px;
+        }
+
+        .countdown-section {
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .countdown-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            letter-spacing: 0.2em;
+        }
+
+        .countdown-time {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-top: 5px;
+        }
+
+        /* REFLECTION */
+        .reflection-prompt {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 22px;
+            line-height: 1.7;
+            color: var(--navy);
+        }
+
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .star {
+            font-size: 36px;
+            cursor: pointer;
+            color: var(--light-gray);
+            transition: all 0.2s;
+        }
+
+        .star.active,
+        .star:hover {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .memo-input {
+            width: 100%;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--text-dark);
+            font-family: 'Shippori Mincho', serif;
+            font-size: 13px;
+            resize: none;
+            height: 90px;
+            line-height: 1.7;
+        }
+
+        .memo-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .memo-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* COMPLETION */
+        .completion-icon {
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .completion-message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 6px;
+            color: var(--navy);
+        }
+
+        .completion-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            line-height: 1.7;
+        }
+
+        /* HISTORY */
+        .history-item {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .history-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .history-quest {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .history-stars {
+            color: var(--gold);
+            font-size: 12px;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            color: var(--text-gray);
+        }
+
+        /* NAV */
+        nav {
+            display: flex;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 11px 0;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 8px;
+            letter-spacing: 0.05em;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            color: var(--gold);
+        }
+
+        .nav-icon {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        /* INSIGHT - ARTICLE CAROUSEL */
+        .article-carousel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .article-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .article-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .article-source {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .article-title {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--navy);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .article-date {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .article-loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        /* INSIGHT - AI CHAT */
+        .ai-chat-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .ai-intro {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .ai-intro-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .chat-messages {
+            min-height: 120px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding: 8px;
+        }
+
+        .chat-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.6;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .chat-bubble.user {
+            background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.ai {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-bubble.ai .ai-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .ai-token-notice {
+            margin-top: 10px;
+            padding: 6px 10px;
+            background: rgba(201, 169, 98, 0.15);
+            border-radius: 8px;
+            font-size: 11px;
+            color: var(--gold);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 12px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .chat-input-area button {
+            background: var(--gold);
+            color: var(--navy-dark);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chat-input-area button:hover {
+            box-shadow: 0 4px 12px var(--gold-glow);
+        }
+
+        .chat-input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ai-typing {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+
+        .ai-typing span {
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .ai-typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+
+            30% {
+                transform: translateY(-6px);
+                opacity: 1;
+            }
+        }
+
+        /* SENDING OVERLAY */
+        .sending-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .sending-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sending-text {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 15px;
+            letter-spacing: 0.1em;
+        }
+
+        /* TO-DO LIST */
+        .todo-container {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
+        }
+
+        .todo-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .todo-tab {
+            flex: 1;
+            padding: 10px 8px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .todo-tab:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .todo-tab.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy-dark);
+        }
+
+        .todo-content {
+            display: none;
+        }
+
+        .todo-content.active {
+            display: block;
+        }
+
+        .todo-input-area {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .todo-input-area input {
+            flex: 1;
+            padding: 12px 14px;
+            background: var(--light-gray);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .todo-input-area input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .todo-input-area input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        .todo-input-area button {
+            width: 44px;
+            height: 44px;
+            background: var(--gold);
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .todo-input-area button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px var(--gold-glow);
+        }
+
+        .todo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+        }
+
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: var(--text-gray);
+        }
+
+        .todo-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .todo-checkbox:hover {
+            border-color: var(--gold);
+        }
+
+        .todo-checkbox.checked {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+
+        .todo-checkbox.checked::after {
+            content: '✓';
+            color: var(--navy-dark);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: var(--navy);
+        }
+
+        .todo-delete {
+            width: 28px;
+            height: 28px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 16px;
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+
+        .todo-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            opacity: 1;
+        }
+
+        .todo-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-gray);
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="logo/SVD_logo_standard.png" alt="SVD" onerror="this.style.display='none'">
+        </div>
+        <h1>MINDFUL</h1>
+        <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
+        <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
+            <div class="user-badge" id="userBadge" style="display: none;"></div>
+            <div class="token-display" id="tokenDisplay" style="display: none;">
+                <span class="token-icon">🪙</span>
+                <span class="token-balance" id="tokenBalance">0</span>
+                <span class="token-label">TOKEN</span>
+            </div>
+        </div>
+        <!-- Goals Display - Accordion Style -->
+        <div id="goalsDisplay"
+            style="display: none; margin-top: 12px; max-width: 350px; margin-left: 12px; margin-right: auto; text-align: left;">
+            <div id="goalsAccordionHeader"
+                style="padding: 12px 16px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; cursor: pointer; transition: all 0.3s;"
+                onclick="toggleGoalsAccordion()">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div id="goalsPhotoContainerHeader"
+                            style="width: 36px; height: 36px; border-radius: 50%; background: var(--light-gray); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                            <img id="goalsPhotoHeader" src=""
+                                style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <span id="goalsPhotoPlaceholderHeader" style="font-size: 18px;">👤</span>
+                        </div>
+                        <div
+                            style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.1em; font-weight: 600;">
+                            📌 MY VISION
+                        </div>
+                    </div>
+                    <span id="goalsAccordionArrow"
+                        style="font-size: 12px; color: var(--gold); transition: transform 0.3s;">▼</span>
+                </div>
+            </div>
+            <div id="goalsAccordionContent"
+                style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: var(--gold-light); border: 1px solid var(--gold); border-top: none; border-radius: 0 0 12px 12px; margin-top: -1px;">
+                <div style="padding: 12px 16px;">
+                    <div style="font-size: 11px;">
+                        <div style="color: var(--navy); margin-bottom: 10px;">
+                            <strong style="color: var(--gold);">🎯 今年の目標</strong>
+                            <div id="goalsThisYearList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+                        </div>
+                        <div style="color: var(--navy);">
+                            <strong style="color: var(--gold);">✨ SVDで叶えたいキャリアまたは将来の夢</strong>
+                            <div id="goalsFutureList" style="margin-top: 3px; color: var(--text-gray);">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- SCREEN 0: REGISTRATION -->
+        <div class="screen" id="screen-register">
+            <div class="register-card">
+                <div class="register-title">Welcome to MINDFUL</div>
+                <div class="register-sub">あなたの情報を登録してください</div>
+                <div class="input-group">
+                    <label class="input-label">YOUR NAME</label>
+                    <input type="text" class="text-input" id="inputName" placeholder="例: 山田太郎">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">YOUR BASE</label>
+                    <div class="base-selector">
+                        <div class="base-option" data-base="moiwayama" onclick="selectBase(this)">
+                            <div class="base-icon">🏔️</div>
+                            <div class="base-name">藻岩山</div>
+                            <div class="base-code">MOIWAYAMA</div>
+                        </div>
+                        <div class="base-option" data-base="okurayama" onclick="selectBase(this)">
+                            <div class="base-icon">⛷️</div>
+                            <div class="base-name">大倉山</div>
+                            <div class="base-code">OKURAYAMA</div>
+                        </div>
+                        <div class="base-option" data-base="tvtower" onclick="selectBase(this)">
+                            <div class="base-icon">🗼</div>
+                            <div class="base-name">テレビ塔</div>
+                            <div class="base-code">TV TOWER</div>
+                        </div>
+                        <div class="base-option" data-base="akarenga" onclick="selectBase(this)">
+                            <div class="base-icon">🧱</div>
+                            <div class="base-name">赤れんが</div>
+                            <div class="base-code">AKARENGA</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">🎯 今年の目標（3つまで）</label>
+                    <input type="text" class="text-input" id="inputGoalThisYear1" placeholder="目標 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalThisYear2" placeholder="目標 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalThisYear3" placeholder="目標 3（任意）">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">✨ SVDで叶えたいキャリアまたは将来の夢（3つまで）</label>
+                    <input type="text" class="text-input" id="inputGoalFuture1" placeholder="夢 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalFuture2" placeholder="夢 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="inputGoalFuture3" placeholder="夢 3（任意）">
+                </div>
+                <button class="btn-main" id="registerBtn" onclick="register()" disabled>REGISTER</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 1: MORNING RITUAL -->
+        <div class="screen" id="screen-morning">
+            <!-- Today's Work Location Selector -->
+            <div class="section-title">📍 TODAY'S LOCATION</div>
+            <div class="health-check-card" id="todayLocationCard" style="margin-bottom: 20px;">
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <span style="font-size: 10px; color: var(--text-gray); display: block; margin-bottom: 4px;">📅
+                        勤務日</span>
+                    <input type="date" id="workDateInput"
+                        style="padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; width: auto;"
+                        onchange="updateWorkDate(this.value)">
+                </div>
+                <div class="health-title"><span class="icon">🏢</span> 今日はどこで働きますか？</div>
+                <div class="base-selector" style="margin-top: 12px;">
+                    <div class="base-option today-base" data-base="moiwayama" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🏔️</div>
+                        <div class="base-name">藻岩山</div>
+                        <div class="base-code">MOIWAYAMA</div>
+                    </div>
+                    <div class="base-option today-base" data-base="okurayama" onclick="selectTodayBase(this)">
+                        <div class="base-icon">⛷️</div>
+                        <div class="base-name">大倉山</div>
+                        <div class="base-code">OKURAYAMA</div>
+                    </div>
+                    <div class="base-option today-base" data-base="tvtower" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🗼</div>
+                        <div class="base-name">テレビ塔</div>
+                        <div class="base-code">TV TOWER</div>
+                    </div>
+                    <div class="base-option today-base" data-base="akarenga" onclick="selectTodayBase(this)">
+                        <div class="base-icon">🧱</div>
+                        <div class="base-name">赤れんが</div>
+                        <div class="base-code">AKARENGA</div>
+                    </div>
+                </div>
+                <div id="todayLocationStatus"
+                    style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-gray);">勤務先を選択してください
+                </div>
+            </div>
+
+            <div class="section-title">PRINCIPLE</div>
+            <div class="principle-card" onclick="this.classList.toggle('expanded')">
+                <div class="principle-num">01 PURPOSE</div>
+                <div class="principle-title">パーパス（存在意義）</div>
+                <div class="principle-desc" style="font-weight: 500;">SAPPORO VIEWTIFUL
+                    DININGは札幌という都市が有する「観光」や「食」を守り、北海道の文化を「未来」へと紡ぐ旗手となるレストラン・コレクティブルです。</div>
+            </div>
+            <div class="principle-card" onclick="this.classList.toggle('expanded')">
+                <div class="principle-num">02 MISSION</div>
+                <div class="principle-title">「ここだけの美味しさ。<br>ここだけのエンターテインメント。」</div>
+                <div class="principle-desc" style="font-weight: 500;">
+                    ご来店いただくお客様の大切なシーンを彩る特別な料理と空間を提供し、「ここ」にしかない美味しさと感動を追求し、届けていきます。</div>
+            </div>
+            <div class="principle-card" onclick="this.classList.toggle('expanded')">
+                <div class="principle-num">03 VISION</div>
+                <div class="principle-title">この街の食と文化と物語を100年先へ</div>
+                <div class="principle-desc" style="font-weight: 500;">
+                    100年先も札幌市民に愛されるレストランづくり。私たちが目指すのは、レストランの価値を「食」だけではなく「人生のストーリーを創る場所」へと進化させ、札幌の街全体をより豊かな物語を紡ぐ場としていくこと。そして、この街の美しい物語が次の世代にも受け継がれていくことを目指します。
+                </div>
+            </div>
+            <div class="principle-card" onclick="this.classList.toggle('expanded')">
+                <div class="principle-num">04 VALUE</div>
+                <div class="principle-title">街の未来をレストランからつくっていく</div>
+                <div class="principle-desc" style="font-weight: 500;">
+                    私たちの取り組みは、単なる飲食店の運営ではなく、札幌の未来を形づくる存在になること。ただの商業施設ではない「公共性と文化性を備えたレストラン」を育て、社内の各事業部の皆さんと連携しながら、札幌の成長とともに新しい価値を創りだしていきます。
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">Health Check</div>
+            <div class="health-check-card" id="healthCheckCard">
+                <div class="health-title"><span class="icon">🩺</span> 就業前チェックシート</div>
+                <div class="check-item">
+                    <div class="check-label">体調は良好ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="condition"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng"
+                            data-field="condition" onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">体温は37.5℃未満ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="temp"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="temp"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">体がだるくないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="fatigue"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="fatigue"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">胸のむかつき・吐き気はないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="nausea"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="nausea"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">爪の手入れはできていますか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="nails"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="nails"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">手指に火傷や手荒れはないですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="hands"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="hands"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="check-item">
+                    <div class="check-label">制服・頭髪・靴は清潔ですか？</div>
+                    <div class="check-toggle"><button class="toggle-btn ok" data-field="uniform"
+                            onclick="setCheck(this, 'ok')">OK</button><button class="toggle-btn ng" data-field="uniform"
+                            onclick="setCheck(this, 'ng')">NG</button></div>
+                </div>
+                <div class="health-status incomplete" id="healthStatus">すべての項目を確認してください</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Mind Check</div>
+            <div class="health-check-card" id="mindCheckCard">
+                <div class="health-title"><span class="icon">💭</span> 心のセルフチェック</div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">最近1週間で、仕事を楽しいと感じたことがある</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'many')">たくさんある</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'yes')">ある</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'neutral')">どちらとも</button>
+                        <button class="toggle-btn" data-field="mind_enjoy"
+                            onclick="setMindCheck(this, 'no')">ない</button>
+                    </div>
+                </div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">朝、仕事に向かうときの第一感情は？</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'excited')">楽しみ</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'normal')">普通</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'heavy')">少し重い</button>
+                        <button class="toggle-btn" data-field="mind_morning"
+                            onclick="setMindCheck(this, 'very_heavy')">かなり重い</button>
+                    </div>
+                </div>
+                <div class="check-item" style="flex-direction: column; align-items: flex-start;">
+                    <div class="check-label" style="margin-bottom: 10px;">相談したいことは？</div>
+                    <div class="check-toggle"
+                        style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'urgent')">すぐにでも</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'sometime')">折を見て</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'notyet')">まだ大丈夫</button>
+                        <button class="toggle-btn" data-field="mind_consult"
+                            onclick="setMindCheck(this, 'none')">ない</button>
+                    </div>
+                </div>
+                <div class="health-status incomplete" id="mindStatus">心の状態も確認してください</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 20px;">Today's Quests</div>
+            <div class="draw-area disabled" id="drawArea">
+                <div class="draw-card-back" onclick="drawQuests()">
+                    <div class="draw-logo"></div>
+                    <div class="draw-subtitle">PLAYBOOK 100</div>
+                </div>
+                <div class="draw-hint">全項目OKで3枚のカードを引けます</div>
+            </div>
+
+            <div class="quest-cards-container" id="questCardsContainer"></div>
+            <button class="btn-main" id="startBtn" style="display: none;" onclick="startDay()">CHECK IN ✓</button>
+        </div>
+
+        <!-- SCREEN 2: ACTIVE DAY -->
+        <div class="screen" id="screen-active">
+            <!-- ON STAGE Status -->
+            <div id="onStageStatus"
+                style="text-align: center; margin-bottom: 20px; padding: 20px; background: linear-gradient(145deg, var(--navy), var(--navy-dark)); border-radius: 16px; border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(201, 169, 98, 0.2);">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 6px; font-weight: 500;">
+                    YOU ARE NOW</div>
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700; color: var(--white); letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(255,255,255,0.3);">
+                    ON STAGE</div>
+                <div id="shiftTimeDisplay"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--gold); margin-top: 12px; font-weight: 600;">
+                    <!-- シフト時間がここに表示される -->
+                </div>
+            </div>
+
+            <div class="section-title">Today's Shift</div>
+            <div class="health-check-card" style="padding: 16px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <select id="shiftStartSelect" onchange="shiftTimes.start = this.value; updateShiftTimeDisplay();"
+                        style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
+                        <option value="">開始</option>
+                        <option value="08:00">8:00</option>
+                        <option value="08:30">8:30</option>
+                        <option value="09:00">9:00</option>
+                        <option value="09:30">9:30</option>
+                        <option value="10:00">10:00</option>
+                        <option value="10:30">10:30</option>
+                        <option value="11:00">11:00</option>
+                        <option value="11:30">11:30</option>
+                        <option value="12:00">12:00</option>
+                        <option value="12:30">12:30</option>
+                        <option value="13:00">13:00</option>
+                        <option value="13:30">13:30</option>
+                        <option value="14:00">14:00</option>
+                        <option value="14:30">14:30</option>
+                        <option value="15:00">15:00</option>
+                        <option value="15:30">15:30</option>
+                        <option value="16:00">16:00</option>
+                        <option value="16:30">16:30</option>
+                        <option value="17:00">17:00</option>
+                    </select>
+                    <span style="font-weight: 700; color: var(--navy); font-size: 18px;">〜</span>
+                    <select id="shiftEndSelect" onchange="shiftTimes.end = this.value; updateShiftTimeDisplay();"
+                        style="flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 16px; font-family: 'Inter', sans-serif; background: var(--light-gray); color: var(--navy); font-weight: 600; text-align: center;">
+                        <option value="">終了</option>
+                        <option value="17:00">17:00</option>
+                        <option value="17:30">17:30</option>
+                        <option value="18:00">18:00</option>
+                        <option value="18:30">18:30</option>
+                        <option value="19:00">19:00</option>
+                        <option value="19:30">19:30</option>
+                        <option value="20:00">20:00</option>
+                        <option value="20:30">20:30</option>
+                        <option value="21:00">21:00</option>
+                        <option value="21:30">21:30</option>
+                        <option value="22:00">22:00</option>
+                        <option value="22:30">22:30</option>
+                        <option value="23:00">23:00</option>
+                        <option value="23:30">23:30</option>
+                        <option value="00:00">0:00</option>
+                        <option value="00:30">0:30</option>
+                        <option value="01:00">1:00</option>
+                        <option value="01:30">1:30</option>
+                        <option value="02:00">2:00</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-title">Today's Focus</div>
+            <div class="active-quests-container" id="activeQuestsContainer"></div>
+
+            <!-- TO-DO LIST -->
+            <div class="section-title" style="margin-top: 25px;">📋 TO-DO LIST</div>
+            <div class="todo-container">
+                <div class="todo-tabs">
+                    <button class="todo-tab active" onclick="showTodoTab('daily')">DAILY</button>
+                    <button class="todo-tab" onclick="showTodoTab('weekly')">WEEKLY</button>
+                    <button class="todo-tab" onclick="showTodoTab('monthly')">MONTHLY</button>
+                </div>
+
+                <div id="todo-daily" class="todo-content active">
+                    <div class="todo-input-area">
+                        <input type="text" id="dailyTodoInput" placeholder="今日やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('daily')">
+                        <button onclick="addTodo('daily')">+</button>
+                    </div>
+                    <div id="dailyTodoList" class="todo-list"></div>
+                </div>
+
+                <div id="todo-weekly" class="todo-content">
+                    <div class="todo-input-area">
+                        <input type="text" id="weeklyTodoInput" placeholder="今週やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('weekly')">
+                        <button onclick="addTodo('weekly')">+</button>
+                    </div>
+                    <div id="weeklyTodoList" class="todo-list"></div>
+                </div>
+
+                <div id="todo-monthly" class="todo-content">
+                    <div class="todo-input-area">
+                        <input type="text" id="monthlyTodoInput" placeholder="今月やること..."
+                            onkeypress="if(event.key==='Enter')addTodo('monthly')">
+                        <button onclick="addTodo('monthly')">+</button>
+                    </div>
+                    <div id="monthlyTodoList" class="todo-list"></div>
+                </div>
+            </div>
+
+            <button class="btn-main" id="reflectionBtn" onclick="showReflection()">CHECK OUT →</button>
+            <div id="reflectionNotice"
+                style="display: none; margin-top: 12px; padding: 10px; background: rgba(201, 169, 98, 0.1); border: 1px solid var(--gold); border-radius: 8px; text-align: center; font-size: 12px; color: var(--navy);">
+                ⏰ 業務終わりに振り返りをしてください<br>
+                <span id="reflectionTimer" style="font-family: 'Montserrat', sans-serif; font-weight: 600;"></span>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: REFLECTION -->
+        <div class="screen" id="screen-reflection">
+            <div class="reflection-prompt">今日の3つのQuest<br><span style="color: var(--gold);"
+                    id="reflectionQuestTitles"></span><br>を意識できましたか？<br><span
+                    style="font-size: 13px; color: var(--text-gray);">★で評価してください</span></div>
+            <div class="star-rating" id="starRating"><span class="star" data-value="1">★</span><span class="star"
+                    data-value="2">★</span><span class="star" data-value="3">★</span><span class="star"
+                    data-value="4">★</span><span class="star" data-value="5">★</span></div>
+            <textarea class="memo-input" id="memoInput" placeholder="今日の気づきや学びをメモ（任意）"></textarea>
+            <button class="btn-main" onclick="submitReflection()">COMPLETE</button>
+        </div>
+
+        <!-- SCREEN 4: COMPLETION -->
+        <div class="screen" id="screen-completion">
+            <div class="completion-icon">✨</div>
+            <div class="completion-message">Great Work!</div>
+            <div class="completion-sub">今日もMINDFULな一日を過ごしましたね。<br>この積み重ねがあなたを未来へと運びます。</div>
+
+            <div class="token-earned-container" id="tokenEarnedContainer">
+                <div class="token-earned-badge">
+                    <div class="token-earned-icon">🪙</div>
+                    <div class="token-earned-amount" id="tokenEarnedAmount">+0</div>
+                    <div class="token-earned-label">TOKEN EARNED</div>
+                    <div class="token-breakdown" id="tokenBreakdown"></div>
+                </div>
+            </div>
+
+            <button class="btn-main" onclick="resetApp()">NEXT DAY →</button>
+            <button class="btn-secondary" onclick="showHistory()">VIEW HISTORY</button>
+        </div>
+
+        <!-- SCREEN 5: HISTORY -->
+        <div class="screen" id="screen-history">
+            <div class="section-title">My Mindful Log</div>
+            <div id="historyList"></div>
+            <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
+        </div>
+
+        <!-- SCREEN 6: INSIGHT (AI相談 + 記事) -->
+        <div class="screen" id="screen-insight">
+            <div class="section-title">🤖 SATOSHI AI</div>
+            <div class="ai-chat-card"
+                style="font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;">
+                <div class="ai-intro" style="text-align: center;">
+                    <div class="ai-intro-icon">💬</div>
+                    レストラン経営・キャリア・チームマネジメントから、サービスの基本までSATOSHI AIに相談できます
+                </div>
+                <div id="chatMessages" class="chat-messages">
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        こんにちは！何でも相談してね。レストラン経営、チームづくり、キャリアについて一緒に考えよう！ 🌟
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="質問を入力..."
+                        onkeypress="if(event.key==='Enter')sendToAI()">
+                    <button id="sendAIBtn" onclick="sendToAI()">送信</button>
+                </div>
+                <div
+                    style="margin-top: 12px; text-align: center; font-size: 9px; color: var(--text-gray); opacity: 0.7;">
+                    Powered by <span style="font-weight: 600;">Gemini 3 Flash</span> | SATOSHI AI v3.0
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">📰 INDUSTRY NEWS</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="https://www.inshokuten.com/" target="_blank" rel="noopener" style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">🍽️</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                飲食店.com</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">飲食業界の総合情報サイト</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://note.com/svd_sard_satoshi" target="_blank" rel="noopener"
+                    style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">📚</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                レストランの教科書</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">SVDの知見をまとめたコラム</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://guide.michelin.com/jp/ja" target="_blank" rel="noopener"
+                    style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">⭐</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                ミシュランウェブ</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">ミシュランガイド公式サイト</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.sommelier.jp/__full-member/e-book-list.html" target="_blank" rel="noopener"
+                    style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">🍷</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                ソムリエ協会機関誌</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">J76192 / 08018923104sat
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.nrn.com/" target="_blank" rel="noopener" style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">🌐</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                Nation's Restaurant News</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">米国レストラン業界ニュース</div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.eater.com/" target="_blank" rel="noopener" style="text-decoration: none;">
+                    <div
+                        style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
+                        <span style="font-size: 20px;">🍴</span>
+                        <div>
+                            <div
+                                style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
+                                Eater</div>
+                            <div style="font-size: 10px; color: var(--text-gray);">グローバルフード＆ダイニング</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <button class="btn-secondary" style="margin-top: 20px;" onclick="showScreen('screen-morning')">BACK</button>
+        </div>
+
+        <!-- SCREEN 7: PROFILE VIEW -->
+        <div class="screen" id="screen-profile">
+            <div class="section-title">My Profile</div>
+            <div class="register-card">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <!-- Profile Photo -->
+                    <div style="position: relative; display: inline-block;">
+                        <div id="profilePhotoContainer"
+                            style="width: 100px; height: 100px; border-radius: 50%; background: var(--light-gray); border: 3px solid var(--gold); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; transition: all 0.2s;"
+                            onclick="document.getElementById('photoInput').click()">
+                            <img id="profilePhoto" src=""
+                                style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                            <span id="profilePhotoPlaceholder" style="font-size: 40px;">👤</span>
+                        </div>
+                        <div style="position: absolute; bottom: 0; right: 0; background: var(--gold); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
+                            onclick="document.getElementById('photoInput').click()">
+                            <span style="font-size: 14px;">📷</span>
+                        </div>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;"
+                        onchange="handlePhotoUpload(event)">
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 8px;">タップして写真を変更</div>
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 600; color: var(--navy); margin-top: 12px;"
+                        id="profileName">-</div>
+                    <div style="font-size: 13px; color: var(--text-gray); margin-top: 5px;" id="profileBase">-</div>
+                </div>
+
+                <div
+                    style="background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 12px; font-weight: 700; text-align: left;">
+                        📌 MY VISION</div>
+                    <div style="font-size: 13px; color: var(--navy); margin-bottom: 12px; text-align: left;">
+                        <strong style="color: var(--gold);">🎯 今年の目標</strong>
+                        <div id="profileGoalsThisYear"
+                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6; text-align: left;">-
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; color: var(--navy); text-align: left;">
+                        <strong style="color: var(--gold);">✨ SVDで叶えたいキャリアまたは将来の夢</strong>
+                        <div id="profileGoalsFuture"
+                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6; text-align: left;">-
+                        </div>
+                    </div>
+                    <button onclick="openGoalsEditor()"
+                        style="margin-top: 12px; width: 100%; padding: 10px; background: var(--gold); color: var(--navy-dark); border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; cursor: pointer;">✏️
+                        目標・夢を更新する</button>
+                </div>
+
+                <div
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; background: var(--light-gray); border-radius: 10px; margin-bottom: 20px;">
+                    <span class="token-icon">🪙</span>
+                    <span
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 24px; color: var(--gold);"
+                        id="profileTokens">0</span>
+                    <span
+                        style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: var(--text-gray);">TOKEN</span>
+                </div>
+
+                <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
+                <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+            </div>
+        </div>
+
+        <!-- GOALS EDIT MODAL -->
+        <div id="goalsEditModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto;">
+            <div
+                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 500px; margin: 20px auto;">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: var(--navy); text-align: center; margin-bottom: 20px;">
+                    🎯 MY VISION を更新
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label class="input-label">🎯 今年の目標（3つまで）</label>
+                    <input type="text" class="text-input" id="editGoalThisYear1" placeholder="目標 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalThisYear2" placeholder="目標 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalThisYear3" placeholder="目標 3（任意）">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 25px;">
+                    <label class="input-label">✨ SVDで叶えたいキャリアまたは将来の夢（3つまで）</label>
+                    <input type="text" class="text-input" id="editGoalFuture1" placeholder="夢 1"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalFuture2" placeholder="夢 2（任意）"
+                        style="margin-bottom: 8px;">
+                    <input type="text" class="text-input" id="editGoalFuture3" placeholder="夢 3（任意）">
+                </div>
+
+                <button onclick="saveGoalsEdit()" class="btn-main" style="margin-top: 0;">保存する</button>
+                <button onclick="closeGoalsEditor()" class="btn-secondary">キャンセル</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN</footer>
+
+    <nav>
+        <div class="nav-item active" onclick="showScreen('screen-morning')">
+            <div class="nav-icon">🌅</div>
+            <div>C/IN</div>
+        </div>
+        <div class="nav-item" onclick="showScreen('screen-active')">
+            <div class="nav-icon">🎯</div>
+            <div>STAY-C/O</div>
+        </div>
+        <div class="nav-item" onclick="showScreen('screen-history')">
+            <div class="nav-icon">📜</div>
+            <div>HISTORY</div>
+        </div>
+        <div class="nav-item" onclick="showInsight()">
+            <div class="nav-icon">📰</div>
+            <div>INSIGHT</div>
+        </div>
+        <div class="nav-item" onclick="showProfile()">
+            <div class="nav-icon">👤</div>
+            <div>PROFILE</div>
+        </div>
+    </nav>
+
+    <div class="sending-overlay" id="sendingOverlay">
+        <div class="spinner"></div>
+        <div class="sending-text">SENDING DATA...</div>
+    </div>
+
+    <script>
+        const SCRIPT_URLS = { moiwayama: 'https://script.google.com/macros/s/AKfycbxGL8p3a8-k7xnhz2jfmyq39fXplB0qGI55urinPg9tRBWmbmKEEWcqZNSpUxhs5K3T/exec', okurayama: 'https://script.google.com/macros/s/AKfycbxVVfr-XAgj4n-hOEobZ2wwbgk3QIKQk1T9qFSDsk7PdQ4J8cd5WGH-KA0K9z_x_Vip/exec', tvtower: 'https://script.google.com/macros/s/AKfycbxlj2-3R6HcTd5A45azVScgQDvUBSTGC8faWBXDRI_ck7kbCltTYKnkfaW6njZ88bsi/exec', akarenga: 'https://script.google.com/macros/s/AKfycbzHN2p9eYAFFxip_Wj6b0J_Qm9SIxjetvPJENTBIBiBwLuEPaej_iJC4AUghIJF1cwZZQ/exec' };
+        const BASE_NAMES = { moiwayama: '藻岩山', okurayama: '大倉山', tvtower: 'テレビ塔', akarenga: '赤れんが' };
+
+        const playbook = [
+            // ===== AWAKENING (001-010) =====
+            { id: "001", titleEn: "MAGIC MOMENT CAPTURE", titleJp: "マジック・モーメント・キャプチャ", action: "感動的な瞬間が生まれた時、「God Job!」と共有する。チーム全員でその喜びを味わおう。" },
+            { id: "002", titleEn: "SILENT CHEERS", titleJp: "サイレント・チアーズ", action: "ゲストの乾杯の瞬間、作業を一瞬止め、その一点に視線と心を送る。" },
+            { id: "003", titleEn: "THE ENTRANCE OATH", titleJp: "エントランス・オース", action: "開店前、エントランスのマットを踏む瞬間、「日常の自分」を捨て、役に入る。" },
+            { id: "004", titleEn: "INGREDIENT ORIGIN STORY", titleJp: "イングリディエント・オリジン・ストーリー", action: "今日使う食材の生産者を思い浮かべ、「命」として、「託されたバトン」として扱う。" },
+            { id: "005", titleEn: "MOMENTUM HANDICAP", titleJp: "モメンタム・ハンディキャップ", action: "新人には優しく、エースには高い目標を。全員が「達成」の味を知る環境を作る。" },
+            { id: "006", titleEn: "THE FIRST 10 SECONDS", titleJp: "ザ・ファースト・テン", action: "ゲスト着席後の最初の10秒で、必ず「予想外のプラスアクション」を一つ入れる。" },
+            { id: "007", titleEn: "CROSS-POLLINATION", titleJp: "クロス・ポリネーション", action: "他店舗のスタッフと情報交換し、異なる美学やアイデアを持ち帰る。" },
+            { id: "008", titleEn: "SHADOW CEO", titleJp: "シャドウCEO", action: "「なぜあの指示が出たのか」を常に考え、監督の目を養う。" },
+            { id: "009", titleEn: "DIGITAL DETOX HOUR", titleJp: "デジタル・デトックス", action: "端末に頼らず、記憶と観察力でゲストのニーズに応える時間を意識的に作る。" },
+            { id: "010", titleEn: "POST-MATCH MVP", titleJp: "ポストマッチMVP", action: "「今日一番美しかったプレー」を仲間に伝える。売上も大事だけど仲間も大事。" },
+            // ===== FIRST IMPRESSION (011-020) =====
+            { id: "011", titleEn: "FIRST SMILE", titleJp: "ファースト・スマイル", action: "ゲストと目が合った瞬間、自分から先に笑顔を届ける。その一瞬がすべての始まり。" },
+            { id: "012", titleEn: "THE NAME CALLER", titleJp: "ザ・ネームコーラー", action: "お客さまがお帰りになるまでに、お名前を3回以上呼ぶ。" },
+            { id: "013", titleEn: "COAT CARE CEREMONY", titleJp: "コート・ケア・セレモニー", action: "コートを預かる際、丁寧に扱い「大切にお預かりします」と一言添える。" },
+            { id: "014", titleEn: "THE PERFECT TIMING", titleJp: "パーフェクト・タイミング", action: "メニューを渡すタイミング、水を注ぐタイミング。「今だ」を逃さない。" },
+            { id: "015", titleEn: "EYE LEVEL CONNECTION", titleJp: "アイレベル・コネクション", action: "オーダーを取る時、ゲストと同じ目線の高さになるよう意識する。" },
+            { id: "016", titleEn: "THE MEMORY PALACE", titleJp: "メモリー・パレス", action: "常連ゲストの好みや前回の会話を覚えておき、次回さりげなく活かす。" },
+            { id: "017", titleEn: "ANTICIPATION MASTER", titleJp: "アンティシペーション・マスター", action: "ゲストが何かを探している素振りを見せたら、言われる前に動く。" },
+            { id: "018", titleEn: "THE INVISIBLE HAND", titleJp: "インビジブル・ハンド", action: "サービスは気配なく。ゲストが気づかないうちに、すべてが整っている状態を作る。" },
+            { id: "019", titleEn: "WARM FAREWELL", titleJp: "ウォーム・フェアウェル", action: "お見送りは最高の笑顔で。「また会いたい」と思ってもらえる心からの「ありがとうございます」を。" },
+            { id: "020", titleEn: "THE LAST LOOK", titleJp: "ラスト・ルック", action: "ゲストが振り返った時、まだ見送っている自分でいる。最後まで見届ける。" },
+            // ===== TEAMWORK (021-030) =====
+            { id: "021", titleEn: "THE SILENT PASS", titleJp: "サイレント・パス", action: "仲間の視線の先を読み、頼まれる前にサポート。言葉なしで通じる連携を。" },
+            { id: "022", titleEn: "BACKUP BUDDY", titleJp: "バックアップ・バディ", action: "まずは自分のエリアを守ってから、忙しそうな仲間のヘルプに行く。" },
+            { id: "023", titleEn: "THE RELAY RACE", titleJp: "リレー・レース", action: "料理を運ぶ・下げる、すべての動きにバトンを渡す意識を持つ。" },
+            { id: "024", titleEn: "KITCHEN BRIDGE", titleJp: "キッチン・ブリッジ", action: "キッチンとホールの架け橋になる。情報共有は誰よりも早く、正確に。" },
+            { id: "025", titleEn: "VOICE OF ENCOURAGEMENT", titleJp: "ボイス・オブ・エンカレッジメント", action: "忙しい時こそ、仲間に「ナイス！」「いいね！」と声をかける。" },
+            { id: "026", titleEn: "THE ZONE AWARENESS", titleJp: "ゾーン・アウェアネス", action: "自分の担当エリアだけでなく、フロア全体の状況を常に気にする。" },
+            { id: "027", titleEn: "PROBLEM SHIELD", titleJp: "プロブレム・シールド", action: "問題が起きたら、一人で抱え込まず、すぐにチームで共有する。" },
+            { id: "028", titleEn: "THE THANK YOU CULTURE", titleJp: "サンキュー・カルチャー", action: "「ありがとう」を一日50回以上言う。感謝はチームの潤滑油。" },
+            { id: "029", titleEn: "NEWCOMER NAVIGATOR", titleJp: "ニューカマー・ナビゲーター", action: "新人には、質問しやすい雰囲気を作る。「何でも聞いて」を行動で示す。" },
+            { id: "030", titleEn: "THE CELEBRATION MOMENT", titleJp: "セレブレーション・モーメント", action: "チームの小さな成功も見逃さず、皆で喜びを分かち合う。" },
+            // ===== CHEMISTRY (031-040) =====
+            { id: "031", titleEn: "THE HUDDLE", titleJp: "ザ・ハドル", action: "ピークタイム直前、チームで顔を合わせて「今日も行こう！」の一声。気持ちを一つに。" },
+            { id: "032", titleEn: "BRIEFING BRILLIANCE", titleJp: "ブリーフィング・ブリリアンス", action: "朝礼で今日の目標を明確に共有。全員が同じ方向を向く。" },
+            { id: "033", titleEn: "THE SYNC SIGNAL", titleJp: "シンク・シグナル", action: "「〇〇さん了解！」など、相手の名前を呼んで返事する。" },
+            { id: "034", titleEn: "ENERGY AMPLIFIER", titleJp: "エナジー・アンプリファイア", action: "チームのエネルギーが下がっていたら、自分が率先して上げる。" },
+            { id: "035", titleEn: "THE TRUST DEPOSIT", titleJp: "トラスト・デポジット", action: "約束を守る。小さな約束こそ確実に。信頼の貯金を増やす。" },
+            { id: "036", titleEn: "HONEST FEEDBACK", titleJp: "オネスト・フィードバック", action: "仲間の良いところは即座に伝え、改善点は優しく、でも正直に伝える。" },
+            { id: "037", titleEn: "THE COVER MOVE", titleJp: "カバー・ムーブ", action: "仲間がミスをした時、責めずにさりげなくカバーする。" },
+            { id: "038", titleEn: "SHARED VICTORY", titleJp: "シェアード・ビクトリー", action: "チームの成功を自分のことのように喜ぶ。「自分が」ではなく「自分たちが」。" },
+            { id: "039", titleEn: "THE QUICK SYNC", titleJp: "クイック・シンク", action: "5分でも空いたら、仲間と情報共有。「今どんな状況？」を聞く習慣。" },
+            { id: "040", titleEn: "AFTER HOURS BOND", titleJp: "アフター・アワーズ・ボンド", action: "仕事以外の時間でも、チームメイトとの関係を大切にする。" },
+            // ===== RESILIENCE (041-050) =====
+            { id: "041", titleEn: "RECOVERY SHOT", titleJp: "リカバリー・ショット", action: "ミスをした時こそチャンス。「逆にファンにする」リカバリーを。" },
+            { id: "042", titleEn: "THE CALM ANCHOR", titleJp: "カーム・アンカー", action: "どれだけ忙しくても、心の中に静けさを保つ。慌てない。" },
+            { id: "043", titleEn: "COMPLAINT TRANSFORMER", titleJp: "コンプレイント・トランスフォーマー", action: "クレームは贈り物。ゲストの不満を感動に変える機会と捉える。" },
+            { id: "044", titleEn: "THE RESET BUTTON", titleJp: "リセット・ボタン", action: "失敗を引きずらない。次のテーブルに向かう前に、心をリセット。" },
+            { id: "045", titleEn: "PRESSURE DIAMOND", titleJp: "プレッシャー・ダイヤモンド", action: "プレッシャーを輝きに変える。忙しい時ほど、丁寧に、美しく。" },
+            { id: "046", titleEn: "THE FLEXIBILITY FLEX", titleJp: "フレキシビリティ・フレックス", action: "予定通りにいかないのが当たり前。柔軟に対応し、最善を尽くす。" },
+            { id: "047", titleEn: "LEARN FROM LOSS", titleJp: "ラーン・フロム・ロス", action: "失敗したら、何を学べるかを考える。同じ失敗は二度としない。" },
+            { id: "048", titleEn: "THE ENDURANCE ENGINE", titleJp: "エンデュランス・エンジン", action: "長時間のシフトでも、最後まで同じクオリティを維持する。" },
+            { id: "049", titleEn: "POSITIVE REFRAME", titleJp: "ポジティブ・リフレーム", action: "「大変だ」を「やりがいがある」に変換。言葉が心を作る。" },
+            { id: "050", titleEn: "SMILING THROUGH CHAOS", titleJp: "スマイリング・スルー・カオス", action: "どれだけ忙しくても、ゲストの前では涼しい笑顔。プロの演技力を磨こう。" },
+            // ===== PERSONAL BRANDING (051-060) =====
+            { id: "051", titleEn: "SIGNATURE MOVE", titleJp: "シグネチャー・ムーブ", action: "自分だけの「美しすぎる所作」を一つ開発する。注ぎ方、立ち方、何でも。" },
+            { id: "052", titleEn: "THE NAME TAG PRIDE", titleJp: "ネームタグ・プライド", action: "自分の名前を誇りに思う。名刺代わりの接客を心がける。" },
+            { id: "053", titleEn: "STORY COLLECTOR", titleJp: "ストーリー・コレクター", action: "ゲストの話に耳を傾け、その人だけの物語を心に刻む。" },
+            { id: "054", titleEn: "THE KNOWLEDGE HUNTER", titleJp: "ナレッジ・ハンター", action: "料理・ワイン・食材について、毎日一つ新しいことを学ぶ。" },
+            { id: "055", titleEn: "STYLE STATEMENT", titleJp: "スタイル・ステートメント", action: "ユニフォームの着こなしにこだわる。清潔感と個性を両立。" },
+            { id: "056", titleEn: "THE VOICE CRAFT", titleJp: "ボイス・クラフト", action: "声のトーン、スピード、抑揚。言葉だけでなく、声の質を磨く。" },
+            { id: "057", titleEn: "PERSONAL MISSION", titleJp: "パーソナル・ミッション", action: "「なぜ自分はこの仕事をしているのか」を言葉にできるようにする。" },
+            { id: "058", titleEn: "THE GROWTH JOURNAL", titleJp: "グロース・ジャーナル", action: "毎日の学びを記録する。1週間後、1ヶ月後に振り返る。" },
+            { id: "059", titleEn: "MENTOR SEEKER", titleJp: "メンター・シーカー", action: "尊敬する先輩を見つけ、その人から積極的に学ぶ。" },
+            { id: "060", titleEn: "THE CONFIDENCE BUILDER", titleJp: "コンフィデンス・ビルダー", action: "できることを増やし、自信を積み上げる。自信は最高のアクセサリー。" },
+            // ===== INNOVATION (061-070) =====
+            { id: "061", titleEn: "THE OUTSIDER VIEW", titleJp: "アウトサイダー・ビュー", action: "レストラン以外の場所からヒントを得る。美術館、映画、街歩き。" },
+            { id: "062", titleEn: "IDEA SPARK", titleJp: "アイデア・スパーク", action: "「こうしたらもっと良くなる」を毎日一つ考える。" },
+            { id: "063", titleEn: "THE EXPERIMENT", titleJp: "ジ・エクスペリメント", action: "小さな改善を試してみる。失敗しても、データになる。" },
+            { id: "064", titleEn: "CUSTOMER INSIGHT", titleJp: "カスタマー・インサイト", action: "ゲストの反応を観察し、何が喜ばれるかを分析する。" },
+            { id: "065", titleEn: "THE WHY QUESTION", titleJp: "ザ・ホワイ・クエスチョン", action: "「なぜ今のやり方なのか」を常に問い続ける。" },
+            { id: "066", titleEn: "TECH EXPLORER", titleJp: "テック・エクスプローラー", action: "新しいツールやテクノロジーに興味を持ち、活用法を考える。" },
+            { id: "067", titleEn: "THE PROPOSAL", titleJp: "ザ・プロポーザル", action: "アイデアを思いついたら、上司に提案する勇気を持つ。" },
+            { id: "068", titleEn: "BENCHMARK HUNTER", titleJp: "ベンチマーク・ハンター", action: "他店の良い取り組みを学び、自店に活かす。" },
+            { id: "069", titleEn: "THE SIMPLIFIER", titleJp: "ザ・シンプリファイア", action: "複雑なものをシンプルに。効率化のアイデアを考える。" },
+            { id: "070", titleEn: "FUTURE VISION", titleJp: "フューチャー・ビジョン", action: "5年後の自分、5年後のお店を想像する。今日はそこへの一歩。" },
+            // ===== LEADERSHIP (071-080) =====
+            { id: "071", titleEn: "THE FIRST FOLLOWER", titleJp: "ファースト・フォロワー", action: "新しい提案が出た時、批判する前にまず「いいね！」と最初に乗っかる。" },
+            { id: "072", titleEn: "LEAD BY EXAMPLE", titleJp: "リード・バイ・イグザンプル", action: "言葉より行動。自分が率先して動くことで、周りを動かす。" },
+            { id: "073", titleEn: "THE DECISION MAKER", titleJp: "ディシジョン・メイカー", action: "迷ったら決める。決断力はリーダーの証。" },
+            { id: "074", titleEn: "RESPONSIBILITY OWNER", titleJp: "レスポンシビリティ・オーナー", action: "自分の担当に責任を持つ。言い訳ではなく、解決策を提示する。" },
+            { id: "075", titleEn: "THE EMPOWERER", titleJp: "ジ・エンパワラー", action: "仲間の強みを見つけ、活かす場を作る。" },
+            { id: "076", titleEn: "CALM COMMANDER", titleJp: "カーム・コマンダー", action: "危機的状況でこそ冷静に。周りを落ち着かせる存在になる。" },
+            { id: "077", titleEn: "THE VISION SHARER", titleJp: "ビジョン・シェアラー", action: "目指す場所を明確に伝え、チームを同じ方向に導く。" },
+            { id: "078", titleEn: "FEEDBACK RECEIVER", titleJp: "フィードバック・レシーバー", action: "批判を受け入れる器を持つ。成長のチャンスとして捉える。" },
+            { id: "079", titleEn: "THE SERVANT LEADER", titleJp: "サーバント・リーダー", action: "リーダーはチームに仕える存在。困っている人を最優先で助ける。" },
+            { id: "080", titleEn: "NEXT GENERATION BUILDER", titleJp: "ネクスト・ジェネレーション・ビルダー", action: "後輩を育てる。自分の知識と経験を惜しみなく共有する。" },
+            // ===== HOSPITALITY MASTERY (081-090) =====
+            { id: "081", titleEn: "THE READING MASTER", titleJp: "リーディング・マスター", action: "ゲストの表情、仕草から気持ちを読み取る。言葉にならないニーズに応える。" },
+            { id: "082", titleEn: "SPECIAL OCCASION MAKER", titleJp: "スペシャル・オケージョン・メイカー", action: "記念日やお祝いを特別な体験に変える。サプライズの達人になる。" },
+            { id: "083", titleEn: "THE ALLERGY GUARDIAN", titleJp: "アレルギー・ガーディアン", action: "アレルギーや食事制限を完璧に把握。ゲストの安全を守る。" },
+            { id: "084", titleEn: "CHILD FRIENDLY HERO", titleJp: "チャイルド・フレンドリー・ヒーロー", action: "子ども連れのゲストに寄り添う。子どもが笑顔なら、親も幸せ。" },
+            { id: "085", titleEn: "THE TABLE ARTIST", titleJp: "テーブル・アーティスト", action: "デザインの四原則を基に、テーブルセッティングに魂を込める。" },
+            { id: "086", titleEn: "TIMING VIRTUOSO", titleJp: "タイミング・ヴィルトゥオーソ", action: "料理を出すタイミング、お皿を下げるタイミング。完璧なリズムを奏でる。" },
+            { id: "087", titleEn: "THE STORYTELLER", titleJp: "ザ・ストーリーテラー", action: "料理やワインの背景にある物語を、魅力的に伝える。" },
+            { id: "088", titleEn: "EMOTIONAL INTELLIGENCE", titleJp: "エモーショナル・インテリジェンス", action: "ゲストの感情に寄り添う。喜びは共に喜び、悲しみには優しく。" },
+            { id: "089", titleEn: "THE DETAIL DETECTIVE", titleJp: "ディテール・ディテクティブ", action: "細部にこだわる。グラスの曇り、ショウプレートの裏側まで、すべてに気を配る。" },
+            { id: "090", titleEn: "COMFORT ZONE CREATOR", titleJp: "コンフォート・ゾーン・クリエイター", action: "ゲストがリラックスできる空間を作る。緊張させない、でも特別な体験を。" },
+            // ===== LEGACY (091-100) =====
+            { id: "091", titleEn: "THE LEGACY MINDSET", titleJp: "レガシー・マインドセット", action: "今日の行動が、10年後のお店を作る。その意識で働く。" },
+            { id: "092", titleEn: "CULTURE CARRIER", titleJp: "カルチャー・キャリアー", action: "お店の文化と価値観を体現し、次の世代に伝える。" },
+            { id: "093", titleEn: "THE PRIDE OF CRAFT", titleJp: "プライド・オブ・クラフト", action: "レストランの仕事を誇りに思う。この仕事の美しさを世に示す。" },
+            { id: "094", titleEn: "COMMUNITY BUILDER", titleJp: "コミュニティ・ビルダー", action: "ワイン会などの開催を通して、グループを中心としたコミュニティを作る。" },
+            { id: "095", titleEn: "THE SUSTAINABILITY CHAMPION", titleJp: "サステナビリティ・チャンピオン", action: "環境に優しい選択を意識する。未来の世代のために。" },
+            { id: "096", titleEn: "INDUSTRY AMBASSADOR", titleJp: "インダストリー・アンバサダー", action: "レストラン業界の魅力を外部に発信する。" },
+            { id: "097", titleEn: "THE INSPIRATION SOURCE", titleJp: "インスピレーション・ソース", action: "仲間にインスピレーションを与える存在になる。" },
+            { id: "098", titleEn: "DREAM KEEPER", titleJp: "ドリーム・キーパー", action: "自分の夢を忘れない。夢があるから、今日も頑張れる。" },
+            { id: "099", titleEn: "THE GRATITUDE PRACTICE", titleJp: "グラティチュード・プラクティス", action: "毎日、感謝できることを3つ見つける。感謝の心が最高の接客を生む。" },
+            { id: "100", titleEn: "ONE PURPOSE", titleJp: "ワン・パーパス", action: "全ての判断を「レストランの仕事が子どもたちの憧れの職業になる」ために行う。" }
+        ];
+
+
+        let currentQuests = [];
+        let currentRating = 0;
+        let selectedBase = null;
+        let todayBase = null; // その日の勤務先
+        let workDate = null; // 勤務日
+        const checkFields = ['condition', 'temp', 'fatigue', 'nausea', 'nails', 'hands', 'uniform'];
+        const mindFields = ['mind_enjoy', 'mind_morning', 'mind_consult'];
+        let checks = {};
+        let mindChecks = {};
+        let shiftTimes = { start: '', end: '' };
+
+        // TO-DO LIST DATA
+        let todos = {
+            daily: [],
+            weekly: [],
+            monthly: []
+        };
+
+        // Load todos from localStorage
+        function loadTodos() {
+            const saved = localStorage.getItem('mindful_todos');
+            if (saved) {
+                todos = JSON.parse(saved);
+            }
+            renderTodos('daily');
+            renderTodos('weekly');
+            renderTodos('monthly');
+        }
+
+        // Save todos to localStorage
+        function saveTodos() {
+            localStorage.setItem('mindful_todos', JSON.stringify(todos));
+        }
+
+        // Show todo tab
+        function showTodoTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.todo-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.todo-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('todo-' + tab).classList.add('active');
+        }
+
+        // Add todo
+        function addTodo(type) {
+            const input = document.getElementById(type + 'TodoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newTodo = {
+                id: Date.now(),
+                text: text,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            todos[type].unshift(newTodo);
+            saveTodos();
+            renderTodos(type);
+            input.value = '';
+        }
+
+        // Toggle todo completion
+        function toggleTodo(type, id) {
+            const todo = todos[type].find(t => t.id === id);
+            if (todo) {
+                todo.completed = !todo.completed;
+                saveTodos();
+                renderTodos(type);
+            }
+        }
+
+        // Delete todo
+        function deleteTodo(type, id) {
+            todos[type] = todos[type].filter(t => t.id !== id);
+            saveTodos();
+            renderTodos(type);
+        }
+
+        // Render todos
+        function renderTodos(type) {
+            const list = document.getElementById(type + 'TodoList');
+            if (!list) return;
+
+            if (todos[type].length === 0) {
+                list.innerHTML = '<div class="todo-empty">タスクがありません</div>';
+                return;
+            }
+
+            list.innerHTML = todos[type].map(todo => `
+                <div class="todo-item ${todo.completed ? 'completed' : ''}">
+                    <div class="todo-checkbox ${todo.completed ? 'checked' : ''}" onclick="toggleTodo('${type}', ${todo.id})"></div>
+                    <span class="todo-text">${escapeHtml(todo.text)}</span>
+                    <button class="todo-delete" onclick="deleteTodo('${type}', ${todo.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML for XSS prevention
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function setShiftTime(type, time) {
+            shiftTimes[type] = time;
+            const container = type === 'start' ? document.getElementById('shiftStartBtns') : document.getElementById('shiftEndBtns');
+            container.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        function updateShiftTimeDisplay() {
+            const display = document.getElementById('shiftTimeDisplay');
+            if (display) {
+                if (shiftTimes.start && shiftTimes.end) {
+                    display.innerHTML = `🕐 ${shiftTimes.start} 〜 ${shiftTimes.end}`;
+                } else if (shiftTimes.start) {
+                    display.innerHTML = `🕐 ${shiftTimes.start} 〜`;
+                } else if (shiftTimes.end) {
+                    display.innerHTML = `🕐 〜 ${shiftTimes.end}`;
+                } else {
+                    display.innerHTML = '';
+                }
+            }
+        }
+
+        function initWorkDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            workDate = `${yyyy}-${mm}-${dd}`;
+            const dateInput = document.getElementById('workDateInput');
+            if (dateInput) {
+                dateInput.value = workDate;
+            }
+        }
+
+        function updateWorkDate(value) {
+            workDate = value;
+            localStorage.setItem('mindful_work_date', workDate);
+
+            // その日付で既にC/INしているかチェック
+            const checkedDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
+            const alreadyCheckedIn = checkedDates.includes(workDate);
+
+            const statusEl = document.getElementById('todayLocationStatus');
+            const drawArea = document.getElementById('drawArea');
+
+            if (alreadyCheckedIn) {
+                if (statusEl) {
+                    statusEl.innerHTML = '⚠️ この日付は既にC/IN済みです（1日1回）';
+                    statusEl.style.color = 'var(--gold)';
+                }
+                if (drawArea) {
+                    drawArea.style.pointerEvents = 'none';
+                    drawArea.style.opacity = '0.5';
+                }
+            } else {
+                if (statusEl && todayBase) {
+                    statusEl.innerHTML = `✓ ${todayBase.toUpperCase()} にC/IN予定`;
+                    statusEl.style.color = 'var(--success)';
+                } else if (statusEl) {
+                    statusEl.innerHTML = '勤務先を選択してください';
+                    statusEl.style.color = 'var(--text-gray)';
+                }
+                if (drawArea) {
+                    drawArea.style.pointerEvents = 'auto';
+                    drawArea.style.opacity = '1';
+                }
+            }
+
+            console.log('Work date updated:', value, 'Already checked in:', alreadyCheckedIn);
+        }
+
+        function markDateAsCheckedIn(date) {
+            const checkedDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
+            if (!checkedDates.includes(date)) {
+                checkedDates.push(date);
+                localStorage.setItem('mindful_checked_dates', JSON.stringify(checkedDates));
+            }
+        }
+
+        function init() {
+            checkFields.forEach(f => checks[f] = null);
+            mindFields.forEach(f => mindChecks[f] = null);
+            loadHistory();
+            setupStarRating();
+            initWorkDate(); // 日付を初期化
+            loadTodos(); // To-Doリストをロード
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (profile) {
+                showUserBadge(profile);
+                updateTokenDisplay();
+                showGoalsDisplay(profile);
+                checkActiveSession();
+                showScreen('screen-morning');
+            }
+            else { showScreen('screen-register'); }
+        }
+
+
+        function selectBase(el) {
+            document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedBase = el.dataset.base;
+            validateRegistration();
+        }
+
+        function validateRegistration() {
+            const name = document.getElementById('inputName').value.trim();
+            document.getElementById('registerBtn').disabled = !(name && selectedBase);
+        }
+        document.getElementById('inputName').addEventListener('input', validateRegistration);
+
+        function register() {
+            const name = document.getElementById('inputName').value.trim();
+            // 目標と夢を配列として収集（空でないもののみ）
+            const goalsThisYear = [
+                document.getElementById('inputGoalThisYear1').value.trim(),
+                document.getElementById('inputGoalThisYear2').value.trim(),
+                document.getElementById('inputGoalThisYear3').value.trim()
+            ].filter(g => g !== '');
+            const goalsFuture = [
+                document.getElementById('inputGoalFuture1').value.trim(),
+                document.getElementById('inputGoalFuture2').value.trim(),
+                document.getElementById('inputGoalFuture3').value.trim()
+            ].filter(g => g !== '');
+            if (name && selectedBase) {
+                const profile = { name, base: selectedBase, goalsThisYear, goalsFuture };
+                localStorage.setItem('mindful_profile', JSON.stringify(profile));
+                showUserBadge(profile);
+                showGoalsDisplay(profile);
+                showScreen('screen-morning');
+            }
+        }
+
+        function showUserBadge(profile) {
+            const badge = document.getElementById('userBadge');
+            if (todayBase && todayBase !== profile.base) {
+                badge.innerHTML = `${profile.name} <span style="font-size: 10px; opacity: 0.7;">🏠${BASE_NAMES[profile.base]}</span> → <span style="color: var(--gold);">📍${BASE_NAMES[todayBase]}</span>`;
+            } else if (todayBase) {
+                badge.textContent = `${profile.name} @ ${BASE_NAMES[todayBase]}`;
+            } else {
+                badge.textContent = `${profile.name} @ ${BASE_NAMES[profile.base]}`;
+            }
+            badge.style.display = 'inline-block';
+        }
+
+        function selectTodayBase(el) {
+            document.querySelectorAll('.base-option.today-base').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            todayBase = el.dataset.base;
+            localStorage.setItem('mindful_today_base', todayBase);
+            document.getElementById('todayLocationStatus').innerHTML = `<span style="color: var(--gold); font-weight: 600;">✓ 今日は ${BASE_NAMES[todayBase]} で勤務します</span>`;
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (profile) showUserBadge(profile);
+            validateHealthCheck();
+        }
+
+        function showProfile() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) {
+                showScreen('screen-register');
+                return;
+            }
+
+            // プロフィール画面に情報を表示
+            document.getElementById('profileName').textContent = profile.name;
+            document.getElementById('profileBase').textContent = BASE_NAMES[profile.base] || profile.base;
+
+            // 目標と夢を表示（配列形式対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            document.getElementById('profileGoalsThisYear').innerHTML = goalsThisYear.length > 0
+                ? goalsThisYear.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                : '未設定';
+            document.getElementById('profileGoalsFuture').innerHTML = goalsFuture.length > 0
+                ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                : '未設定';
+
+            document.getElementById('profileTokens').textContent = getTokenBalance();
+
+            // 写真を読み込み
+            loadProfilePhoto();
+
+            showScreen('screen-profile');
+        }
+
+        function confirmEditProfile() {
+            if (confirm('プロフィールを編集しますか？\n（現在の登録情報は削除されます）')) {
+                localStorage.removeItem('mindful_profile');
+                localStorage.removeItem('mindful_checkin_time');
+                localStorage.removeItem('mindful_photo');
+                selectedBase = null;
+                document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
+                document.getElementById('inputName').value = '';
+                document.getElementById('inputGoalThisYear1').value = '';
+                document.getElementById('inputGoalThisYear2').value = '';
+                document.getElementById('inputGoalThisYear3').value = '';
+                document.getElementById('inputGoalFuture1').value = '';
+                document.getElementById('inputGoalFuture2').value = '';
+                document.getElementById('inputGoalFuture3').value = '';
+                document.getElementById('userBadge').style.display = 'none';
+                document.getElementById('goalsDisplay').style.display = 'none';
+                showScreen('screen-register');
+            }
+        }
+
+        // Legacy function - redirects to showProfile
+        function editProfile() {
+            showProfile();
+        }
+
+        // 目標・夢の編集機能
+        function openGoalsEditor() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            // 既存データを編集フィールドに読み込み（配列形式対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            document.getElementById('editGoalThisYear1').value = goalsThisYear[0] || '';
+            document.getElementById('editGoalThisYear2').value = goalsThisYear[1] || '';
+            document.getElementById('editGoalThisYear3').value = goalsThisYear[2] || '';
+            document.getElementById('editGoalFuture1').value = goalsFuture[0] || '';
+            document.getElementById('editGoalFuture2').value = goalsFuture[1] || '';
+            document.getElementById('editGoalFuture3').value = goalsFuture[2] || '';
+
+            document.getElementById('goalsEditModal').style.display = 'block';
+        }
+
+        function closeGoalsEditor() {
+            document.getElementById('goalsEditModal').style.display = 'none';
+        }
+
+        function saveGoalsEdit() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            // 編集フィールドから配列を収集（空でないもののみ）
+            profile.goalsThisYear = [
+                document.getElementById('editGoalThisYear1').value.trim(),
+                document.getElementById('editGoalThisYear2').value.trim(),
+                document.getElementById('editGoalThisYear3').value.trim()
+            ].filter(g => g !== '');
+            profile.goalsFuture = [
+                document.getElementById('editGoalFuture1').value.trim(),
+                document.getElementById('editGoalFuture2').value.trim(),
+                document.getElementById('editGoalFuture3').value.trim()
+            ].filter(g => g !== '');
+
+            // 古い形式のデータを削除
+            delete profile.goalThisYear;
+            delete profile.goalFuture;
+
+            localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+            // 表示を更新
+            showGoalsDisplay(profile);
+            showProfile();
+            closeGoalsEditor();
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert('画像サイズは2MB以下にしてください');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const maxSize = 200;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxSize) { height *= maxSize / width; width = maxSize; }
+                    } else {
+                        if (height > maxSize) { width *= maxSize / height; height = maxSize; }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    localStorage.setItem('mindful_photo', dataUrl);
+                    loadProfilePhoto();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadProfilePhoto() {
+            const photoData = localStorage.getItem('mindful_photo');
+            const photoEl = document.getElementById('profilePhoto');
+            const placeholderEl = document.getElementById('profilePhotoPlaceholder');
+
+            if (photoData && photoEl && placeholderEl) {
+                photoEl.src = photoData;
+                photoEl.style.display = 'block';
+                placeholderEl.style.display = 'none';
+            } else if (photoEl && placeholderEl) {
+                photoEl.style.display = 'none';
+                placeholderEl.style.display = 'block';
+            }
+        }
+
+        function showGoalsDisplay(profile) {
+            const container = document.getElementById('goalsDisplay');
+            // 配列形式の目標・夢を取得（後方互換性のため古い形式も対応）
+            const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
+            const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
+
+            if (goalsThisYear.length > 0 || goalsFuture.length > 0) {
+                container.style.display = 'block';
+
+                // 番号付きリストで表示
+                document.getElementById('goalsThisYearList').innerHTML = goalsThisYear.length > 0
+                    ? goalsThisYear.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                    : '-';
+                document.getElementById('goalsFutureList').innerHTML = goalsFuture.length > 0
+                    ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
+                    : '-';
+
+                // MY VISIONに写真を表示（アコーディオンヘッダー用）
+                const photoData = localStorage.getItem('mindful_photo');
+                const goalsPhotoHeader = document.getElementById('goalsPhotoHeader');
+                const goalsPhotoPlaceholderHeader = document.getElementById('goalsPhotoPlaceholderHeader');
+                if (photoData && goalsPhotoHeader && goalsPhotoPlaceholderHeader) {
+                    goalsPhotoHeader.src = photoData;
+                    goalsPhotoHeader.style.display = 'block';
+                    goalsPhotoPlaceholderHeader.style.display = 'none';
+                } else if (goalsPhotoHeader && goalsPhotoPlaceholderHeader) {
+                    goalsPhotoHeader.style.display = 'none';
+                    goalsPhotoPlaceholderHeader.style.display = 'block';
+                }
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function checkActiveSession() {
+            const checkinTime = localStorage.getItem('mindful_checkin_time');
+            if (checkinTime) {
+                const savedQuests = JSON.parse(localStorage.getItem('mindful_active_quests') || '[]');
+                if (savedQuests.length > 0) {
+                    currentQuests = savedQuests;
+                    const container = document.getElementById('activeQuestsContainer');
+                    container.innerHTML = currentQuests.map((q, i) => `
+                        <div class="active-quest-card">
+                            <div class="quest-label">QUEST ${i + 1}</div>
+                            <div class="quest-number">#${q.id}</div>
+                            <div class="quest-title">${q.titleEn}</div>
+                            <div class="quest-subtitle">${q.titleJp}</div>
+                            <div class="quest-philosophy">${q.action}</div>
+                        </div>
+                    `).join('');
+                    updateReflectionButton();
+                    showScreen('screen-active');
+                }
+            }
+        }
+
+        function updateReflectionButton() {
+            const checkinTime = localStorage.getItem('mindful_checkin_time');
+            const checkoutDate = localStorage.getItem('mindful_checkout_date');
+            const reflectionBtn = document.getElementById('reflectionBtn');
+            const reflectionNotice = document.getElementById('reflectionNotice');
+            const reflectionTimer = document.getElementById('reflectionTimer');
+            const today = new Date().toISOString().split('T')[0];
+
+            // Already checked out today - disable button
+            if (checkoutDate === today) {
+                reflectionBtn.disabled = true;
+                reflectionBtn.style.opacity = '0.5';
+                reflectionBtn.textContent = 'CHECK OUT 完了済み';
+                reflectionNotice.style.display = 'none';
+                return;
+            }
+
+            // Reset button text
+            reflectionBtn.textContent = 'CHECK OUT →';
+
+            if (!checkinTime) {
+                reflectionBtn.disabled = false;
+                reflectionNotice.style.display = 'none';
+                return;
+            }
+
+            const checkinDate = new Date(checkinTime);
+            const now = new Date();
+            const diffMs = now - checkinDate;
+            const diffHours = diffMs / (1000 * 60 * 60);
+            const MIN_HOURS = 3;
+
+            if (diffHours >= MIN_HOURS) {
+                reflectionBtn.disabled = false;
+                reflectionBtn.style.opacity = '1';
+                reflectionNotice.style.display = 'none';
+            } else {
+                reflectionBtn.disabled = true;
+                reflectionBtn.style.opacity = '0.5';
+                reflectionNotice.style.display = 'block';
+                const remainingMs = (MIN_HOURS * 60 * 60 * 1000) - diffMs;
+                const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
+                const remainingMins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+                reflectionTimer.textContent = `あと ${remainingHours}時間 ${remainingMins}分`;
+
+                // Update every minute
+                setTimeout(updateReflectionButton, 60000);
+            }
+        }
+
+        function setCheck(btn, value) {
+            const field = btn.dataset.field;
+            checks[field] = value;
+            btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            validateHealth();
+        }
+
+        function validateHealth() {
+            const statusEl = document.getElementById('healthStatus');
+            const drawArea = document.getElementById('drawArea');
+            const card = document.getElementById('healthCheckCard');
+            const allAnswered = checkFields.every(f => checks[f] !== null);
+            const ngCount = checkFields.filter(f => checks[f] === 'ng').length;
+
+            if (!allAnswered) {
+                statusEl.className = 'health-status incomplete';
+                statusEl.textContent = 'すべての項目を確認してください';
+                card.classList.remove('complete');
+            } else if (ngCount > 2) {
+                // 3つ以上NGの場合は出勤不可
+                statusEl.className = 'health-status ng';
+                statusEl.innerHTML = '⛔NG項目が多いため出勤できません<br><span style="font-size: 10px; color: #666;">上席者に連絡の上、指示を仰いでください</span>';
+                card.classList.remove('complete');
+            } else if (ngCount > 0) {
+                // 1〜2つNGの場合は出勤可能だが報告必須
+                statusEl.className = 'health-status warning';
+                statusEl.innerHTML = '⚠️ 確認完了（NG: ' + ngCount + '項目）<br><span style="font-size: 10px; color: #C9A962;">必ず上席者に報告し、指示を仰いでください</span>';
+                card.classList.add('complete');
+            } else {
+                // 全てOK
+                statusEl.className = 'health-status ok';
+                statusEl.textContent = '✓ 確認完了';
+                card.classList.add('complete');
+            }
+            updateDrawArea();
+        }
+
+        function setMindCheck(btn, value) {
+            const field = btn.dataset.field;
+            mindChecks[field] = value;
+            btn.parentElement.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            validateMind();
+        }
+
+        function validateMind() {
+            const statusEl = document.getElementById('mindStatus');
+            const card = document.getElementById('mindCheckCard');
+            const allAnswered = mindFields.every(f => mindChecks[f] !== null);
+
+            if (!allAnswered) {
+                statusEl.className = 'health-status incomplete'; statusEl.textContent = '心の状態も確認してください';
+                card.classList.remove('complete');
+            } else {
+                statusEl.className = 'health-status ok'; statusEl.textContent = '✓ 心の確認完了';
+                card.classList.add('complete');
+                // 要フォローの場合のみメッセージ変更
+                if (mindChecks.mind_consult === 'urgent' || mindChecks.mind_consult === 'sometime') {
+                    statusEl.textContent = '💬 いつでも相談してね';
+                }
+            }
+            updateDrawArea();
+        }
+
+        function updateDrawArea() {
+            const drawArea = document.getElementById('drawArea');
+            const healthAnswered = checkFields.every(f => checks[f] !== null);
+            const ngCount = checkFields.filter(f => checks[f] === 'ng').length;
+            const healthPassable = healthAnswered && ngCount <= 2;  // NG2つまでOK
+            const mindAnswered = mindFields.every(f => mindChecks[f] !== null);
+            const locationSelected = todayBase !== null;
+
+            if (healthPassable && mindAnswered && locationSelected) {
+                drawArea.classList.remove('disabled');
+                if (ngCount > 0) {
+                    drawArea.querySelector('.draw-hint').textContent = '⚠️ 上席者に報告後、タップしてカードを引く';
+                } else {
+                    drawArea.querySelector('.draw-hint').textContent = 'タップして3枚のカードを引く';
+                }
+            } else if (!locationSelected) {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '📍 まず今日の勤務先を選択してください';
+            } else if (ngCount > 2) {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '⛔ NG項目が多いため出勤できません';
+            } else {
+                drawArea.classList.add('disabled');
+                drawArea.querySelector('.draw-hint').textContent = '全項目を確認してからカードを引けます';
+            }
+        }
+
+        function drawQuests() {
+            if (document.getElementById('drawArea').classList.contains('disabled')) return;
+
+            // 履歴読み込み
+            let history = JSON.parse(localStorage.getItem('mindful_quest_history') || '[]');
+
+            // 履歴に含まれないクエストを抽出
+            let candidates = playbook.filter(q => !history.includes(q.id));
+
+            // 候補が3つ未満なら、履歴をクリアして全員敗者復活（全件から抽選）
+            if (candidates.length < 3) {
+                console.log('Resetting quest history');
+                history = [];
+                candidates = [...playbook];
+            }
+
+            // Shuffle candidates
+            const shuffled = candidates.sort(() => Math.random() - 0.5);
+            currentQuests = shuffled.slice(0, 3);
+
+            // 履歴更新（今回選ばれた3つを追加）
+            const newIds = currentQuests.map(q => q.id);
+            history = [...history, ...newIds];
+
+            // 履歴制限（過去15件＝5日分だけ保持）
+            if (history.length > 15) {
+                history = history.slice(history.length - 15);
+            }
+            localStorage.setItem('mindful_quest_history', JSON.stringify(history));
+
+            document.getElementById('drawArea').style.display = 'none';
+            const container = document.getElementById('questCardsContainer');
+            container.innerHTML = currentQuests.map((q, i) => `
+            <div class="quest-card revealed" style="animation-delay: ${i * 0.15}s;">
+                <div class="quest-label">QUEST ${i + 1}</div>
+                <div class="quest-number">#${q.id}</div>
+                <div class="quest-title">${q.titleEn}</div>
+                <div class="quest-subtitle">${q.titleJp}</div>
+                <div class="quest-philosophy">${q.action}</div>
+            </div>
+        `).join('');
+            document.getElementById('startBtn').style.display = 'block';
+        }
+
+        function startDay() {
+            // Save check-in time and quests for session persistence
+            localStorage.setItem('mindful_checkin_time', new Date().toISOString());
+            localStorage.setItem('mindful_active_quests', JSON.stringify(currentQuests));
+
+            // この日付をC/IN済みとしてマーク（1日1回制限）
+            markDateAsCheckedIn(workDate);
+
+            const container = document.getElementById('activeQuestsContainer');
+            container.innerHTML = currentQuests.map((q, i) => `
+            <div class="active-quest-card">
+                <div class="quest-label">QUEST ${i + 1}</div>
+                <div class="quest-number">#${q.id}</div>
+                <div class="quest-title">${q.titleEn}</div>
+                <div class="quest-subtitle">${q.titleJp}</div>
+                <div class="quest-philosophy">${q.action}</div>
+            </div>
+        `).join('');
+            sendToSheets('healthcheck');
+            updateReflectionButton();
+            showScreen('screen-active');
+        }
+
+        function showReflection() {
+            document.getElementById('reflectionQuestTitles').innerHTML = currentQuests.map(q => q.titleEn).join('<br>');
+            showScreen('screen-reflection');
+        }
+
+        function setupStarRating() {
+            document.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', () => {
+                    currentRating = parseInt(star.dataset.value);
+                    document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('active', i < currentRating));
+                });
+            });
+        }
+
+        function submitReflection() {
+            const today = new Date().toISOString().split('T')[0];
+
+            // Prevent duplicate check-out
+            const checkoutDate = localStorage.getItem('mindful_checkout_date');
+            if (checkoutDate === today) {
+                alert('本日のCHECK OUTは完了済みです。');
+                return;
+            }
+
+            const memo = document.getElementById('memoInput').value;
+            const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
+            history.unshift({ date: today, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo });
+            localStorage.setItem('mindful_history', JSON.stringify(history.slice(0, 30)));
+
+            // Token reward calculation
+            const tokenReward = calculateTokenReward(currentRating, memo);
+            addTokens(tokenReward.total);
+            displayTokenReward(tokenReward);
+
+            sendToSheets('reflection', tokenReward);
+
+            // Mark as checked out today and clear check-in time
+            localStorage.setItem('mindful_checkout_date', today);
+            localStorage.removeItem('mindful_checkin_time');
+
+            showScreen('screen-completion');
+        }
+
+        // TOKEN SYSTEM FUNCTIONS
+        function getTokenBalance() {
+            return parseInt(localStorage.getItem('mindful_tokens') || '0');
+        }
+
+        function addTokens(amount) {
+            const current = getTokenBalance();
+            const newBalance = current + amount;
+            localStorage.setItem('mindful_tokens', newBalance.toString());
+            updateTokenDisplay();
+            return newBalance;
+        }
+
+        function updateTokenDisplay() {
+            const balance = getTokenBalance();
+            const display = document.getElementById('tokenDisplay');
+            const balanceEl = document.getElementById('tokenBalance');
+            if (display && balanceEl) {
+                display.style.display = 'inline-flex';
+                balanceEl.textContent = balance;
+            }
+        }
+
+        function calculateTokenReward(rating, memo) {
+            const breakdown = [];
+            let total = 0;
+
+            // Base reward for completion
+            total += 10;
+            breakdown.push({ label: '振り返り完了', amount: 10 });
+
+            // Rating bonus
+            if (rating === 5) {
+                total += 5;
+                breakdown.push({ label: '★5評価ボーナス', amount: 5 });
+            } else if (rating >= 4) {
+                total += 2;
+                breakdown.push({ label: '★4評価ボーナス', amount: 2 });
+            }
+
+            // Memo bonus
+            if (memo && memo.trim().length > 0) {
+                total += 3;
+                breakdown.push({ label: 'メモ記入ボーナス', amount: 3 });
+            }
+
+            return { total, breakdown };
+        }
+
+        function displayTokenReward(reward) {
+            const amountEl = document.getElementById('tokenEarnedAmount');
+            const breakdownEl = document.getElementById('tokenBreakdown');
+
+            if (amountEl) {
+                amountEl.textContent = '+' + reward.total;
+            }
+
+            if (breakdownEl) {
+                breakdownEl.innerHTML = reward.breakdown.map(item =>
+                    `<div class="token-breakdown-item"><span>${item.label}</span><span>+${item.amount}</span></div>`
+                ).join('');
+            }
+        }
+
+        async function sendToSheets(type, tokenData = null) {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (!profile) return;
+            // 今日の勤務先があればそちらを使用、なければ所属拠点
+            const targetBase = todayBase || profile.base;
+            const url = SCRIPT_URLS[targetBase];
+            if (!url || url.startsWith('YOUR_')) { console.log('Sheets URL not configured'); return; }
+            document.getElementById('sendingOverlay').classList.add('active');
+
+            const payload = {
+                type,
+                timestamp: workDate ? new Date(workDate + 'T' + new Date().toTimeString().slice(0, 8)).toISOString() : new Date().toISOString(),
+                workDate: workDate || new Date().toISOString().split('T')[0],
+                name: profile.name,
+                homeBase: profile.base,
+                todayBase: todayBase || profile.base,
+                base: todayBase || profile.base, // 後方互換性のため
+                shiftStart: shiftTimes.start,
+                shiftEnd: shiftTimes.end,
+                checks,
+                mindChecks,
+                quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })),
+                rating: currentRating,
+                memo: document.getElementById('memoInput')?.value || ''
+            };
+
+            // トークン情報を追加
+            if (tokenData) {
+                payload.tokenEarned = tokenData.total;
+                payload.tokenBreakdown = tokenData.breakdown.map(b => `${b.label}:+${b.amount}`).join(', ');
+            }
+
+            try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
+            setTimeout(() => { document.getElementById('sendingOverlay').classList.remove('active'); }, 800);
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
+            const container = document.getElementById('historyList');
+            container.innerHTML = history.length === 0 ? '<p style="color: var(--text-gray); text-align: center; font-size: 12px;">No history yet.</p>' : history.map(item => `
+            <div class="history-item">
+                <div>
+                    <div class="history-date">${item.date}</div>
+                    <div class="history-quest">${item.quests ? item.quests.map(q => '#' + q.id).join(', ') : '#' + item.questId}</div>
+                </div>
+                <div class="history-stars">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</div>
+            </div>
+        `).join('');
+        }
+
+        function showHistory() { loadHistory(); showScreen('screen-history'); }
+
+        // ============ MY VISION Accordion ============
+        let goalsAccordionOpen = false;
+
+        function toggleGoalsAccordion() {
+            const content = document.getElementById('goalsAccordionContent');
+            const arrow = document.getElementById('goalsAccordionArrow');
+            const header = document.getElementById('goalsAccordionHeader');
+
+            goalsAccordionOpen = !goalsAccordionOpen;
+
+            if (goalsAccordionOpen) {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                arrow.style.transform = 'rotate(180deg)';
+                header.style.borderRadius = '12px 12px 0 0';
+            } else {
+                content.style.maxHeight = '0';
+                arrow.style.transform = 'rotate(0deg)';
+                header.style.borderRadius = '12px';
+            }
+        }
+
+        function showInsight() {
+            loadInsightArticles();
+            showScreen('screen-insight');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach((n, i) => {
+                n.classList.toggle('active',
+                    (screenId === 'screen-morning' && i === 0) ||
+                    (screenId === 'screen-active' && i === 1) ||
+                    (screenId === 'screen-history' && i === 2) ||
+                    (screenId === 'screen-insight' && i === 3) ||
+                    (screenId === 'screen-profile' && i === 4)
+                );
+            });
+        }
+
+        // ============ INSIGHT - 記事キュレーション ============
+        const INSIGHT_API_URL = 'https://script.google.com/macros/s/YOUR_INSIGHT_SCRIPT_ID/exec';
+        let articlesLoaded = false;
+
+        async function loadInsightArticles() {
+            if (articlesLoaded) return;
+
+            const carousel = document.getElementById('articleCarousel');
+
+            // サンプル記事を表示（GAS実装前のデモ用）
+            const sampleArticles = [
+                {
+                    title: '2026年のレストラン業界トレンド予測：AIとサステナビリティが鍵',
+                    source: 'FOODIST',
+                    date: '2026.01.09',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: '飲食店の人材確保術：Z世代が働きたい店舗の条件とは',
+                    source: 'FOODIST',
+                    date: '2026.01.08',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: '原価高騰を乗り越える：メニュー価格改定のベストプラクティス',
+                    source: '飲食店.COM',
+                    date: '2026.01.07',
+                    url: 'https://www.inshokuten.com/'
+                },
+                {
+                    title: 'インバウンド復活：外国人観光客に選ばれるレストランの共通点',
+                    source: 'FOODIST',
+                    date: '2026.01.06',
+                    url: 'https://www.inshokuten.com/foodist/'
+                },
+                {
+                    title: 'チームビルディングの新常識：レストラン経営者が実践する1on1術',
+                    source: '飲食店.COM',
+                    date: '2026.01.05',
+                    url: 'https://www.inshokuten.com/'
+                }
+            ];
+
+            carousel.innerHTML = sampleArticles.map(article => `
+                <a href="${article.url}" target="_blank" rel="noopener" class="article-card">
+                    <div class="article-source">${article.source}</div>
+                    <div class="article-title">${article.title}</div>
+                    <div class="article-date">${article.date}</div>
+                </a>
+            `).join('');
+
+            articlesLoaded = true;
+        }
+
+        // ============ INSIGHT - SATOSHI AI ============
+        const AI_API_URL = 'https://script.google.com/macros/s/AKfycbw655OvGtlygwrjWsgKm-3tXpetrTWgXnv5uALe07t-_Fr886F4uZPN6bZX9OsgDmgW/exec';
+        let isAIProcessing = false;
+        const AI_DAILY_TOKEN_LIMIT = 10;
+
+        function getAITokensToday() {
+            const data = JSON.parse(localStorage.getItem('mindful_ai_tokens') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            if (data.date !== today) {
+                return 0;
+            }
+            return data.count || 0;
+        }
+
+        function addAIToken() {
+            const today = new Date().toISOString().split('T')[0];
+            let data = JSON.parse(localStorage.getItem('mindful_ai_tokens') || '{}');
+
+            if (data.date !== today) {
+                data = { date: today, count: 0 };
+            }
+
+            if (data.count >= AI_DAILY_TOKEN_LIMIT) {
+                return { success: false, remaining: 0 };
+            }
+
+            data.count++;
+            localStorage.setItem('mindful_ai_tokens', JSON.stringify(data));
+            addTokens(1);
+            return { success: true, remaining: AI_DAILY_TOKEN_LIMIT - data.count };
+        }
+
+        async function sendToAI() {
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendAIBtn');
+            const question = input.value.trim();
+
+            if (!question || isAIProcessing) return;
+
+            isAIProcessing = true;
+            sendBtn.disabled = true;
+            input.value = '';
+
+            // ユーザーメッセージを表示
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML += `
+                <div class="chat-bubble user">${escapeHtml(question)}</div>
+            `;
+
+            // タイピングインジケーター表示
+            messagesContainer.innerHTML += `
+                <div class="chat-bubble ai" id="typingIndicator">
+                    <div class="ai-name">SATOSHI</div>
+                    <div class="ai-typing"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            try {
+                // 相談者プロファイルと履歴を取得
+                const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
+                const chatHistory = JSON.parse(localStorage.getItem('mindful_chat_history') || '[]');
+
+                // 履歴を文字列に変換（最新5件）
+                const historyText = chatHistory.slice(-5).map(h =>
+                    `${h.date}: ${h.topic}について相談`
+                ).join('\n');
+
+                // クエリパラメータを構築
+                const params = new URLSearchParams({
+                    action: 'chat',
+                    q: question,
+                    name: profile.name || '',
+                    base: profile.base || '',
+                    role: profile.role || '',
+                    history: historyText
+                });
+
+                // GAS経由でGemini APIにリクエスト
+                const response = await fetch(AI_API_URL + '?' + params.toString(), {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+
+                let aiResponse;
+                if (response.ok) {
+                    const data = await response.json();
+                    aiResponse = data.response || generateLocalResponse(question);
+                } else {
+                    aiResponse = generateLocalResponse(question);
+                }
+
+                // タイピングインジケーターを削除して回答表示
+                document.getElementById('typingIndicator')?.remove();
+
+                // 相談履歴を保存
+                saveChatHistory(question);
+
+                // トークン付与処理
+                const tokenResult = addAIToken();
+                let tokenNotice = '';
+                if (tokenResult.success) {
+                    tokenNotice = `<div class="ai-token-notice">🪙 +1 TOKEN（本日残り: ${tokenResult.remaining}回）</div>`;
+                } else {
+                    tokenNotice = `<div class="ai-token-notice" style="color: var(--text-gray);">📌 本日のトークン上限（${AI_DAILY_TOKEN_LIMIT}回）に達しました</div>`;
+                }
+
+                messagesContainer.innerHTML += `
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        ${escapeHtml(aiResponse)}
+                        ${tokenNotice}
+                    </div>
+                `;
+            } catch (error) {
+                console.log('AI API error, using local response:', error);
+                document.getElementById('typingIndicator')?.remove();
+                const localResponse = generateLocalResponse(question);
+
+                // 相談履歴を保存
+                saveChatHistory(question);
+
+                // トークン付与処理（ローカルレスポンスでも付与）
+                const tokenResult = addAIToken();
+                let tokenNotice = '';
+                if (tokenResult.success) {
+                    tokenNotice = `<div class="ai-token-notice">🪙 +1 TOKEN（本日残り: ${tokenResult.remaining}回）</div>`;
+                } else {
+                    tokenNotice = `<div class="ai-token-notice" style="color: var(--text-gray);">📌 本日のトークン上限（${AI_DAILY_TOKEN_LIMIT}回）に達しました</div>`;
+                }
+
+                messagesContainer.innerHTML += `
+                    <div class="chat-bubble ai">
+                        <div class="ai-name">SATOSHI</div>
+                        ${escapeHtml(localResponse)}
+                        ${tokenNotice}
+                    </div>
+                `;
+            }
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            isAIProcessing = false;
+            sendBtn.disabled = false;
+        }
+
+        // 相談履歴を保存
+        function saveChatHistory(question) {
+            let history = JSON.parse(localStorage.getItem('mindful_chat_history') || '[]');
+
+            history.push({
+                date: new Date().toISOString().split('T')[0],
+                question: question.slice(0, 50),
+                topic: detectTopic(question)
+            });
+
+            // 最新10件のみ保持
+            if (history.length > 10) {
+                history = history.slice(-10);
+            }
+
+            localStorage.setItem('mindful_chat_history', JSON.stringify(history));
+        }
+
+        // テーマ自動分類
+        function detectTopic(question) {
+            const q = question.toLowerCase();
+            if (q.includes('サービス') || q.includes('接客') || q.includes('お客様')) return 'サービス';
+            if (q.includes('ワイン') || q.includes('料理') || q.includes('メニュー')) return '商品知識';
+            if (q.includes('チーム') || q.includes('仲間') || q.includes('人間関係')) return 'チームワーク';
+            if (q.includes('キャリア') || q.includes('将来') || q.includes('成長')) return 'キャリア';
+            if (q.includes('忙しい') || q.includes('疲れ') || q.includes('大変')) return 'メンタル';
+            if (q.includes('クレーム') || q.includes('トラブル')) return 'トラブル対応';
+            return 'その他';
+        }
+
+        function generateLocalResponse(question) {
+            // GAS未設定時のローカル応答（寄り添い型）
+            const responses = [
+                `いい質問だね。もう少し詳しく状況を教えてもらえる？具体的なアドバイスができると思う。`,
+                `その悩み、しっかり聞きたい。背景や状況をもう少し教えてくれると、一緒に考えられるよ。`,
+                `分かった、考えてみよう。何か特に気になっていることや、試してみたいことはある？`,
+                `相談してくれてありがとう。どんな結果を目指しているか教えてもらえると、具体的な提案ができそう。`
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/\n/g, '<br>');
+        }
+
+        function resetApp() {
+            // Clear session data
+            localStorage.removeItem('mindful_checkin_time');
+            localStorage.removeItem('mindful_active_quests');
+            localStorage.removeItem('mindful_today_base'); // Clear today's work location
+
+            currentRating = 0; currentQuests = [];
+            todayBase = null; // Reset today's work location
+            checkFields.forEach(f => checks[f] = null);
+            mindFields.forEach(f => mindChecks[f] = null);
+            document.getElementById('memoInput').value = '';
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('.base-option.today-base').forEach(o => o.classList.remove('selected')); // Reset location selector
+            document.getElementById('todayLocationStatus').innerHTML = '<span style="color: var(--text-gray);">勤務先を選択してください</span>';
+            document.getElementById('healthStatus').className = 'health-status incomplete';
+            document.getElementById('healthStatus').textContent = 'すべての項目を確認してください';
+            document.getElementById('healthCheckCard').classList.remove('complete');
+            document.getElementById('mindStatus').className = 'health-status incomplete';
+            document.getElementById('mindStatus').textContent = '心の状態も確認してください';
+            document.getElementById('mindCheckCard').classList.remove('complete');
+            document.getElementById('drawArea').style.display = 'block';
+            document.getElementById('drawArea').classList.add('disabled');
+            document.getElementById('drawArea').querySelector('.draw-hint').textContent = '📍 まず今日の勤務先を選択してください';
+            document.getElementById('questCardsContainer').innerHTML = '';
+            document.getElementById('startBtn').style.display = 'none';
+            document.getElementById('reflectionNotice').style.display = 'none';
+            // Update badge to show only home base
+            const profile = JSON.parse(localStorage.getItem('mindful_profile'));
+            if (profile) showUserBadge(profile);
+            showScreen('screen-morning');
+        }
+
+        init();
+    </script>
+</body>
+
+</html>
