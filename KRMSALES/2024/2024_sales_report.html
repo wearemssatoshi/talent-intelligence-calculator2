@@ -1,25 +1,101 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2024年度 売上レポート</title>
     <style>
-        body { font-family: sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 20px auto; padding: 0 20px; }
-        h1, h2, h3 { color: #2c3e50; }
-        h1 { text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        h2 { border-left: 5px solid #3498db; padding-left: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
-        th { background-color: #f2f2f2; }
-        td:first-child, th:first-child { text-align: left; }
-        .total-row { font-weight: bold; background-color: #eafaf1; }
-        .grand-total { text-align: center; font-size: 1.5em; padding: 20px; background-color: #3498db; color: white; border-radius: 5px; margin-top: 40px; }
-        .report-container { display: flex; gap: 30px; }
-        .daily-sales { flex: 2; }
-        .summary { flex: 1; }
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            border-left: 5px solid #3498db;
+            padding-left: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td:first-child,
+        th:first-child {
+            text-align: left;
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #eafaf1;
+        }
+
+        .grand-total {
+            text-align: center;
+            font-size: 1.5em;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            margin-top: 40px;
+        }
+
+        .report-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .daily-sales {
+            flex: 2;
+        }
+
+        .summary {
+            flex: 1;
+        }
+
+        .tax-excluded {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .tax-info {
+            font-size: 0.85em;
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
+
 <body>
     <h1>2024年度 売上レポート (2024年4月 - 2025年3月)</h1>
 
@@ -29,38 +105,164 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>4/1</td><td>Mon</td><td>¥127,550</td></tr>
-                        <tr><td>4/2</td><td>Tue</td><td>¥92,000</td></tr>
-                        <tr><td>4/3</td><td>Wed</td><td>¥93,700</td></tr>
-                        <tr><td>4/4</td><td>Thu</td><td>¥0</td></tr>
-                        <tr><td>4/5</td><td>Fri</td><td>¥81,000</td></tr>
-                        <tr><td>4/6</td><td>Sat</td><td>¥102,780</td></tr>
-                        <tr><td>4/7</td><td>Sun</td><td>¥101,200</td></tr>
-                        <tr><td>4/8</td><td>Mon</td><td>¥67,400</td></tr>
-                        <tr><td>4/9</td><td>Tue</td><td>¥86,300</td></tr>
-                        <tr><td>4/10</td><td>Wed</td><td>¥0</td></tr>
-                        <tr><td>4/11</td><td>Thu</td><td>¥102,450</td></tr>
-                        <tr><td>4/12</td><td>Fri</td><td>¥107,250</td></tr>
-                        <tr><td>4/13</td><td>Sat</td><td>¥106,250</td></tr>
-                        <tr><td>4/14</td><td>Sun</td><td>¥95,550</td></tr>
-                        <tr><td>4/15</td><td>Mon</td><td>¥67,100</td></tr>
-                        <tr><td>4/16</td><td>Tue</td><td>¥89,550</td></tr>
-                        <tr><td>4/17</td><td>Wed</td><td>¥0</td></tr>
-                        <tr><td>4/18</td><td>Thu</td><td>¥75,100</td></tr>
-                        <tr><td>4/19</td><td>Fri</td><td>¥125,500</td></tr>
-                        <tr><td>4/20</td><td>Sat</td><td>¥138,200</td></tr>
-                        <tr><td>4/21</td><td>Sun</td><td>¥66,700</td></tr>
-                        <tr><td>4/22</td><td>Mon</td><td>¥71,700</td></tr>
-                        <tr><td>4/23</td><td>Tue</td><td>¥79,650</td></tr>
-                        <tr><td>4/24</td><td>Wed</td><td>¥0</td></tr>
-                        <tr><td>4/25</td><td>Thu</td><td>¥90,250</td></tr>
-                        <tr><td>4/26</td><td>Fri</td><td>¥111,250</td></tr>
-                        <tr><td>4/27</td><td>Sat</td><td>¥94,500</td></tr>
-                        <tr><td>4/28</td><td>Sun</td><td>¥157,700</td></tr>
-                        <tr><td>4/29</td><td>Mon</td><td>¥116,550</td></tr>
-                        <tr><td>4/30</td><td>Tue</td><td>¥92,000</td></tr>
+                        <tr>
+                            <td>4/1</td>
+                            <td>Mon</td>
+                            <td>¥127,550</td>
+                        </tr>
+                        <tr>
+                            <td>4/2</td>
+                            <td>Tue</td>
+                            <td>¥92,000</td>
+                        </tr>
+                        <tr>
+                            <td>4/3</td>
+                            <td>Wed</td>
+                            <td>¥93,700</td>
+                        </tr>
+                        <tr>
+                            <td>4/4</td>
+                            <td>Thu</td>
+                            <td>¥0</td>
+                        </tr>
+                        <tr>
+                            <td>4/5</td>
+                            <td>Fri</td>
+                            <td>¥81,000</td>
+                        </tr>
+                        <tr>
+                            <td>4/6</td>
+                            <td>Sat</td>
+                            <td>¥102,780</td>
+                        </tr>
+                        <tr>
+                            <td>4/7</td>
+                            <td>Sun</td>
+                            <td>¥101,200</td>
+                        </tr>
+                        <tr>
+                            <td>4/8</td>
+                            <td>Mon</td>
+                            <td>¥67,400</td>
+                        </tr>
+                        <tr>
+                            <td>4/9</td>
+                            <td>Tue</td>
+                            <td>¥86,300</td>
+                        </tr>
+                        <tr>
+                            <td>4/10</td>
+                            <td>Wed</td>
+                            <td>¥0</td>
+                        </tr>
+                        <tr>
+                            <td>4/11</td>
+                            <td>Thu</td>
+                            <td>¥102,450</td>
+                        </tr>
+                        <tr>
+                            <td>4/12</td>
+                            <td>Fri</td>
+                            <td>¥107,250</td>
+                        </tr>
+                        <tr>
+                            <td>4/13</td>
+                            <td>Sat</td>
+                            <td>¥106,250</td>
+                        </tr>
+                        <tr>
+                            <td>4/14</td>
+                            <td>Sun</td>
+                            <td>¥95,550</td>
+                        </tr>
+                        <tr>
+                            <td>4/15</td>
+                            <td>Mon</td>
+                            <td>¥67,100</td>
+                        </tr>
+                        <tr>
+                            <td>4/16</td>
+                            <td>Tue</td>
+                            <td>¥89,550</td>
+                        </tr>
+                        <tr>
+                            <td>4/17</td>
+                            <td>Wed</td>
+                            <td>¥0</td>
+                        </tr>
+                        <tr>
+                            <td>4/18</td>
+                            <td>Thu</td>
+                            <td>¥75,100</td>
+                        </tr>
+                        <tr>
+                            <td>4/19</td>
+                            <td>Fri</td>
+                            <td>¥125,500</td>
+                        </tr>
+                        <tr>
+                            <td>4/20</td>
+                            <td>Sat</td>
+                            <td>¥138,200</td>
+                        </tr>
+                        <tr>
+                            <td>4/21</td>
+                            <td>Sun</td>
+                            <td>¥66,700</td>
+                        </tr>
+                        <tr>
+                            <td>4/22</td>
+                            <td>Mon</td>
+                            <td>¥71,700</td>
+                        </tr>
+                        <tr>
+                            <td>4/23</td>
+                            <td>Tue</td>
+                            <td>¥79,650</td>
+                        </tr>
+                        <tr>
+                            <td>4/24</td>
+                            <td>Wed</td>
+                            <td>¥0</td>
+                        </tr>
+                        <tr>
+                            <td>4/25</td>
+                            <td>Thu</td>
+                            <td>¥90,250</td>
+                        </tr>
+                        <tr>
+                            <td>4/26</td>
+                            <td>Fri</td>
+                            <td>¥111,250</td>
+                        </tr>
+                        <tr>
+                            <td>4/27</td>
+                            <td>Sat</td>
+                            <td>¥94,500</td>
+                        </tr>
+                        <tr>
+                            <td>4/28</td>
+                            <td>Sun</td>
+                            <td>¥157,700</td>
+                        </tr>
+                        <tr>
+                            <td>4/29</td>
+                            <td>Mon</td>
+                            <td>¥116,550</td>
+                        </tr>
+                        <tr>
+                            <td>4/30</td>
+                            <td>Tue</td>
+                            <td>¥92,000</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -68,20 +270,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥90,060</td></tr>
-                        <tr><td>Tue</td><td>¥87,900</td></tr>
-                        <tr><td>Wed</td><td>¥93,700</td></tr>
-                        <tr><td>Thu</td><td>¥89,267</td></tr>
-                        <tr><td>Fri</td><td>¥106,250</td></tr>
-                        <tr><td>Sat</td><td>¥110,432</td></tr>
-                        <tr><td>Sun</td><td>¥105,288</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥90,060</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥87,900</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥93,700</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥89,267</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥106,250</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥110,432</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥105,288</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥2,539,180</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥2,539,180</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -92,39 +325,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>5/1</td><td>Wed</td><td>¥86,400</td></tr>
-                        <tr><td>5/2</td><td>Thu</td><td>¥141,800</td></tr>
-                        <tr><td>5/3</td><td>Fri</td><td>¥138,550</td></tr>
-                        <tr><td>5/4</td><td>Sat</td><td>¥105,380</td></tr>
-                        <tr><td>5/5</td><td>Sun</td><td>¥103,250</td></tr>
-                        <tr><td>5/6</td><td>Mon</td><td>¥105,500</td></tr>
-                        <tr><td>5/7</td><td>Tue</td><td>¥82,900</td></tr>
-                        <tr><td>5/8</td><td>Wed</td><td>¥79,650</td></tr>
-                        <tr><td>5/9</td><td>Thu</td><td>¥95,500</td></tr>
-                        <tr><td>5/10</td><td>Fri</td><td>¥128,550</td></tr>
-                        <tr><td>5/11</td><td>Sat</td><td>¥152,900</td></tr>
-                        <tr><td>5/12</td><td>Sun</td><td>¥126,880</td></tr>
-                        <tr><td>5/13</td><td>Mon</td><td>¥94,050</td></tr>
-                        <tr><td>5/14</td><td>Tue</td><td>¥81,750</td></tr>
-                        <tr><td>5/15</td><td>Wed</td><td>¥86,600</td></tr>
-                        <tr><td>5/16</td><td>Thu</td><td>¥89,700</td></tr>
-                        <tr><td>5/17</td><td>Fri</td><td>¥109,600</td></tr>
-                        <tr><td>5/18</td><td>Sat</td><td>¥115,400</td></tr>
-                        <tr><td>5/19</td><td>Sun</td><td>¥130,600</td></tr>
-                        <tr><td>5/20</td><td>Mon</td><td>¥91,700</td></tr>
-                        <tr><td>5/21</td><td>Tue</td><td>¥86,900</td></tr>
-                        <tr><td>5/22</td><td>Wed</td><td>¥60,250</td></tr>
-                        <tr><td>5/23</td><td>Thu</td><td>¥112,650</td></tr>
-                        <tr><td>5/24</td><td>Fri</td><td>¥153,460</td></tr>
-                        <tr><td>5/25</td><td>Sat</td><td>¥86,100</td></tr>
-                        <tr><td>5/26</td><td>Sun</td><td>¥176,900</td></tr>
-                        <tr><td>5/27</td><td>Mon</td><td>¥65,850</td></tr>
-                        <tr><td>5/28</td><td>Tue</td><td>¥96,450</td></tr>
-                        <tr><td>5/29</td><td>Wed</td><td>¥143,900</td></tr>
-                        <tr><td>5/30</td><td>Thu</td><td>¥103,350</td></tr>
-                        <tr><td>5/31</td><td>Fri</td><td>¥124,250</td></tr>
+                        <tr>
+                            <td>5/1</td>
+                            <td>Wed</td>
+                            <td>¥86,400</td>
+                        </tr>
+                        <tr>
+                            <td>5/2</td>
+                            <td>Thu</td>
+                            <td>¥141,800</td>
+                        </tr>
+                        <tr>
+                            <td>5/3</td>
+                            <td>Fri</td>
+                            <td>¥138,550</td>
+                        </tr>
+                        <tr>
+                            <td>5/4</td>
+                            <td>Sat</td>
+                            <td>¥105,380</td>
+                        </tr>
+                        <tr>
+                            <td>5/5</td>
+                            <td>Sun</td>
+                            <td>¥103,250</td>
+                        </tr>
+                        <tr>
+                            <td>5/6</td>
+                            <td>Mon</td>
+                            <td>¥105,500</td>
+                        </tr>
+                        <tr>
+                            <td>5/7</td>
+                            <td>Tue</td>
+                            <td>¥82,900</td>
+                        </tr>
+                        <tr>
+                            <td>5/8</td>
+                            <td>Wed</td>
+                            <td>¥79,650</td>
+                        </tr>
+                        <tr>
+                            <td>5/9</td>
+                            <td>Thu</td>
+                            <td>¥95,500</td>
+                        </tr>
+                        <tr>
+                            <td>5/10</td>
+                            <td>Fri</td>
+                            <td>¥128,550</td>
+                        </tr>
+                        <tr>
+                            <td>5/11</td>
+                            <td>Sat</td>
+                            <td>¥152,900</td>
+                        </tr>
+                        <tr>
+                            <td>5/12</td>
+                            <td>Sun</td>
+                            <td>¥126,880</td>
+                        </tr>
+                        <tr>
+                            <td>5/13</td>
+                            <td>Mon</td>
+                            <td>¥94,050</td>
+                        </tr>
+                        <tr>
+                            <td>5/14</td>
+                            <td>Tue</td>
+                            <td>¥81,750</td>
+                        </tr>
+                        <tr>
+                            <td>5/15</td>
+                            <td>Wed</td>
+                            <td>¥86,600</td>
+                        </tr>
+                        <tr>
+                            <td>5/16</td>
+                            <td>Thu</td>
+                            <td>¥89,700</td>
+                        </tr>
+                        <tr>
+                            <td>5/17</td>
+                            <td>Fri</td>
+                            <td>¥109,600</td>
+                        </tr>
+                        <tr>
+                            <td>5/18</td>
+                            <td>Sat</td>
+                            <td>¥115,400</td>
+                        </tr>
+                        <tr>
+                            <td>5/19</td>
+                            <td>Sun</td>
+                            <td>¥130,600</td>
+                        </tr>
+                        <tr>
+                            <td>5/20</td>
+                            <td>Mon</td>
+                            <td>¥91,700</td>
+                        </tr>
+                        <tr>
+                            <td>5/21</td>
+                            <td>Tue</td>
+                            <td>¥86,900</td>
+                        </tr>
+                        <tr>
+                            <td>5/22</td>
+                            <td>Wed</td>
+                            <td>¥60,250</td>
+                        </tr>
+                        <tr>
+                            <td>5/23</td>
+                            <td>Thu</td>
+                            <td>¥112,650</td>
+                        </tr>
+                        <tr>
+                            <td>5/24</td>
+                            <td>Fri</td>
+                            <td>¥153,460</td>
+                        </tr>
+                        <tr>
+                            <td>5/25</td>
+                            <td>Sat</td>
+                            <td>¥86,100</td>
+                        </tr>
+                        <tr>
+                            <td>5/26</td>
+                            <td>Sun</td>
+                            <td>¥176,900</td>
+                        </tr>
+                        <tr>
+                            <td>5/27</td>
+                            <td>Mon</td>
+                            <td>¥65,850</td>
+                        </tr>
+                        <tr>
+                            <td>5/28</td>
+                            <td>Tue</td>
+                            <td>¥96,450</td>
+                        </tr>
+                        <tr>
+                            <td>5/29</td>
+                            <td>Wed</td>
+                            <td>¥143,900</td>
+                        </tr>
+                        <tr>
+                            <td>5/30</td>
+                            <td>Thu</td>
+                            <td>¥103,350</td>
+                        </tr>
+                        <tr>
+                            <td>5/31</td>
+                            <td>Fri</td>
+                            <td>¥124,250</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -132,20 +495,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥89,275</td></tr>
-                        <tr><td>Tue</td><td>¥87,000</td></tr>
-                        <tr><td>Wed</td><td>¥91,360</td></tr>
-                        <tr><td>Thu</td><td>¥108,600</td></tr>
-                        <tr><td>Fri</td><td>¥130,882</td></tr>
-                        <tr><td>Sat</td><td>¥114,945</td></tr>
-                        <tr><td>Sun</td><td>¥134,408</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥89,275</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥87,000</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥91,360</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥108,600</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥130,882</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥114,945</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥134,408</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,356,720</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,356,720</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -156,38 +550,164 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>6/1</td><td>Sat</td><td>¥115,350</td></tr>
-                        <tr><td>6/2</td><td>Sun</td><td>¥114,800</td></tr>
-                        <tr><td>6/3</td><td>Mon</td><td>¥93,400</td></tr>
-                        <tr><td>6/4</td><td>Tue</td><td>¥88,850</td></tr>
-                        <tr><td>6/5</td><td>Wed</td><td>¥89,750</td></tr>
-                        <tr><td>6/6</td><td>Thu</td><td>¥145,900</td></tr>
-                        <tr><td>6/7</td><td>Fri</td><td>¥96,450</td></tr>
-                        <tr><td>6/8</td><td>Sat</td><td>¥230,200</td></tr>
-                        <tr><td>6/9</td><td>Sun</td><td>¥145,450</td></tr>
-                        <tr><td>6/10</td><td>Mon</td><td>¥79,900</td></tr>
-                        <tr><td>6/11</td><td>Tue</td><td>¥61,750</td></tr>
-                        <tr><td>6/12</td><td>Wed</td><td>¥104,600</td></tr>
-                        <tr><td>6/13</td><td>Thu</td><td>¥104,400</td></tr>
-                        <tr><td>6/14</td><td>Fri</td><td>¥149,950</td></tr>
-                        <tr><td>6/15</td><td>Sat</td><td>¥151,430</td></tr>
-                        <tr><td>6/16</td><td>Sun</td><td>¥161,730</td></tr>
-                        <tr><td>6/17</td><td>Mon</td><td>¥104,730</td></tr>
-                        <tr><td>6/18</td><td>Tue</td><td>¥97,000</td></tr>
-                        <tr><td>6/19</td><td>Wed</td><td>¥149,100</td></tr>
-                        <tr><td>6/20</td><td>Thu</td><td>¥94,150</td></tr>
-                        <tr><td>6/21</td><td>Fri</td><td>¥138,200</td></tr>
-                        <tr><td>6/22</td><td>Sat</td><td>¥176,000</td></tr>
-                        <tr><td>6/23</td><td>Sun</td><td>¥155,800</td></tr>
-                        <tr><td>6/24</td><td>Mon</td><td>¥107,650</td></tr>
-                        <tr><td>6/25</td><td>Tue</td><td>¥121,600</td></tr>
-                        <tr><td>6/26</td><td>Wed</td><td>¥119,100</td></tr>
-                        <tr><td>6/27</td><td>Thu</td><td>¥147,800</td></tr>
-                        <tr><td>6/28</td><td>Fri</td><td>¥197,850</td></tr>
-                        <tr><td>6/29</td><td>Sat</td><td>¥205,400</td></tr>
-                        <tr><td>6/30</td><td>Sun</td><td>¥202,450</td></tr>
+                        <tr>
+                            <td>6/1</td>
+                            <td>Sat</td>
+                            <td>¥115,350</td>
+                        </tr>
+                        <tr>
+                            <td>6/2</td>
+                            <td>Sun</td>
+                            <td>¥114,800</td>
+                        </tr>
+                        <tr>
+                            <td>6/3</td>
+                            <td>Mon</td>
+                            <td>¥93,400</td>
+                        </tr>
+                        <tr>
+                            <td>6/4</td>
+                            <td>Tue</td>
+                            <td>¥88,850</td>
+                        </tr>
+                        <tr>
+                            <td>6/5</td>
+                            <td>Wed</td>
+                            <td>¥89,750</td>
+                        </tr>
+                        <tr>
+                            <td>6/6</td>
+                            <td>Thu</td>
+                            <td>¥145,900</td>
+                        </tr>
+                        <tr>
+                            <td>6/7</td>
+                            <td>Fri</td>
+                            <td>¥96,450</td>
+                        </tr>
+                        <tr>
+                            <td>6/8</td>
+                            <td>Sat</td>
+                            <td>¥230,200</td>
+                        </tr>
+                        <tr>
+                            <td>6/9</td>
+                            <td>Sun</td>
+                            <td>¥145,450</td>
+                        </tr>
+                        <tr>
+                            <td>6/10</td>
+                            <td>Mon</td>
+                            <td>¥79,900</td>
+                        </tr>
+                        <tr>
+                            <td>6/11</td>
+                            <td>Tue</td>
+                            <td>¥61,750</td>
+                        </tr>
+                        <tr>
+                            <td>6/12</td>
+                            <td>Wed</td>
+                            <td>¥104,600</td>
+                        </tr>
+                        <tr>
+                            <td>6/13</td>
+                            <td>Thu</td>
+                            <td>¥104,400</td>
+                        </tr>
+                        <tr>
+                            <td>6/14</td>
+                            <td>Fri</td>
+                            <td>¥149,950</td>
+                        </tr>
+                        <tr>
+                            <td>6/15</td>
+                            <td>Sat</td>
+                            <td>¥151,430</td>
+                        </tr>
+                        <tr>
+                            <td>6/16</td>
+                            <td>Sun</td>
+                            <td>¥161,730</td>
+                        </tr>
+                        <tr>
+                            <td>6/17</td>
+                            <td>Mon</td>
+                            <td>¥104,730</td>
+                        </tr>
+                        <tr>
+                            <td>6/18</td>
+                            <td>Tue</td>
+                            <td>¥97,000</td>
+                        </tr>
+                        <tr>
+                            <td>6/19</td>
+                            <td>Wed</td>
+                            <td>¥149,100</td>
+                        </tr>
+                        <tr>
+                            <td>6/20</td>
+                            <td>Thu</td>
+                            <td>¥94,150</td>
+                        </tr>
+                        <tr>
+                            <td>6/21</td>
+                            <td>Fri</td>
+                            <td>¥138,200</td>
+                        </tr>
+                        <tr>
+                            <td>6/22</td>
+                            <td>Sat</td>
+                            <td>¥176,000</td>
+                        </tr>
+                        <tr>
+                            <td>6/23</td>
+                            <td>Sun</td>
+                            <td>¥155,800</td>
+                        </tr>
+                        <tr>
+                            <td>6/24</td>
+                            <td>Mon</td>
+                            <td>¥107,650</td>
+                        </tr>
+                        <tr>
+                            <td>6/25</td>
+                            <td>Tue</td>
+                            <td>¥121,600</td>
+                        </tr>
+                        <tr>
+                            <td>6/26</td>
+                            <td>Wed</td>
+                            <td>¥119,100</td>
+                        </tr>
+                        <tr>
+                            <td>6/27</td>
+                            <td>Thu</td>
+                            <td>¥147,800</td>
+                        </tr>
+                        <tr>
+                            <td>6/28</td>
+                            <td>Fri</td>
+                            <td>¥197,850</td>
+                        </tr>
+                        <tr>
+                            <td>6/29</td>
+                            <td>Sat</td>
+                            <td>¥205,400</td>
+                        </tr>
+                        <tr>
+                            <td>6/30</td>
+                            <td>Sun</td>
+                            <td>¥202,450</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -195,20 +715,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥96,420</td></tr>
-                        <tr><td>Tue</td><td>¥92,300</td></tr>
-                        <tr><td>Wed</td><td>¥115,638</td></tr>
-                        <tr><td>Thu</td><td>¥123,062</td></tr>
-                        <tr><td>Fri</td><td>¥145,612</td></tr>
-                        <tr><td>Sat</td><td>¥175,676</td></tr>
-                        <tr><td>Sun</td><td>¥156,046</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥96,420</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥92,300</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥115,638</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥123,062</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥145,612</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥175,676</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥156,046</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,950,740</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,950,740</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -219,39 +770,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>7/1</td><td>Mon</td><td>¥148,200</td></tr>
-                        <tr><td>7/2</td><td>Tue</td><td>¥165,050</td></tr>
-                        <tr><td>7/3</td><td>Wed</td><td>¥154,230</td></tr>
-                        <tr><td>7/4</td><td>Thu</td><td>¥144,900</td></tr>
-                        <tr><td>7/5</td><td>Fri</td><td>¥111,050</td></tr>
-                        <tr><td>7/6</td><td>Sat</td><td>¥165,600</td></tr>
-                        <tr><td>7/7</td><td>Sun</td><td>¥159,850</td></tr>
-                        <tr><td>7/8</td><td>Mon</td><td>¥103,900</td></tr>
-                        <tr><td>7/9</td><td>Tue</td><td>¥130,400</td></tr>
-                        <tr><td>7/10</td><td>Wed</td><td>¥114,000</td></tr>
-                        <tr><td>7/11</td><td>Thu</td><td>¥124,550</td></tr>
-                        <tr><td>7/12</td><td>Fri</td><td>¥123,500</td></tr>
-                        <tr><td>7/13</td><td>Sat</td><td>¥154,900</td></tr>
-                        <tr><td>7/14</td><td>Sun</td><td>¥163,100</td></tr>
-                        <tr><td>7/15</td><td>Mon</td><td>¥150,950</td></tr>
-                        <tr><td>7/16</td><td>Tue</td><td>¥108,450</td></tr>
-                        <tr><td>7/17</td><td>Wed</td><td>¥108,250</td></tr>
-                        <tr><td>7/18</td><td>Thu</td><td>¥159,900</td></tr>
-                        <tr><td>7/19</td><td>Fri</td><td>¥166,700</td></tr>
-                        <tr><td>7/20</td><td>Sat</td><td>¥156,650</td></tr>
-                        <tr><td>7/21</td><td>Sun</td><td>¥138,200</td></tr>
-                        <tr><td>7/22</td><td>Mon</td><td>¥101,400</td></tr>
-                        <tr><td>7/23</td><td>Tue</td><td>¥142,400</td></tr>
-                        <tr><td>7/24</td><td>Wed</td><td>¥121,150</td></tr>
-                        <tr><td>7/25</td><td>Thu</td><td>¥109,600</td></tr>
-                        <tr><td>7/26</td><td>Fri</td><td>¥208,150</td></tr>
-                        <tr><td>7/27</td><td>Sat</td><td>¥184,650</td></tr>
-                        <tr><td>7/28</td><td>Sun</td><td>¥132,600</td></tr>
-                        <tr><td>7/29</td><td>Mon</td><td>¥166,950</td></tr>
-                        <tr><td>7/30</td><td>Tue</td><td>¥131,900</td></tr>
-                        <tr><td>7/31</td><td>Wed</td><td>¥148,400</td></tr>
+                        <tr>
+                            <td>7/1</td>
+                            <td>Mon</td>
+                            <td>¥148,200</td>
+                        </tr>
+                        <tr>
+                            <td>7/2</td>
+                            <td>Tue</td>
+                            <td>¥165,050</td>
+                        </tr>
+                        <tr>
+                            <td>7/3</td>
+                            <td>Wed</td>
+                            <td>¥154,230</td>
+                        </tr>
+                        <tr>
+                            <td>7/4</td>
+                            <td>Thu</td>
+                            <td>¥144,900</td>
+                        </tr>
+                        <tr>
+                            <td>7/5</td>
+                            <td>Fri</td>
+                            <td>¥111,050</td>
+                        </tr>
+                        <tr>
+                            <td>7/6</td>
+                            <td>Sat</td>
+                            <td>¥165,600</td>
+                        </tr>
+                        <tr>
+                            <td>7/7</td>
+                            <td>Sun</td>
+                            <td>¥159,850</td>
+                        </tr>
+                        <tr>
+                            <td>7/8</td>
+                            <td>Mon</td>
+                            <td>¥103,900</td>
+                        </tr>
+                        <tr>
+                            <td>7/9</td>
+                            <td>Tue</td>
+                            <td>¥130,400</td>
+                        </tr>
+                        <tr>
+                            <td>7/10</td>
+                            <td>Wed</td>
+                            <td>¥114,000</td>
+                        </tr>
+                        <tr>
+                            <td>7/11</td>
+                            <td>Thu</td>
+                            <td>¥124,550</td>
+                        </tr>
+                        <tr>
+                            <td>7/12</td>
+                            <td>Fri</td>
+                            <td>¥123,500</td>
+                        </tr>
+                        <tr>
+                            <td>7/13</td>
+                            <td>Sat</td>
+                            <td>¥154,900</td>
+                        </tr>
+                        <tr>
+                            <td>7/14</td>
+                            <td>Sun</td>
+                            <td>¥163,100</td>
+                        </tr>
+                        <tr>
+                            <td>7/15</td>
+                            <td>Mon</td>
+                            <td>¥150,950</td>
+                        </tr>
+                        <tr>
+                            <td>7/16</td>
+                            <td>Tue</td>
+                            <td>¥108,450</td>
+                        </tr>
+                        <tr>
+                            <td>7/17</td>
+                            <td>Wed</td>
+                            <td>¥108,250</td>
+                        </tr>
+                        <tr>
+                            <td>7/18</td>
+                            <td>Thu</td>
+                            <td>¥159,900</td>
+                        </tr>
+                        <tr>
+                            <td>7/19</td>
+                            <td>Fri</td>
+                            <td>¥166,700</td>
+                        </tr>
+                        <tr>
+                            <td>7/20</td>
+                            <td>Sat</td>
+                            <td>¥156,650</td>
+                        </tr>
+                        <tr>
+                            <td>7/21</td>
+                            <td>Sun</td>
+                            <td>¥138,200</td>
+                        </tr>
+                        <tr>
+                            <td>7/22</td>
+                            <td>Mon</td>
+                            <td>¥101,400</td>
+                        </tr>
+                        <tr>
+                            <td>7/23</td>
+                            <td>Tue</td>
+                            <td>¥142,400</td>
+                        </tr>
+                        <tr>
+                            <td>7/24</td>
+                            <td>Wed</td>
+                            <td>¥121,150</td>
+                        </tr>
+                        <tr>
+                            <td>7/25</td>
+                            <td>Thu</td>
+                            <td>¥109,600</td>
+                        </tr>
+                        <tr>
+                            <td>7/26</td>
+                            <td>Fri</td>
+                            <td>¥208,150</td>
+                        </tr>
+                        <tr>
+                            <td>7/27</td>
+                            <td>Sat</td>
+                            <td>¥184,650</td>
+                        </tr>
+                        <tr>
+                            <td>7/28</td>
+                            <td>Sun</td>
+                            <td>¥132,600</td>
+                        </tr>
+                        <tr>
+                            <td>7/29</td>
+                            <td>Mon</td>
+                            <td>¥166,950</td>
+                        </tr>
+                        <tr>
+                            <td>7/30</td>
+                            <td>Tue</td>
+                            <td>¥131,900</td>
+                        </tr>
+                        <tr>
+                            <td>7/31</td>
+                            <td>Wed</td>
+                            <td>¥148,400</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -259,20 +940,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥134,280</td></tr>
-                        <tr><td>Tue</td><td>¥135,640</td></tr>
-                        <tr><td>Wed</td><td>¥129,206</td></tr>
-                        <tr><td>Thu</td><td>¥134,738</td></tr>
-                        <tr><td>Fri</td><td>¥152,350</td></tr>
-                        <tr><td>Sat</td><td>¥165,450</td></tr>
-                        <tr><td>Sun</td><td>¥148,438</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥134,280</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥135,640</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥129,206</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥134,738</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥152,350</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥165,450</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥148,438</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥4,399,530</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥4,399,530</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -283,39 +995,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>8/1</td><td>Thu</td><td>¥122,600</td></tr>
-                        <tr><td>8/2</td><td>Fri</td><td>¥151,350</td></tr>
-                        <tr><td>8/3</td><td>Sat</td><td>¥162,600</td></tr>
-                        <tr><td>8/4</td><td>Sun</td><td>¥117,750</td></tr>
-                        <tr><td>8/5</td><td>Mon</td><td>¥112,750</td></tr>
-                        <tr><td>8/6</td><td>Tue</td><td>¥133,950</td></tr>
-                        <tr><td>8/7</td><td>Wed</td><td>¥145,150</td></tr>
-                        <tr><td>8/8</td><td>Thu</td><td>¥134,950</td></tr>
-                        <tr><td>8/9</td><td>Fri</td><td>¥149,050</td></tr>
-                        <tr><td>8/10</td><td>Sat</td><td>¥111,180</td></tr>
-                        <tr><td>8/11</td><td>Sun</td><td>¥143,750</td></tr>
-                        <tr><td>8/12</td><td>Mon</td><td>¥111,550</td></tr>
-                        <tr><td>8/13</td><td>Tue</td><td>¥117,750</td></tr>
-                        <tr><td>8/14</td><td>Wed</td><td>¥148,400</td></tr>
-                        <tr><td>8/15</td><td>Thu</td><td>¥127,800</td></tr>
-                        <tr><td>8/16</td><td>Fri</td><td>¥117,630</td></tr>
-                        <tr><td>8/17</td><td>Sat</td><td>¥128,550</td></tr>
-                        <tr><td>8/18</td><td>Sun</td><td>¥148,150</td></tr>
-                        <tr><td>8/19</td><td>Mon</td><td>¥102,350</td></tr>
-                        <tr><td>8/20</td><td>Tue</td><td>¥82,600</td></tr>
-                        <tr><td>8/21</td><td>Wed</td><td>¥137,100</td></tr>
-                        <tr><td>8/22</td><td>Thu</td><td>¥155,500</td></tr>
-                        <tr><td>8/23</td><td>Fri</td><td>¥161,530</td></tr>
-                        <tr><td>8/24</td><td>Sat</td><td>¥170,200</td></tr>
-                        <tr><td>8/25</td><td>Sun</td><td>¥156,950</td></tr>
-                        <tr><td>8/26</td><td>Mon</td><td>¥144,180</td></tr>
-                        <tr><td>8/27</td><td>Tue</td><td>¥122,400</td></tr>
-                        <tr><td>8/28</td><td>Wed</td><td>¥118,000</td></tr>
-                        <tr><td>8/29</td><td>Thu</td><td>¥145,300</td></tr>
-                        <tr><td>8/30</td><td>Fri</td><td>¥189,200</td></tr>
-                        <tr><td>8/31</td><td>Sat</td><td>¥185,300</td></tr>
+                        <tr>
+                            <td>8/1</td>
+                            <td>Thu</td>
+                            <td>¥122,600</td>
+                        </tr>
+                        <tr>
+                            <td>8/2</td>
+                            <td>Fri</td>
+                            <td>¥151,350</td>
+                        </tr>
+                        <tr>
+                            <td>8/3</td>
+                            <td>Sat</td>
+                            <td>¥162,600</td>
+                        </tr>
+                        <tr>
+                            <td>8/4</td>
+                            <td>Sun</td>
+                            <td>¥117,750</td>
+                        </tr>
+                        <tr>
+                            <td>8/5</td>
+                            <td>Mon</td>
+                            <td>¥112,750</td>
+                        </tr>
+                        <tr>
+                            <td>8/6</td>
+                            <td>Tue</td>
+                            <td>¥133,950</td>
+                        </tr>
+                        <tr>
+                            <td>8/7</td>
+                            <td>Wed</td>
+                            <td>¥145,150</td>
+                        </tr>
+                        <tr>
+                            <td>8/8</td>
+                            <td>Thu</td>
+                            <td>¥134,950</td>
+                        </tr>
+                        <tr>
+                            <td>8/9</td>
+                            <td>Fri</td>
+                            <td>¥149,050</td>
+                        </tr>
+                        <tr>
+                            <td>8/10</td>
+                            <td>Sat</td>
+                            <td>¥111,180</td>
+                        </tr>
+                        <tr>
+                            <td>8/11</td>
+                            <td>Sun</td>
+                            <td>¥143,750</td>
+                        </tr>
+                        <tr>
+                            <td>8/12</td>
+                            <td>Mon</td>
+                            <td>¥111,550</td>
+                        </tr>
+                        <tr>
+                            <td>8/13</td>
+                            <td>Tue</td>
+                            <td>¥117,750</td>
+                        </tr>
+                        <tr>
+                            <td>8/14</td>
+                            <td>Wed</td>
+                            <td>¥148,400</td>
+                        </tr>
+                        <tr>
+                            <td>8/15</td>
+                            <td>Thu</td>
+                            <td>¥127,800</td>
+                        </tr>
+                        <tr>
+                            <td>8/16</td>
+                            <td>Fri</td>
+                            <td>¥117,630</td>
+                        </tr>
+                        <tr>
+                            <td>8/17</td>
+                            <td>Sat</td>
+                            <td>¥128,550</td>
+                        </tr>
+                        <tr>
+                            <td>8/18</td>
+                            <td>Sun</td>
+                            <td>¥148,150</td>
+                        </tr>
+                        <tr>
+                            <td>8/19</td>
+                            <td>Mon</td>
+                            <td>¥102,350</td>
+                        </tr>
+                        <tr>
+                            <td>8/20</td>
+                            <td>Tue</td>
+                            <td>¥82,600</td>
+                        </tr>
+                        <tr>
+                            <td>8/21</td>
+                            <td>Wed</td>
+                            <td>¥137,100</td>
+                        </tr>
+                        <tr>
+                            <td>8/22</td>
+                            <td>Thu</td>
+                            <td>¥155,500</td>
+                        </tr>
+                        <tr>
+                            <td>8/23</td>
+                            <td>Fri</td>
+                            <td>¥161,530</td>
+                        </tr>
+                        <tr>
+                            <td>8/24</td>
+                            <td>Sat</td>
+                            <td>¥170,200</td>
+                        </tr>
+                        <tr>
+                            <td>8/25</td>
+                            <td>Sun</td>
+                            <td>¥156,950</td>
+                        </tr>
+                        <tr>
+                            <td>8/26</td>
+                            <td>Mon</td>
+                            <td>¥144,180</td>
+                        </tr>
+                        <tr>
+                            <td>8/27</td>
+                            <td>Tue</td>
+                            <td>¥122,400</td>
+                        </tr>
+                        <tr>
+                            <td>8/28</td>
+                            <td>Wed</td>
+                            <td>¥118,000</td>
+                        </tr>
+                        <tr>
+                            <td>8/29</td>
+                            <td>Thu</td>
+                            <td>¥145,300</td>
+                        </tr>
+                        <tr>
+                            <td>8/30</td>
+                            <td>Fri</td>
+                            <td>¥189,200</td>
+                        </tr>
+                        <tr>
+                            <td>8/31</td>
+                            <td>Sat</td>
+                            <td>¥185,300</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -323,20 +1165,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥117,708</td></tr>
-                        <tr><td>Tue</td><td>¥114,175</td></tr>
-                        <tr><td>Wed</td><td>¥137,162</td></tr>
-                        <tr><td>Thu</td><td>¥137,230</td></tr>
-                        <tr><td>Fri</td><td>¥153,752</td></tr>
-                        <tr><td>Sat</td><td>¥151,566</td></tr>
-                        <tr><td>Sun</td><td>¥141,650</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥117,708</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥114,175</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥137,162</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥137,230</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥153,752</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥151,566</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥141,650</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥4,255,520</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥4,255,520</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -347,38 +1220,164 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>9/1</td><td>Sun</td><td>¥191,050</td></tr>
-                        <tr><td>9/2</td><td>Mon</td><td>¥68,100</td></tr>
-                        <tr><td>9/3</td><td>Tue</td><td>¥117,250</td></tr>
-                        <tr><td>9/4</td><td>Wed</td><td>¥131,500</td></tr>
-                        <tr><td>9/5</td><td>Thu</td><td>¥88,300</td></tr>
-                        <tr><td>9/6</td><td>Fri</td><td>¥100,000</td></tr>
-                        <tr><td>9/7</td><td>Sat</td><td>¥142,700</td></tr>
-                        <tr><td>9/8</td><td>Sun</td><td>¥107,950</td></tr>
-                        <tr><td>9/9</td><td>Mon</td><td>¥84,950</td></tr>
-                        <tr><td>9/10</td><td>Tue</td><td>¥96,650</td></tr>
-                        <tr><td>9/11</td><td>Wed</td><td>¥99,450</td></tr>
-                        <tr><td>9/12</td><td>Thu</td><td>¥139,100</td></tr>
-                        <tr><td>9/13</td><td>Fri</td><td>¥117,850</td></tr>
-                        <tr><td>9/14</td><td>Sat</td><td>¥142,050</td></tr>
-                        <tr><td>9/15</td><td>Sun</td><td>¥165,350</td></tr>
-                        <tr><td>9/16</td><td>Mon</td><td>¥99,150</td></tr>
-                        <tr><td>9/17</td><td>Tue</td><td>¥75,150</td></tr>
-                        <tr><td>9/18</td><td>Wed</td><td>¥107,100</td></tr>
-                        <tr><td>9/19</td><td>Thu</td><td>¥98,900</td></tr>
-                        <tr><td>9/20</td><td>Fri</td><td>¥140,050</td></tr>
-                        <tr><td>9/21</td><td>Sat</td><td>¥158,700</td></tr>
-                        <tr><td>9/22</td><td>Sun</td><td>¥184,150</td></tr>
-                        <tr><td>9/23</td><td>Mon</td><td>¥79,650</td></tr>
-                        <tr><td>9/24</td><td>Tue</td><td>¥80,750</td></tr>
-                        <tr><td>9/25</td><td>Wed</td><td>¥89,300</td></tr>
-                        <tr><td>9/26</td><td>Thu</td><td>¥88,750</td></tr>
-                        <tr><td>9/27</td><td>Fri</td><td>¥93,950</td></tr>
-                        <tr><td>9/28</td><td>Sat</td><td>¥106,350</td></tr>
-                        <tr><td>9/29</td><td>Sun</td><td>¥127,900</td></tr>
-                        <tr><td>9/30</td><td>Mon</td><td>¥102,550</td></tr>
+                        <tr>
+                            <td>9/1</td>
+                            <td>Sun</td>
+                            <td>¥191,050</td>
+                        </tr>
+                        <tr>
+                            <td>9/2</td>
+                            <td>Mon</td>
+                            <td>¥68,100</td>
+                        </tr>
+                        <tr>
+                            <td>9/3</td>
+                            <td>Tue</td>
+                            <td>¥117,250</td>
+                        </tr>
+                        <tr>
+                            <td>9/4</td>
+                            <td>Wed</td>
+                            <td>¥131,500</td>
+                        </tr>
+                        <tr>
+                            <td>9/5</td>
+                            <td>Thu</td>
+                            <td>¥88,300</td>
+                        </tr>
+                        <tr>
+                            <td>9/6</td>
+                            <td>Fri</td>
+                            <td>¥100,000</td>
+                        </tr>
+                        <tr>
+                            <td>9/7</td>
+                            <td>Sat</td>
+                            <td>¥142,700</td>
+                        </tr>
+                        <tr>
+                            <td>9/8</td>
+                            <td>Sun</td>
+                            <td>¥107,950</td>
+                        </tr>
+                        <tr>
+                            <td>9/9</td>
+                            <td>Mon</td>
+                            <td>¥84,950</td>
+                        </tr>
+                        <tr>
+                            <td>9/10</td>
+                            <td>Tue</td>
+                            <td>¥96,650</td>
+                        </tr>
+                        <tr>
+                            <td>9/11</td>
+                            <td>Wed</td>
+                            <td>¥99,450</td>
+                        </tr>
+                        <tr>
+                            <td>9/12</td>
+                            <td>Thu</td>
+                            <td>¥139,100</td>
+                        </tr>
+                        <tr>
+                            <td>9/13</td>
+                            <td>Fri</td>
+                            <td>¥117,850</td>
+                        </tr>
+                        <tr>
+                            <td>9/14</td>
+                            <td>Sat</td>
+                            <td>¥142,050</td>
+                        </tr>
+                        <tr>
+                            <td>9/15</td>
+                            <td>Sun</td>
+                            <td>¥165,350</td>
+                        </tr>
+                        <tr>
+                            <td>9/16</td>
+                            <td>Mon</td>
+                            <td>¥99,150</td>
+                        </tr>
+                        <tr>
+                            <td>9/17</td>
+                            <td>Tue</td>
+                            <td>¥75,150</td>
+                        </tr>
+                        <tr>
+                            <td>9/18</td>
+                            <td>Wed</td>
+                            <td>¥107,100</td>
+                        </tr>
+                        <tr>
+                            <td>9/19</td>
+                            <td>Thu</td>
+                            <td>¥98,900</td>
+                        </tr>
+                        <tr>
+                            <td>9/20</td>
+                            <td>Fri</td>
+                            <td>¥140,050</td>
+                        </tr>
+                        <tr>
+                            <td>9/21</td>
+                            <td>Sat</td>
+                            <td>¥158,700</td>
+                        </tr>
+                        <tr>
+                            <td>9/22</td>
+                            <td>Sun</td>
+                            <td>¥184,150</td>
+                        </tr>
+                        <tr>
+                            <td>9/23</td>
+                            <td>Mon</td>
+                            <td>¥79,650</td>
+                        </tr>
+                        <tr>
+                            <td>9/24</td>
+                            <td>Tue</td>
+                            <td>¥80,750</td>
+                        </tr>
+                        <tr>
+                            <td>9/25</td>
+                            <td>Wed</td>
+                            <td>¥89,300</td>
+                        </tr>
+                        <tr>
+                            <td>9/26</td>
+                            <td>Thu</td>
+                            <td>¥88,750</td>
+                        </tr>
+                        <tr>
+                            <td>9/27</td>
+                            <td>Fri</td>
+                            <td>¥93,950</td>
+                        </tr>
+                        <tr>
+                            <td>9/28</td>
+                            <td>Sat</td>
+                            <td>¥106,350</td>
+                        </tr>
+                        <tr>
+                            <td>9/29</td>
+                            <td>Sun</td>
+                            <td>¥127,900</td>
+                        </tr>
+                        <tr>
+                            <td>9/30</td>
+                            <td>Mon</td>
+                            <td>¥102,550</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -386,20 +1385,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥86,880</td></tr>
-                        <tr><td>Tue</td><td>¥92,450</td></tr>
-                        <tr><td>Wed</td><td>¥106,838</td></tr>
-                        <tr><td>Thu</td><td>¥103,762</td></tr>
-                        <tr><td>Fri</td><td>¥112,962</td></tr>
-                        <tr><td>Sat</td><td>¥137,450</td></tr>
-                        <tr><td>Sun</td><td>¥155,280</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥86,880</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥92,450</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥106,838</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥103,762</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥112,962</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥137,450</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥155,280</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,424,650</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,424,650</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -410,39 +1440,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>10/1</td><td>Tue</td><td>¥73,200</td></tr>
-                        <tr><td>10/2</td><td>Wed</td><td>¥108,250</td></tr>
-                        <tr><td>10/3</td><td>Thu</td><td>¥103,350</td></tr>
-                        <tr><td>10/4</td><td>Fri</td><td>¥131,900</td></tr>
-                        <tr><td>10/5</td><td>Sat</td><td>¥102,950</td></tr>
-                        <tr><td>10/6</td><td>Sun</td><td>¥130,250</td></tr>
-                        <tr><td>10/7</td><td>Mon</td><td>¥148,250</td></tr>
-                        <tr><td>10/8</td><td>Tue</td><td>¥114,280</td></tr>
-                        <tr><td>10/9</td><td>Wed</td><td>¥100,450</td></tr>
-                        <tr><td>10/10</td><td>Thu</td><td>¥112,000</td></tr>
-                        <tr><td>10/11</td><td>Fri</td><td>¥137,400</td></tr>
-                        <tr><td>10/12</td><td>Sat</td><td>¥129,350</td></tr>
-                        <tr><td>10/13</td><td>Sun</td><td>¥125,700</td></tr>
-                        <tr><td>10/14</td><td>Mon</td><td>¥133,550</td></tr>
-                        <tr><td>10/15</td><td>Tue</td><td>¥108,700</td></tr>
-                        <tr><td>10/16</td><td>Wed</td><td>¥78,400</td></tr>
-                        <tr><td>10/17</td><td>Thu</td><td>¥102,150</td></tr>
-                        <tr><td>10/18</td><td>Fri</td><td>¥126,550</td></tr>
-                        <tr><td>10/19</td><td>Sat</td><td>¥112,150</td></tr>
-                        <tr><td>10/20</td><td>Sun</td><td>¥130,350</td></tr>
-                        <tr><td>10/21</td><td>Mon</td><td>¥102,550</td></tr>
-                        <tr><td>10/22</td><td>Tue</td><td>¥102,850</td></tr>
-                        <tr><td>10/23</td><td>Wed</td><td>¥142,250</td></tr>
-                        <tr><td>10/24</td><td>Thu</td><td>¥115,100</td></tr>
-                        <tr><td>10/25</td><td>Fri</td><td>¥119,550</td></tr>
-                        <tr><td>10/26</td><td>Sat</td><td>¥162,650</td></tr>
-                        <tr><td>10/27</td><td>Sun</td><td>¥147,800</td></tr>
-                        <tr><td>10/28</td><td>Mon</td><td>¥121,100</td></tr>
-                        <tr><td>10/29</td><td>Tue</td><td>¥95,300</td></tr>
-                        <tr><td>10/30</td><td>Wed</td><td>¥127,950</td></tr>
-                        <tr><td>10/31</td><td>Thu</td><td>¥117,850</td></tr>
+                        <tr>
+                            <td>10/1</td>
+                            <td>Tue</td>
+                            <td>¥73,200</td>
+                        </tr>
+                        <tr>
+                            <td>10/2</td>
+                            <td>Wed</td>
+                            <td>¥108,250</td>
+                        </tr>
+                        <tr>
+                            <td>10/3</td>
+                            <td>Thu</td>
+                            <td>¥103,350</td>
+                        </tr>
+                        <tr>
+                            <td>10/4</td>
+                            <td>Fri</td>
+                            <td>¥131,900</td>
+                        </tr>
+                        <tr>
+                            <td>10/5</td>
+                            <td>Sat</td>
+                            <td>¥102,950</td>
+                        </tr>
+                        <tr>
+                            <td>10/6</td>
+                            <td>Sun</td>
+                            <td>¥130,250</td>
+                        </tr>
+                        <tr>
+                            <td>10/7</td>
+                            <td>Mon</td>
+                            <td>¥148,250</td>
+                        </tr>
+                        <tr>
+                            <td>10/8</td>
+                            <td>Tue</td>
+                            <td>¥114,280</td>
+                        </tr>
+                        <tr>
+                            <td>10/9</td>
+                            <td>Wed</td>
+                            <td>¥100,450</td>
+                        </tr>
+                        <tr>
+                            <td>10/10</td>
+                            <td>Thu</td>
+                            <td>¥112,000</td>
+                        </tr>
+                        <tr>
+                            <td>10/11</td>
+                            <td>Fri</td>
+                            <td>¥137,400</td>
+                        </tr>
+                        <tr>
+                            <td>10/12</td>
+                            <td>Sat</td>
+                            <td>¥129,350</td>
+                        </tr>
+                        <tr>
+                            <td>10/13</td>
+                            <td>Sun</td>
+                            <td>¥125,700</td>
+                        </tr>
+                        <tr>
+                            <td>10/14</td>
+                            <td>Mon</td>
+                            <td>¥133,550</td>
+                        </tr>
+                        <tr>
+                            <td>10/15</td>
+                            <td>Tue</td>
+                            <td>¥108,700</td>
+                        </tr>
+                        <tr>
+                            <td>10/16</td>
+                            <td>Wed</td>
+                            <td>¥78,400</td>
+                        </tr>
+                        <tr>
+                            <td>10/17</td>
+                            <td>Thu</td>
+                            <td>¥102,150</td>
+                        </tr>
+                        <tr>
+                            <td>10/18</td>
+                            <td>Fri</td>
+                            <td>¥126,550</td>
+                        </tr>
+                        <tr>
+                            <td>10/19</td>
+                            <td>Sat</td>
+                            <td>¥112,150</td>
+                        </tr>
+                        <tr>
+                            <td>10/20</td>
+                            <td>Sun</td>
+                            <td>¥130,350</td>
+                        </tr>
+                        <tr>
+                            <td>10/21</td>
+                            <td>Mon</td>
+                            <td>¥102,550</td>
+                        </tr>
+                        <tr>
+                            <td>10/22</td>
+                            <td>Tue</td>
+                            <td>¥102,850</td>
+                        </tr>
+                        <tr>
+                            <td>10/23</td>
+                            <td>Wed</td>
+                            <td>¥142,250</td>
+                        </tr>
+                        <tr>
+                            <td>10/24</td>
+                            <td>Thu</td>
+                            <td>¥115,100</td>
+                        </tr>
+                        <tr>
+                            <td>10/25</td>
+                            <td>Fri</td>
+                            <td>¥119,550</td>
+                        </tr>
+                        <tr>
+                            <td>10/26</td>
+                            <td>Sat</td>
+                            <td>¥162,650</td>
+                        </tr>
+                        <tr>
+                            <td>10/27</td>
+                            <td>Sun</td>
+                            <td>¥147,800</td>
+                        </tr>
+                        <tr>
+                            <td>10/28</td>
+                            <td>Mon</td>
+                            <td>¥121,100</td>
+                        </tr>
+                        <tr>
+                            <td>10/29</td>
+                            <td>Tue</td>
+                            <td>¥95,300</td>
+                        </tr>
+                        <tr>
+                            <td>10/30</td>
+                            <td>Wed</td>
+                            <td>¥127,950</td>
+                        </tr>
+                        <tr>
+                            <td>10/31</td>
+                            <td>Thu</td>
+                            <td>¥117,850</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -450,20 +1610,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥126,362</td></tr>
-                        <tr><td>Tue</td><td>¥98,866</td></tr>
-                        <tr><td>Wed</td><td>¥111,460</td></tr>
-                        <tr><td>Thu</td><td>¥110,090</td></tr>
-                        <tr><td>Fri</td><td>¥128,850</td></tr>
-                        <tr><td>Sat</td><td>¥126,775</td></tr>
-                        <tr><td>Sun</td><td>¥133,525</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥126,362</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥98,866</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥111,460</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥110,090</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥128,850</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥126,775</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥133,525</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,664,130</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,664,130</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -474,38 +1665,164 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>11/1</td><td>Fri</td><td>¥106,100</td></tr>
-                        <tr><td>11/2</td><td>Sat</td><td>¥148,800</td></tr>
-                        <tr><td>11/3</td><td>Sun</td><td>¥194,150</td></tr>
-                        <tr><td>11/4</td><td>Mon</td><td>¥87,550</td></tr>
-                        <tr><td>11/5</td><td>Tue</td><td>¥106,800</td></tr>
-                        <tr><td>11/6</td><td>Wed</td><td>¥126,400</td></tr>
-                        <tr><td>11/7</td><td>Thu</td><td>¥125,500</td></tr>
-                        <tr><td>11/8</td><td>Fri</td><td>¥115,500</td></tr>
-                        <tr><td>11/9</td><td>Sat</td><td>¥137,650</td></tr>
-                        <tr><td>11/10</td><td>Sun</td><td>¥176,550</td></tr>
-                        <tr><td>11/11</td><td>Mon</td><td>¥82,900</td></tr>
-                        <tr><td>11/12</td><td>Tue</td><td>¥94,400</td></tr>
-                        <tr><td>11/13</td><td>Wed</td><td>¥135,600</td></tr>
-                        <tr><td>11/14</td><td>Thu</td><td>¥91,850</td></tr>
-                        <tr><td>11/15</td><td>Fri</td><td>¥108,500</td></tr>
-                        <tr><td>11/16</td><td>Sat</td><td>¥131,050</td></tr>
-                        <tr><td>11/17</td><td>Sun</td><td>¥144,480</td></tr>
-                        <tr><td>11/18</td><td>Mon</td><td>¥110,450</td></tr>
-                        <tr><td>11/19</td><td>Tue</td><td>¥81,000</td></tr>
-                        <tr><td>11/20</td><td>Wed</td><td>¥94,600</td></tr>
-                        <tr><td>11/21</td><td>Thu</td><td>¥137,350</td></tr>
-                        <tr><td>11/22</td><td>Fri</td><td>¥123,250</td></tr>
-                        <tr><td>11/23</td><td>Sat</td><td>¥198,350</td></tr>
-                        <tr><td>11/24</td><td>Sun</td><td>¥211,200</td></tr>
-                        <tr><td>11/25</td><td>Mon</td><td>¥93,450</td></tr>
-                        <tr><td>11/26</td><td>Tue</td><td>¥85,150</td></tr>
-                        <tr><td>11/27</td><td>Wed</td><td>¥132,900</td></tr>
-                        <tr><td>11/28</td><td>Thu</td><td>¥114,800</td></tr>
-                        <tr><td>11/29</td><td>Fri</td><td>¥207,500</td></tr>
-                        <tr><td>11/30</td><td>Sat</td><td>¥170,800</td></tr>
+                        <tr>
+                            <td>11/1</td>
+                            <td>Fri</td>
+                            <td>¥106,100</td>
+                        </tr>
+                        <tr>
+                            <td>11/2</td>
+                            <td>Sat</td>
+                            <td>¥148,800</td>
+                        </tr>
+                        <tr>
+                            <td>11/3</td>
+                            <td>Sun</td>
+                            <td>¥194,150</td>
+                        </tr>
+                        <tr>
+                            <td>11/4</td>
+                            <td>Mon</td>
+                            <td>¥87,550</td>
+                        </tr>
+                        <tr>
+                            <td>11/5</td>
+                            <td>Tue</td>
+                            <td>¥106,800</td>
+                        </tr>
+                        <tr>
+                            <td>11/6</td>
+                            <td>Wed</td>
+                            <td>¥126,400</td>
+                        </tr>
+                        <tr>
+                            <td>11/7</td>
+                            <td>Thu</td>
+                            <td>¥125,500</td>
+                        </tr>
+                        <tr>
+                            <td>11/8</td>
+                            <td>Fri</td>
+                            <td>¥115,500</td>
+                        </tr>
+                        <tr>
+                            <td>11/9</td>
+                            <td>Sat</td>
+                            <td>¥137,650</td>
+                        </tr>
+                        <tr>
+                            <td>11/10</td>
+                            <td>Sun</td>
+                            <td>¥176,550</td>
+                        </tr>
+                        <tr>
+                            <td>11/11</td>
+                            <td>Mon</td>
+                            <td>¥82,900</td>
+                        </tr>
+                        <tr>
+                            <td>11/12</td>
+                            <td>Tue</td>
+                            <td>¥94,400</td>
+                        </tr>
+                        <tr>
+                            <td>11/13</td>
+                            <td>Wed</td>
+                            <td>¥135,600</td>
+                        </tr>
+                        <tr>
+                            <td>11/14</td>
+                            <td>Thu</td>
+                            <td>¥91,850</td>
+                        </tr>
+                        <tr>
+                            <td>11/15</td>
+                            <td>Fri</td>
+                            <td>¥108,500</td>
+                        </tr>
+                        <tr>
+                            <td>11/16</td>
+                            <td>Sat</td>
+                            <td>¥131,050</td>
+                        </tr>
+                        <tr>
+                            <td>11/17</td>
+                            <td>Sun</td>
+                            <td>¥144,480</td>
+                        </tr>
+                        <tr>
+                            <td>11/18</td>
+                            <td>Mon</td>
+                            <td>¥110,450</td>
+                        </tr>
+                        <tr>
+                            <td>11/19</td>
+                            <td>Tue</td>
+                            <td>¥81,000</td>
+                        </tr>
+                        <tr>
+                            <td>11/20</td>
+                            <td>Wed</td>
+                            <td>¥94,600</td>
+                        </tr>
+                        <tr>
+                            <td>11/21</td>
+                            <td>Thu</td>
+                            <td>¥137,350</td>
+                        </tr>
+                        <tr>
+                            <td>11/22</td>
+                            <td>Fri</td>
+                            <td>¥123,250</td>
+                        </tr>
+                        <tr>
+                            <td>11/23</td>
+                            <td>Sat</td>
+                            <td>¥198,350</td>
+                        </tr>
+                        <tr>
+                            <td>11/24</td>
+                            <td>Sun</td>
+                            <td>¥211,200</td>
+                        </tr>
+                        <tr>
+                            <td>11/25</td>
+                            <td>Mon</td>
+                            <td>¥93,450</td>
+                        </tr>
+                        <tr>
+                            <td>11/26</td>
+                            <td>Tue</td>
+                            <td>¥85,150</td>
+                        </tr>
+                        <tr>
+                            <td>11/27</td>
+                            <td>Wed</td>
+                            <td>¥132,900</td>
+                        </tr>
+                        <tr>
+                            <td>11/28</td>
+                            <td>Thu</td>
+                            <td>¥114,800</td>
+                        </tr>
+                        <tr>
+                            <td>11/29</td>
+                            <td>Fri</td>
+                            <td>¥207,500</td>
+                        </tr>
+                        <tr>
+                            <td>11/30</td>
+                            <td>Sat</td>
+                            <td>¥170,800</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -513,20 +1830,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥93,588</td></tr>
-                        <tr><td>Tue</td><td>¥91,838</td></tr>
-                        <tr><td>Wed</td><td>¥122,375</td></tr>
-                        <tr><td>Thu</td><td>¥117,375</td></tr>
-                        <tr><td>Fri</td><td>¥132,170</td></tr>
-                        <tr><td>Sat</td><td>¥157,330</td></tr>
-                        <tr><td>Sun</td><td>¥181,595</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥93,588</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥91,838</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥122,375</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥117,375</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥132,170</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥157,330</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥181,595</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,874,580</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,874,580</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -537,39 +1885,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>12/1</td><td>Sun</td><td>¥161,650</td></tr>
-                        <tr><td>12/2</td><td>Mon</td><td>¥64,600</td></tr>
-                        <tr><td>12/3</td><td>Tue</td><td>¥108,180</td></tr>
-                        <tr><td>12/4</td><td>Wed</td><td>¥136,450</td></tr>
-                        <tr><td>12/5</td><td>Thu</td><td>¥139,450</td></tr>
-                        <tr><td>12/6</td><td>Fri</td><td>¥96,000</td></tr>
-                        <tr><td>12/7</td><td>Sat</td><td>¥177,630</td></tr>
-                        <tr><td>12/8</td><td>Sun</td><td>¥111,100</td></tr>
-                        <tr><td>12/9</td><td>Mon</td><td>¥104,150</td></tr>
-                        <tr><td>12/10</td><td>Tue</td><td>¥94,450</td></tr>
-                        <tr><td>12/11</td><td>Wed</td><td>¥107,450</td></tr>
-                        <tr><td>12/12</td><td>Thu</td><td>¥141,000</td></tr>
-                        <tr><td>12/13</td><td>Fri</td><td>¥194,050</td></tr>
-                        <tr><td>12/14</td><td>Sat</td><td>¥183,050</td></tr>
-                        <tr><td>12/15</td><td>Sun</td><td>¥159,150</td></tr>
-                        <tr><td>12/16</td><td>Mon</td><td>¥147,450</td></tr>
-                        <tr><td>12/17</td><td>Tue</td><td>¥135,450</td></tr>
-                        <tr><td>12/18</td><td>Wed</td><td>¥155,850</td></tr>
-                        <tr><td>12/19</td><td>Thu</td><td>¥133,700</td></tr>
-                        <tr><td>12/20</td><td>Fri</td><td>¥143,050</td></tr>
-                        <tr><td>12/21</td><td>Sat</td><td>¥171,750</td></tr>
-                        <tr><td>12/22</td><td>Sun</td><td>¥182,850</td></tr>
-                        <tr><td>12/23</td><td>Mon</td><td>¥151,400</td></tr>
-                        <tr><td>12/24</td><td>Tue</td><td>¥145,350</td></tr>
-                        <tr><td>12/25</td><td>Wed</td><td>¥172,350</td></tr>
-                        <tr><td>12/26</td><td>Thu</td><td>¥147,000</td></tr>
-                        <tr><td>12/27</td><td>Fri</td><td>¥208,600</td></tr>
-                        <tr><td>12/28</td><td>Sat</td><td>¥259,750</td></tr>
-                        <tr><td>12/29</td><td>Sun</td><td>¥179,950</td></tr>
-                        <tr><td>12/30</td><td>Mon</td><td>¥188,250</td></tr>
-                        <tr><td>12/31</td><td>Tue</td><td>¥101,000</td></tr>
+                        <tr>
+                            <td>12/1</td>
+                            <td>Sun</td>
+                            <td>¥161,650</td>
+                        </tr>
+                        <tr>
+                            <td>12/2</td>
+                            <td>Mon</td>
+                            <td>¥64,600</td>
+                        </tr>
+                        <tr>
+                            <td>12/3</td>
+                            <td>Tue</td>
+                            <td>¥108,180</td>
+                        </tr>
+                        <tr>
+                            <td>12/4</td>
+                            <td>Wed</td>
+                            <td>¥136,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/5</td>
+                            <td>Thu</td>
+                            <td>¥139,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/6</td>
+                            <td>Fri</td>
+                            <td>¥96,000</td>
+                        </tr>
+                        <tr>
+                            <td>12/7</td>
+                            <td>Sat</td>
+                            <td>¥177,630</td>
+                        </tr>
+                        <tr>
+                            <td>12/8</td>
+                            <td>Sun</td>
+                            <td>¥111,100</td>
+                        </tr>
+                        <tr>
+                            <td>12/9</td>
+                            <td>Mon</td>
+                            <td>¥104,150</td>
+                        </tr>
+                        <tr>
+                            <td>12/10</td>
+                            <td>Tue</td>
+                            <td>¥94,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/11</td>
+                            <td>Wed</td>
+                            <td>¥107,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/12</td>
+                            <td>Thu</td>
+                            <td>¥141,000</td>
+                        </tr>
+                        <tr>
+                            <td>12/13</td>
+                            <td>Fri</td>
+                            <td>¥194,050</td>
+                        </tr>
+                        <tr>
+                            <td>12/14</td>
+                            <td>Sat</td>
+                            <td>¥183,050</td>
+                        </tr>
+                        <tr>
+                            <td>12/15</td>
+                            <td>Sun</td>
+                            <td>¥159,150</td>
+                        </tr>
+                        <tr>
+                            <td>12/16</td>
+                            <td>Mon</td>
+                            <td>¥147,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/17</td>
+                            <td>Tue</td>
+                            <td>¥135,450</td>
+                        </tr>
+                        <tr>
+                            <td>12/18</td>
+                            <td>Wed</td>
+                            <td>¥155,850</td>
+                        </tr>
+                        <tr>
+                            <td>12/19</td>
+                            <td>Thu</td>
+                            <td>¥133,700</td>
+                        </tr>
+                        <tr>
+                            <td>12/20</td>
+                            <td>Fri</td>
+                            <td>¥143,050</td>
+                        </tr>
+                        <tr>
+                            <td>12/21</td>
+                            <td>Sat</td>
+                            <td>¥171,750</td>
+                        </tr>
+                        <tr>
+                            <td>12/22</td>
+                            <td>Sun</td>
+                            <td>¥182,850</td>
+                        </tr>
+                        <tr>
+                            <td>12/23</td>
+                            <td>Mon</td>
+                            <td>¥151,400</td>
+                        </tr>
+                        <tr>
+                            <td>12/24</td>
+                            <td>Tue</td>
+                            <td>¥145,350</td>
+                        </tr>
+                        <tr>
+                            <td>12/25</td>
+                            <td>Wed</td>
+                            <td>¥172,350</td>
+                        </tr>
+                        <tr>
+                            <td>12/26</td>
+                            <td>Thu</td>
+                            <td>¥147,000</td>
+                        </tr>
+                        <tr>
+                            <td>12/27</td>
+                            <td>Fri</td>
+                            <td>¥208,600</td>
+                        </tr>
+                        <tr>
+                            <td>12/28</td>
+                            <td>Sat</td>
+                            <td>¥259,750</td>
+                        </tr>
+                        <tr>
+                            <td>12/29</td>
+                            <td>Sun</td>
+                            <td>¥179,950</td>
+                        </tr>
+                        <tr>
+                            <td>12/30</td>
+                            <td>Mon</td>
+                            <td>¥188,250</td>
+                        </tr>
+                        <tr>
+                            <td>12/31</td>
+                            <td>Tue</td>
+                            <td>¥101,000</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -577,20 +2055,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥131,170</td></tr>
-                        <tr><td>Tue</td><td>¥116,886</td></tr>
-                        <tr><td>Wed</td><td>¥143,025</td></tr>
-                        <tr><td>Thu</td><td>¥140,288</td></tr>
-                        <tr><td>Fri</td><td>¥160,425</td></tr>
-                        <tr><td>Sat</td><td>¥198,045</td></tr>
-                        <tr><td>Sun</td><td>¥158,940</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥131,170</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥116,886</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥143,025</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥140,288</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥160,425</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥198,045</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥158,940</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥4,602,110</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥4,602,110</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -601,39 +2110,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>1/1</td><td>Wed</td><td>¥0</td></tr>
-                        <tr><td>1/2</td><td>Thu</td><td>¥212,500</td></tr>
-                        <tr><td>1/3</td><td>Fri</td><td>¥223,650</td></tr>
-                        <tr><td>1/4</td><td>Sat</td><td>¥134,150</td></tr>
-                        <tr><td>1/5</td><td>Sun</td><td>¥138,450</td></tr>
-                        <tr><td>1/6</td><td>Mon</td><td>¥106,050</td></tr>
-                        <tr><td>1/7</td><td>Tue</td><td>¥118,350</td></tr>
-                        <tr><td>1/8</td><td>Wed</td><td>¥131,700</td></tr>
-                        <tr><td>1/9</td><td>Thu</td><td>¥103,180</td></tr>
-                        <tr><td>1/10</td><td>Fri</td><td>¥142,350</td></tr>
-                        <tr><td>1/11</td><td>Sat</td><td>¥180,200</td></tr>
-                        <tr><td>1/12</td><td>Sun</td><td>¥167,550</td></tr>
-                        <tr><td>1/13</td><td>Mon</td><td>¥112,300</td></tr>
-                        <tr><td>1/14</td><td>Tue</td><td>¥101,150</td></tr>
-                        <tr><td>1/15</td><td>Wed</td><td>¥120,900</td></tr>
-                        <tr><td>1/16</td><td>Thu</td><td>¥154,450</td></tr>
-                        <tr><td>1/17</td><td>Fri</td><td>¥172,900</td></tr>
-                        <tr><td>1/18</td><td>Sat</td><td>¥163,900</td></tr>
-                        <tr><td>1/19</td><td>Sun</td><td>¥156,850</td></tr>
-                        <tr><td>1/20</td><td>Mon</td><td>¥122,700</td></tr>
-                        <tr><td>1/21</td><td>Tue</td><td>¥121,050</td></tr>
-                        <tr><td>1/22</td><td>Wed</td><td>¥178,900</td></tr>
-                        <tr><td>1/23</td><td>Thu</td><td>¥143,850</td></tr>
-                        <tr><td>1/24</td><td>Fri</td><td>¥161,110</td></tr>
-                        <tr><td>1/25</td><td>Sat</td><td>¥154,850</td></tr>
-                        <tr><td>1/26</td><td>Sun</td><td>¥197,700</td></tr>
-                        <tr><td>1/27</td><td>Mon</td><td>¥90,100</td></tr>
-                        <tr><td>1/28</td><td>Tue</td><td>¥147,400</td></tr>
-                        <tr><td>1/29</td><td>Wed</td><td>¥168,250</td></tr>
-                        <tr><td>1/30</td><td>Thu</td><td>¥150,700</td></tr>
-                        <tr><td>1/31</td><td>Fri</td><td>¥150,650</td></tr>
+                        <tr>
+                            <td>1/1</td>
+                            <td>Wed</td>
+                            <td>¥0</td>
+                        </tr>
+                        <tr>
+                            <td>1/2</td>
+                            <td>Thu</td>
+                            <td>¥212,500</td>
+                        </tr>
+                        <tr>
+                            <td>1/3</td>
+                            <td>Fri</td>
+                            <td>¥223,650</td>
+                        </tr>
+                        <tr>
+                            <td>1/4</td>
+                            <td>Sat</td>
+                            <td>¥134,150</td>
+                        </tr>
+                        <tr>
+                            <td>1/5</td>
+                            <td>Sun</td>
+                            <td>¥138,450</td>
+                        </tr>
+                        <tr>
+                            <td>1/6</td>
+                            <td>Mon</td>
+                            <td>¥106,050</td>
+                        </tr>
+                        <tr>
+                            <td>1/7</td>
+                            <td>Tue</td>
+                            <td>¥118,350</td>
+                        </tr>
+                        <tr>
+                            <td>1/8</td>
+                            <td>Wed</td>
+                            <td>¥131,700</td>
+                        </tr>
+                        <tr>
+                            <td>1/9</td>
+                            <td>Thu</td>
+                            <td>¥103,180</td>
+                        </tr>
+                        <tr>
+                            <td>1/10</td>
+                            <td>Fri</td>
+                            <td>¥142,350</td>
+                        </tr>
+                        <tr>
+                            <td>1/11</td>
+                            <td>Sat</td>
+                            <td>¥180,200</td>
+                        </tr>
+                        <tr>
+                            <td>1/12</td>
+                            <td>Sun</td>
+                            <td>¥167,550</td>
+                        </tr>
+                        <tr>
+                            <td>1/13</td>
+                            <td>Mon</td>
+                            <td>¥112,300</td>
+                        </tr>
+                        <tr>
+                            <td>1/14</td>
+                            <td>Tue</td>
+                            <td>¥101,150</td>
+                        </tr>
+                        <tr>
+                            <td>1/15</td>
+                            <td>Wed</td>
+                            <td>¥120,900</td>
+                        </tr>
+                        <tr>
+                            <td>1/16</td>
+                            <td>Thu</td>
+                            <td>¥154,450</td>
+                        </tr>
+                        <tr>
+                            <td>1/17</td>
+                            <td>Fri</td>
+                            <td>¥172,900</td>
+                        </tr>
+                        <tr>
+                            <td>1/18</td>
+                            <td>Sat</td>
+                            <td>¥163,900</td>
+                        </tr>
+                        <tr>
+                            <td>1/19</td>
+                            <td>Sun</td>
+                            <td>¥156,850</td>
+                        </tr>
+                        <tr>
+                            <td>1/20</td>
+                            <td>Mon</td>
+                            <td>¥122,700</td>
+                        </tr>
+                        <tr>
+                            <td>1/21</td>
+                            <td>Tue</td>
+                            <td>¥121,050</td>
+                        </tr>
+                        <tr>
+                            <td>1/22</td>
+                            <td>Wed</td>
+                            <td>¥178,900</td>
+                        </tr>
+                        <tr>
+                            <td>1/23</td>
+                            <td>Thu</td>
+                            <td>¥143,850</td>
+                        </tr>
+                        <tr>
+                            <td>1/24</td>
+                            <td>Fri</td>
+                            <td>¥161,110</td>
+                        </tr>
+                        <tr>
+                            <td>1/25</td>
+                            <td>Sat</td>
+                            <td>¥154,850</td>
+                        </tr>
+                        <tr>
+                            <td>1/26</td>
+                            <td>Sun</td>
+                            <td>¥197,700</td>
+                        </tr>
+                        <tr>
+                            <td>1/27</td>
+                            <td>Mon</td>
+                            <td>¥90,100</td>
+                        </tr>
+                        <tr>
+                            <td>1/28</td>
+                            <td>Tue</td>
+                            <td>¥147,400</td>
+                        </tr>
+                        <tr>
+                            <td>1/29</td>
+                            <td>Wed</td>
+                            <td>¥168,250</td>
+                        </tr>
+                        <tr>
+                            <td>1/30</td>
+                            <td>Thu</td>
+                            <td>¥150,700</td>
+                        </tr>
+                        <tr>
+                            <td>1/31</td>
+                            <td>Fri</td>
+                            <td>¥150,650</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -641,20 +2280,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥107,788</td></tr>
-                        <tr><td>Tue</td><td>¥121,988</td></tr>
-                        <tr><td>Wed</td><td>¥149,938</td></tr>
-                        <tr><td>Thu</td><td>¥152,936</td></tr>
-                        <tr><td>Fri</td><td>¥170,132</td></tr>
-                        <tr><td>Sat</td><td>¥158,275</td></tr>
-                        <tr><td>Sun</td><td>¥165,138</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥107,788</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥121,988</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥149,938</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥152,936</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥170,132</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥158,275</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥165,138</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥4,427,840</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥4,427,840</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -665,36 +2335,154 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>2/1</td><td>Sat</td><td>¥167,650</td></tr>
-                        <tr><td>2/2</td><td>Sun</td><td>¥193,050</td></tr>
-                        <tr><td>2/3</td><td>Mon</td><td>¥140,100</td></tr>
-                        <tr><td>2/4</td><td>Tue</td><td>¥178,700</td></tr>
-                        <tr><td>2/5</td><td>Wed</td><td>¥186,400</td></tr>
-                        <tr><td>2/6</td><td>Thu</td><td>¥186,500</td></tr>
-                        <tr><td>2/7</td><td>Fri</td><td>¥162,100</td></tr>
-                        <tr><td>2/8</td><td>Sat</td><td>¥263,550</td></tr>
-                        <tr><td>2/9</td><td>Sun</td><td>¥146,050</td></tr>
-                        <tr><td>2/10</td><td>Mon</td><td>¥174,700</td></tr>
-                        <tr><td>2/11</td><td>Tue</td><td>¥160,200</td></tr>
-                        <tr><td>2/12</td><td>Wed</td><td>¥124,100</td></tr>
-                        <tr><td>2/13</td><td>Thu</td><td>¥111,650</td></tr>
-                        <tr><td>2/14</td><td>Fri</td><td>¥182,600</td></tr>
-                        <tr><td>2/15</td><td>Sat</td><td>¥137,250</td></tr>
-                        <tr><td>2/16</td><td>Sun</td><td>¥132,850</td></tr>
-                        <tr><td>2/17</td><td>Mon</td><td>¥95,400</td></tr>
-                        <tr><td>2/18</td><td>Tue</td><td>¥114,750</td></tr>
-                        <tr><td>2/19</td><td>Wed</td><td>¥113,050</td></tr>
-                        <tr><td>2/20</td><td>Thu</td><td>¥94,150</td></tr>
-                        <tr><td>2/21</td><td>Fri</td><td>¥112,050</td></tr>
-                        <tr><td>2/22</td><td>Sat</td><td>¥139,800</td></tr>
-                        <tr><td>2/23</td><td>Sun</td><td>¥138,850</td></tr>
-                        <tr><td>2/24</td><td>Mon</td><td>¥102,400</td></tr>
-                        <tr><td>2/25</td><td>Tue</td><td>¥117,800</td></tr>
-                        <tr><td>2/26</td><td>Wed</td><td>¥91,250</td></tr>
-                        <tr><td>2/27</td><td>Thu</td><td>¥111,000</td></tr>
-                        <tr><td>2/28</td><td>Fri</td><td>¥137,950</td></tr>
+                        <tr>
+                            <td>2/1</td>
+                            <td>Sat</td>
+                            <td>¥167,650</td>
+                        </tr>
+                        <tr>
+                            <td>2/2</td>
+                            <td>Sun</td>
+                            <td>¥193,050</td>
+                        </tr>
+                        <tr>
+                            <td>2/3</td>
+                            <td>Mon</td>
+                            <td>¥140,100</td>
+                        </tr>
+                        <tr>
+                            <td>2/4</td>
+                            <td>Tue</td>
+                            <td>¥178,700</td>
+                        </tr>
+                        <tr>
+                            <td>2/5</td>
+                            <td>Wed</td>
+                            <td>¥186,400</td>
+                        </tr>
+                        <tr>
+                            <td>2/6</td>
+                            <td>Thu</td>
+                            <td>¥186,500</td>
+                        </tr>
+                        <tr>
+                            <td>2/7</td>
+                            <td>Fri</td>
+                            <td>¥162,100</td>
+                        </tr>
+                        <tr>
+                            <td>2/8</td>
+                            <td>Sat</td>
+                            <td>¥263,550</td>
+                        </tr>
+                        <tr>
+                            <td>2/9</td>
+                            <td>Sun</td>
+                            <td>¥146,050</td>
+                        </tr>
+                        <tr>
+                            <td>2/10</td>
+                            <td>Mon</td>
+                            <td>¥174,700</td>
+                        </tr>
+                        <tr>
+                            <td>2/11</td>
+                            <td>Tue</td>
+                            <td>¥160,200</td>
+                        </tr>
+                        <tr>
+                            <td>2/12</td>
+                            <td>Wed</td>
+                            <td>¥124,100</td>
+                        </tr>
+                        <tr>
+                            <td>2/13</td>
+                            <td>Thu</td>
+                            <td>¥111,650</td>
+                        </tr>
+                        <tr>
+                            <td>2/14</td>
+                            <td>Fri</td>
+                            <td>¥182,600</td>
+                        </tr>
+                        <tr>
+                            <td>2/15</td>
+                            <td>Sat</td>
+                            <td>¥137,250</td>
+                        </tr>
+                        <tr>
+                            <td>2/16</td>
+                            <td>Sun</td>
+                            <td>¥132,850</td>
+                        </tr>
+                        <tr>
+                            <td>2/17</td>
+                            <td>Mon</td>
+                            <td>¥95,400</td>
+                        </tr>
+                        <tr>
+                            <td>2/18</td>
+                            <td>Tue</td>
+                            <td>¥114,750</td>
+                        </tr>
+                        <tr>
+                            <td>2/19</td>
+                            <td>Wed</td>
+                            <td>¥113,050</td>
+                        </tr>
+                        <tr>
+                            <td>2/20</td>
+                            <td>Thu</td>
+                            <td>¥94,150</td>
+                        </tr>
+                        <tr>
+                            <td>2/21</td>
+                            <td>Fri</td>
+                            <td>¥112,050</td>
+                        </tr>
+                        <tr>
+                            <td>2/22</td>
+                            <td>Sat</td>
+                            <td>¥139,800</td>
+                        </tr>
+                        <tr>
+                            <td>2/23</td>
+                            <td>Sun</td>
+                            <td>¥138,850</td>
+                        </tr>
+                        <tr>
+                            <td>2/24</td>
+                            <td>Mon</td>
+                            <td>¥102,400</td>
+                        </tr>
+                        <tr>
+                            <td>2/25</td>
+                            <td>Tue</td>
+                            <td>¥117,800</td>
+                        </tr>
+                        <tr>
+                            <td>2/26</td>
+                            <td>Wed</td>
+                            <td>¥91,250</td>
+                        </tr>
+                        <tr>
+                            <td>2/27</td>
+                            <td>Thu</td>
+                            <td>¥111,000</td>
+                        </tr>
+                        <tr>
+                            <td>2/28</td>
+                            <td>Fri</td>
+                            <td>¥137,950</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -702,20 +2490,51 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥128,150</td></tr>
-                        <tr><td>Tue</td><td>¥142,862</td></tr>
-                        <tr><td>Wed</td><td>¥128,700</td></tr>
-                        <tr><td>Thu</td><td>¥125,825</td></tr>
-                        <tr><td>Fri</td><td>¥148,675</td></tr>
-                        <tr><td>Sat</td><td>¥177,062</td></tr>
-                        <tr><td>Sun</td><td>¥152,700</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥128,150</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥142,862</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥128,700</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥125,825</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥148,675</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥177,062</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥152,700</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥4,015,900</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥4,015,900</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -726,39 +2545,169 @@
             <div class="daily-sales">
                 <h3>日別売上</h3>
                 <table>
-                    <thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>曜日</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>3/1</td><td>Sat</td><td>¥135,400</td></tr>
-                        <tr><td>3/2</td><td>Sun</td><td>¥137,450</td></tr>
-                        <tr><td>3/3</td><td>Mon</td><td>¥96,150</td></tr>
-                        <tr><td>3/4</td><td>Tue</td><td>¥82,800</td></tr>
-                        <tr><td>3/5</td><td>Wed</td><td>¥112,450</td></tr>
-                        <tr><td>3/6</td><td>Thu</td><td>¥118,750</td></tr>
-                        <tr><td>3/7</td><td>Fri</td><td>¥142,050</td></tr>
-                        <tr><td>3/8</td><td>Sat</td><td>¥146,300</td></tr>
-                        <tr><td>3/9</td><td>Sun</td><td>¥144,800</td></tr>
-                        <tr><td>3/10</td><td>Mon</td><td>¥111,650</td></tr>
-                        <tr><td>3/11</td><td>Tue</td><td>¥104,000</td></tr>
-                        <tr><td>3/12</td><td>Wed</td><td>¥140,350</td></tr>
-                        <tr><td>3/13</td><td>Thu</td><td>¥110,850</td></tr>
-                        <tr><td>3/14</td><td>Fri</td><td>¥160,850</td></tr>
-                        <tr><td>3/15</td><td>Sat</td><td>¥163,250</td></tr>
-                        <tr><td>3/16</td><td>Sun</td><td>¥98,900</td></tr>
-                        <tr><td>3/17</td><td>Mon</td><td>¥81,700</td></tr>
-                        <tr><td>3/18</td><td>Tue</td><td>¥75,700</td></tr>
-                        <tr><td>3/19</td><td>Wed</td><td>¥118,350</td></tr>
-                        <tr><td>3/20</td><td>Thu</td><td>¥130,450</td></tr>
-                        <tr><td>3/21</td><td>Fri</td><td>¥116,650</td></tr>
-                        <tr><td>3/22</td><td>Sat</td><td>¥130,250</td></tr>
-                        <tr><td>3/23</td><td>Sun</td><td>¥85,150</td></tr>
-                        <tr><td>3/24</td><td>Mon</td><td>¥106,050</td></tr>
-                        <tr><td>3/25</td><td>Tue</td><td>¥85,550</td></tr>
-                        <tr><td>3/26</td><td>Wed</td><td>¥113,150</td></tr>
-                        <tr><td>3/27</td><td>Thu</td><td>¥107,850</td></tr>
-                        <tr><td>3/28</td><td>Fri</td><td>¥102,100</td></tr>
-                        <tr><td>3/29</td><td>Sat</td><td>¥142,150</td></tr>
-                        <tr><td>3/30</td><td>Sun</td><td>¥144,800</td></tr>
-                        <tr><td>3/31</td><td>Mon</td><td>¥111,150</td></tr>
+                        <tr>
+                            <td>3/1</td>
+                            <td>Sat</td>
+                            <td>¥135,400</td>
+                        </tr>
+                        <tr>
+                            <td>3/2</td>
+                            <td>Sun</td>
+                            <td>¥137,450</td>
+                        </tr>
+                        <tr>
+                            <td>3/3</td>
+                            <td>Mon</td>
+                            <td>¥96,150</td>
+                        </tr>
+                        <tr>
+                            <td>3/4</td>
+                            <td>Tue</td>
+                            <td>¥82,800</td>
+                        </tr>
+                        <tr>
+                            <td>3/5</td>
+                            <td>Wed</td>
+                            <td>¥112,450</td>
+                        </tr>
+                        <tr>
+                            <td>3/6</td>
+                            <td>Thu</td>
+                            <td>¥118,750</td>
+                        </tr>
+                        <tr>
+                            <td>3/7</td>
+                            <td>Fri</td>
+                            <td>¥142,050</td>
+                        </tr>
+                        <tr>
+                            <td>3/8</td>
+                            <td>Sat</td>
+                            <td>¥146,300</td>
+                        </tr>
+                        <tr>
+                            <td>3/9</td>
+                            <td>Sun</td>
+                            <td>¥144,800</td>
+                        </tr>
+                        <tr>
+                            <td>3/10</td>
+                            <td>Mon</td>
+                            <td>¥111,650</td>
+                        </tr>
+                        <tr>
+                            <td>3/11</td>
+                            <td>Tue</td>
+                            <td>¥104,000</td>
+                        </tr>
+                        <tr>
+                            <td>3/12</td>
+                            <td>Wed</td>
+                            <td>¥140,350</td>
+                        </tr>
+                        <tr>
+                            <td>3/13</td>
+                            <td>Thu</td>
+                            <td>¥110,850</td>
+                        </tr>
+                        <tr>
+                            <td>3/14</td>
+                            <td>Fri</td>
+                            <td>¥160,850</td>
+                        </tr>
+                        <tr>
+                            <td>3/15</td>
+                            <td>Sat</td>
+                            <td>¥163,250</td>
+                        </tr>
+                        <tr>
+                            <td>3/16</td>
+                            <td>Sun</td>
+                            <td>¥98,900</td>
+                        </tr>
+                        <tr>
+                            <td>3/17</td>
+                            <td>Mon</td>
+                            <td>¥81,700</td>
+                        </tr>
+                        <tr>
+                            <td>3/18</td>
+                            <td>Tue</td>
+                            <td>¥75,700</td>
+                        </tr>
+                        <tr>
+                            <td>3/19</td>
+                            <td>Wed</td>
+                            <td>¥118,350</td>
+                        </tr>
+                        <tr>
+                            <td>3/20</td>
+                            <td>Thu</td>
+                            <td>¥130,450</td>
+                        </tr>
+                        <tr>
+                            <td>3/21</td>
+                            <td>Fri</td>
+                            <td>¥116,650</td>
+                        </tr>
+                        <tr>
+                            <td>3/22</td>
+                            <td>Sat</td>
+                            <td>¥130,250</td>
+                        </tr>
+                        <tr>
+                            <td>3/23</td>
+                            <td>Sun</td>
+                            <td>¥85,150</td>
+                        </tr>
+                        <tr>
+                            <td>3/24</td>
+                            <td>Mon</td>
+                            <td>¥106,050</td>
+                        </tr>
+                        <tr>
+                            <td>3/25</td>
+                            <td>Tue</td>
+                            <td>¥85,550</td>
+                        </tr>
+                        <tr>
+                            <td>3/26</td>
+                            <td>Wed</td>
+                            <td>¥113,150</td>
+                        </tr>
+                        <tr>
+                            <td>3/27</td>
+                            <td>Thu</td>
+                            <td>¥107,850</td>
+                        </tr>
+                        <tr>
+                            <td>3/28</td>
+                            <td>Fri</td>
+                            <td>¥102,100</td>
+                        </tr>
+                        <tr>
+                            <td>3/29</td>
+                            <td>Sat</td>
+                            <td>¥142,150</td>
+                        </tr>
+                        <tr>
+                            <td>3/30</td>
+                            <td>Sun</td>
+                            <td>¥144,800</td>
+                        </tr>
+                        <tr>
+                            <td>3/31</td>
+                            <td>Mon</td>
+                            <td>¥111,150</td>
+                        </tr>
 
                     </tbody>
                 </table>
@@ -766,26 +2715,184 @@
             <div class="summary">
                 <h3>曜日別平均売上</h3>
                 <table>
-                    <thead><tr><th>曜日</th><th>平均売上</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>曜日</th>
+                            <th>平均売上</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>Mon</td><td>¥101,340</td></tr>
-                        <tr><td>Tue</td><td>¥87,012</td></tr>
-                        <tr><td>Wed</td><td>¥121,075</td></tr>
-                        <tr><td>Thu</td><td>¥116,975</td></tr>
-                        <tr><td>Fri</td><td>¥130,412</td></tr>
-                        <tr><td>Sat</td><td>¥143,470</td></tr>
-                        <tr><td>Sun</td><td>¥122,220</td></tr>
+                        <tr>
+                            <td>Mon</td>
+                            <td>¥101,340</td>
+                        </tr>
+                        <tr>
+                            <td>Tue</td>
+                            <td>¥87,012</td>
+                        </tr>
+                        <tr>
+                            <td>Wed</td>
+                            <td>¥121,075</td>
+                        </tr>
+                        <tr>
+                            <td>Thu</td>
+                            <td>¥116,975</td>
+                        </tr>
+                        <tr>
+                            <td>Fri</td>
+                            <td>¥130,412</td>
+                        </tr>
+                        <tr>
+                            <td>Sat</td>
+                            <td>¥143,470</td>
+                        </tr>
+                        <tr>
+                            <td>Sun</td>
+                            <td>¥122,220</td>
+                        </tr>
 
                     </tbody>
                 </table>
                 <h3>月間合計</h3>
-                <table><tr class="total-row"><td>合計売上</td><td>¥3,657,050</td></tr></table>
+                <table>
+                    <tr class="total-row">
+                        <td>合計売上</td>
+                        <td>¥3,657,050</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
 
     <div class="grand-total">
-        2024年度 年間総売上: ¥46,167,950
+        2024年度 年間総売上: ¥46,167,950 (税込) / ¥41,970,864 (税抜)
     </div>
+
+    <script>
+        // 税率設定 (10%)
+        const TAX_RATE = 0.10;
+
+        // 税込金額から税抜金額を計算
+        function calculateExcludingTax(includingTax) {
+            return Math.floor(includingTax / (1 + TAX_RATE));
+        }
+
+        // 金額文字列をパース (例: "¥127,550" → 127550)
+        function parseAmount(amountStr) {
+            return parseInt(amountStr.replace(/[¥,]/g, ''), 10) || 0;
+        }
+
+        // 金額を日本円形式にフォーマット
+        function formatAmount(amount) {
+            return '¥' + amount.toLocaleString('ja-JP');
+        }
+
+        // 全てのテーブルを処理
+        document.querySelectorAll('table').forEach(table => {
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+
+            if (!thead) return;
+
+            const headers = thead.querySelectorAll('th');
+            const headerTexts = Array.from(headers).map(th => th.textContent.trim());
+
+            // 日別売上テーブル (日付, 曜日, 売上)
+            if (headerTexts.includes('日付') && headerTexts.includes('売上')) {
+                const salesIndex = headerTexts.indexOf('売上');
+                headers[salesIndex].textContent = '売上(税込)';
+
+                const newHeader = document.createElement('th');
+                newHeader.textContent = '売上(税抜)';
+                newHeader.className = 'tax-excluded';
+                thead.appendChild(newHeader);
+
+                tbody.querySelectorAll('tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > salesIndex) {
+                        const includingTax = parseAmount(cells[salesIndex].textContent);
+                        const excludingTax = calculateExcludingTax(includingTax);
+
+                        const newCell = document.createElement('td');
+                        newCell.textContent = formatAmount(excludingTax);
+                        newCell.className = 'tax-excluded';
+                        row.appendChild(newCell);
+                    }
+                });
+            }
+
+            // 曜日別平均売上テーブル (曜日, 平均売上)
+            if (headerTexts.includes('曜日') && headerTexts.includes('平均売上')) {
+                const salesIndex = headerTexts.indexOf('平均売上');
+                headers[salesIndex].textContent = '平均売上(税込)';
+
+                const newHeader = document.createElement('th');
+                newHeader.textContent = '平均売上(税抜)';
+                newHeader.className = 'tax-excluded';
+                thead.appendChild(newHeader);
+
+                tbody.querySelectorAll('tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length > salesIndex) {
+                        const includingTax = parseAmount(cells[salesIndex].textContent);
+                        const excludingTax = calculateExcludingTax(includingTax);
+
+                        const newCell = document.createElement('td');
+                        newCell.textContent = formatAmount(excludingTax);
+                        newCell.className = 'tax-excluded';
+                        row.appendChild(newCell);
+                    }
+                });
+            }
+
+            // 月間合計テーブル (theadがないテーブル)
+            if (!thead && table.querySelector('.total-row')) {
+                const totalRow = table.querySelector('.total-row');
+                const cells = totalRow.querySelectorAll('td');
+                if (cells.length >= 2) {
+                    const includingTax = parseAmount(cells[1].textContent);
+                    const excludingTax = calculateExcludingTax(includingTax);
+                    cells[0].textContent = '合計売上(税込)';
+
+                    const newLabelCell = document.createElement('td');
+                    newLabelCell.textContent = '合計売上(税抜)';
+                    newLabelCell.style.textAlign = 'left';
+
+                    const newValueCell = document.createElement('td');
+                    newValueCell.textContent = formatAmount(excludingTax);
+                    newValueCell.className = 'tax-excluded';
+
+                    totalRow.appendChild(newLabelCell);
+                    totalRow.appendChild(newValueCell);
+                }
+            }
+        });
+
+        // 月間合計テーブルを処理 (theadがないテーブル)
+        document.querySelectorAll('.total-row').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length === 2 && cells[0].textContent.includes('合計売上')) {
+                const includingTax = parseAmount(cells[1].textContent);
+                const excludingTax = calculateExcludingTax(includingTax);
+
+                // 既存のセルを更新
+                cells[0].textContent = '合計売上(税込)';
+
+                // 税抜の列を追加
+                const newLabelCell = document.createElement('td');
+                newLabelCell.textContent = '(税抜)';
+                newLabelCell.style.textAlign = 'left';
+                newLabelCell.className = 'tax-excluded';
+
+                const newValueCell = document.createElement('td');
+                newValueCell.textContent = formatAmount(excludingTax);
+                newValueCell.className = 'tax-excluded';
+
+                row.appendChild(newLabelCell);
+                row.appendChild(newValueCell);
+            }
+        });
+    </script>
 </body>
+
 </html>
