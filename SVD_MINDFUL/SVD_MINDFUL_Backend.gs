@@ -33,26 +33,45 @@ function doPost(e) {
       sheet.getRange(1, 1, 1, 22).setFontWeight('bold');
     }
     
+    // 重複防止のための日付取得（workDateがあればその日付、なければ今日）
+    const checkDate = data.workDate || new Date().toISOString().split('T')[0];
+    const allData = sheet.getDataRange().getValues();
+    
+    // ============ C/IN 重複チェック ============
+    if (data.type === 'checkin') {
+      for (let i = 1; i < allData.length; i++) {
+        if (allData[i][2] === data.name && allData[i][1] === 'checkin') {
+          // timestampから日付を取得して比較
+          const rowDate = new Date(allData[i][0]).toISOString().split('T')[0];
+          if (rowDate === checkDate) {
+            // Already checked in for this date - reject with error
+            return ContentService.createTextOutput(JSON.stringify({ 
+              success: false,
+              error: 'Already checked in for this date',
+              duplicate: true
+            })).setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+    }
+    
     // トークン残高を計算（ユーザー別累計）
     let tokenBalance = 0;
     const tokenEarned = data.tokenEarned || 0;
     
+    // ============ C/O (reflection) 重複チェック ============
     if (data.type === 'reflection' && tokenEarned > 0) {
-      // 既存データからユーザーの累計トークンを取得
-      const allData = sheet.getDataRange().getValues();
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Check for duplicate reflection today (same user, same date)
+      // Check for duplicate reflection for this date (same user, same date)
       for (let i = 1; i < allData.length; i++) {
         if (allData[i][2] === data.name && allData[i][3] === data.base) {
-          // Check if this is a reflection from today
+          // Check if this is a reflection from the same date
           if (allData[i][1] === 'reflection') {
             const rowDate = new Date(allData[i][0]).toISOString().split('T')[0];
-            if (rowDate === today) {
-              // Already checked out today - reject with error
+            if (rowDate === checkDate) {
+              // Already checked out for this date - reject with error
               return ContentService.createTextOutput(JSON.stringify({ 
                 success: false,
-                error: 'Already checked out today',
+                error: 'Already checked out for this date',
                 duplicate: true
               })).setMimeType(ContentService.MimeType.JSON);
             }
