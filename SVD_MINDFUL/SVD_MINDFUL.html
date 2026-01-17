@@ -2763,23 +2763,28 @@
 
         function updateReflectionButton() {
             const checkinTime = localStorage.getItem('mindful_checkin_time');
-            const checkoutDate = localStorage.getItem('mindful_checkout_date');
             const reflectionBtn = document.getElementById('reflectionBtn');
             const reflectionNotice = document.getElementById('reflectionNotice');
             const reflectionTimer = document.getElementById('reflectionTimer');
-            const today = new Date().toISOString().split('T')[0];
 
-            // Already checked out today - disable button
-            if (checkoutDate === today) {
+            // ===== workDateベースで重複チェック =====
+            const targetDate = workDate || new Date().toISOString().split('T')[0];
+            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+            const alreadyCheckedOut = checkedOutDates.includes(targetDate);
+
+            // Already checked out for this work date - disable button
+            if (alreadyCheckedOut) {
                 reflectionBtn.disabled = true;
                 reflectionBtn.style.opacity = '0.5';
                 reflectionBtn.textContent = 'CHECK OUT 完了済み';
+                reflectionBtn.style.pointerEvents = 'none'; // クリックイベントも無効化
                 reflectionNotice.style.display = 'none';
                 return;
             }
 
-            // Reset button text
+            // Reset button text and pointer events
             reflectionBtn.textContent = 'CHECK OUT →';
+            reflectionBtn.style.pointerEvents = 'auto';
 
             // No check-in recorded - disable button
             if (!checkinTime) {
@@ -2981,6 +2986,14 @@
         }
 
         function showReflection() {
+            // ===== 重複チェック: この勤務日で既にC/O済みか確認 =====
+            const targetDate = workDate || new Date().toISOString().split('T')[0];
+            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+            if (checkedOutDates.includes(targetDate)) {
+                alert('この日付のCHECK OUTは既に完了しています。');
+                return;
+            }
+
             document.getElementById('reflectionQuestTitles').innerHTML = currentQuests.map(q => q.titleEn).join('<br>');
             showScreen('screen-reflection');
         }
@@ -3002,13 +3015,12 @@
             completeBtn.textContent = '送信中...';
             completeBtn.style.opacity = '0.5';
 
-            const today = new Date().toISOString().split('T')[0];
+            // ===== workDateベースで重複チェック =====
+            const targetDate = workDate || new Date().toISOString().split('T')[0];
+            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
 
-            // Prevent duplicate check-out
-            const checkoutDate = localStorage.getItem('mindful_checkout_date');
-            if (checkoutDate === today) {
-                alert('本日のCHECK OUTは完了済みです。');
-                // ボタンを元に戻す
+            if (checkedOutDates.includes(targetDate)) {
+                alert('この日付のCHECK OUTは既に完了しています。');
                 completeBtn.disabled = false;
                 completeBtn.textContent = 'COMPLETE';
                 completeBtn.style.opacity = '1';
@@ -3017,7 +3029,7 @@
 
             const memo = document.getElementById('memoInput').value;
             const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
-            history.unshift({ date: today, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo });
+            history.unshift({ date: targetDate, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo });
             localStorage.setItem('mindful_history', JSON.stringify(history.slice(0, 30)));
 
             // Token reward calculation
@@ -3027,8 +3039,16 @@
 
             sendToSheets('reflection', tokenReward);
 
-            // Mark as checked out today and clear check-in time
-            localStorage.setItem('mindful_checkout_date', today);
+            // ===== この勤務日をC/O済みとして記録 =====
+            checkedOutDates.push(targetDate);
+            // 過去30日分だけ保持
+            if (checkedOutDates.length > 30) {
+                checkedOutDates.shift();
+            }
+            localStorage.setItem('mindful_checkout_dates', JSON.stringify(checkedOutDates));
+
+            // 後方互換性のためにも今日の日付を記録
+            localStorage.setItem('mindful_checkout_date', targetDate);
             localStorage.removeItem('mindful_checkin_time');
 
             showScreen('screen-completion');
