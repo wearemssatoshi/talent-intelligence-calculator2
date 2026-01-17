@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL v2.6</title>
-    <!-- v2.6: PIN認証とログイン機能を追加 -->
+    <title>SVD MINDFUL v2.7</title>
+    <!-- v2.7: PIN変更機能を追加 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1496,7 +1496,7 @@
         <h1>MINDFUL</h1>
         <div
             style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-top: 2px; margin-bottom: 5px;">
-            v2.6</div>
+            v2.7</div>
         <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
         <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
             <div class="user-badge" id="userBadge" style="display: none;"></div>
@@ -2163,8 +2163,62 @@
                         style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: var(--text-gray);">TOKEN</span>
                 </div>
 
+                <!-- PIN変更セクション -->
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-gray); letter-spacing: 0.1em; margin-bottom: 10px;">
+                        🔐 セキュリティ</div>
+                    <button onclick="openPinChangeModal()"
+                        style="width: 100%; padding: 12px; background: var(--light-gray); color: var(--navy); border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer;">
+                        PINを変更する
+                    </button>
+                </div>
+
                 <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
                 <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+            </div>
+        </div>
+
+        <!-- PIN変更モーダル -->
+        <div id="pinChangeModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto;">
+            <div
+                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 350px; margin: 50px auto;">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: var(--navy); text-align: center; margin-bottom: 20px;">
+                    🔐 PIN変更
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label class="input-label">現在のPIN</label>
+                    <input type="password" class="text-input" id="currentPin" placeholder="現在の4桁PIN" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric"
+                        style="letter-spacing: 0.3em; text-align: center; font-size: 18px;">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <label class="input-label">新しいPIN</label>
+                    <input type="password" class="text-input" id="newPin" placeholder="新しい4桁PIN" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric"
+                        style="letter-spacing: 0.3em; text-align: center; font-size: 18px;">
+                </div>
+
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label class="input-label">新しいPIN（確認）</label>
+                    <input type="password" class="text-input" id="confirmNewPin" placeholder="もう一度入力" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric"
+                        style="letter-spacing: 0.3em; text-align: center; font-size: 18px;">
+                </div>
+
+                <div id="pinChangeError"
+                    style="color: var(--danger); font-size: 11px; text-align: center; margin-bottom: 15px; display: none;">
+                </div>
+                <div id="pinChangeSuccess"
+                    style="color: var(--success); font-size: 11px; text-align: center; margin-bottom: 15px; display: none;">
+                </div>
+
+                <button onclick="changePin()" class="btn-main" style="margin-top: 0;">変更する</button>
+                <button onclick="closePinChangeModal()" class="btn-secondary">キャンセル</button>
             </div>
         </div>
 
@@ -2202,7 +2256,7 @@
         </div>
     </main>
 
-    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.6</span></footer>
+    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.7</span></footer>
 
     <nav>
         <div class="nav-item active" onclick="showScreen('screen-morning')">
@@ -2735,6 +2789,91 @@
                 errorEl.textContent = '名前またはPINが正しくありません';
                 errorEl.style.display = 'block';
             }
+        }
+
+        // ===== PIN変更関連関数 =====
+        function openPinChangeModal() {
+            document.getElementById('pinChangeModal').style.display = 'block';
+            document.getElementById('currentPin').value = '';
+            document.getElementById('newPin').value = '';
+            document.getElementById('confirmNewPin').value = '';
+            document.getElementById('pinChangeError').style.display = 'none';
+            document.getElementById('pinChangeSuccess').style.display = 'none';
+        }
+
+        function closePinChangeModal() {
+            document.getElementById('pinChangeModal').style.display = 'none';
+        }
+
+        async function changePin() {
+            const currentPin = document.getElementById('currentPin').value.trim();
+            const newPin = document.getElementById('newPin').value.trim();
+            const confirmNewPin = document.getElementById('confirmNewPin').value.trim();
+            const errorEl = document.getElementById('pinChangeError');
+            const successEl = document.getElementById('pinChangeSuccess');
+
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            // バリデーション
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
+
+            if (!currentPin || !newPin || !confirmNewPin) {
+                errorEl.textContent = 'すべての項目を入力してください';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (!/^\d{4}$/.test(newPin)) {
+                errorEl.textContent = '新しいPINは4桁の数字で入力してください';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (newPin !== confirmNewPin) {
+                errorEl.textContent = '新しいPINが一致しません';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // ローカルに保存されているPINと照合
+            if (profile.pin && profile.pin !== currentPin) {
+                errorEl.textContent = '現在のPINが正しくありません';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // バックエンドでPIN変更を試みる
+            const base = profile.base || 'moiwayama';
+            const url = SCRIPT_URLS[base];
+
+            if (url) {
+                try {
+                    const response = await fetch(`${url}?action=changePin&name=${encodeURIComponent(profile.name)}&currentPin=${encodeURIComponent(currentPin)}&newPin=${encodeURIComponent(newPin)}`);
+                    const result = await response.json();
+
+                    if (!result.success) {
+                        errorEl.textContent = result.error || 'PIN変更に失敗しました';
+                        errorEl.style.display = 'block';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('PIN change error:', e);
+                    // バックエンドエラーでもローカルは更新
+                }
+            }
+
+            // ローカルプロフィールを更新
+            profile.pin = newPin;
+            localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+            successEl.textContent = 'PINを変更しました！';
+            successEl.style.display = 'block';
+
+            // 2秒後にモーダルを閉じる
+            setTimeout(() => {
+                closePinChangeModal();
+            }, 2000);
         }
 
         function showUserBadge(profile) {
