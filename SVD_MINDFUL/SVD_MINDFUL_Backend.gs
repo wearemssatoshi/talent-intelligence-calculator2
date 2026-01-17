@@ -727,14 +727,14 @@ function lookupUserByName(name) {
     
     const data = sheet.getDataRange().getValues();
     
-    // ヘッダー行を取得してインデックスを動的に決定
-    const headers = data[0];
-    const nameIndex = headers.indexOf('Name');
-    const baseIndex = headers.indexOf('Base');
-    const typeIndex = headers.indexOf('Type');
-    const tokenEarnedIndex = headers.indexOf('Token Earned');
-    const tokenBalanceIndex = headers.indexOf('Token Balance');
-    const timestampIndex = headers.indexOf('Timestamp');
+    // 固定列インデックス（スプレッドシートの実際の構造に合わせる）
+    // A=0, B=1, C=2(Name), D=3(Base), ... T=19(Token Earned), U=20(Token Balance)
+    const nameIndex = 2;      // C列: Name
+    const baseIndex = 3;      // D列: Base
+    const typeIndex = 1;      // B列: Type
+    const tokenEarnedIndex = 19;  // T列: Token Earned
+    const tokenBalanceIndex = 20; // U列: Token Balance
+    const timestampIndex = 0;     // A列: Timestamp
     
     // ユーザーのデータを検索
     let totalTokenEarned = 0;
