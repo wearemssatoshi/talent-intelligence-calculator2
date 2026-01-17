@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL v2.4</title>
-    <!-- v2.4: キャッシュコントロール追加 -->
+    <title>SVD MINDFUL v2.5</title>
+    <!-- v2.5: C/IN必須チェックと後方互換性を追加 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1496,7 +1496,7 @@
         <h1>MINDFUL</h1>
         <div
             style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-top: 2px; margin-bottom: 5px;">
-            v2.4</div>
+            v2.5</div>
         <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
         <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
             <div class="user-badge" id="userBadge" style="display: none;"></div>
@@ -2155,7 +2155,7 @@
         </div>
     </main>
 
-    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.4</span></footer>
+    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.5</span></footer>
 
     <nav>
         <div class="nav-item active" onclick="showScreen('screen-morning')">
@@ -3058,12 +3058,36 @@
         }
 
         function showReflection() {
+            // ===== C/IN必須チェック =====
+            const checkinTime = localStorage.getItem('mindful_checkin_time');
+            const activeQuests = JSON.parse(localStorage.getItem('mindful_active_quests') || '[]');
+
+            if (!checkinTime || activeQuests.length === 0) {
+                alert('まずC/INを完了してください。');
+                return;
+            }
+
             // ===== 重複チェック: この勤務日で既にC/O済みか確認 =====
             const targetDate = workDate || new Date().toISOString().split('T')[0];
-            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+
+            // 新形式の配列をチェック
+            let checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+
+            // 後方互換性: 旧形式（単一日付）もチェック
+            const oldCheckoutDate = localStorage.getItem('mindful_checkout_date');
+            if (oldCheckoutDate && !checkedOutDates.includes(oldCheckoutDate)) {
+                checkedOutDates.push(oldCheckoutDate);
+                localStorage.setItem('mindful_checkout_dates', JSON.stringify(checkedOutDates));
+            }
+
             if (checkedOutDates.includes(targetDate)) {
                 alert('この日付のCHECK OUTは既に完了しています。');
                 return;
+            }
+
+            // currentQuestsが空の場合はactiveQuestsを使用
+            if (currentQuests.length === 0) {
+                currentQuests = activeQuests;
             }
 
             document.getElementById('reflectionQuestTitles').innerHTML = currentQuests.map(q => q.titleEn).join('<br>');
