@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL - データ移行ツール</title>
+    <title>SVD MINDFUL - データ移行ツール v2</title>
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -69,24 +69,20 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-        .step {
-            margin-bottom: 25px;
-        }
-
         .step-title {
             font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--gold);
             letter-spacing: 0.1em;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .data-display {
             background: var(--light-gray);
             border-radius: 10px;
             padding: 15px;
-            margin-bottom: 15px;
+            margin: 15px 0;
         }
 
         .data-row {
@@ -111,7 +107,7 @@
 
         .token-highlight {
             color: var(--gold);
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .input-group {
@@ -163,6 +159,7 @@
             letter-spacing: 0.1em;
             cursor: pointer;
             transition: all 0.2s;
+            margin-top: 10px;
         }
 
         .btn-main:hover {
@@ -174,6 +171,18 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: var(--light-gray);
+            color: var(--navy);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
         }
 
         .message {
@@ -188,22 +197,17 @@
         .message.error {
             background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
+            display: block;
         }
 
         .message.success {
             background: rgba(34, 197, 94, 0.1);
             color: var(--success);
+            display: block;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-gray);
-        }
-
-        .no-data-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+        .message.hidden {
+            display: none;
         }
 
         .warning {
@@ -213,7 +217,7 @@
             padding: 12px;
             font-size: 11px;
             color: #92400e;
-            margin-bottom: 20px;
+            margin: 15px 0;
         }
 
         .instructions {
@@ -234,6 +238,52 @@
             padding-left: 20px;
             line-height: 1.8;
         }
+
+        .base-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .base-option {
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .base-option:hover {
+            border-color: var(--gold);
+        }
+
+        .base-option.selected {
+            border-color: var(--gold);
+            background: rgba(201, 169, 98, 0.1);
+        }
+
+        .base-icon {
+            font-size: 24px;
+        }
+
+        .base-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        #step2,
+        #step3 {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-gray);
+        }
     </style>
 </head>
 
@@ -241,68 +291,105 @@
     <div class="container">
         <div class="header">
             <h1>🔄 MINDFUL</h1>
-            <p>データ移行ツール</p>
+            <p>データ移行ツール v2</p>
         </div>
 
         <div class="card">
-            <div id="dataFound" style="display: none;">
-                <div class="step">
-                    <div class="step-title">STEP 1: 現在のデータを確認</div>
-                    <div class="data-display">
-                        <div class="data-row">
-                            <span class="data-label">名前</span>
-                            <span class="data-value" id="currentName">-</span>
+            <!-- STEP 1: 名前入力 -->
+            <div id="step1">
+                <div class="step-title">STEP 1: 名前を入力</div>
+                <p style="font-size: 12px; color: var(--text-gray); margin-bottom: 15px;">
+                    MINDFULに登録した名前を正確に入力してください。<br>
+                    バックエンドからあなたのデータを検索します。
+                </p>
+
+                <div class="input-group">
+                    <label class="input-label">YOUR NAME</label>
+                    <input type="text" class="text-input" id="inputName" placeholder="例: 山田太郎">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">拠点を選択</label>
+                    <div class="base-selector">
+                        <div class="base-option" data-base="moiwayama" onclick="selectBase(this)">
+                            <div class="base-icon">🏔️</div>
+                            <div class="base-name">藻岩山</div>
                         </div>
-                        <div class="data-row">
-                            <span class="data-label">拠点</span>
-                            <span class="data-value" id="currentBase">-</span>
+                        <div class="base-option" data-base="okurayama" onclick="selectBase(this)">
+                            <div class="base-icon">⛷️</div>
+                            <div class="base-name">大倉山</div>
                         </div>
-                        <div class="data-row">
-                            <span class="data-label">トークン</span>
-                            <span class="data-value token-highlight" id="currentTokens">0</span>
+                        <div class="base-option" data-base="tvtower" onclick="selectBase(this)">
+                            <div class="base-icon">🗼</div>
+                            <div class="base-name">テレビ塔</div>
+                        </div>
+                        <div class="base-option" data-base="akarenga" onclick="selectBase(this)">
+                            <div class="base-icon">🧱</div>
+                            <div class="base-name">赤れんが</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="step">
-                    <div class="step-title">STEP 2: PINを設定</div>
-                    <div class="warning">
-                        ⚠️ このPINはデータ復元に必要です。必ず覚えておいてください。
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">4桁のPINを入力</label>
-                        <input type="password" class="text-input pin-input" id="newPin" placeholder="1234" maxlength="4"
-                            pattern="[0-9]*" inputmode="numeric">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">PINを確認（もう一度入力）</label>
-                        <input type="password" class="text-input pin-input" id="confirmPin" placeholder="1234"
-                            maxlength="4" pattern="[0-9]*" inputmode="numeric">
-                    </div>
-                </div>
-
-                <button class="btn-main" id="migrateBtn" onclick="migrateData()">
-                    🔐 データを保存してPINを設定
-                </button>
-
-                <div class="message error" id="errorMsg"></div>
-                <div class="message success" id="successMsg"></div>
-
-                <div class="instructions">
-                    <h3>📋 移行後の手順</h3>
-                    <ol>
-                        <li>上のボタンで移行完了</li>
-                        <li>ホーム画面のMINDFULを削除</li>
-                        <li>Safariで新しく開いて再追加</li>
-                        <li>「ログイン」から名前とPINで復元！</li>
-                    </ol>
-                </div>
+                <button class="btn-main" id="searchBtn" onclick="searchUser()">🔍 データを検索</button>
+                <div id="step1Error" class="message hidden"></div>
             </div>
 
-            <div id="noData" class="no-data" style="display: none;">
-                <div class="no-data-icon">📭</div>
-                <p>このブラウザにMINDFULのデータが見つかりません。</p>
-                <p style="margin-top: 10px; font-size: 11px;">通常のMINDFULアプリをお使いのブラウザで開いてください。</p>
+            <!-- STEP 2: データ確認 & PIN設定 -->
+            <div id="step2">
+                <div class="step-title">STEP 2: データを確認</div>
+                <div class="data-display">
+                    <div class="data-row">
+                        <span class="data-label">名前</span>
+                        <span class="data-value" id="foundName">-</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">拠点</span>
+                        <span class="data-value" id="foundBase">-</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="data-label">トークン</span>
+                        <span class="data-value token-highlight">🪙 <span id="foundTokens">0</span></span>
+                    </div>
+                </div>
+
+                <div class="step-title" style="margin-top: 20px;">STEP 3: PINを設定</div>
+                <div class="warning">
+                    ⚠️ このPINはデータ復元に必要です。必ず覚えておいてください！
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">4桁のPINを入力</label>
+                    <input type="password" class="text-input pin-input" id="newPin" placeholder="1234" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">PINを確認（もう一度）</label>
+                    <input type="password" class="text-input pin-input" id="confirmPin" placeholder="1234" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric">
+                </div>
+
+                <button class="btn-main" id="migrateBtn" onclick="migrateData()">🔐 移行完了 & PIN設定</button>
+                <button class="btn-secondary" onclick="goBack()">← 戻る</button>
+                <div id="step2Error" class="message hidden"></div>
+            </div>
+
+            <!-- STEP 3: 完了 -->
+            <div id="step3">
+                <div style="text-align: center; padding: 20px 0;">
+                    <div style="font-size: 60px; margin-bottom: 15px;">✅</div>
+                    <div class="step-title" style="color: var(--success);">移行完了！</div>
+                    <div id="successInfo" style="font-size: 13px; color: var(--navy); margin: 15px 0;"></div>
+                </div>
+
+                <div class="instructions">
+                    <h3>📋 次の手順</h3>
+                    <ol>
+                        <li>ホーム画面のMINDFULを<strong>削除</strong></li>
+                        <li>Safariで新しいMINDFULを開く</li>
+                        <li>「🔑 ログイン」ボタンをタップ</li>
+                        <li>名前とPINを入力して復元！</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
@@ -312,7 +399,7 @@
             moiwayama: 'https://script.google.com/macros/s/AKfycbyWS3GJ_0MaRQORqQxRqP5dGehIhz94C4YN5O23sXnZAHqSZjn0WfxMnmYn8GLQW2oWtg/exec',
             okurayama: 'https://script.google.com/macros/s/AKfycbwp-_wJBz4KZoVFXKBwz3FG5Xr3hU03JJI4f8OvLW4T_kKTHjEfqmF1hNlYNOZ44VSe/exec',
             tvtower: 'https://script.google.com/macros/s/AKfycbzq_RaJcldhv8S2M0zCiO2J8dIqnc2W1wVAjlxX7jJFSxvPmYXZtJDn3Fq5YKk7Uy4d/exec',
-            akarenga: 'https://script.google.com/macros/s/AKfycbyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec'
+            akarenga: ''
         };
 
         const BASE_NAMES = {
@@ -322,105 +409,130 @@
             akarenga: '赤れんが'
         };
 
-        let currentProfile = null;
-        let currentTokens = 0;
+        let selectedBase = '';
+        let foundUserData = null;
 
-        function init() {
-            // localStorage からデータを読み取り
-            const profileStr = localStorage.getItem('mindful_profile');
-            const tokensStr = localStorage.getItem('mindful_tokens');
-
-            if (profileStr) {
-                try {
-                    currentProfile = JSON.parse(profileStr);
-                    currentTokens = parseInt(tokensStr) || 0;
-
-                    document.getElementById('currentName').textContent = currentProfile.name || '-';
-                    document.getElementById('currentBase').textContent = BASE_NAMES[currentProfile.base] || currentProfile.base || '-';
-                    document.getElementById('currentTokens').textContent = currentTokens;
-
-                    document.getElementById('dataFound').style.display = 'block';
-                    document.getElementById('noData').style.display = 'none';
-                } catch (e) {
-                    showNoData();
-                }
-            } else {
-                showNoData();
-            }
+        function selectBase(el) {
+            document.querySelectorAll('.base-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedBase = el.dataset.base;
         }
 
-        function showNoData() {
-            document.getElementById('dataFound').style.display = 'none';
-            document.getElementById('noData').style.display = 'block';
+        async function searchUser() {
+            const name = document.getElementById('inputName').value.trim();
+            const errorEl = document.getElementById('step1Error');
+            const btn = document.getElementById('searchBtn');
+
+            errorEl.className = 'message hidden';
+
+            if (!name) {
+                errorEl.textContent = '名前を入力してください';
+                errorEl.className = 'message error';
+                return;
+            }
+
+            if (!selectedBase) {
+                errorEl.textContent = '拠点を選択してください';
+                errorEl.className = 'message error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '検索中...';
+
+            const url = SCRIPT_URLS[selectedBase];
+            if (!url) {
+                errorEl.textContent = 'この拠点はまだ対応していません';
+                errorEl.className = 'message error';
+                btn.disabled = false;
+                btn.textContent = '🔍 データを検索';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${url}?action=lookupUser&name=${encodeURIComponent(name)}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    foundUserData = result;
+
+                    document.getElementById('foundName').textContent = result.name;
+                    document.getElementById('foundBase').textContent = BASE_NAMES[result.base] || result.base || selectedBase;
+                    document.getElementById('foundTokens').textContent = result.tokenBalance || 0;
+
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                } else {
+                    errorEl.textContent = result.error || 'ユーザーが見つかりません';
+                    errorEl.className = 'message error';
+                }
+            } catch (e) {
+                console.error('Search error:', e);
+                errorEl.textContent = 'エラーが発生しました。しばらく待ってから再試行してください。';
+                errorEl.className = 'message error';
+            }
+
+            btn.disabled = false;
+            btn.textContent = '🔍 データを検索';
+        }
+
+        function goBack() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
         }
 
         async function migrateData() {
             const newPin = document.getElementById('newPin').value.trim();
             const confirmPin = document.getElementById('confirmPin').value.trim();
-            const errorEl = document.getElementById('errorMsg');
-            const successEl = document.getElementById('successMsg');
+            const errorEl = document.getElementById('step2Error');
             const btn = document.getElementById('migrateBtn');
 
-            errorEl.style.display = 'none';
-            successEl.style.display = 'none';
+            errorEl.className = 'message hidden';
 
-            // バリデーション
             if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
                 errorEl.textContent = 'PINは4桁の数字で入力してください';
-                errorEl.style.display = 'block';
+                errorEl.className = 'message error';
                 return;
             }
 
             if (newPin !== confirmPin) {
                 errorEl.textContent = 'PINが一致しません';
-                errorEl.style.display = 'block';
+                errorEl.className = 'message error';
                 return;
             }
 
             btn.disabled = true;
             btn.textContent = '移行中...';
 
-            // バックエンドに登録
-            const base = currentProfile.base || 'moiwayama';
-            const url = SCRIPT_URLS[base];
+            const url = SCRIPT_URLS[selectedBase];
 
             try {
-                // まず登録を試みる
-                const registerUrl = `${url}?action=register&name=${encodeURIComponent(currentProfile.name)}&pin=${encodeURIComponent(newPin)}&base=${encodeURIComponent(base)}`;
+                // バックエンドに登録
+                const registerUrl = `${url}?action=register&name=${encodeURIComponent(foundUserData.name)}&pin=${encodeURIComponent(newPin)}&base=${encodeURIComponent(foundUserData.base || selectedBase)}`;
                 const response = await fetch(registerUrl);
                 const result = await response.json();
 
                 if (result.success || result.exists) {
-                    // 登録成功 or 既に存在する場合、トークンデータを更新
-                    // C/O履歴も取得
-                    const checkoutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
-
-                    // ローカルプロフィールにPINを保存
-                    currentProfile.pin = newPin;
-                    localStorage.setItem('mindful_profile', JSON.stringify(currentProfile));
-
-                    successEl.innerHTML = `
-                        ✅ 移行完了！<br>
-                        <strong>名前:</strong> ${currentProfile.name}<br>
+                    // 成功！
+                    document.getElementById('successInfo').innerHTML = `
+                        <strong>名前:</strong> ${foundUserData.name}<br>
                         <strong>PIN:</strong> ${newPin}<br>
-                        <strong>トークン:</strong> ${currentTokens}<br><br>
-                        ↓ 次の手順に進んでください ↓
+                        <strong>トークン:</strong> 🪙 ${foundUserData.tokenBalance || 0}
                     `;
-                    successEl.style.display = 'block';
-                    btn.textContent = '✅ 移行完了！';
+
+                    document.getElementById('step2').style.display = 'none';
+                    document.getElementById('step3').style.display = 'block';
                 } else {
                     throw new Error(result.error || '移行に失敗しました');
                 }
             } catch (e) {
                 console.error('Migration error:', e);
                 errorEl.textContent = 'エラー: ' + e.message;
-                errorEl.style.display = 'block';
+                errorEl.className = 'message error';
                 btn.disabled = false;
-                btn.textContent = '🔐 データを保存してPINを設定';
+                btn.textContent = '🔐 移行完了 & PIN設定';
             }
         }
-
-        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 
