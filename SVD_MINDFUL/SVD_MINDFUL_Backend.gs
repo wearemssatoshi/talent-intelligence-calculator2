@@ -727,37 +727,65 @@ function lookupUserByName(name) {
     
     const data = sheet.getDataRange().getValues();
     
-    // ユーザーの最新データを検索
+    // ヘッダー行を取得してインデックスを動的に決定
+    const headers = data[0];
+    const nameIndex = headers.indexOf('Name');
+    const baseIndex = headers.indexOf('Base');
+    const typeIndex = headers.indexOf('Type');
+    const tokenEarnedIndex = headers.indexOf('Token Earned');
+    const tokenBalanceIndex = headers.indexOf('Token Balance');
+    const timestampIndex = headers.indexOf('Timestamp');
+    
+    // ユーザーのデータを検索
+    let totalTokenEarned = 0;
     let latestTokenBalance = 0;
     let latestBase = '';
     let foundUser = false;
     let checkoutDates = [];
     
-    // 後ろから検索して最新のデータを取得
-    for (let i = data.length - 1; i >= 1; i--) {
-      if (data[i][2] === name) { // Name列
+    for (let i = 1; i < data.length; i++) {
+      const rowName = data[i][nameIndex >= 0 ? nameIndex : 2];
+      
+      if (rowName === name) {
         foundUser = true;
         
-        // 拠点を取得
-        if (!latestBase && data[i][3]) {
-          latestBase = data[i][3];
+        // 拠点を取得（最新を保持）
+        const rowBase = data[i][baseIndex >= 0 ? baseIndex : 3];
+        if (rowBase) {
+          latestBase = rowBase;
         }
         
-        // トークン残高を取得（最大値）
-        const tokenBalance = data[i][20]; // Token Balance列
-        if (tokenBalance && !isNaN(tokenBalance) && tokenBalance > latestTokenBalance) {
-          latestTokenBalance = tokenBalance;
+        // Token Earnedを合計（C/O時のトークン獲得）
+        if (tokenEarnedIndex >= 0) {
+          const earned = data[i][tokenEarnedIndex];
+          if (earned && !isNaN(earned)) {
+            totalTokenEarned += Number(earned);
+          }
+        }
+        
+        // Token Balanceも確認（最大値を保持）
+        if (tokenBalanceIndex >= 0) {
+          const balance = data[i][tokenBalanceIndex];
+          if (balance && !isNaN(balance) && Number(balance) > latestTokenBalance) {
+            latestTokenBalance = Number(balance);
+          }
         }
         
         // C/O日付を収集
-        if (data[i][1] === 'reflection') {
-          const dateStr = new Date(data[i][0]).toISOString().split('T')[0];
-          if (!checkoutDates.includes(dateStr)) {
-            checkoutDates.push(dateStr);
-          }
+        const rowType = data[i][typeIndex >= 0 ? typeIndex : 1];
+        if (rowType === 'reflection') {
+          try {
+            const dateStr = new Date(data[i][timestampIndex >= 0 ? timestampIndex : 0]).toISOString().split('T')[0];
+            if (!checkoutDates.includes(dateStr)) {
+              checkoutDates.push(dateStr);
+            }
+          } catch (e) {}
         }
       }
     }
+    
+    // トークン残高は Token Earned の合計 か Token Balance の最大値のどちらか大きい方
+    const finalTokenBalance = Math.max(totalTokenEarned, latestTokenBalance);
     
     if (!foundUser) {
       return ContentService.createTextOutput(JSON.stringify({ 
@@ -770,7 +798,8 @@ function lookupUserByName(name) {
       success: true,
       name: name,
       base: latestBase,
-      tokenBalance: latestTokenBalance,
+      tokenBalance: finalTokenBalance,
+      tokenEarnedTotal: totalTokenEarned,
       checkoutDates: checkoutDates.slice(-30) // 最新30日分
     })).setMimeType(ContentService.MimeType.JSON);
     
