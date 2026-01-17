@@ -200,6 +200,12 @@ function doGet(e) {
       return changePinForUser(name, currentPin, newPin);
     }
     
+    // ============ ユーザー検索（移行用） ============
+    if (action === 'lookupUser') {
+      const name = e?.parameter?.name || '';
+      return lookupUserByName(name);
+    }
+    
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
@@ -686,6 +692,86 @@ function changePinForUser(name, currentPin, newPin) {
     return ContentService.createTextOutput(JSON.stringify({ 
       success: false, 
       error: 'ユーザーが見つかりません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 名前でユーザーを検索（移行用）
+ * MINDFUL_Logから最新のトークン残高を取得
+ */
+function lookupUserByName(name) {
+  try {
+    if (!name) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: '名前を入力してください'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('MINDFUL_Log');
+    
+    if (!sheet) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: 'データが見つかりません'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // ユーザーの最新データを検索
+    let latestTokenBalance = 0;
+    let latestBase = '';
+    let foundUser = false;
+    let checkoutDates = [];
+    
+    // 後ろから検索して最新のデータを取得
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (data[i][2] === name) { // Name列
+        foundUser = true;
+        
+        // 拠点を取得
+        if (!latestBase && data[i][3]) {
+          latestBase = data[i][3];
+        }
+        
+        // トークン残高を取得（最大値）
+        const tokenBalance = data[i][20]; // Token Balance列
+        if (tokenBalance && !isNaN(tokenBalance) && tokenBalance > latestTokenBalance) {
+          latestTokenBalance = tokenBalance;
+        }
+        
+        // C/O日付を収集
+        if (data[i][1] === 'reflection') {
+          const dateStr = new Date(data[i][0]).toISOString().split('T')[0];
+          if (!checkoutDates.includes(dateStr)) {
+            checkoutDates.push(dateStr);
+          }
+        }
+      }
+    }
+    
+    if (!foundUser) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: 'ユーザーが見つかりません。名前を正確に入力してください。'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      name: name,
+      base: latestBase,
+      tokenBalance: latestTokenBalance,
+      checkoutDates: checkoutDates.slice(-30) // 最新30日分
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
