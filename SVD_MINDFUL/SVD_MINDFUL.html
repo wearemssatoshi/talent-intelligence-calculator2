@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL v2.1</title>
-    <!-- v2.1: 重複チェックアウト防止を強化 -->
+    <title>SVD MINDFUL v2.2</title>
+    <!-- v2.2: C/IN・C/OUTステータスバッジを追加 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="SVD MINDFUL">
@@ -1634,6 +1634,19 @@
                 <div id="todayLocationStatus"
                     style="margin-top: 12px; text-align: center; font-size: 11px; color: var(--text-gray);">勤務先を選択してください
                 </div>
+
+                <!-- C/IN・C/OUT ステータス表示 -->
+                <div id="dailyStatusBadges"
+                    style="display: flex; justify-content: center; gap: 12px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                    <div id="checkinStatusBadge"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--light-gray); color: var(--text-gray);">
+                        <span>📥</span> C/IN: <span id="checkinStatusText">未完了</span>
+                    </div>
+                    <div id="checkoutStatusBadge"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; background: var(--light-gray); color: var(--text-gray);">
+                        <span>📤</span> C/OUT: <span id="checkoutStatusText">未完了</span>
+                    </div>
+                </div>
             </div>
 
             <div class="section-title">PRINCIPLE</div>
@@ -2459,7 +2472,57 @@
                 }
             }
 
+            // ===== ステータスバッジを更新 =====
+            updateDailyStatusBadges();
+
             console.log('Work date updated:', value, 'Already checked in:', alreadyCheckedIn);
+        }
+
+        // ===== C/IN・C/OUT ステータスバッジ更新 =====
+        function updateDailyStatusBadges() {
+            const targetDate = workDate || new Date().toISOString().split('T')[0];
+
+            // C/INステータス
+            const checkedInDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
+            const isCheckedIn = checkedInDates.includes(targetDate);
+
+            // C/OUTステータス
+            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+            const isCheckedOut = checkedOutDates.includes(targetDate);
+
+            // C/INバッジ更新
+            const checkinBadge = document.getElementById('checkinStatusBadge');
+            const checkinText = document.getElementById('checkinStatusText');
+            if (checkinBadge && checkinText) {
+                if (isCheckedIn) {
+                    checkinBadge.style.background = 'rgba(34, 197, 94, 0.15)';
+                    checkinBadge.style.color = 'var(--success)';
+                    checkinText.textContent = '完了 ✓';
+                } else {
+                    checkinBadge.style.background = 'var(--light-gray)';
+                    checkinBadge.style.color = 'var(--text-gray)';
+                    checkinText.textContent = '未完了';
+                }
+            }
+
+            // C/OUTバッジ更新
+            const checkoutBadge = document.getElementById('checkoutStatusBadge');
+            const checkoutText = document.getElementById('checkoutStatusText');
+            if (checkoutBadge && checkoutText) {
+                if (isCheckedOut) {
+                    checkoutBadge.style.background = 'rgba(201, 169, 98, 0.2)';
+                    checkoutBadge.style.color = 'var(--gold)';
+                    checkoutText.textContent = '完了 ✓';
+                } else if (isCheckedIn) {
+                    checkoutBadge.style.background = 'rgba(245, 158, 11, 0.15)';
+                    checkoutBadge.style.color = 'var(--warning)';
+                    checkoutText.textContent = '未完了';
+                } else {
+                    checkoutBadge.style.background = 'var(--light-gray)';
+                    checkoutBadge.style.color = 'var(--text-gray)';
+                    checkoutText.textContent = '--';
+                }
+            }
         }
 
         function markDateAsCheckedIn(date) {
@@ -2468,6 +2531,8 @@
                 checkedDates.push(date);
                 localStorage.setItem('mindful_checked_dates', JSON.stringify(checkedDates));
             }
+            // ステータスバッジを更新
+            updateDailyStatusBadges();
         }
 
         function init() {
