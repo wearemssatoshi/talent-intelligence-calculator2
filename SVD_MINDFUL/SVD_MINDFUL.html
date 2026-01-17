@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL v2.5</title>
-    <!-- v2.5: C/IN必須チェックと後方互換性を追加 -->
+    <title>SVD MINDFUL v2.6</title>
+    <!-- v2.6: PIN認証とログイン機能を追加 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -1496,7 +1496,7 @@
         <h1>MINDFUL</h1>
         <div
             style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-top: 2px; margin-bottom: 5px;">
-            v2.5</div>
+            v2.6</div>
         <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
         <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
             <div class="user-badge" id="userBadge" style="display: none;"></div>
@@ -1558,6 +1558,14 @@
                     <input type="text" class="text-input" id="inputName" placeholder="例: 山田太郎">
                 </div>
                 <div class="input-group">
+                    <label class="input-label">🔐 PIN（4桁の数字）</label>
+                    <input type="password" class="text-input" id="inputPin" placeholder="例: 1234" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric"
+                        style="letter-spacing: 0.3em; text-align: center; font-size: 18px;">
+                    <div style="font-size: 10px; color: var(--text-gray); margin-top: 4px;">※ データ復元時に必要です。忘れないでください。
+                    </div>
+                </div>
+                <div class="input-group">
                     <label class="input-label">YOUR BASE</label>
                     <div class="base-selector">
                         <div class="base-option" data-base="moiwayama" onclick="selectBase(this)">
@@ -1599,6 +1607,45 @@
                     <input type="text" class="text-input" id="inputGoalFuture3" placeholder="夢 3（任意）">
                 </div>
                 <button class="btn-main" id="registerBtn" onclick="register()" disabled>REGISTER</button>
+
+                <!-- ログインリンク -->
+                <div
+                    style="margin-top: 20px; text-align: center; padding-top: 20px; border-top: 1px solid var(--border);">
+                    <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 8px;">既に登録済みの方</div>
+                    <button onclick="showLoginScreen()"
+                        style="background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px 24px; border-radius: 25px; font-size: 12px; font-weight: 600; cursor: pointer;">
+                        🔑 ログイン
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 0.5: LOGIN -->
+        <div class="screen" id="screen-login" style="display: none;">
+            <div class="register-card">
+                <div class="register-title">🔑 ログイン</div>
+                <div class="register-sub">名前とPINを入力してデータを復元</div>
+                <div class="input-group">
+                    <label class="input-label">YOUR NAME</label>
+                    <input type="text" class="text-input" id="loginName" placeholder="例: 山田太郎">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">🔐 PIN</label>
+                    <input type="password" class="text-input" id="loginPin" placeholder="4桁のPIN" maxlength="4"
+                        pattern="[0-9]*" inputmode="numeric"
+                        style="letter-spacing: 0.3em; text-align: center; font-size: 18px;">
+                </div>
+                <button class="btn-main" onclick="performLogin()">ログイン</button>
+                <div id="loginError"
+                    style="color: var(--danger); font-size: 11px; text-align: center; margin-top: 10px; display: none;">
+                </div>
+
+                <div style="margin-top: 20px; text-align: center;">
+                    <button onclick="showScreen('screen-register')"
+                        style="background: none; border: none; color: var(--text-gray); font-size: 11px; cursor: pointer; text-decoration: underline;">
+                        新規登録はこちら
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -2155,7 +2202,7 @@
         </div>
     </main>
 
-    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.5</span></footer>
+    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN <span style="opacity: 0.6; margin-left: 10px;">v2.6</span></footer>
 
     <nav>
         <div class="nav-item active" onclick="showScreen('screen-morning')">
@@ -2575,6 +2622,14 @@
 
         function register() {
             const name = document.getElementById('inputName').value.trim();
+            const pin = document.getElementById('inputPin').value.trim();
+
+            // PINバリデーション
+            if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+                alert('PINは4桁の数字で入力してください');
+                return;
+            }
+
             // 目標と夢を配列として収集（空でないもののみ）
             const goalsThisYear = [
                 document.getElementById('inputGoalThisYear1').value.trim(),
@@ -2586,12 +2641,99 @@
                 document.getElementById('inputGoalFuture2').value.trim(),
                 document.getElementById('inputGoalFuture3').value.trim()
             ].filter(g => g !== '');
+
             if (name && selectedBase) {
-                const profile = { name, base: selectedBase, goalsThisYear, goalsFuture };
+                // ローカルに保存
+                const profile = { name, base: selectedBase, pin: pin, goalsThisYear, goalsFuture };
                 localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+                // バックエンドにも登録（非同期）
+                registerToBackend(name, pin, selectedBase);
+
                 showUserBadge(profile);
                 showGoalsDisplay(profile);
                 showScreen('screen-morning');
+            }
+        }
+
+        // バックエンドにユーザー登録
+        async function registerToBackend(name, pin, base) {
+            const url = SCRIPT_URLS[base];
+            if (!url) return;
+
+            try {
+                const response = await fetch(`${url}?action=register&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}`);
+                const result = await response.json();
+                console.log('Backend registration:', result);
+            } catch (e) {
+                console.error('Backend registration error:', e);
+            }
+        }
+
+        // ログイン画面を表示
+        function showLoginScreen() {
+            showScreen('screen-login');
+        }
+
+        // ログイン実行
+        async function performLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const pin = document.getElementById('loginPin').value.trim();
+            const errorEl = document.getElementById('loginError');
+
+            if (!name || !pin) {
+                errorEl.textContent = '名前とPINを入力してください';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // 全拠点のバックエンドを順番に試す
+            const bases = ['moiwayama', 'okurayama', 'tvtower', 'akarenga'];
+            let loginSuccess = false;
+
+            for (const base of bases) {
+                const url = SCRIPT_URLS[base];
+                if (!url) continue;
+
+                try {
+                    const response = await fetch(`${url}?action=login&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // ログイン成功！データを復元
+                        const profile = {
+                            name: result.name,
+                            base: result.base || base,
+                            pin: pin,
+                            goalsThisYear: [],
+                            goalsFuture: []
+                        };
+                        localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+                        // トークン残高を復元
+                        if (result.tokenBalance) {
+                            localStorage.setItem('mindful_tokens', result.tokenBalance.toString());
+                        }
+
+                        // C/O履歴を復元
+                        if (result.checkoutDates && result.checkoutDates.length > 0) {
+                            localStorage.setItem('mindful_checkout_dates', JSON.stringify(result.checkoutDates));
+                        }
+
+                        loginSuccess = true;
+                        showUserBadge(profile);
+                        updateTokenDisplay();
+                        showScreen('screen-morning');
+                        break;
+                    }
+                } catch (e) {
+                    console.error('Login error for', base, ':', e);
+                }
+            }
+
+            if (!loginSuccess) {
+                errorEl.textContent = '名前またはPINが正しくありません';
+                errorEl.style.display = 'block';
             }
         }
 
