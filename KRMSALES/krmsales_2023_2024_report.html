@@ -353,6 +353,44 @@
             color: var(--primary-dark);
             border-color: var(--accent-gold);
         }
+
+        /* Tax Toggle */
+        .tax-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 25px;
+        }
+
+        .tax-toggle-btn {
+            padding: 10px 25px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tax-toggle-btn:first-child {
+            border-radius: 25px 0 0 25px;
+        }
+
+        .tax-toggle-btn:last-child {
+            border-radius: 0 25px 25px 0;
+            border-left: none;
+        }
+
+        .tax-toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-gold), #a08050);
+            color: var(--primary-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .tax-toggle-btn:hover:not(.active) {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
     </style>
 </head>
 
@@ -363,6 +401,12 @@
             <h1>KUROMATSU</h1>
             <p class="subtitle">SALES REPORT 2023-2024</p>
         </header>
+
+        <!-- Tax Toggle -->
+        <div class="tax-toggle">
+            <button class="tax-toggle-btn active" data-tax="incl">税込表示</button>
+            <button class="tax-toggle-btn" data-tax="excl">税抜表示</button>
+        </div>
 
         <!-- Year Tabs -->
         <div class="year-tabs">
@@ -476,12 +520,14 @@
     </div>
 
     <script>
-        // Tax calculation
+        // Tax state
+        let showExTax = false;
         const TAX_RATE = 0.10;
         const calcExTax = (v) => Math.floor(v / (1 + TAX_RATE));
         const formatCurrency = (v) => '¥' + v.toLocaleString();
+        const getValue = (v) => showExTax ? calcExTax(v) : v;
 
-        // 2024 Data
+        // 2024 Data (税込)
         const data2024 = {
             months: ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'],
             totals: [2539180, 3356720, 3950740, 4399530, 4255520, 3424650, 3664130, 3874580, 4602110, 4427840, 4015900, 3657050],
@@ -499,10 +545,13 @@
                 { Mon: 128150, Tue: 142862, Wed: 128700, Thu: 125825, Fri: 148675, Sat: 177062, Sun: 152700 },
                 { Mon: 101340, Tue: 87012, Wed: 121075, Thu: 116975, Fri: 130412, Sat: 143470, Sun: 122220 }
             ],
-            annualWeekdayAvg: { Mon: 108419, Tue: 105741, Wed: 121192, Thu: 121679, Fri: 139373, Sat: 151373, Sun: 146269 }
+            annualWeekdayAvg: { Mon: 108419, Tue: 105741, Wed: 121192, Thu: 121679, Fri: 139373, Sat: 151373, Sun: 146269 },
+            annualTotal: 46167950,
+            monthlyAvg: 3847329,
+            bestMonth: { name: '12月', value: 4602110 }
         };
 
-        // 2023 Data
+        // 2023 Data (税込)
         const data2023 = {
             months: ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'],
             totals: [3801370, 3824270, 3674360, 3998360, 3823150, 3479640, 4215970, 4067284, 4815354, 3929730, 4894110, 3213480],
@@ -520,11 +569,90 @@
                 { Mon: 146312, Tue: 116888, Wed: 146950, Thu: 163860, Fri: 172162, Sat: 201095, Sun: 235295 },
                 { Mon: 82900, Tue: 90025, Wed: 92525, Thu: 113545, Fri: 131010, Sat: 127650, Sun: 117850 }
             ],
-            annualWeekdayAvg: { Mon: 112353, Tue: 107812, Wed: 119335, Thu: 128680, Fri: 144991, Sat: 154682, Sun: 157828 }
+            annualWeekdayAvg: { Mon: 112353, Tue: 107812, Wed: 119335, Thu: 128680, Fri: 144991, Sat: 154682, Sun: 157828 },
+            annualTotal: 47737078,
+            monthlyAvg: 3978090,
+            bestMonth: { name: '12月', value: 4815354 }
         };
 
         const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         const dayLabels = { Mon: '月', Tue: '火', Wed: '水', Thu: '木', Fri: '金', Sat: '土', Sun: '日' };
+
+        // Current selected month index for each year
+        let currentMonth2024 = 0;
+        let currentMonth2023 = 0;
+
+        // Tax Toggle
+        document.querySelectorAll('.tax-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tax-toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                showExTax = btn.dataset.tax === 'excl';
+                refreshAllDisplays();
+            });
+        });
+
+        // Refresh all displays
+        function refreshAllDisplays() {
+            updateSummaryCards();
+            renderMonthlyData('monthlyData2024', data2024, currentMonth2024);
+            renderMonthlyData('monthlyData2023', data2023, currentMonth2023);
+            renderWeekdayGrid('weekdayGrid2024', data2024.annualWeekdayAvg);
+            renderWeekdayGrid('weekdayGrid2023', data2023.annualWeekdayAvg);
+            renderComparisonTable();
+            renderComparisonSummary();
+        }
+
+        // Update Summary Cards
+        function updateSummaryCards() {
+            const taxLabel = showExTax ? '（税抜）' : '（税込）';
+
+            // 2024 Summary
+            const cards2024 = document.querySelectorAll('#content-2024 .summary-card');
+            cards2024[0].querySelector('.label').textContent = '年間総売上' + taxLabel;
+            cards2024[0].querySelector('.value').textContent = formatCurrency(getValue(data2024.annualTotal));
+            cards2024[0].querySelector('.sub-value').textContent = '';
+
+            cards2024[1].querySelector('.label').textContent = '月平均売上' + taxLabel;
+            cards2024[1].querySelector('.value').textContent = formatCurrency(getValue(data2024.monthlyAvg));
+            cards2024[1].querySelector('.sub-value').textContent = '';
+
+            cards2024[2].querySelector('.sub-value').textContent = formatCurrency(getValue(data2024.bestMonth.value));
+
+            // 2023 Summary
+            const cards2023 = document.querySelectorAll('#content-2023 .summary-card');
+            cards2023[0].querySelector('.label').textContent = '年間総売上' + taxLabel;
+            cards2023[0].querySelector('.value').textContent = formatCurrency(getValue(data2023.annualTotal));
+            cards2023[0].querySelector('.sub-value').textContent = '';
+
+            cards2023[1].querySelector('.label').textContent = '月平均売上' + taxLabel;
+            cards2023[1].querySelector('.value').textContent = formatCurrency(getValue(data2023.monthlyAvg));
+            cards2023[1].querySelector('.sub-value').textContent = '';
+
+            cards2023[2].querySelector('.sub-value').textContent = formatCurrency(getValue(data2023.bestMonth.value));
+        }
+
+        // Update Comparison Summary
+        function renderComparisonSummary() {
+            const taxLabel = showExTax ? '（税抜）' : '（税込）';
+            const cards = document.querySelectorAll('#content-compare .summary-card');
+
+            const total2024 = getValue(data2024.annualTotal);
+            const total2023 = getValue(data2023.annualTotal);
+            const combined = total2024 + total2023;
+            const yoyChange = ((total2024 - total2023) / total2023 * 100).toFixed(1);
+
+            cards[0].querySelector('.label').textContent = '2024年度 総売上' + taxLabel;
+            cards[0].querySelector('.value').textContent = formatCurrency(total2024);
+            cards[0].querySelector('.sub-value').textContent = '前年比: ' + yoyChange + '%';
+
+            cards[1].querySelector('.label').textContent = '2023年度 総売上' + taxLabel;
+            cards[1].querySelector('.value').textContent = formatCurrency(total2023);
+
+            cards[2].querySelector('.label').textContent = '2年間合計' + taxLabel;
+            cards[2].querySelector('.value').textContent = formatCurrency(combined);
+            cards[2].querySelector('.sub-value').textContent = '';
+        }
 
         // Year Tab Switching
         document.querySelectorAll('.year-tab').forEach(tab => {
@@ -546,6 +674,8 @@
                 btn.addEventListener('click', () => {
                     container.querySelectorAll('.month-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    if (year === '2024') currentMonth2024 = idx;
+                    else currentMonth2023 = idx;
                     renderMonthlyData('monthlyData' + year, data, idx);
                 });
                 container.appendChild(btn);
@@ -563,16 +693,14 @@
                     ${dayNames.map(day => `
                         <div class="weekday-card">
                             <div class="day">${dayLabels[day]}</div>
-                            <div class="amount">${formatCurrency(weekday[day])}</div>
-                            <div class="amount-ex">税抜: ${formatCurrency(calcExTax(weekday[day]))}</div>
+                            <div class="amount">${formatCurrency(getValue(weekday[day]))}</div>
                         </div>
                     `).join('')}
                 </div>
                 <div class="monthly-total">
                     <div class="label">月間合計</div>
                     <div class="values">
-                        <div class="value-main">${formatCurrency(total)}</div>
-                        <div class="value-sub">税抜: ${formatCurrency(calcExTax(total))}</div>
+                        <div class="value-main">${formatCurrency(getValue(total))}</div>
                     </div>
                 </div>
             `;
@@ -585,8 +713,7 @@
             container.innerHTML = dayNames.map(day => `
                 <div class="weekday-card">
                     <div class="day">${dayLabels[day]}</div>
-                    <div class="amount">${formatCurrency(data[day])}</div>
-                    <div class="amount-ex">税抜: ${formatCurrency(calcExTax(data[day]))}</div>
+                    <div class="amount">${formatCurrency(getValue(data[day]))}</div>
                 </div>
             `).join('');
         }
@@ -607,8 +734,8 @@
             `;
 
             data2024.months.forEach((month, idx) => {
-                const v2024 = data2024.totals[idx];
-                const v2023 = data2023.totals[idx];
+                const v2024 = getValue(data2024.totals[idx]);
+                const v2023 = getValue(data2023.totals[idx]);
                 const diff = v2024 - v2023;
                 const diffClass = diff >= 0 ? 'color: #4ade80;' : 'color: #f87171;';
                 html += `
@@ -628,11 +755,7 @@
         // Initialize
         renderMonthSelector('monthSelector2024', data2024, '2024');
         renderMonthSelector('monthSelector2023', data2023, '2023');
-        renderMonthlyData('monthlyData2024', data2024, 0);
-        renderMonthlyData('monthlyData2023', data2023, 0);
-        renderWeekdayGrid('weekdayGrid2024', data2024.annualWeekdayAvg);
-        renderWeekdayGrid('weekdayGrid2023', data2023.annualWeekdayAvg);
-        renderComparisonTable();
+        refreshAllDisplays();
     </script>
 </body>
 

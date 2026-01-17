@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KUROMATSU 売上レポート 2023-2024 v2</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #0a1628;
+            --primary-navy: #1a2744;
+            --accent-gold: #c9a962;
+            --text-light: #ffffff;
+            --text-muted: #8b9cb5;
+            --glass-bg: rgba(26, 39, 68, 0.85);
+            --border-subtle: rgba(201, 169, 98, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-navy) 50%, #0d1f3c 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            letter-spacing: 0.3em;
+            color: var(--accent-gold);
+        }
+
+        .header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 0;
+        }
+
+        .toggle-btn {
+            padding: 8px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:first-child {
+            border-radius: 20px 0 0 20px;
+        }
+
+        .toggle-btn:last-child {
+            border-radius: 0 20px 20px 0;
+            border-left: none;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-gold), #a08050);
+            color: var(--primary-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 25px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent-gold), #a08050);
+            color: var(--primary-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .summary-card .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .summary-card .value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+        }
+
+        .section {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .month-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .month-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 15px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .month-btn:hover,
+        .month-btn.active {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border-color: var(--accent-gold);
+        }
+
+        .daily-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .daily-table th {
+            background: rgba(201, 169, 98, 0.1);
+            color: var(--accent-gold);
+            padding: 10px 8px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .daily-table th:first-child {
+            text-align: left;
+        }
+
+        .daily-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: right;
+        }
+
+        .daily-table td:first-child {
+            text-align: left;
+            color: var(--text-muted);
+        }
+
+        .daily-table tr:hover {
+            background: rgba(201, 169, 98, 0.05);
+        }
+
+        .daily-table .day-sun {
+            color: #f87171;
+        }
+
+        .daily-table .day-sat {
+            color: #60a5fa;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(201, 169, 98, 0.1);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .total-row .label {
+            color: var(--accent-gold);
+            font-weight: 500;
+        }
+
+        .total-row .value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>KUROMATSU</h1>
+            <p class="subtitle">SALES REPORT 2023-2024 v2</p>
+        </header>
+
+        <div class="toggle-row">
+            <div class="toggle-group">
+                <button class="toggle-btn active" data-tax="incl">税込表示</button>
+                <button class="toggle-btn" data-tax="excl">税抜表示</button>
+            </div>
+        </div>
+
+        <div class="tabs" id="yearTabs">
+            <button class="tab active" data-year="2024">2024年度</button>
+            <button class="tab" data-year="2023">2023年度</button>
+        </div>
+
+        <div class="tabs" id="quarterTabs">
+            <button class="tab active" data-q="all">全期間</button>
+            <button class="tab" data-q="q1">Q1 (4-6月)</button>
+            <button class="tab" data-q="q2">Q2 (7-9月)</button>
+            <button class="tab" data-q="q3">Q3 (10-12月)</button>
+            <button class="tab" data-q="q4">Q4 (1-3月)</button>
+        </div>
+
+        <div id="summaryCards" class="summary-cards"></div>
+
+        <div class="section">
+            <h2 class="section-title">月別詳細データ</h2>
+            <div class="month-tabs" id="monthTabs"></div>
+            <div class="table-scroll">
+                <table class="daily-table" id="dailyTable"></table>
+            </div>
+            <div class="total-row" id="monthTotal"></div>
+        </div>
+
+        <footer class="footer">SAPPORO VIEWTIFUL DINING — KUROMATSU</footer>
+    </div>
+
+    <script>
+        let showExTax = false;
+        let currentYear = '2024';
+        let currentQuarter = 'all';
+        let currentMonth = 0;
+
+        const TAX_RATE = 0.10;
+        const calcExTax = v => Math.floor(v / (1 + TAX_RATE));
+        const getValue = v => showExTax ? calcExTax(v) : v;
+        const formatCurrency = v => '¥' + v.toLocaleString();
+
+        const months = ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'];
+        const quarters = { q1: [0, 1, 2], q2: [3, 4, 5], q3: [6, 7, 8], q4: [9, 10, 11], all: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] };
+        const dayNames = { Mon: '月', Tue: '火', Wed: '水', Thu: '木', Fri: '金', Sat: '土', Sun: '日' };
+
+        // CSV Data embedded
+        const data2024 = [
+            { date: '4/1', day: 'Mon', sales: 127550 }, { date: '4/2', day: 'Tue', sales: 92000 }, { date: '4/3', day: 'Wed', sales: 93700 }, { date: '4/4', day: 'Thu', sales: 0 }, { date: '4/5', day: 'Fri', sales: 81000 }, { date: '4/6', day: 'Sat', sales: 102780 }, { date: '4/7', day: 'Sun', sales: 101200 }, { date: '4/8', day: 'Mon', sales: 67400 }, { date: '4/9', day: 'Tue', sales: 86300 }, { date: '4/10', day: 'Wed', sales: 0 }, { date: '4/11', day: 'Thu', sales: 102450 }, { date: '4/12', day: 'Fri', sales: 107250 }, { date: '4/13', day: 'Sat', sales: 106250 }, { date: '4/14', day: 'Sun', sales: 95550 }, { date: '4/15', day: 'Mon', sales: 67100 }, { date: '4/16', day: 'Tue', sales: 89550 }, { date: '4/17', day: 'Wed', sales: 0 }, { date: '4/18', day: 'Thu', sales: 75100 }, { date: '4/19', day: 'Fri', sales: 125500 }, { date: '4/20', day: 'Sat', sales: 138200 }, { date: '4/21', day: 'Sun', sales: 66700 }, { date: '4/22', day: 'Mon', sales: 71700 }, { date: '4/23', day: 'Tue', sales: 79650 }, { date: '4/24', day: 'Wed', sales: 0 }, { date: '4/25', day: 'Thu', sales: 90250 }, { date: '4/26', day: 'Fri', sales: 111250 }, { date: '4/27', day: 'Sat', sales: 94500 }, { date: '4/28', day: 'Sun', sales: 157700 }, { date: '4/29', day: 'Mon', sales: 116550 }, { date: '4/30', day: 'Tue', sales: 92000 },
+            { date: '5/1', day: 'Wed', sales: 86400 }, { date: '5/2', day: 'Thu', sales: 141800 }, { date: '5/3', day: 'Fri', sales: 138550 }, { date: '5/4', day: 'Sat', sales: 105380 }, { date: '5/5', day: 'Sun', sales: 103250 }, { date: '5/6', day: 'Mon', sales: 105500 }, { date: '5/7', day: 'Tue', sales: 82900 }, { date: '5/8', day: 'Wed', sales: 79650 }, { date: '5/9', day: 'Thu', sales: 95500 }, { date: '5/10', day: 'Fri', sales: 128550 }, { date: '5/11', day: 'Sat', sales: 152900 }, { date: '5/12', day: 'Sun', sales: 126880 }, { date: '5/13', day: 'Mon', sales: 94050 }, { date: '5/14', day: 'Tue', sales: 81750 }, { date: '5/15', day: 'Wed', sales: 86600 }, { date: '5/16', day: 'Thu', sales: 89700 }, { date: '5/17', day: 'Fri', sales: 109600 }, { date: '5/18', day: 'Sat', sales: 115400 }, { date: '5/19', day: 'Sun', sales: 130600 }, { date: '5/20', day: 'Mon', sales: 91700 }, { date: '5/21', day: 'Tue', sales: 86900 }, { date: '5/22', day: 'Wed', sales: 60250 }, { date: '5/23', day: 'Thu', sales: 112650 }, { date: '5/24', day: 'Fri', sales: 153460 }, { date: '5/25', day: 'Sat', sales: 86100 }, { date: '5/26', day: 'Sun', sales: 176900 }, { date: '5/27', day: 'Mon', sales: 65850 }, { date: '5/28', day: 'Tue', sales: 96450 }, { date: '5/29', day: 'Wed', sales: 143900 }, { date: '5/30', day: 'Thu', sales: 103350 }, { date: '5/31', day: 'Fri', sales: 124250 },
+            { date: '6/1', day: 'Sat', sales: 115350 }, { date: '6/2', day: 'Sun', sales: 114800 }, { date: '6/3', day: 'Mon', sales: 93400 }, { date: '6/4', day: 'Tue', sales: 88850 }, { date: '6/5', day: 'Wed', sales: 89750 }, { date: '6/6', day: 'Thu', sales: 145900 }, { date: '6/7', day: 'Fri', sales: 96450 }, { date: '6/8', day: 'Sat', sales: 230200 }, { date: '6/9', day: 'Sun', sales: 145450 }, { date: '6/10', day: 'Mon', sales: 79900 }, { date: '6/11', day: 'Tue', sales: 61750 }, { date: '6/12', day: 'Wed', sales: 104600 }, { date: '6/13', day: 'Thu', sales: 104400 }, { date: '6/14', day: 'Fri', sales: 149950 }, { date: '6/15', day: 'Sat', sales: 151430 }, { date: '6/16', day: 'Sun', sales: 161730 }, { date: '6/17', day: 'Mon', sales: 104730 }, { date: '6/18', day: 'Tue', sales: 97000 }, { date: '6/19', day: 'Wed', sales: 149100 }, { date: '6/20', day: 'Thu', sales: 94150 }, { date: '6/21', day: 'Fri', sales: 138200 }, { date: '6/22', day: 'Sat', sales: 176000 }, { date: '6/23', day: 'Sun', sales: 155800 }, { date: '6/24', day: 'Mon', sales: 107650 }, { date: '6/25', day: 'Tue', sales: 121600 }, { date: '6/26', day: 'Wed', sales: 119100 }, { date: '6/27', day: 'Thu', sales: 147800 }, { date: '6/28', day: 'Fri', sales: 197850 }, { date: '6/29', day: 'Sat', sales: 205400 }, { date: '6/30', day: 'Sun', sales: 202450 },
+            { date: '7/1', day: 'Mon', sales: 148200 }, { date: '7/2', day: 'Tue', sales: 165050 }, { date: '7/3', day: 'Wed', sales: 154230 }, { date: '7/4', day: 'Thu', sales: 144900 }, { date: '7/5', day: 'Fri', sales: 111050 }, { date: '7/6', day: 'Sat', sales: 165600 }, { date: '7/7', day: 'Sun', sales: 159850 }, { date: '7/8', day: 'Mon', sales: 103900 }, { date: '7/9', day: 'Tue', sales: 130400 }, { date: '7/10', day: 'Wed', sales: 114000 }, { date: '7/11', day: 'Thu', sales: 124550 }, { date: '7/12', day: 'Fri', sales: 123500 }, { date: '7/13', day: 'Sat', sales: 154900 }, { date: '7/14', day: 'Sun', sales: 163100 }, { date: '7/15', day: 'Mon', sales: 150950 }, { date: '7/16', day: 'Tue', sales: 108450 }, { date: '7/17', day: 'Wed', sales: 108250 }, { date: '7/18', day: 'Thu', sales: 159900 }, { date: '7/19', day: 'Fri', sales: 166700 }, { date: '7/20', day: 'Sat', sales: 156650 }, { date: '7/21', day: 'Sun', sales: 138200 }, { date: '7/22', day: 'Mon', sales: 101400 }, { date: '7/23', day: 'Tue', sales: 142400 }, { date: '7/24', day: 'Wed', sales: 121150 }, { date: '7/25', day: 'Thu', sales: 109600 }, { date: '7/26', day: 'Fri', sales: 208150 }, { date: '7/27', day: 'Sat', sales: 184650 }, { date: '7/28', day: 'Sun', sales: 132600 }, { date: '7/29', day: 'Mon', sales: 166950 }, { date: '7/30', day: 'Tue', sales: 131900 }, { date: '7/31', day: 'Wed', sales: 148400 },
+            { date: '8/1', day: 'Thu', sales: 122600 }, { date: '8/2', day: 'Fri', sales: 151350 }, { date: '8/3', day: 'Sat', sales: 162600 }, { date: '8/4', day: 'Sun', sales: 117750 }, { date: '8/5', day: 'Mon', sales: 112750 }, { date: '8/6', day: 'Tue', sales: 133950 }, { date: '8/7', day: 'Wed', sales: 145150 }, { date: '8/8', day: 'Thu', sales: 134950 }, { date: '8/9', day: 'Fri', sales: 149050 }, { date: '8/10', day: 'Sat', sales: 111180 }, { date: '8/11', day: 'Sun', sales: 143750 }, { date: '8/12', day: 'Mon', sales: 111550 }, { date: '8/13', day: 'Tue', sales: 117750 }, { date: '8/14', day: 'Wed', sales: 148400 }, { date: '8/15', day: 'Thu', sales: 127800 }, { date: '8/16', day: 'Fri', sales: 117630 }, { date: '8/17', day: 'Sat', sales: 128550 }, { date: '8/18', day: 'Sun', sales: 148150 }, { date: '8/19', day: 'Mon', sales: 102350 }, { date: '8/20', day: 'Tue', sales: 82600 }, { date: '8/21', day: 'Wed', sales: 137100 }, { date: '8/22', day: 'Thu', sales: 155500 }, { date: '8/23', day: 'Fri', sales: 161530 }, { date: '8/24', day: 'Sat', sales: 170200 }, { date: '8/25', day: 'Sun', sales: 156950 }, { date: '8/26', day: 'Mon', sales: 144180 }, { date: '8/27', day: 'Tue', sales: 122400 }, { date: '8/28', day: 'Wed', sales: 118000 }, { date: '8/29', day: 'Thu', sales: 145300 }, { date: '8/30', day: 'Fri', sales: 189200 }, { date: '8/31', day: 'Sat', sales: 185300 },
+            { date: '9/1', day: 'Sun', sales: 191050 }, { date: '9/2', day: 'Mon', sales: 68100 }, { date: '9/3', day: 'Tue', sales: 117250 }, { date: '9/4', day: 'Wed', sales: 131500 }, { date: '9/5', day: 'Thu', sales: 88300 }, { date: '9/6', day: 'Fri', sales: 100000 }, { date: '9/7', day: 'Sat', sales: 142700 }, { date: '9/8', day: 'Sun', sales: 107950 }, { date: '9/9', day: 'Mon', sales: 84950 }, { date: '9/10', day: 'Tue', sales: 96650 }, { date: '9/11', day: 'Wed', sales: 99450 }, { date: '9/12', day: 'Thu', sales: 139100 }, { date: '9/13', day: 'Fri', sales: 117850 }, { date: '9/14', day: 'Sat', sales: 142050 }, { date: '9/15', day: 'Sun', sales: 165350 }, { date: '9/16', day: 'Mon', sales: 99150 }, { date: '9/17', day: 'Tue', sales: 75150 }, { date: '9/18', day: 'Wed', sales: 107100 }, { date: '9/19', day: 'Thu', sales: 98900 }, { date: '9/20', day: 'Fri', sales: 140050 }, { date: '9/21', day: 'Sat', sales: 158700 }, { date: '9/22', day: 'Sun', sales: 184150 }, { date: '9/23', day: 'Mon', sales: 79650 }, { date: '9/24', day: 'Tue', sales: 80750 }, { date: '9/25', day: 'Wed', sales: 89300 }, { date: '9/26', day: 'Thu', sales: 88750 }, { date: '9/27', day: 'Fri', sales: 93950 }, { date: '9/28', day: 'Sat', sales: 106350 }, { date: '9/29', day: 'Sun', sales: 127900 }, { date: '9/30', day: 'Mon', sales: 102550 },
+            { date: '10/1', day: 'Tue', sales: 73200 }, { date: '10/2', day: 'Wed', sales: 108250 }, { date: '10/3', day: 'Thu', sales: 103350 }, { date: '10/4', day: 'Fri', sales: 131900 }, { date: '10/5', day: 'Sat', sales: 102950 }, { date: '10/6', day: 'Sun', sales: 130250 }, { date: '10/7', day: 'Mon', sales: 148250 }, { date: '10/8', day: 'Tue', sales: 114280 }, { date: '10/9', day: 'Wed', sales: 100450 }, { date: '10/10', day: 'Thu', sales: 112000 }, { date: '10/11', day: 'Fri', sales: 137400 }, { date: '10/12', day: 'Sat', sales: 129350 }, { date: '10/13', day: 'Sun', sales: 125700 }, { date: '10/14', day: 'Mon', sales: 133550 }, { date: '10/15', day: 'Tue', sales: 108700 }, { date: '10/16', day: 'Wed', sales: 78400 }, { date: '10/17', day: 'Thu', sales: 102150 }, { date: '10/18', day: 'Fri', sales: 126550 }, { date: '10/19', day: 'Sat', sales: 112150 }, { date: '10/20', day: 'Sun', sales: 130350 }, { date: '10/21', day: 'Mon', sales: 102550 }, { date: '10/22', day: 'Tue', sales: 102850 }, { date: '10/23', day: 'Wed', sales: 142250 }, { date: '10/24', day: 'Thu', sales: 115100 }, { date: '10/25', day: 'Fri', sales: 119550 }, { date: '10/26', day: 'Sat', sales: 162650 }, { date: '10/27', day: 'Sun', sales: 147800 }, { date: '10/28', day: 'Mon', sales: 121100 }, { date: '10/29', day: 'Tue', sales: 95300 }, { date: '10/30', day: 'Wed', sales: 127950 }, { date: '10/31', day: 'Thu', sales: 117850 },
+            { date: '11/1', day: 'Fri', sales: 106100 }, { date: '11/2', day: 'Sat', sales: 148800 }, { date: '11/3', day: 'Sun', sales: 194150 }, { date: '11/4', day: 'Mon', sales: 87550 }, { date: '11/5', day: 'Tue', sales: 106800 }, { date: '11/6', day: 'Wed', sales: 126400 }, { date: '11/7', day: 'Thu', sales: 125500 }, { date: '11/8', day: 'Fri', sales: 115500 }, { date: '11/9', day: 'Sat', sales: 137650 }, { date: '11/10', day: 'Sun', sales: 176550 }, { date: '11/11', day: 'Mon', sales: 82900 }, { date: '11/12', day: 'Tue', sales: 94400 }, { date: '11/13', day: 'Wed', sales: 135600 }, { date: '11/14', day: 'Thu', sales: 91850 }, { date: '11/15', day: 'Fri', sales: 108500 }, { date: '11/16', day: 'Sat', sales: 131050 }, { date: '11/17', day: 'Sun', sales: 144480 }, { date: '11/18', day: 'Mon', sales: 110450 }, { date: '11/19', day: 'Tue', sales: 81000 }, { date: '11/20', day: 'Wed', sales: 94600 }, { date: '11/21', day: 'Thu', sales: 137350 }, { date: '11/22', day: 'Fri', sales: 123250 }, { date: '11/23', day: 'Sat', sales: 198350 }, { date: '11/24', day: 'Sun', sales: 211200 }, { date: '11/25', day: 'Mon', sales: 93450 }, { date: '11/26', day: 'Tue', sales: 85150 }, { date: '11/27', day: 'Wed', sales: 132900 }, { date: '11/28', day: 'Thu', sales: 114800 }, { date: '11/29', day: 'Fri', sales: 207500 }, { date: '11/30', day: 'Sat', sales: 170800 },
+            { date: '12/1', day: 'Sun', sales: 161650 }, { date: '12/2', day: 'Mon', sales: 64600 }, { date: '12/3', day: 'Tue', sales: 108180 }, { date: '12/4', day: 'Wed', sales: 136450 }, { date: '12/5', day: 'Thu', sales: 139450 }, { date: '12/6', day: 'Fri', sales: 96000 }, { date: '12/7', day: 'Sat', sales: 177630 }, { date: '12/8', day: 'Sun', sales: 111100 }, { date: '12/9', day: 'Mon', sales: 104150 }, { date: '12/10', day: 'Tue', sales: 94450 }, { date: '12/11', day: 'Wed', sales: 107450 }, { date: '12/12', day: 'Thu', sales: 141000 }, { date: '12/13', day: 'Fri', sales: 194050 }, { date: '12/14', day: 'Sat', sales: 183050 }, { date: '12/15', day: 'Sun', sales: 159150 }, { date: '12/16', day: 'Mon', sales: 147450 }, { date: '12/17', day: 'Tue', sales: 135450 }, { date: '12/18', day: 'Wed', sales: 155850 }, { date: '12/19', day: 'Thu', sales: 133700 }, { date: '12/20', day: 'Fri', sales: 143050 }, { date: '12/21', day: 'Sat', sales: 171750 }, { date: '12/22', day: 'Sun', sales: 182850 }, { date: '12/23', day: 'Mon', sales: 151400 }, { date: '12/24', day: 'Tue', sales: 145350 }, { date: '12/25', day: 'Wed', sales: 172350 }, { date: '12/26', day: 'Thu', sales: 147000 }, { date: '12/27', day: 'Fri', sales: 208600 }, { date: '12/28', day: 'Sat', sales: 259750 }, { date: '12/29', day: 'Sun', sales: 179950 }, { date: '12/30', day: 'Mon', sales: 188250 }, { date: '12/31', day: 'Tue', sales: 101000 },
+            { date: '1/1', day: 'Wed', sales: 0 }, { date: '1/2', day: 'Thu', sales: 212500 }, { date: '1/3', day: 'Fri', sales: 223650 }, { date: '1/4', day: 'Sat', sales: 134150 }, { date: '1/5', day: 'Sun', sales: 138450 }, { date: '1/6', day: 'Mon', sales: 106050 }, { date: '1/7', day: 'Tue', sales: 118350 }, { date: '1/8', day: 'Wed', sales: 131700 }, { date: '1/9', day: 'Thu', sales: 103180 }, { date: '1/10', day: 'Fri', sales: 142350 }, { date: '1/11', day: 'Sat', sales: 180200 }, { date: '1/12', day: 'Sun', sales: 167550 }, { date: '1/13', day: 'Mon', sales: 112300 }, { date: '1/14', day: 'Tue', sales: 101150 }, { date: '1/15', day: 'Wed', sales: 120900 }, { date: '1/16', day: 'Thu', sales: 154450 }, { date: '1/17', day: 'Fri', sales: 172900 }, { date: '1/18', day: 'Sat', sales: 163900 }, { date: '1/19', day: 'Sun', sales: 156850 }, { date: '1/20', day: 'Mon', sales: 122700 }, { date: '1/21', day: 'Tue', sales: 121050 }, { date: '1/22', day: 'Wed', sales: 178900 }, { date: '1/23', day: 'Thu', sales: 143850 }, { date: '1/24', day: 'Fri', sales: 161110 }, { date: '1/25', day: 'Sat', sales: 154850 }, { date: '1/26', day: 'Sun', sales: 197700 }, { date: '1/27', day: 'Mon', sales: 90100 }, { date: '1/28', day: 'Tue', sales: 147400 }, { date: '1/29', day: 'Wed', sales: 168250 }, { date: '1/30', day: 'Thu', sales: 150700 }, { date: '1/31', day: 'Fri', sales: 150650 },
+            { date: '2/1', day: 'Sat', sales: 167650 }, { date: '2/2', day: 'Sun', sales: 193050 }, { date: '2/3', day: 'Mon', sales: 140100 }, { date: '2/4', day: 'Tue', sales: 178700 }, { date: '2/5', day: 'Wed', sales: 186400 }, { date: '2/6', day: 'Thu', sales: 186500 }, { date: '2/7', day: 'Fri', sales: 162100 }, { date: '2/8', day: 'Sat', sales: 263550 }, { date: '2/9', day: 'Sun', sales: 146050 }, { date: '2/10', day: 'Mon', sales: 174700 }, { date: '2/11', day: 'Tue', sales: 160200 }, { date: '2/12', day: 'Wed', sales: 124100 }, { date: '2/13', day: 'Thu', sales: 111650 }, { date: '2/14', day: 'Fri', sales: 182600 }, { date: '2/15', day: 'Sat', sales: 137250 }, { date: '2/16', day: 'Sun', sales: 132850 }, { date: '2/17', day: 'Mon', sales: 95400 }, { date: '2/18', day: 'Tue', sales: 114750 }, { date: '2/19', day: 'Wed', sales: 113050 }, { date: '2/20', day: 'Thu', sales: 94150 }, { date: '2/21', day: 'Fri', sales: 112050 }, { date: '2/22', day: 'Sat', sales: 139800 }, { date: '2/23', day: 'Sun', sales: 138850 }, { date: '2/24', day: 'Mon', sales: 102400 }, { date: '2/25', day: 'Tue', sales: 117800 }, { date: '2/26', day: 'Wed', sales: 91250 }, { date: '2/27', day: 'Thu', sales: 111000 }, { date: '2/28', day: 'Fri', sales: 137950 },
+            { date: '3/1', day: 'Sat', sales: 135400 }, { date: '3/2', day: 'Sun', sales: 137450 }, { date: '3/3', day: 'Mon', sales: 96150 }, { date: '3/4', day: 'Tue', sales: 82800 }, { date: '3/5', day: 'Wed', sales: 112450 }, { date: '3/6', day: 'Thu', sales: 118750 }, { date: '3/7', day: 'Fri', sales: 142050 }, { date: '3/8', day: 'Sat', sales: 146300 }, { date: '3/9', day: 'Sun', sales: 144800 }, { date: '3/10', day: 'Mon', sales: 111650 }, { date: '3/11', day: 'Tue', sales: 104000 }, { date: '3/12', day: 'Wed', sales: 140350 }, { date: '3/13', day: 'Thu', sales: 110850 }, { date: '3/14', day: 'Fri', sales: 160850 }, { date: '3/15', day: 'Sat', sales: 163250 }, { date: '3/16', day: 'Sun', sales: 98900 }, { date: '3/17', day: 'Mon', sales: 81700 }, { date: '3/18', day: 'Tue', sales: 75700 }, { date: '3/19', day: 'Wed', sales: 118350 }, { date: '3/20', day: 'Thu', sales: 130450 }, { date: '3/21', day: 'Fri', sales: 116650 }, { date: '3/22', day: 'Sat', sales: 130250 }, { date: '3/23', day: 'Sun', sales: 85150 }, { date: '3/24', day: 'Mon', sales: 106050 }, { date: '3/25', day: 'Tue', sales: 85550 }, { date: '3/26', day: 'Wed', sales: 113150 }, { date: '3/27', day: 'Thu', sales: 107850 }, { date: '3/28', day: 'Fri', sales: 102100 }, { date: '3/29', day: 'Sat', sales: 142150 }, { date: '3/30', day: 'Sun', sales: 144800 }, { date: '3/31', day: 'Mon', sales: 111150 }
+        ];
+
+        const data2023 = [
+            { date: '4/1', day: 'Sat', sales: 104740 }, { date: '4/2', day: 'Sun', sales: 136930 }, { date: '4/3', day: 'Mon', sales: 113060 }, { date: '4/4', day: 'Tue', sales: 85670 }, { date: '4/5', day: 'Wed', sales: 113590 }, { date: '4/6', day: 'Thu', sales: 128210 }, { date: '4/7', day: 'Fri', sales: 139730 }, { date: '4/8', day: 'Sat', sales: 207870 }, { date: '4/9', day: 'Sun', sales: 153640 }, { date: '4/10', day: 'Mon', sales: 124690 }, { date: '4/11', day: 'Tue', sales: 111700 }, { date: '4/12', day: 'Wed', sales: 109200 }, { date: '4/13', day: 'Thu', sales: 73340 }, { date: '4/14', day: 'Fri', sales: 114950 }, { date: '4/15', day: 'Sat', sales: 150790 }, { date: '4/16', day: 'Sun', sales: 128370 }, { date: '4/17', day: 'Mon', sales: 103690 }, { date: '4/18', day: 'Tue', sales: 89990 }, { date: '4/19', day: 'Wed', sales: 86910 }, { date: '4/20', day: 'Thu', sales: 128100 }, { date: '4/21', day: 'Fri', sales: 144390 }, { date: '4/22', day: 'Sat', sales: 182590 }, { date: '4/23', day: 'Sun', sales: 163190 }, { date: '4/24', day: 'Mon', sales: 102310 }, { date: '4/25', day: 'Tue', sales: 97070 }, { date: '4/26', day: 'Wed', sales: 116290 }, { date: '4/27', day: 'Thu', sales: 123600 }, { date: '4/28', day: 'Fri', sales: 107370 }, { date: '4/29', day: 'Sat', sales: 197690 }, { date: '4/30', day: 'Sun', sales: 161700 },
+            { date: '5/1', day: 'Mon', sales: 131430 }, { date: '5/2', day: 'Tue', sales: 149730 }, { date: '5/3', day: 'Wed', sales: 162150 }, { date: '5/4', day: 'Thu', sales: 138240 }, { date: '5/5', day: 'Fri', sales: 138560 }, { date: '5/6', day: 'Sat', sales: 125920 }, { date: '5/7', day: 'Sun', sales: 145010 }, { date: '5/8', day: 'Mon', sales: 84850 }, { date: '5/9', day: 'Tue', sales: 64600 }, { date: '5/10', day: 'Wed', sales: 135120 }, { date: '5/11', day: 'Thu', sales: 137480 }, { date: '5/12', day: 'Fri', sales: 93690 }, { date: '5/13', day: 'Sat', sales: 136960 }, { date: '5/14', day: 'Sun', sales: 147360 }, { date: '5/15', day: 'Mon', sales: 109140 }, { date: '5/16', day: 'Tue', sales: 108430 }, { date: '5/17', day: 'Wed', sales: 123900 }, { date: '5/18', day: 'Thu', sales: 124160 }, { date: '5/19', day: 'Fri', sales: 122260 }, { date: '5/20', day: 'Sat', sales: 105450 }, { date: '5/21', day: 'Sun', sales: 98330 }, { date: '5/22', day: 'Mon', sales: 71660 }, { date: '5/23', day: 'Tue', sales: 96610 }, { date: '5/24', day: 'Wed', sales: 96590 }, { date: '5/25', day: 'Thu', sales: 123870 }, { date: '5/26', day: 'Fri', sales: 130280 }, { date: '5/27', day: 'Sat', sales: 134210 }, { date: '5/28', day: 'Sun', sales: 161960 }, { date: '5/29', day: 'Mon', sales: 221440 }, { date: '5/30', day: 'Tue', sales: 106600 }, { date: '5/31', day: 'Wed', sales: 98280 },
+            { date: '6/1', day: 'Thu', sales: 100630 }, { date: '6/2', day: 'Fri', sales: 118100 }, { date: '6/3', day: 'Sat', sales: 145210 }, { date: '6/4', day: 'Sun', sales: 131470 }, { date: '6/5', day: 'Mon', sales: 66420 }, { date: '6/6', day: 'Tue', sales: 93490 }, { date: '6/7', day: 'Wed', sales: 101610 }, { date: '6/8', day: 'Thu', sales: 98950 }, { date: '6/9', day: 'Fri', sales: 116410 }, { date: '6/10', day: 'Sat', sales: 179910 }, { date: '6/11', day: 'Sun', sales: 150170 }, { date: '6/12', day: 'Mon', sales: 108730 }, { date: '6/13', day: 'Tue', sales: 121470 }, { date: '6/14', day: 'Wed', sales: 87160 }, { date: '6/15', day: 'Thu', sales: 105090 }, { date: '6/16', day: 'Fri', sales: 124500 }, { date: '6/17', day: 'Sat', sales: 131350 }, { date: '6/18', day: 'Sun', sales: 147780 }, { date: '6/19', day: 'Mon', sales: 104410 }, { date: '6/20', day: 'Tue', sales: 124050 }, { date: '6/21', day: 'Wed', sales: 112420 }, { date: '6/22', day: 'Thu', sales: 110150 }, { date: '6/23', day: 'Fri', sales: 140160 }, { date: '6/24', day: 'Sat', sales: 117610 }, { date: '6/25', day: 'Sun', sales: 170560 }, { date: '6/26', day: 'Mon', sales: 127450 }, { date: '6/27', day: 'Tue', sales: 119090 }, { date: '6/28', day: 'Wed', sales: 82230 }, { date: '6/29', day: 'Thu', sales: 227710 }, { date: '6/30', day: 'Fri', sales: 110070 },
+            { date: '7/1', day: 'Sat', sales: 126920 }, { date: '7/2', day: 'Sun', sales: 146430 }, { date: '7/3', day: 'Mon', sales: 105170 }, { date: '7/4', day: 'Tue', sales: 82530 }, { date: '7/5', day: 'Wed', sales: 125440 }, { date: '7/6', day: 'Thu', sales: 106560 }, { date: '7/7', day: 'Fri', sales: 162950 }, { date: '7/8', day: 'Sat', sales: 139150 }, { date: '7/9', day: 'Sun', sales: 152880 }, { date: '7/10', day: 'Mon', sales: 77980 }, { date: '7/11', day: 'Tue', sales: 137930 }, { date: '7/12', day: 'Wed', sales: 117300 }, { date: '7/13', day: 'Thu', sales: 118340 }, { date: '7/14', day: 'Fri', sales: 158590 }, { date: '7/15', day: 'Sat', sales: 112170 }, { date: '7/16', day: 'Sun', sales: 163940 }, { date: '7/17', day: 'Mon', sales: 96090 }, { date: '7/18', day: 'Tue', sales: 124440 }, { date: '7/19', day: 'Wed', sales: 91420 }, { date: '7/20', day: 'Thu', sales: 104320 }, { date: '7/21', day: 'Fri', sales: 156900 }, { date: '7/22', day: 'Sat', sales: 116470 }, { date: '7/23', day: 'Sun', sales: 115280 }, { date: '7/24', day: 'Mon', sales: 126830 }, { date: '7/25', day: 'Tue', sales: 139440 }, { date: '7/26', day: 'Wed', sales: 150890 }, { date: '7/27', day: 'Thu', sales: 110400 }, { date: '7/28', day: 'Fri', sales: 213280 }, { date: '7/29', day: 'Sat', sales: 206890 }, { date: '7/30', day: 'Sun', sales: 110070 }, { date: '7/31', day: 'Mon', sales: 101360 },
+            { date: '8/1', day: 'Tue', sales: 120710 }, { date: '8/2', day: 'Wed', sales: 141410 }, { date: '8/3', day: 'Thu', sales: 142460 }, { date: '8/4', day: 'Fri', sales: 160320 }, { date: '8/5', day: 'Sat', sales: 118240 }, { date: '8/6', day: 'Sun', sales: 107880 }, { date: '8/7', day: 'Mon', sales: 87870 }, { date: '8/8', day: 'Tue', sales: 83330 }, { date: '8/9', day: 'Wed', sales: 106290 }, { date: '8/10', day: 'Thu', sales: 123230 }, { date: '8/11', day: 'Fri', sales: 102900 }, { date: '8/12', day: 'Sat', sales: 118750 }, { date: '8/13', day: 'Sun', sales: 117820 }, { date: '8/14', day: 'Mon', sales: 107640 }, { date: '8/15', day: 'Tue', sales: 144400 }, { date: '8/16', day: 'Wed', sales: 90580 }, { date: '8/17', day: 'Thu', sales: 100830 }, { date: '8/18', day: 'Fri', sales: 140070 }, { date: '8/19', day: 'Sat', sales: 108230 }, { date: '8/20', day: 'Sun', sales: 124870 }, { date: '8/21', day: 'Mon', sales: 100490 }, { date: '8/22', day: 'Tue', sales: 121410 }, { date: '8/23', day: 'Wed', sales: 121770 }, { date: '8/24', day: 'Thu', sales: 137320 }, { date: '8/25', day: 'Fri', sales: 200490 }, { date: '8/26', day: 'Sat', sales: 161620 }, { date: '8/27', day: 'Sun', sales: 162730 }, { date: '8/28', day: 'Mon', sales: 98040 }, { date: '8/29', day: 'Tue', sales: 177060 }, { date: '8/30', day: 'Wed', sales: 77440 }, { date: '8/31', day: 'Thu', sales: 116950 },
+            { date: '9/1', day: 'Fri', sales: 106310 }, { date: '9/2', day: 'Sat', sales: 130860 }, { date: '9/3', day: 'Sun', sales: 164610 }, { date: '9/4', day: 'Mon', sales: 103610 }, { date: '9/5', day: 'Tue', sales: 96380 }, { date: '9/6', day: 'Wed', sales: 100660 }, { date: '9/7', day: 'Thu', sales: 87020 }, { date: '9/8', day: 'Fri', sales: 115440 }, { date: '9/9', day: 'Sat', sales: 130610 }, { date: '9/10', day: 'Sun', sales: 160420 }, { date: '9/11', day: 'Mon', sales: 71830 }, { date: '9/12', day: 'Tue', sales: 95430 }, { date: '9/13', day: 'Wed', sales: 107400 }, { date: '9/14', day: 'Thu', sales: 90550 }, { date: '9/15', day: 'Fri', sales: 109270 }, { date: '9/16', day: 'Sat', sales: 123800 }, { date: '9/17', day: 'Sun', sales: 147100 }, { date: '9/18', day: 'Mon', sales: 133540 }, { date: '9/19', day: 'Tue', sales: 96410 }, { date: '9/20', day: 'Wed', sales: 113130 }, { date: '9/21', day: 'Thu', sales: 72880 }, { date: '9/22', day: 'Fri', sales: 132640 }, { date: '9/23', day: 'Sat', sales: 113400 }, { date: '9/24', day: 'Sun', sales: 120200 }, { date: '9/25', day: 'Mon', sales: 92900 }, { date: '9/26', day: 'Tue', sales: 85460 }, { date: '9/27', day: 'Wed', sales: 151730 }, { date: '9/28', day: 'Thu', sales: 119050 }, { date: '9/29', day: 'Fri', sales: 155630 }, { date: '9/30', day: 'Sat', sales: 151370 },
+            { date: '10/1', day: 'Sun', sales: 183720 }, { date: '10/2', day: 'Mon', sales: 118400 }, { date: '10/3', day: 'Tue', sales: 81740 }, { date: '10/4', day: 'Wed', sales: 94900 }, { date: '10/5', day: 'Thu', sales: 147050 }, { date: '10/6', day: 'Fri', sales: 86550 }, { date: '10/7', day: 'Sat', sales: 141020 }, { date: '10/8', day: 'Sun', sales: 162850 }, { date: '10/9', day: 'Mon', sales: 140590 }, { date: '10/10', day: 'Tue', sales: 97250 }, { date: '10/11', day: 'Wed', sales: 100510 }, { date: '10/12', day: 'Thu', sales: 181500 }, { date: '10/13', day: 'Fri', sales: 184580 }, { date: '10/14', day: 'Sat', sales: 225800 }, { date: '10/15', day: 'Sun', sales: 175420 }, { date: '10/16', day: 'Mon', sales: 88650 }, { date: '10/17', day: 'Tue', sales: 91450 }, { date: '10/18', day: 'Wed', sales: 118150 }, { date: '10/19', day: 'Thu', sales: 80080 }, { date: '10/20', day: 'Fri', sales: 166140 }, { date: '10/21', day: 'Sat', sales: 199990 }, { date: '10/22', day: 'Sun', sales: 183850 }, { date: '10/23', day: 'Mon', sales: 98600 }, { date: '10/24', day: 'Tue', sales: 104150 }, { date: '10/25', day: 'Wed', sales: 123480 }, { date: '10/26', day: 'Thu', sales: 129450 }, { date: '10/27', day: 'Fri', sales: 129970 }, { date: '10/28', day: 'Sat', sales: 135800 }, { date: '10/29', day: 'Sun', sales: 229760 }, { date: '10/30', day: 'Mon', sales: 97690 }, { date: '10/31', day: 'Tue', sales: 116880 },
+            { date: '11/1', day: 'Wed', sales: 144050 }, { date: '11/2', day: 'Thu', sales: 150250 }, { date: '11/3', day: 'Fri', sales: 168910 }, { date: '11/4', day: 'Sat', sales: 174200 }, { date: '11/5', day: 'Sun', sales: 154000 }, { date: '11/6', day: 'Mon', sales: 123200 }, { date: '11/7', day: 'Tue', sales: 132500 }, { date: '11/8', day: 'Wed', sales: 127050 }, { date: '11/9', day: 'Thu', sales: 129950 }, { date: '11/10', day: 'Fri', sales: 124550 }, { date: '11/11', day: 'Sat', sales: 152887 }, { date: '11/12', day: 'Sun', sales: 128230 }, { date: '11/13', day: 'Mon', sales: 102567 }, { date: '11/14', day: 'Tue', sales: 74800 }, { date: '11/15', day: 'Wed', sales: 128550 }, { date: '11/16', day: 'Thu', sales: 123260 }, { date: '11/17', day: 'Fri', sales: 129750 }, { date: '11/18', day: 'Sat', sales: 131380 }, { date: '11/19', day: 'Sun', sales: 186360 }, { date: '11/20', day: 'Mon', sales: 68380 }, { date: '11/21', day: 'Tue', sales: 114980 }, { date: '11/22', day: 'Wed', sales: 137300 }, { date: '11/23', day: 'Thu', sales: 168000 }, { date: '11/24', day: 'Fri', sales: 130150 }, { date: '11/25', day: 'Sat', sales: 167050 }, { date: '11/26', day: 'Sun', sales: 178930 }, { date: '11/27', day: 'Mon', sales: 119350 }, { date: '11/28', day: 'Tue', sales: 110400 }, { date: '11/29', day: 'Wed', sales: 183600 }, { date: '11/30', day: 'Thu', sales: 102700 },
+            { date: '12/1', day: 'Fri', sales: 111400 }, { date: '12/2', day: 'Sat', sales: 216000 }, { date: '12/3', day: 'Sun', sales: 172800 }, { date: '12/4', day: 'Mon', sales: 88250 }, { date: '12/5', day: 'Tue', sales: 93700 }, { date: '12/6', day: 'Wed', sales: 122000 }, { date: '12/7', day: 'Thu', sales: 134000 }, { date: '12/8', day: 'Fri', sales: 170580 }, { date: '12/9', day: 'Sat', sales: 178650 }, { date: '12/10', day: 'Sun', sales: 201180 }, { date: '12/11', day: 'Mon', sales: 102950 }, { date: '12/12', day: 'Tue', sales: 107804 }, { date: '12/13', day: 'Wed', sales: 150500 }, { date: '12/14', day: 'Thu', sales: 149850 }, { date: '12/15', day: 'Fri', sales: 156030 }, { date: '12/16', day: 'Sat', sales: 220850 }, { date: '12/17', day: 'Sun', sales: 180750 }, { date: '12/18', day: 'Mon', sales: 128650 }, { date: '12/19', day: 'Tue', sales: 90750 }, { date: '12/20', day: 'Wed', sales: 158350 }, { date: '12/21', day: 'Thu', sales: 154250 }, { date: '12/22', day: 'Fri', sales: 193950 }, { date: '12/23', day: 'Sat', sales: 174600 }, { date: '12/24', day: 'Sun', sales: 232500 }, { date: '12/25', day: 'Mon', sales: 181300 }, { date: '12/26', day: 'Tue', sales: 129800 }, { date: '12/27', day: 'Wed', sales: 163200 }, { date: '12/28', day: 'Thu', sales: 224850 }, { date: '12/29', day: 'Fri', sales: 243830 }, { date: '12/30', day: 'Sat', sales: 182030 }, { date: '12/31', day: 'Sun', sales: 0 },
+            { date: '1/1', day: 'Mon', sales: 0 }, { date: '1/2', day: 'Tue', sales: 0 }, { date: '1/3', day: 'Wed', sales: 0 }, { date: '1/4', day: 'Thu', sales: 188480 }, { date: '1/5', day: 'Fri', sales: 169800 }, { date: '1/6', day: 'Sat', sales: 151900 }, { date: '1/7', day: 'Sun', sales: 112200 }, { date: '1/8', day: 'Mon', sales: 152250 }, { date: '1/9', day: 'Tue', sales: 100650 }, { date: '1/10', day: 'Wed', sales: 143600 }, { date: '1/11', day: 'Thu', sales: 101700 }, { date: '1/12', day: 'Fri', sales: 109100 }, { date: '1/13', day: 'Sat', sales: 111050 }, { date: '1/14', day: 'Sun', sales: 100300 }, { date: '1/15', day: 'Mon', sales: 113150 }, { date: '1/16', day: 'Tue', sales: 147050 }, { date: '1/17', day: 'Wed', sales: 113500 }, { date: '1/18', day: 'Thu', sales: 116550 }, { date: '1/19', day: 'Fri', sales: 199150 }, { date: '1/20', day: 'Sat', sales: 227650 }, { date: '1/21', day: 'Sun', sales: 180400 }, { date: '1/22', day: 'Mon', sales: 152250 }, { date: '1/23', day: 'Tue', sales: 102300 }, { date: '1/24', day: 'Wed', sales: 137350 }, { date: '1/25', day: 'Thu', sales: 123150 }, { date: '1/26', day: 'Fri', sales: 170050 }, { date: '1/27', day: 'Sat', sales: 173600 }, { date: '1/28', day: 'Sun', sales: 182800 }, { date: '1/29', day: 'Mon', sales: 161200 }, { date: '1/30', day: 'Tue', sales: 110550 }, { date: '1/31', day: 'Wed', sales: 78000 },
+            { date: '2/1', day: 'Thu', sales: 128250 }, { date: '2/2', day: 'Fri', sales: 204050 }, { date: '2/3', day: 'Sat', sales: 196230 }, { date: '2/4', day: 'Sun', sales: 335000 }, { date: '2/5', day: 'Mon', sales: 203300 }, { date: '2/6', day: 'Tue', sales: 137700 }, { date: '2/7', day: 'Wed', sales: 194100 }, { date: '2/8', day: 'Thu', sales: 140650 }, { date: '2/9', day: 'Fri', sales: 194750 }, { date: '2/10', day: 'Sat', sales: 245600 }, { date: '2/11', day: 'Sun', sales: 283650 }, { date: '2/12', day: 'Mon', sales: 165150 }, { date: '2/13', day: 'Tue', sales: 130400 }, { date: '2/14', day: 'Wed', sales: 175300 }, { date: '2/15', day: 'Thu', sales: 140600 }, { date: '2/16', day: 'Fri', sales: 144400 }, { date: '2/17', day: 'Sat', sales: 182700 }, { date: '2/18', day: 'Sun', sales: 142850 }, { date: '2/19', day: 'Mon', sales: 133000 }, { date: '2/20', day: 'Tue', sales: 125900 }, { date: '2/21', day: 'Wed', sales: 100950 }, { date: '2/22', day: 'Thu', sales: 184500 }, { date: '2/23', day: 'Fri', sales: 145450 }, { date: '2/24', day: 'Sat', sales: 179850 }, { date: '2/25', day: 'Sun', sales: 179680 }, { date: '2/26', day: 'Mon', sales: 83800 }, { date: '2/27', day: 'Tue', sales: 73550 }, { date: '2/28', day: 'Wed', sales: 117450 }, { date: '2/29', day: 'Thu', sales: 225300 },
+            { date: '3/1', day: 'Fri', sales: 153300 }, { date: '3/2', day: 'Sat', sales: 130600 }, { date: '3/3', day: 'Sun', sales: 95250 }, { date: '3/4', day: 'Mon', sales: 70400 }, { date: '3/5', day: 'Tue', sales: 70300 }, { date: '3/6', day: 'Wed', sales: 105300 }, { date: '3/7', day: 'Thu', sales: 113850 }, { date: '3/8', day: 'Fri', sales: 121200 }, { date: '3/9', day: 'Sat', sales: 131300 }, { date: '3/10', day: 'Sun', sales: 129650 }, { date: '3/11', day: 'Mon', sales: 66100 }, { date: '3/12', day: 'Tue', sales: 97150 }, { date: '3/13', day: 'Wed', sales: 79750 }, { date: '3/14', day: 'Thu', sales: 100900 }, { date: '3/15', day: 'Fri', sales: 79250 }, { date: '3/16', day: 'Sat', sales: 151400 }, { date: '3/17', day: 'Sun', sales: 117850 }, { date: '3/18', day: 'Mon', sales: 94000 }, { date: '3/19', day: 'Tue', sales: 99700 }, { date: '3/20', day: 'Wed', sales: 0 }, { date: '3/21', day: 'Thu', sales: 137030 }, { date: '3/22', day: 'Fri', sales: 125300 }, { date: '3/23', day: 'Sat', sales: 118650 }, { date: '3/24', day: 'Sun', sales: 118950 }, { date: '3/25', day: 'Mon', sales: 101100 }, { date: '3/26', day: 'Tue', sales: 92950 }, { date: '3/27', day: 'Wed', sales: 0 }, { date: '3/28', day: 'Thu', sales: 102400 }, { date: '3/29', day: 'Fri', sales: 176000 }, { date: '3/30', day: 'Sat', sales: 106300 }, { date: '3/31', day: 'Sun', sales: 127550 }
+        ];
+
+        function getMonthData(data, monthIdx) {
+            const monthPrefixes = ['4/', '5/', '6/', '7/', '8/', '9/', '10/', '11/', '12/', '1/', '2/', '3/'];
+            const prefix = monthPrefixes[monthIdx];
+            return data.filter(d => d.date.startsWith(prefix) && !d.date.startsWith(prefix.slice(0, -1) + '0/'));
+        }
+
+        function getData() { return currentYear === '2024' ? data2024 : data2023; }
+
+        function getQuarterMonths() { return quarters[currentQuarter]; }
+
+        function refresh() {
+            const data = getData();
+            const qMonths = getQuarterMonths();
+
+            // Summary
+            let total = 0;
+            qMonths.forEach(m => { getMonthData(data, m).forEach(d => total += d.sales); });
+            const avg = Math.floor(total / qMonths.length);
+            const taxLabel = showExTax ? '（税抜）' : '（税込）';
+
+            document.getElementById('summaryCards').innerHTML = `
+                <div class="summary-card"><div class="label">期間売上${taxLabel}</div><div class="value">${formatCurrency(getValue(total))}</div></div>
+                <div class="summary-card"><div class="label">月平均${taxLabel}</div><div class="value">${formatCurrency(getValue(avg))}</div></div>
+                <div class="summary-card"><div class="label">対象期間</div><div class="value">${currentQuarter === 'all' ? '全12ヶ月' : '3ヶ月'}</div></div>
+            `;
+
+            // Month tabs
+            const monthTabsHtml = qMonths.map((m, i) =>
+                `<button class="month-btn${i === 0 ? ' active' : ''}" data-month="${m}">${months[m]}</button>`
+            ).join('');
+            document.getElementById('monthTabs').innerHTML = monthTabsHtml;
+
+            document.querySelectorAll('#monthTabs .month-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#monthTabs .month-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentMonth = parseInt(btn.dataset.month);
+                    renderDailyTable();
+                });
+            });
+
+            currentMonth = qMonths[0];
+            renderDailyTable();
+        }
+
+        function renderDailyTable() {
+            const data = getData();
+            const monthData = getMonthData(data, currentMonth);
+            const total = monthData.reduce((sum, d) => sum + d.sales, 0);
+
+            let html = `<thead><tr><th>日付</th><th>曜日</th><th>売上</th></tr></thead><tbody>`;
+            monthData.forEach(d => {
+                const dayClass = d.day === 'Sun' ? 'day-sun' : (d.day === 'Sat' ? 'day-sat' : '');
+                html += `<tr><td>${d.date}</td><td class="${dayClass}">${dayNames[d.day]}</td><td>${formatCurrency(getValue(d.sales))}</td></tr>`;
+            });
+            html += '</tbody>';
+            document.getElementById('dailyTable').innerHTML = html;
+
+            document.getElementById('monthTotal').innerHTML = `
+                <div class="label">${months[currentMonth]} 合計</div>
+                <div class="value">${formatCurrency(getValue(total))}</div>
+            `;
+        }
+
+        // Tax toggle
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                showExTax = btn.dataset.tax === 'excl';
+                refresh();
+            });
+        });
+
+        // Year tabs
+        document.querySelectorAll('#yearTabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#yearTabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentYear = tab.dataset.year;
+                refresh();
+            });
+        });
+
+        // Quarter tabs
+        document.querySelectorAll('#quarterTabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('#quarterTabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentQuarter = tab.dataset.q;
+                refresh();
+            });
+        });
+
+        refresh();
+    </script>
+</body>
+
+</html>
