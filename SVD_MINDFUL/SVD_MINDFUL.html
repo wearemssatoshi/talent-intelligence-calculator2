@@ -1899,7 +1899,7 @@
                     data-value="2">★</span><span class="star" data-value="3">★</span><span class="star"
                     data-value="4">★</span><span class="star" data-value="5">★</span></div>
             <textarea class="memo-input" id="memoInput" placeholder="今日の気づきや学びをメモ（任意）"></textarea>
-            <button class="btn-main" onclick="submitReflection()">COMPLETE</button>
+            <button class="btn-main" id="completeBtn" onclick="submitReflection()">COMPLETE</button>
         </div>
 
         <!-- SCREEN 4: COMPLETION -->
@@ -2951,6 +2951,13 @@
         }
 
         function startDay() {
+            // ===== 二重クリック防止: ボタンを即座に無効化 =====
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn.disabled) return; // 既に処理中なら何もしない
+            startBtn.disabled = true;
+            startBtn.textContent = 'C/IN中...';
+            startBtn.style.opacity = '0.5';
+
             // Save check-in time and quests for session persistence
             localStorage.setItem('mindful_checkin_time', new Date().toISOString());
             localStorage.setItem('mindful_active_quests', JSON.stringify(currentQuests));
@@ -2988,12 +2995,23 @@
         }
 
         function submitReflection() {
+            // ===== 二重クリック防止: ボタンを即座に無効化 =====
+            const completeBtn = document.getElementById('completeBtn');
+            if (completeBtn.disabled) return; // 既に処理中なら何もしない
+            completeBtn.disabled = true;
+            completeBtn.textContent = '送信中...';
+            completeBtn.style.opacity = '0.5';
+
             const today = new Date().toISOString().split('T')[0];
 
             // Prevent duplicate check-out
             const checkoutDate = localStorage.getItem('mindful_checkout_date');
             if (checkoutDate === today) {
                 alert('本日のCHECK OUTは完了済みです。');
+                // ボタンを元に戻す
+                completeBtn.disabled = false;
+                completeBtn.textContent = 'COMPLETE';
+                completeBtn.style.opacity = '1';
                 return;
             }
 
