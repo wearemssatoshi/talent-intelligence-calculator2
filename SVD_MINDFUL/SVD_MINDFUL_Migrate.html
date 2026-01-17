@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SVD MINDFUL - データ移行ツール</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --navy: #1a365d;
+            --gold: #c9a962;
+            --white: #ffffff;
+            --light-gray: #f7f8fa;
+            --text-gray: #6b7280;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a365d 0%, #2d4a7c 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--navy);
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--gold);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .step {
+            margin-bottom: 25px;
+        }
+
+        .step-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .data-display {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .data-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-label {
+            color: var(--text-gray);
+        }
+
+        .data-value {
+            font-weight: 600;
+            color: var(--navy);
+        }
+
+        .token-highlight {
+            color: var(--gold);
+            font-size: 18px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.2);
+        }
+
+        .pin-input {
+            letter-spacing: 0.4em;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold) 0%, #d4b978 100%);
+            color: var(--navy);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(201, 169, 98, 0.4);
+        }
+
+        .btn-main:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-gray);
+        }
+
+        .no-data-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 11px;
+            color: #92400e;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .instructions h3 {
+            font-size: 13px;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+
+        .instructions ol {
+            font-size: 12px;
+            color: var(--text-gray);
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 MINDFUL</h1>
+            <p>データ移行ツール</p>
+        </div>
+
+        <div class="card">
+            <div id="dataFound" style="display: none;">
+                <div class="step">
+                    <div class="step-title">STEP 1: 現在のデータを確認</div>
+                    <div class="data-display">
+                        <div class="data-row">
+                            <span class="data-label">名前</span>
+                            <span class="data-value" id="currentName">-</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">拠点</span>
+                            <span class="data-value" id="currentBase">-</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">トークン</span>
+                            <span class="data-value token-highlight" id="currentTokens">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title">STEP 2: PINを設定</div>
+                    <div class="warning">
+                        ⚠️ このPINはデータ復元に必要です。必ず覚えておいてください。
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">4桁のPINを入力</label>
+                        <input type="password" class="text-input pin-input" id="newPin" placeholder="1234" maxlength="4"
+                            pattern="[0-9]*" inputmode="numeric">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">PINを確認（もう一度入力）</label>
+                        <input type="password" class="text-input pin-input" id="confirmPin" placeholder="1234"
+                            maxlength="4" pattern="[0-9]*" inputmode="numeric">
+                    </div>
+                </div>
+
+                <button class="btn-main" id="migrateBtn" onclick="migrateData()">
+                    🔐 データを保存してPINを設定
+                </button>
+
+                <div class="message error" id="errorMsg"></div>
+                <div class="message success" id="successMsg"></div>
+
+                <div class="instructions">
+                    <h3>📋 移行後の手順</h3>
+                    <ol>
+                        <li>上のボタンで移行完了</li>
+                        <li>ホーム画面のMINDFULを削除</li>
+                        <li>Safariで新しく開いて再追加</li>
+                        <li>「ログイン」から名前とPINで復元！</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div id="noData" class="no-data" style="display: none;">
+                <div class="no-data-icon">📭</div>
+                <p>このブラウザにMINDFULのデータが見つかりません。</p>
+                <p style="margin-top: 10px; font-size: 11px;">通常のMINDFULアプリをお使いのブラウザで開いてください。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URLS = {
+            moiwayama: 'https://script.google.com/macros/s/AKfycbyWS3GJ_0MaRQORqQxRqP5dGehIhz94C4YN5O23sXnZAHqSZjn0WfxMnmYn8GLQW2oWtg/exec',
+            okurayama: 'https://script.google.com/macros/s/AKfycbwp-_wJBz4KZoVFXKBwz3FG5Xr3hU03JJI4f8OvLW4T_kKTHjEfqmF1hNlYNOZ44VSe/exec',
+            tvtower: 'https://script.google.com/macros/s/AKfycbzq_RaJcldhv8S2M0zCiO2J8dIqnc2W1wVAjlxX7jJFSxvPmYXZtJDn3Fq5YKk7Uy4d/exec',
+            akarenga: 'https://script.google.com/macros/s/AKfycbyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/exec'
+        };
+
+        const BASE_NAMES = {
+            moiwayama: '藻岩山',
+            okurayama: '大倉山',
+            tvtower: 'テレビ塔',
+            akarenga: '赤れんが'
+        };
+
+        let currentProfile = null;
+        let currentTokens = 0;
+
+        function init() {
+            // localStorage からデータを読み取り
+            const profileStr = localStorage.getItem('mindful_profile');
+            const tokensStr = localStorage.getItem('mindful_tokens');
+
+            if (profileStr) {
+                try {
+                    currentProfile = JSON.parse(profileStr);
+                    currentTokens = parseInt(tokensStr) || 0;
+
+                    document.getElementById('currentName').textContent = currentProfile.name || '-';
+                    document.getElementById('currentBase').textContent = BASE_NAMES[currentProfile.base] || currentProfile.base || '-';
+                    document.getElementById('currentTokens').textContent = currentTokens;
+
+                    document.getElementById('dataFound').style.display = 'block';
+                    document.getElementById('noData').style.display = 'none';
+                } catch (e) {
+                    showNoData();
+                }
+            } else {
+                showNoData();
+            }
+        }
+
+        function showNoData() {
+            document.getElementById('dataFound').style.display = 'none';
+            document.getElementById('noData').style.display = 'block';
+        }
+
+        async function migrateData() {
+            const newPin = document.getElementById('newPin').value.trim();
+            const confirmPin = document.getElementById('confirmPin').value.trim();
+            const errorEl = document.getElementById('errorMsg');
+            const successEl = document.getElementById('successMsg');
+            const btn = document.getElementById('migrateBtn');
+
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+
+            // バリデーション
+            if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+                errorEl.textContent = 'PINは4桁の数字で入力してください';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                errorEl.textContent = 'PINが一致しません';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '移行中...';
+
+            // バックエンドに登録
+            const base = currentProfile.base || 'moiwayama';
+            const url = SCRIPT_URLS[base];
+
+            try {
+                // まず登録を試みる
+                const registerUrl = `${url}?action=register&name=${encodeURIComponent(currentProfile.name)}&pin=${encodeURIComponent(newPin)}&base=${encodeURIComponent(base)}`;
+                const response = await fetch(registerUrl);
+                const result = await response.json();
+
+                if (result.success || result.exists) {
+                    // 登録成功 or 既に存在する場合、トークンデータを更新
+                    // C/O履歴も取得
+                    const checkoutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+
+                    // ローカルプロフィールにPINを保存
+                    currentProfile.pin = newPin;
+                    localStorage.setItem('mindful_profile', JSON.stringify(currentProfile));
+
+                    successEl.innerHTML = `
+                        ✅ 移行完了！<br>
+                        <strong>名前:</strong> ${currentProfile.name}<br>
+                        <strong>PIN:</strong> ${newPin}<br>
+                        <strong>トークン:</strong> ${currentTokens}<br><br>
+                        ↓ 次の手順に進んでください ↓
+                    `;
+                    successEl.style.display = 'block';
+                    btn.textContent = '✅ 移行完了！';
+                } else {
+                    throw new Error(result.error || '移行に失敗しました');
+                }
+            } catch (e) {
+                console.error('Migration error:', e);
+                errorEl.textContent = 'エラー: ' + e.message;
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '🔐 データを保存してPINを設定';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
