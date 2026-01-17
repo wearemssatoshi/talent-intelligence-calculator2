@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVD MINDFUL</title>
+    <title>SVD MINDFUL v2.1</title>
+    <!-- v2.1: 重複チェックアウト防止を強化 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="SVD MINDFUL">
@@ -3017,41 +3018,50 @@
 
             // ===== workDateベースで重複チェック =====
             const targetDate = workDate || new Date().toISOString().split('T')[0];
-            const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
+            let checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
 
+            // 旧形式からのマイグレーション
+            const oldCheckoutDate = localStorage.getItem('mindful_checkout_date');
+            if (oldCheckoutDate && !checkedOutDates.includes(oldCheckoutDate)) {
+                checkedOutDates.push(oldCheckoutDate);
+            }
+
+            // ===== 重複チェック：この日付で既にC/O済みなら中止 =====
             if (checkedOutDates.includes(targetDate)) {
-                alert('この日付のCHECK OUTは既に完了しています。');
+                alert('この日付のCHECK OUTは既に完了しています。トークンは付与されません。');
                 completeBtn.disabled = false;
                 completeBtn.textContent = 'COMPLETE';
                 completeBtn.style.opacity = '1';
                 return;
             }
 
+            // ===== 最初にC/O済みとして記録（トークン付与より先！）=====
+            checkedOutDates.push(targetDate);
+            if (checkedOutDates.length > 30) {
+                checkedOutDates.shift();
+            }
+            localStorage.setItem('mindful_checkout_dates', JSON.stringify(checkedOutDates));
+            localStorage.setItem('mindful_checkout_date', targetDate);
+
+            // ===== ここでC/O記録が完了。以降はトークン付与 =====
             const memo = document.getElementById('memoInput').value;
             const history = JSON.parse(localStorage.getItem('mindful_history') || '[]');
             history.unshift({ date: targetDate, quests: currentQuests.map(q => ({ id: q.id, title: q.titleEn })), rating: currentRating, memo });
             localStorage.setItem('mindful_history', JSON.stringify(history.slice(0, 30)));
 
-            // Token reward calculation
+            // Token reward calculation (C/O記録保存後に実行)
             const tokenReward = calculateTokenReward(currentRating, memo);
             addTokens(tokenReward.total);
             displayTokenReward(tokenReward);
 
             sendToSheets('reflection', tokenReward);
 
-            // ===== この勤務日をC/O済みとして記録 =====
-            checkedOutDates.push(targetDate);
-            // 過去30日分だけ保持
-            if (checkedOutDates.length > 30) {
-                checkedOutDates.shift();
-            }
-            localStorage.setItem('mindful_checkout_dates', JSON.stringify(checkedOutDates));
-
-            // 後方互換性のためにも今日の日付を記録
-            localStorage.setItem('mindful_checkout_date', targetDate);
             localStorage.removeItem('mindful_checkin_time');
 
             showScreen('screen-completion');
+
+            // CHECK OUTボタンを即座に更新
+            updateReflectionButton();
         }
 
         // TOKEN SYSTEM FUNCTIONS
