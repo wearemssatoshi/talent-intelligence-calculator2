@@ -191,6 +191,15 @@ function doGet(e) {
       return syncUserData(name, pin);
     }
     
+    // ============ PIN変更 ============
+    if (action === 'changePin') {
+      const name = e?.parameter?.name || '';
+      const currentPin = e?.parameter?.currentPin || '';
+      const newPin = e?.parameter?.newPin || '';
+      
+      return changePinForUser(name, currentPin, newPin);
+    }
+    
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
@@ -641,5 +650,48 @@ function updateUserData(name, tokenBalance, checkoutDate) {
   } catch (error) {
     console.error('updateUserData error:', error);
     return false;
+  }
+}
+
+/**
+ * PIN変更
+ */
+function changePinForUser(name, currentPin, newPin) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const currentPinHash = hashPin(currentPin);
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name) {
+        // 現在のPINを確認
+        if (data[i][1] !== currentPinHash) {
+          return ContentService.createTextOutput(JSON.stringify({ 
+            success: false, 
+            error: '現在のPINが正しくありません'
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+        
+        // 新しいPINを保存
+        const newPinHash = hashPin(newPin);
+        sheet.getRange(i + 1, 2).setValue(newPinHash);
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          message: 'PINを変更しました'
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: 'ユーザーが見つかりません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
   }
 }
