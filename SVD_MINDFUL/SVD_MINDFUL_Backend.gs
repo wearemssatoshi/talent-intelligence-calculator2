@@ -115,6 +115,11 @@ function doPost(e) {
     
     sheet.appendRow(row);
     
+    // ============ C/O時はユーザーデータも更新 ============
+    if (data.type === 'reflection' && tokenBalance > 0) {
+      updateUserData(data.name, tokenBalance, checkDate);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({ 
       success: true,
       tokenBalance: tokenBalance 
@@ -134,17 +139,56 @@ function doGet(e) {
     // バージョン確認
     if (action === 'version') {
       return ContentService.createTextOutput(JSON.stringify({
-        version: '3.0.0',
+        version: '3.1.0',
         name: 'SATOSHI AI v3.0 - 寄り添いメンター',
         geminiModel: 'gemini-3-flash-preview',
         features: [
           '寄り添い型メンタリング',
           '相談者コンテキスト理解',
           '幅広いトピック対応',
-          'チャット履歴活用'
+          'PIN認証ログイン'
         ],
-        deployedAt: '2026-01-10T10:22:00+09:00'
+        deployedAt: '2026-01-17'
       })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // ============ PIN認証: ユーザー登録 ============
+    if (action === 'register') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      const base = e?.parameter?.base || '';
+      
+      if (!name || !pin) {
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: false, 
+          error: '名前とPINを入力してください' 
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      return registerUser(name, pin, base);
+    }
+    
+    // ============ PIN認証: ログイン ============
+    if (action === 'login') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      
+      if (!name || !pin) {
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: false, 
+          error: '名前とPINを入力してください' 
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      return loginUser(name, pin);
+    }
+    
+    // ============ データ同期 ============
+    if (action === 'sync') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      
+      return syncUserData(name, pin);
     }
     
     // INSIGHT機能: 記事取得
@@ -419,4 +463,183 @@ function testGemini() {
 function forceAuth() {
   const test = UrlFetchApp.fetch('https://www.google.com');
   console.log('Success!', test.getResponseCode());
+}
+
+// ============ PIN認証システム ============
+
+/**
+ * ユーザーシートを取得または作成
+ */
+function getUsersSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('MINDFUL_Users');
+  if (!sheet) {
+    sheet = ss.insertSheet('MINDFUL_Users');
+    sheet.getRange(1, 1, 1, 7).setValues([[
+      'Name', 'PIN_Hash', 'Base', 'Token_Balance', 'Checkout_Dates', 'Created_At', 'Last_Login'
+    ]]);
+    sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+/**
+ * 簡易ハッシュ関数（本番環境ではより強力なハッシュを推奨）
+ */
+function hashPin(pin) {
+  const hash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, pin);
+  return hash.map(b => ('0' + (b & 0xFF).toString(16)).slice(-2)).join('');
+}
+
+/**
+ * ユーザー登録
+ */
+function registerUser(name, pin, base) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    // 既存ユーザーチェック
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name) {
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: false, 
+          error: 'この名前は既に登録されています。ログインしてください。',
+          exists: true
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // 新規ユーザー登録
+    const pinHash = hashPin(pin);
+    const now = new Date().toISOString();
+    
+    sheet.appendRow([name, pinHash, base, 0, '[]', now, now]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true, 
+      message: '登録完了！',
+      tokenBalance: 0
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * ログイン
+ */
+function loginUser(name, pin) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const pinHash = hashPin(pin);
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name && data[i][1] === pinHash) {
+        // ログイン成功 - 最終ログイン時刻を更新
+        sheet.getRange(i + 1, 7).setValue(new Date().toISOString());
+        
+        // ユーザーデータを返す
+        const tokenBalance = data[i][3] || 0;
+        const checkoutDates = data[i][4] || '[]';
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          name: name,
+          base: data[i][2] || '',
+          tokenBalance: tokenBalance,
+          checkoutDates: JSON.parse(checkoutDates)
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // ログイン失敗
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: '名前またはPINが正しくありません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * データ同期（トークン残高とC/O履歴を取得/更新）
+ */
+function syncUserData(name, pin) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const pinHash = hashPin(pin);
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name && data[i][1] === pinHash) {
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          tokenBalance: data[i][3] || 0,
+          checkoutDates: JSON.parse(data[i][4] || '[]')
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: '認証に失敗しました'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * トークン残高とC/O履歴を更新（C/O時に呼び出し）
+ */
+function updateUserData(name, tokenBalance, checkoutDate) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name) {
+        // トークン残高を更新
+        sheet.getRange(i + 1, 4).setValue(tokenBalance);
+        
+        // C/O日付を追加
+        let checkoutDates = [];
+        try {
+          checkoutDates = JSON.parse(data[i][4] || '[]');
+        } catch (e) {
+          checkoutDates = [];
+        }
+        
+        if (!checkoutDates.includes(checkoutDate)) {
+          checkoutDates.push(checkoutDate);
+          // 過去30日分だけ保持
+          if (checkoutDates.length > 30) {
+            checkoutDates.shift();
+          }
+          sheet.getRange(i + 1, 5).setValue(JSON.stringify(checkoutDates));
+        }
+        
+        return true;
+      }
+    }
+    return false;
+  } catch (error) {
+    console.error('updateUserData error:', error);
+    return false;
+  }
 }
