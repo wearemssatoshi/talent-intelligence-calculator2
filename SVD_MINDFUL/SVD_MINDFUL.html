@@ -2277,9 +2277,9 @@
 
         <!-- GOALS EDIT MODAL -->
         <div id="goalsEditModal"
-            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: scroll; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y;">
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; padding: 20px; overflow-y: scroll; -webkit-overflow-scrolling: touch;">
             <div
-                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 500px; margin: 20px auto; max-height: none; overflow: visible;">
+                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 500px; margin: 20px auto; position: relative; z-index: 10000;">
                 <div
                     style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: var(--navy); text-align: center; margin-bottom: 20px;">
                     🎯 MY VISION を更新
@@ -2641,14 +2641,17 @@
         // ===== C/IN・C/OUT ステータスバッジ更新 =====
         function updateDailyStatusBadges() {
             const targetDate = workDate || new Date().toISOString().split('T')[0];
+            console.log('[StatusBadge] Checking date:', targetDate);
 
             // C/INステータス
             const checkedInDates = JSON.parse(localStorage.getItem('mindful_checked_dates') || '[]');
             const isCheckedIn = checkedInDates.includes(targetDate);
+            console.log('[StatusBadge] C/IN dates:', checkedInDates, 'isCheckedIn:', isCheckedIn);
 
             // C/OUTステータス
             const checkedOutDates = JSON.parse(localStorage.getItem('mindful_checkout_dates') || '[]');
             const isCheckedOut = checkedOutDates.includes(targetDate);
+            console.log('[StatusBadge] C/OUT dates:', checkedOutDates, 'isCheckedOut:', isCheckedOut);
 
             // C/INバッジ更新
             const checkinBadge = document.getElementById('checkinStatusBadge');
