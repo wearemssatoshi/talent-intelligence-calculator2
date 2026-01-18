@@ -596,7 +596,7 @@
             height: 190px;
             margin: 0 auto;
             background: var(--white);
-            background-image: url('../logo/SVD_logo_standard.png');
+            background-image: url('./logo/SVD_logo_standard.png');
             background-size: 85%;
             background-repeat: no-repeat;
             background-position: center 35%;
@@ -2703,6 +2703,7 @@
             loadHistory();
             setupStarRating();
             initWorkDate(); // 日付を初期化
+            updateDailyStatusBadges(); // ===== 起動時にC/IN・C/OUTステータスを更新 =====
             loadTodos(); // To-Doリストをロード
             const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
             if (profile) {
