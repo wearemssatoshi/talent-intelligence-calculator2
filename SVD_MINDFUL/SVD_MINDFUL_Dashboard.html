@@ -277,6 +277,30 @@
                 padding: 20px;
             }
         }
+
+        .period-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text-gray);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .period-tab.active {
+            background: var(--navy);
+            border-color: var(--navy);
+            color: var(--white);
+        }
+
+        .period-tab:hover:not(.active) {
+            border-color: var(--navy);
+            color: var(--navy);
+        }
     </style>
 </head>
 
@@ -296,9 +320,34 @@
     </header>
 
     <main>
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+        <!-- 期間フィルタ -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+            <button class="period-tab active" data-period="today" onclick="selectPeriod('today')">今日</button>
+            <button class="period-tab" data-period="week" onclick="selectPeriod('week')">今週</button>
+            <button class="period-tab" data-period="month" onclick="selectPeriod('month')">今月</button>
+            <button class="period-tab" data-period="quarter" onclick="selectPeriod('quarter')">四半期</button>
+            <button class="period-tab" data-period="year" onclick="selectPeriod('year')">年間</button>
+            <button class="period-tab" data-period="custom" onclick="toggleCustomDate()">カスタム</button>
+            <button onclick="exportCSV()" style="
+                margin-left: auto;
+                padding: 8px 16px;
+                border: 1px solid var(--gold);
+                border-radius: 8px;
+                background: var(--gold);
+                color: var(--navy-dark);
+                font-family: 'Montserrat', sans-serif;
+                font-size: 11px;
+                font-weight: 600;
+                cursor: pointer;
+            ">📥 CSV出力</button>
+        </div>
+
+        <!-- カスタム日付選択（初期は非表示） -->
+        <div id="customDatePicker"
+            style="display: none; align-items: center; gap: 15px; margin-bottom: 20px; padding: 15px; background: var(--light-gray); border-radius: 10px;">
             <div class="date-display" id="dateDisplay" style="margin-bottom: 0;"></div>
-            <input type="date" id="datePicker" style="
+            <label style="font-size: 12px; color: var(--text-gray);">開始:</label>
+            <input type="date" id="startDatePicker" style="
                 padding: 8px 12px;
                 border: 1px solid var(--border);
                 border-radius: 8px;
@@ -307,19 +356,22 @@
                 color: var(--navy);
                 background: var(--white);
                 cursor: pointer;
-            " onchange="changeDate(this.value)">
-            <button onclick="goToToday()" style="
-                padding: 8px 16px;
-                border: 1px solid var(--gold);
+            " onchange="applyCustomDate()">
+            <label style="font-size: 12px; color: var(--text-gray);">終了:</label>
+            <input type="date" id="endDatePicker" style="
+                padding: 8px 12px;
+                border: 1px solid var(--border);
                 border-radius: 8px;
-                background: var(--gold-light);
-                color: var(--navy);
                 font-family: 'Montserrat', sans-serif;
-                font-size: 11px;
-                font-weight: 500;
+                font-size: 12px;
+                color: var(--navy);
+                background: var(--white);
                 cursor: pointer;
-            ">今日</button>
+            " onchange="applyCustomDate()">
         </div>
+
+        <!-- 期間表示 -->
+        <div class="date-display" id="periodDisplay" style="margin-bottom: 25px;"></div>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -407,12 +459,127 @@
         };
 
         let currentBase = 'moiwayama';
-        let selectedDate = new Date().toISOString().split('T')[0];
+        let currentPeriod = 'today';
+        let startDate = new Date().toISOString().split('T')[0];
+        let endDate = new Date().toISOString().split('T')[0];
+        let allData = { healthChecks: [], reflections: [] };
 
         function init() {
-            document.getElementById('datePicker').value = selectedDate;
-            setDateDisplay();
+            selectPeriod('today');
             loadData();
+        }
+
+        function selectPeriod(period) {
+            currentPeriod = period;
+            document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.period-tab[data-period="${period}"]`)?.classList.add('active');
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            switch (period) {
+                case 'today':
+                    startDate = today.toISOString().split('T')[0];
+                    endDate = startDate;
+                    break;
+                case 'week':
+                    const weekStart = new Date(today);
+                    weekStart.setDate(today.getDate() - today.getDay()); // 日曜始まり
+                    startDate = weekStart.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'quarter':
+                    const quarterMonth = Math.floor(today.getMonth() / 3) * 3;
+                    startDate = new Date(today.getFullYear(), quarterMonth, 1).toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'year':
+                    startDate = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'custom':
+                    return; // カスタムはtoggleCustomDateで処理
+            }
+
+            document.getElementById('customDatePicker').style.display = 'none';
+            updatePeriodDisplay();
+            renderFilteredData();
+        }
+
+        function toggleCustomDate() {
+            const picker = document.getElementById('customDatePicker');
+            const isVisible = picker.style.display === 'flex';
+            picker.style.display = isVisible ? 'none' : 'flex';
+
+            if (!isVisible) {
+                document.getElementById('startDatePicker').value = startDate;
+                document.getElementById('endDatePicker').value = endDate;
+                document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.period-tab[data-period="custom"]').classList.add('active');
+            }
+        }
+
+        function applyCustomDate() {
+            startDate = document.getElementById('startDatePicker').value;
+            endDate = document.getElementById('endDatePicker').value;
+            currentPeriod = 'custom';
+            updatePeriodDisplay();
+            renderFilteredData();
+        }
+
+        function updatePeriodDisplay() {
+            const start = new Date(startDate + 'T00:00:00');
+            const end = new Date(endDate + 'T00:00:00');
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+
+            let label = '';
+            if (startDate === endDate) {
+                label = start.toLocaleDateString('ja-JP', { ...options, weekday: 'short' });
+            } else {
+                label = `${start.toLocaleDateString('ja-JP', options)} 〜 ${end.toLocaleDateString('ja-JP', options)}`;
+            }
+
+            document.getElementById('periodDisplay').textContent = label;
+
+            const sectionLabel = currentPeriod === 'today' ? "TODAY'S" :
+                currentPeriod === 'week' ? "THIS WEEK'S" :
+                    currentPeriod === 'month' ? "THIS MONTH'S" :
+                        currentPeriod === 'quarter' ? "THIS QUARTER'S" :
+                            currentPeriod === 'year' ? "THIS YEAR'S" : "SELECTED";
+            document.getElementById('sectionDateLabel').textContent = sectionLabel;
+            document.getElementById('sectionDateLabel2').textContent = sectionLabel;
+        }
+
+        function exportCSV() {
+            const filteredChecks = filterByDateRange(allData.healthChecks);
+            const filteredReflections = filterByDateRange(allData.reflections);
+
+            let csv = 'Type,Timestamp,Name,Status,Quest,Rating,Token,Memo\n';
+
+            filteredChecks.forEach(c => {
+                csv += `Check-in,${c.timestamp},${c.name},${c.allOk},${c.questId || ''},,,\n`;
+            });
+
+            filteredReflections.forEach(r => {
+                csv += `Reflection,${r.timestamp},${r.name},,${r.questId || ''},${r.rating},${r.tokenEarned || 0},${(r.memo || '').replace(/,/g, '、')}\n`;
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `MINDFUL_${currentBase}_${startDate}_${endDate}.csv`;
+            link.click();
+        }
+
+        function filterByDateRange(data) {
+            return data.filter(item => {
+                const ts = new Date(item.timestamp).toISOString().split('T')[0];
+                return ts >= startDate && ts <= endDate;
+            });
         }
 
         function setDateDisplay() {
@@ -492,7 +659,8 @@
                     tokenEarned: parseInt(r['Token Earned']) || 0
                 }));
 
-                renderData({ healthChecks, reflections });
+                allData = { healthChecks, reflections };
+                renderFilteredData();
             } catch (e) {
                 console.error('Failed to load data:', e);
                 showDemoData();
@@ -500,49 +668,45 @@
         }
 
         function showDemoData() {
-            const demoData = {
+            allData = {
                 healthChecks: [
                     { timestamp: new Date(), name: '山田太郎', allOk: 'OK', questId: '001', questTitle: 'MAGIC MOMENT CAPTURE' },
                     { timestamp: new Date(), name: '佐藤花子', allOk: 'OK', questId: '031', questTitle: 'THE HUDDLE' },
                     { timestamp: new Date(), name: '鈴木一郎', allOk: 'NG', questId: '', questTitle: '' }
                 ],
                 reflections: [
-                    { timestamp: new Date(), name: '山田太郎', questId: '001', questTitle: 'MAGIC MOMENT CAPTURE', rating: 4, memo: '今日は2回マジックを感じた瞬間があった' }
+                    { timestamp: new Date(), name: '山田太郎', questId: '001', questTitle: 'MAGIC MOMENT CAPTURE', rating: 4, memo: '今日は2回マジックを感じた瞬間があった', tokenEarned: 5 }
                 ]
             };
-            renderData(demoData);
+            renderFilteredData();
         }
 
-        function renderData(data) {
-            const targetDate = selectedDate;
-            const todayChecks = data.healthChecks.filter(c => {
-                const ts = new Date(c.timestamp).toISOString().split('T')[0];
-                return ts === targetDate;
-            });
-            const okChecks = todayChecks.filter(c => c.allOk === 'OK');
-            const todayReflections = data.reflections.filter(r => {
-                const ts = new Date(r.timestamp).toISOString().split('T')[0];
-                return ts === targetDate;
-            });
-            const avgRating = todayReflections.length > 0 ? (todayReflections.reduce((sum, r) => sum + r.rating, 0) / todayReflections.length).toFixed(1) : '--';
+        function renderFilteredData() {
+            const filteredChecks = filterByDateRange(allData.healthChecks);
+            const filteredReflections = filterByDateRange(allData.reflections);
+            const okChecks = filteredChecks.filter(c => c.allOk === 'OK');
+            const avgRating = filteredReflections.length > 0
+                ? (filteredReflections.reduce((sum, r) => sum + r.rating, 0) / filteredReflections.length).toFixed(1)
+                : '--';
 
-            document.getElementById('statCheckins').textContent = todayChecks.length;
-            document.getElementById('statOkRate').textContent = todayChecks.length > 0 ? Math.round((okChecks.length / todayChecks.length) * 100) + '%' : '--%';
-            document.getElementById('statReflections').textContent = todayReflections.length;
+            document.getElementById('statCheckins').textContent = filteredChecks.length;
+            document.getElementById('statOkRate').textContent = filteredChecks.length > 0
+                ? Math.round((okChecks.length / filteredChecks.length) * 100) + '%'
+                : '--%';
+            document.getElementById('statReflections').textContent = filteredReflections.length;
             document.getElementById('statAvgRating').textContent = avgRating;
 
             // トークン統計
-            const todayTokens = todayReflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
-            const totalTokens = data.reflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
-            document.getElementById('statTodayTokens').textContent = todayTokens > 0 ? '+' + todayTokens : '--';
+            const periodTokens = filteredReflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
+            const totalTokens = allData.reflections.reduce((sum, r) => sum + (r.tokenEarned || 0), 0);
+            document.getElementById('statTodayTokens').textContent = periodTokens > 0 ? '+' + periodTokens : '--';
             document.getElementById('statTotalTokens').textContent = totalTokens > 0 ? totalTokens : '--';
 
             const healthBody = document.getElementById('healthBody');
-            if (todayChecks.length === 0) {
-                healthBody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="icon">📋</div><div>本日のチェックインはまだありません</div></td></tr>';
+            if (filteredChecks.length === 0) {
+                healthBody.innerHTML = '<tr><td colspan="4" class="empty-state"><div class="icon">📋</div><div>この期間のチェックインはありません</div></td></tr>';
             } else {
-                healthBody.innerHTML = todayChecks.map(c => {
-                    // NG項目がある場合は⚠️マークと詳細を表示
+                healthBody.innerHTML = filteredChecks.map(c => {
                     let statusHtml;
                     if (c.allOk === 'OK') {
                         statusHtml = '<span class="status-badge ok">OK</span>';
@@ -554,30 +718,30 @@
                     }
 
                     return `
-                    <tr${c.allOk !== 'OK' ? ' style="background: rgba(239, 68, 68, 0.05);"' : ''}>
-                        <td>${new Date(c.timestamp).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</td>
-                        <td>${c.name}${c.allOk !== 'OK' ? ' ⚠️' : ''}</td>
-                        <td>${statusHtml}</td>
-                        <td>${c.questId ? '#' + c.questId + ' ' + c.questTitle : '-'}</td>
-                    </tr>
-                `;
+                        <tr${c.allOk !== 'OK' ? ' style="background: rgba(239, 68, 68, 0.05);"' : ''}>
+                            <td>${new Date(c.timestamp).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</td>
+                            <td>${c.name}${c.allOk !== 'OK' ? ' ⚠️' : ''}</td>
+                            <td>${statusHtml}</td>
+                            <td>${c.questId ? '#' + c.questId + ' ' + c.questTitle : '-'}</td>
+                        </tr>
+                    `;
                 }).join('');
             }
 
             const reflectionBody = document.getElementById('reflectionBody');
-            if (todayReflections.length === 0) {
-                reflectionBody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="icon">💭</div><div>本日の振り返りはまだありません</div></td></tr>';
+            if (filteredReflections.length === 0) {
+                reflectionBody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="icon">💭</div><div>この期間の振り返りはありません</div></td></tr>';
             } else {
-                reflectionBody.innerHTML = todayReflections.map(r => `
-                <tr>
-                    <td>${new Date(r.timestamp).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</td>
-                    <td>${r.name}</td>
-                    <td>#${r.questId} ${r.questTitle}</td>
-                    <td><span class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span></td>
-                    <td style="color: var(--gold); font-weight: 600;">${r.tokenEarned ? '+' + r.tokenEarned : '-'}</td>
-                    <td>${r.memo || '-'}</td>
-                </tr>
-            `).join('');
+                reflectionBody.innerHTML = filteredReflections.map(r => `
+                    <tr>
+                        <td>${new Date(r.timestamp).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</td>
+                        <td>${r.name}</td>
+                        <td>#${r.questId} ${r.questTitle}</td>
+                        <td><span class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span></td>
+                        <td style="color: var(--gold); font-weight: 600;">${r.tokenEarned ? '+' + r.tokenEarned : '-'}</td>
+                        <td>${r.memo || '-'}</td>
+                    </tr>
+                `).join('');
             }
         }
 
