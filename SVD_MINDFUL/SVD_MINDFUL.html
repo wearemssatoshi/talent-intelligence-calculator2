@@ -2142,21 +2142,26 @@
                     <div
                         style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--gold); letter-spacing: 0.15em; margin-bottom: 12px; font-weight: 700; text-align: left;">
                         📌 MY VISION</div>
+
+                    <!-- 今年の目標 -->
                     <div style="font-size: 13px; color: var(--navy); margin-bottom: 12px; text-align: left;">
                         <strong style="color: var(--gold);">🎯 今年の目標</strong>
-                        <div id="profileGoalsThisYear"
-                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6; text-align: left;">-
-                        </div>
+                        <div id="profileGoalsThisYear" style="margin-top: 8px;"></div>
+                        <button onclick="addGoal('thisYear')"
+                            style="margin-top: 8px; padding: 8px 12px; background: transparent; color: var(--gold); border: 1px dashed var(--gold); border-radius: 6px; font-size: 12px; cursor: pointer;">
+                            + 目標を追加
+                        </button>
                     </div>
+
+                    <!-- 将来の夢 -->
                     <div style="font-size: 13px; color: var(--navy); text-align: left;">
-                        <strong style="color: var(--gold);">✨ SVDで叶えたいキャリアまたは将来の夢</strong>
-                        <div id="profileGoalsFuture"
-                            style="margin-top: 4px; color: var(--text-gray); line-height: 1.6; text-align: left;">-
-                        </div>
+                        <strong style="color: var(--gold);">✨ 将来の夢</strong>
+                        <div id="profileGoalsFuture" style="margin-top: 8px;"></div>
+                        <button onclick="addGoal('future')"
+                            style="margin-top: 8px; padding: 8px 12px; background: transparent; color: var(--gold); border: 1px dashed var(--gold); border-radius: 6px; font-size: 12px; cursor: pointer;">
+                            + 夢を追加
+                        </button>
                     </div>
-                    <button onclick="openGoalsEditor()"
-                        style="margin-top: 12px; width: 100%; padding: 10px; background: var(--gold); color: var(--navy-dark); border: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.05em; cursor: pointer;">✏️
-                        目標・夢を更新する</button>
                 </div>
 
                 <div
@@ -3023,16 +3028,29 @@
             document.getElementById('profileName').textContent = profile.name;
             document.getElementById('profileBase').textContent = BASE_NAMES[profile.base] || profile.base;
 
-            // 目標と夢を表示（配列形式対応）
+            // 目標と夢を表示（編集可能なリスト形式）
             const goalsThisYear = profile.goalsThisYear || (profile.goalThisYear ? [profile.goalThisYear] : []);
             const goalsFuture = profile.goalsFuture || (profile.goalFuture ? [profile.goalFuture] : []);
 
             document.getElementById('profileGoalsThisYear').innerHTML = goalsThisYear.length > 0
-                ? goalsThisYear.map((g, i) => `${i + 1}. ${g}`).join('<br>')
-                : '未設定';
+                ? goalsThisYear.map((g, i) => `
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 6px;">
+                        <span style="flex: 1; color: var(--navy); font-size: 13px;">${i + 1}. ${g}</span>
+                        <button onclick="editGoal('thisYear', ${i})" style="background: none; border: none; cursor: pointer; font-size: 14px;">✏️</button>
+                        <button onclick="deleteGoal('thisYear', ${i})" style="background: none; border: none; cursor: pointer; font-size: 14px;">🗑️</button>
+                    </div>
+                `).join('')
+                : '<div style="color: var(--text-gray); font-size: 12px;">まだ設定されていません</div>';
+
             document.getElementById('profileGoalsFuture').innerHTML = goalsFuture.length > 0
-                ? goalsFuture.map((g, i) => `${i + 1}. ${g}`).join('<br>')
-                : '未設定';
+                ? goalsFuture.map((g, i) => `
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 6px;">
+                        <span style="flex: 1; color: var(--navy); font-size: 13px;">${i + 1}. ${g}</span>
+                        <button onclick="editGoal('future', ${i})" style="background: none; border: none; cursor: pointer; font-size: 14px;">✏️</button>
+                        <button onclick="deleteGoal('future', ${i})" style="background: none; border: none; cursor: pointer; font-size: 14px;">🗑️</button>
+                    </div>
+                `).join('')
+                : '<div style="color: var(--text-gray); font-size: 12px;">まだ設定されていません</div>';
 
             document.getElementById('profileTokens').textContent = getTokenBalance();
 
@@ -3065,6 +3083,62 @@
         // Legacy function - redirects to showProfile
         function editProfile() {
             showProfile();
+        }
+
+        // ===== 新しい目標・夢管理機能（promptベース）=====
+        function addGoal(type) {
+            const label = type === 'thisYear' ? '今年の目標' : '将来の夢';
+            const input = prompt(`${label}を入力してください:`);
+            if (!input || input.trim() === '') return;
+
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            const key = type === 'thisYear' ? 'goalsThisYear' : 'goalsFuture';
+            if (!profile[key]) profile[key] = [];
+            if (profile[key].length >= 3) {
+                alert(`${label}は最大3つまでです`);
+                return;
+            }
+
+            profile[key].push(input.trim());
+            localStorage.setItem('mindful_profile', JSON.stringify(profile));
+            showProfile(); // 表示を更新
+        }
+
+        function editGoal(type, index) {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            const key = type === 'thisYear' ? 'goalsThisYear' : 'goalsFuture';
+            const currentValue = profile[key] && profile[key][index] ? profile[key][index] : '';
+            const label = type === 'thisYear' ? '今年の目標' : '将来の夢';
+
+            const newValue = prompt(`${label}を編集:`, currentValue);
+            if (newValue === null) return; // キャンセル
+
+            if (newValue.trim() === '') {
+                deleteGoal(type, index);
+                return;
+            }
+
+            profile[key][index] = newValue.trim();
+            localStorage.setItem('mindful_profile', JSON.stringify(profile));
+            showProfile(); // 表示を更新
+        }
+
+        function deleteGoal(type, index) {
+            if (!confirm('削除しますか？')) return;
+
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            const key = type === 'thisYear' ? 'goalsThisYear' : 'goalsFuture';
+            if (profile[key]) {
+                profile[key].splice(index, 1);
+                localStorage.setItem('mindful_profile', JSON.stringify(profile));
+                showProfile(); // 表示を更新
+            }
         }
 
         // 目標・夢の編集機能
