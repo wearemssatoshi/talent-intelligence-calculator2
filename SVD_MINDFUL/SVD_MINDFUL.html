@@ -49,9 +49,7 @@
         /* モーダル表示時のbodyスクロール無効化 */
         body.modal-open {
             overflow: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
+            /* position: fixed を削除 - iOS入力フィールドとの互換性向上 */
         }
 
         body {
