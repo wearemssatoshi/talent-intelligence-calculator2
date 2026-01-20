@@ -460,9 +460,19 @@
 
         let currentBase = 'moiwayama';
         let currentPeriod = 'today';
-        let startDate = new Date().toISOString().split('T')[0];
-        let endDate = new Date().toISOString().split('T')[0];
         let allData = { healthChecks: [], reflections: [] };
+
+        // ローカルタイムゾーンで日付文字列を取得するヘルパー関数
+        function getLocalDateString(date) {
+            const d = new Date(date);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        let startDate = getLocalDateString(new Date());
+        let endDate = getLocalDateString(new Date());
 
         function init() {
             selectPeriod('today');
@@ -479,27 +489,27 @@
 
             switch (period) {
                 case 'today':
-                    startDate = today.toISOString().split('T')[0];
+                    startDate = getLocalDateString(today);
                     endDate = startDate;
                     break;
                 case 'week':
                     const weekStart = new Date(today);
                     weekStart.setDate(today.getDate() - today.getDay()); // 日曜始まり
-                    startDate = weekStart.toISOString().split('T')[0];
-                    endDate = today.toISOString().split('T')[0];
+                    startDate = getLocalDateString(weekStart);
+                    endDate = getLocalDateString(today);
                     break;
                 case 'month':
-                    startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-                    endDate = today.toISOString().split('T')[0];
+                    startDate = getLocalDateString(new Date(today.getFullYear(), today.getMonth(), 1));
+                    endDate = getLocalDateString(today);
                     break;
                 case 'quarter':
                     const quarterMonth = Math.floor(today.getMonth() / 3) * 3;
-                    startDate = new Date(today.getFullYear(), quarterMonth, 1).toISOString().split('T')[0];
-                    endDate = today.toISOString().split('T')[0];
+                    startDate = getLocalDateString(new Date(today.getFullYear(), quarterMonth, 1));
+                    endDate = getLocalDateString(today);
                     break;
                 case 'year':
-                    startDate = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0];
-                    endDate = today.toISOString().split('T')[0];
+                    startDate = getLocalDateString(new Date(today.getFullYear(), 0, 1));
+                    endDate = getLocalDateString(today);
                     break;
                 case 'custom':
                     return; // カスタムはtoggleCustomDateで処理
@@ -577,7 +587,7 @@
 
         function filterByDateRange(data) {
             return data.filter(item => {
-                const ts = new Date(item.timestamp).toISOString().split('T')[0];
+                const ts = getLocalDateString(new Date(item.timestamp));
                 return ts >= startDate && ts <= endDate;
             });
         }
@@ -587,7 +597,7 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
             document.getElementById('dateDisplay').textContent = date.toLocaleDateString('ja-JP', options);
 
-            const isToday = selectedDate === new Date().toISOString().split('T')[0];
+            const isToday = selectedDate === getLocalDateString(new Date());
             const label = isToday ? "TODAY'S" : date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
             document.getElementById('sectionDateLabel').textContent = label;
             document.getElementById('sectionDateLabel2').textContent = label;
@@ -600,7 +610,7 @@
         }
 
         function goToToday() {
-            selectedDate = new Date().toISOString().split('T')[0];
+            selectedDate = getLocalDateString(new Date());
             document.getElementById('datePicker').value = selectedDate;
             setDateDisplay();
             loadData();
