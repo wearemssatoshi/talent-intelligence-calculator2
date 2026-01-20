@@ -1,0 +1,45 @@
+name: Sync SVD_MINDFUL to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'SVD_MINDFUL/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dotfiles
+        uses: actions/checkout@v4
+        with:
+          path: dotfiles
+
+      - name: Checkout SVD_MINDFUL repo
+        uses: actions/checkout@v4
+        with:
+          repository: wearemssatoshi/SVD_MINDFUL
+          token: ${{ secrets.MINDFUL_DEPLOY_TOKEN }}
+          path: svd-mindful
+
+      - name: Sync files
+        run: |
+          # Copy all files from dotfiles/SVD_MINDFUL to svd-mindful
+          cp -r dotfiles/SVD_MINDFUL/* svd-mindful/
+          
+          # Check if there are changes
+          cd svd-mindful
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to sync"
+            exit 0
+          fi
+
+      - name: Commit and push
+        run: |
+          cd svd-mindful
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Sync from dotfiles" || exit 0
+          git push
