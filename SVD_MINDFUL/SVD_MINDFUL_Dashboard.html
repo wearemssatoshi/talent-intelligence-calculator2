@@ -308,7 +308,7 @@
 
     <header>
         <div class="header-left">
-            <h1>MINDFUL DASHBOARD</h1>
+            <h1>MINDFUL DASHBOARD v6.2</h1>
             <div class="sub">DAILY HEALTH & QUEST TRACKER</div>
         </div>
         <div class="header-right">
@@ -564,7 +564,7 @@
             document.getElementById('sectionDateLabel2').textContent = sectionLabel;
         }
 
-        function exportCSV() {
+        async function exportCSV() {
             const filteredChecks = filterByDateRange(allData.healthChecks);
             const filteredReflections = filterByDateRange(allData.reflections);
 
@@ -578,10 +578,35 @@
                 csv += `Reflection,${r.timestamp},${r.name},,${r.questId || ''},${r.rating},${r.tokenEarned || 0},${(r.memo || '').replace(/,/g, '、')}\n`;
             });
 
-            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const filename = `MINDFUL_${currentBase}_${startDate}_${endDate}.csv`;
+            const csvContent = '\ufeff' + csv; // BOM for Excel
+
+            // File System Access API対応ブラウザでは保存先を選択可能
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: filename,
+                        types: [{
+                            description: 'CSV File',
+                            accept: { 'text/csv': ['.csv'] }
+                        }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(csvContent);
+                    await writable.close();
+                    alert('✅ CSVファイルを保存しました！');
+                    return;
+                } catch (err) {
+                    // ユーザーがキャンセルした場合
+                    if (err.name === 'AbortError') return;
+                }
+            }
+
+            // フォールバック: 従来のダウンロード方式
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `MINDFUL_${currentBase}_${startDate}_${endDate}.csv`;
+            link.download = filename;
             link.click();
         }
 
