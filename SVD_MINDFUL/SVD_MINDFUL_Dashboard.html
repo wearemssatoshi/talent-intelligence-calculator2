@@ -422,11 +422,21 @@
         <!-- 期間フィルタ -->
         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
             <button class="period-tab active" data-period="today" onclick="selectPeriod('today')">今日</button>
+            <button class="period-tab" data-period="yesterday" onclick="selectPeriod('yesterday')">昨日</button>
             <button class="period-tab" data-period="week" onclick="selectPeriod('week')">今週</button>
             <button class="period-tab" data-period="month" onclick="selectPeriod('month')">今月</button>
             <button class="period-tab" data-period="quarter" onclick="selectPeriod('quarter')">四半期</button>
             <button class="period-tab" data-period="year" onclick="selectPeriod('year')">年間</button>
-            <button class="period-tab" data-period="custom" onclick="toggleCustomDate()">カスタム</button>
+            <input type="date" id="quickDatePicker" style="
+                padding: 6px 10px;
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 11px;
+                color: var(--navy);
+                background: var(--white);
+                cursor: pointer;
+            " onchange="selectSingleDate(this.value)" title="日付を選択">
             <button onclick="exportCSV()" style="
                 margin-left: auto;
                 padding: 8px 16px;
@@ -672,6 +682,12 @@
                     startDate = getLocalDateString(today);
                     endDate = startDate;
                     break;
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(today.getDate() - 1);
+                    startDate = getLocalDateString(yesterday);
+                    endDate = startDate;
+                    break;
                 case 'week':
                     const weekStart = new Date(today);
                     weekStart.setDate(today.getDate() - today.getDay()); // 日曜始まり
@@ -717,6 +733,17 @@
             startDate = document.getElementById('startDatePicker').value;
             endDate = document.getElementById('endDatePicker').value;
             currentPeriod = 'custom';
+            updatePeriodDisplay();
+            renderFilteredData();
+        }
+
+        function selectSingleDate(dateStr) {
+            if (!dateStr) return;
+            startDate = dateStr;
+            endDate = dateStr;
+            currentPeriod = 'single';
+            document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('customDatePicker').style.display = 'none';
             updatePeriodDisplay();
             renderFilteredData();
         }
