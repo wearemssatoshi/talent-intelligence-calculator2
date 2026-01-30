@@ -17,6 +17,11 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     
+    // ============ 拠点移籍（transferUser） ============
+    if (data.action === 'transferUser') {
+      return handleTransferUser(data);
+    }
+    
     // MINDFUL_Logシートを取得または作成
     let sheet = ss.getSheetByName('MINDFUL_Log');
     if (!sheet) {
@@ -812,6 +817,73 @@ function uploadProfileImage(name, pin, image) {
     return ContentService.createTextOutput(JSON.stringify({ 
       success: false, 
       error: 'ユーザーが見つかりません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 拠点移籍を処理（全データを引き継いで新規登録）
+ */
+function handleTransferUser(data) {
+  try {
+    const name = data.name;
+    const pin = data.pin;
+    const newBase = data.newBase;
+    const tokenBalance = data.tokenBalance || 0;
+    const goalsThisYear = data.goalsThisYear || '[]';
+    const goalsFuture = data.goalsFuture || '[]';
+    const profileImage = data.profileImage || '';
+    const checkoutDates = data.checkoutDates || '[]';
+    
+    if (!name || !pin || !newBase) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: '名前、PIN、新しい拠点が必要です'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const sheet = getUsersSheet();
+    const pinHash = hashPin(pin);
+    const now = new Date().toISOString();
+    
+    // 既存ユーザーがいるかチェック
+    const data_rows = sheet.getDataRange().getValues();
+    for (let i = 1; i < data_rows.length; i++) {
+      if (data_rows[i][0] === name) {
+        // 既存ユーザーを更新
+        sheet.getRange(i + 1, 2).setValue(pinHash);       // PIN
+        sheet.getRange(i + 1, 3).setValue(newBase);       // Base
+        sheet.getRange(i + 1, 4).setValue(tokenBalance);  // Token
+        sheet.getRange(i + 1, 5).setValue(checkoutDates); // C/O履歴
+        sheet.getRange(i + 1, 7).setValue(now);           // Last_Login
+        sheet.getRange(i + 1, 8).setValue(goalsThisYear); // Goals
+        sheet.getRange(i + 1, 9).setValue(goalsFuture);
+        sheet.getRange(i + 1, 10).setValue(profileImage); // Photo
+        SpreadsheetApp.flush();
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          message: '拠点を移籍しました（既存ユーザー更新）'
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // 新規ユーザーとして登録
+    sheet.appendRow([
+      name, pinHash, newBase, tokenBalance, checkoutDates,
+      now, now, goalsThisYear, goalsFuture, profileImage
+    ]);
+    SpreadsheetApp.flush();
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true, 
+      message: '拠点を移籍しました（新規登録）'
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
