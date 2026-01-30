@@ -212,6 +212,15 @@ function doGet(e) {
       return updateUserGoals(name, pin, goalsThisYear, goalsFuture);
     }
     
+    // ============ 写真アップロード ============
+    if (action === 'uploadProfileImage') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      const image = e?.parameter?.image || '';
+      
+      return uploadProfileImage(name, pin, image);
+    }
+    
     // ============ ユーザー検索（移行用） ============
     if (action === 'lookupUser') {
       const name = e?.parameter?.name || '';
@@ -505,17 +514,21 @@ function getUsersSheet() {
   let sheet = ss.getSheetByName('MINDFUL_Users');
   if (!sheet) {
     sheet = ss.insertSheet('MINDFUL_Users');
-    sheet.getRange(1, 1, 1, 9).setValues([[
-      'Name', 'PIN_Hash', 'Base', 'Token_Balance', 'Checkout_Dates', 'Created_At', 'Last_Login', 'Goals_ThisYear', 'Goals_Future'
+    sheet.getRange(1, 1, 1, 10).setValues([[
+      'Name', 'PIN_Hash', 'Base', 'Token_Balance', 'Checkout_Dates', 'Created_At', 'Last_Login', 'Goals_ThisYear', 'Goals_Future', 'Profile_Image'
     ]]);
-    sheet.getRange(1, 1, 1, 9).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, 10).setFontWeight('bold');
   } else {
-    // 既存シートに目標列がなければ追加
+    // 既存シートに必要な列がなければ追加
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    let lastCol = sheet.getLastColumn();
     if (!headers.includes('Goals_ThisYear')) {
-      const lastCol = sheet.getLastColumn();
       sheet.getRange(1, lastCol + 1).setValue('Goals_ThisYear');
       sheet.getRange(1, lastCol + 2).setValue('Goals_Future');
+      lastCol += 2;
+    }
+    if (!headers.includes('Profile_Image')) {
+      sheet.getRange(1, lastCol + 1).setValue('Profile_Image');
     }
   }
   return sheet;
@@ -583,11 +596,12 @@ function loginUser(name, pin) {
         // ログイン成功 - 最終ログイン時刻を更新
         sheet.getRange(i + 1, 7).setValue(new Date().toISOString());
         
-        // ユーザーデータを返す（目標を含む）
+        // ユーザーデータを返す（目標と写真を含む）
         const tokenBalance = data[i][3] || 0;
         const checkoutDates = data[i][4] || '[]';
         const goalsThisYear = data[i][7] || '[]';
         const goalsFuture = data[i][8] || '[]';
+        const profileImage = data[i][9] || '';
         
         return ContentService.createTextOutput(JSON.stringify({ 
           success: true, 
@@ -596,7 +610,8 @@ function loginUser(name, pin) {
           tokenBalance: tokenBalance,
           checkoutDates: JSON.parse(checkoutDates),
           goalsThisYear: JSON.parse(goalsThisYear),
-          goalsFuture: JSON.parse(goalsFuture)
+          goalsFuture: JSON.parse(goalsFuture),
+          profileImage: profileImage
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
@@ -748,6 +763,48 @@ function updateUserGoals(name, pin, goalsThisYear, goalsFuture) {
         return ContentService.createTextOutput(JSON.stringify({ 
           success: true, 
           message: '目標を更新しました'
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: 'ユーザーが見つかりません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 写真をアップロード（Base64をスプレッドシートに保存）
+ */
+function uploadProfileImage(name, pin, image) {
+  try {
+    if (!name || !pin || !image) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: '名前、PIN、画像が必要です'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const pinHash = hashPin(pin);
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name && data[i][1] === pinHash) {
+        // 写真を保存（列10 = Profile_Image）
+        sheet.getRange(i + 1, 10).setValue(image);
+        SpreadsheetApp.flush();
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          message: '写真を保存しました'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }

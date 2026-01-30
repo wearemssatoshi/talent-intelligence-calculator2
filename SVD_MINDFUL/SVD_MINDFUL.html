@@ -62,8 +62,7 @@
         }
 
         header {
-            padding: 20px;
-            text-align: center;
+            padding: 12px 20px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(12px);
@@ -74,20 +73,30 @@
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
         }
 
+        .header-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
         .logo-container {
-            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
         }
 
         .logo-container img {
-            height: 45px;
+            height: 32px;
         }
 
         h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
             letter-spacing: 0.12em;
             color: var(--navy);
+            margin: 0;
         }
 
         .header-sub {
@@ -1496,14 +1505,16 @@
 <body>
 
     <header>
-        <div class="logo-container">
-            <img src="logo/SVD_logo_standard.png" alt="SVD" onerror="this.style.display='none'">
+        <div class="header-main">
+            <div class="logo-container">
+                <img src="logo/SVD_logo_standard.png" alt="SVD" onerror="this.style.display='none'">
+            </div>
+            <h1>MINDFUL</h1>
+            <div
+                style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.15em; font-weight: 500;">
+                v3.0</div>
         </div>
-        <h1>MINDFUL</h1>
-        <div
-            style="font-family: 'Montserrat', sans-serif; font-size: 10px; color: var(--gold); letter-spacing: 0.2em; margin-top: 2px; margin-bottom: 5px;">
-            v3.0</div>
-        <div class="header-sub">IGNITION — GET YOUR GREEN LIGHT</div>
+        <div class="header-sub" style="margin-top: 4px;">IGNITION — GET YOUR GREEN LIGHT</div>
         <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px;">
             <div class="user-badge" id="userBadge" style="display: none;"></div>
             <div class="token-display" id="tokenDisplay" style="display: none;">
@@ -2896,7 +2907,7 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // ログイン成功！データを復元（目標を含む）
+                        // ログイン成功！データを復元（目標と写真を含む）
                         const profile = {
                             name: result.name,
                             base: result.base || base,
@@ -2916,10 +2927,16 @@
                             localStorage.setItem('mindful_checkout_dates', JSON.stringify(result.checkoutDates));
                         }
 
+                        // 写真を復元
+                        if (result.profileImage) {
+                            localStorage.setItem('mindful_photo', result.profileImage);
+                        }
+
                         loginSuccess = true;
                         showUserBadge(profile);
                         showGoalsDisplay(profile);
                         updateTokenDisplay();
+                        loadProfilePhoto();
                         showScreen('screen-morning');
                         break;
                     }
@@ -3271,10 +3288,31 @@
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                     localStorage.setItem('mindful_photo', dataUrl);
                     loadProfilePhoto();
+
+                    // バックエンドにも同期
+                    syncPhotoToBackend(dataUrl);
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+        }
+
+        // 写真をバックエンドに同期
+        async function syncPhotoToBackend(imageData) {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile || !profile.pin) return;
+
+            const base = profile.base || todayBase || 'moiwayama';
+            const url = SCRIPT_URLS[base];
+            if (!url) return;
+
+            try {
+                const response = await fetch(`${url}?action=uploadProfileImage&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&image=${encodeURIComponent(imageData)}`);
+                const result = await response.json();
+                console.log('Photo sync:', result);
+            } catch (e) {
+                console.error('Photo sync error:', e);
+            }
         }
 
         function loadProfilePhoto() {
