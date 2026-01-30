@@ -206,6 +206,11 @@ function doGet(e) {
       return lookupUserByName(name);
     }
     
+    // ============ ユーザー一覧（ダッシュボード用） ============
+    if (action === 'users') {
+      return getUsersList();
+    }
+    
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
@@ -807,6 +812,50 @@ function lookupUserByName(name) {
     return ContentService.createTextOutput(JSON.stringify({ 
       success: false, 
       error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * ユーザー一覧を取得（ダッシュボード用）
+ * 登録日とトークン残高を含む
+ */
+function getUsersList() {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    const users = [];
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      if (row[0]) { // 名前がある行のみ
+        users.push({
+          name: row[0],
+          base: row[2] || '',
+          tokenBalance: row[3] || 0,
+          createdAt: row[5] || '', // Created_At列
+          lastLogin: row[6] || ''  // Last_Login列
+        });
+      }
+    }
+    
+    // 登録日の新しい順にソート
+    users.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+      const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+      return dateB - dateA;
+    });
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      users: users
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false,
+      error: error.message,
+      users: []
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
