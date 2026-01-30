@@ -598,7 +598,20 @@
         </div>
     </main>
 
-    <footer>SAPPORO VIEWTIFUL DINING — ORIGIN</footer>
+    <footer style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <span>SAPPORO VIEWTIFUL DINING — ORIGIN</span>
+        <span style="color: var(--gold);">v3.1</span>
+        <button onclick="clearCacheAndReload()" style="
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: var(--white);
+            color: var(--text-gray);
+            font-size: 9px;
+            cursor: pointer;
+            transition: all 0.2s;
+        " title="キャッシュをクリアして最新版を読み込み">🔄 キャッシュクリア</button>
+    </footer>
 
     <script>
         // --- CONFIG: Replace with your actual Apps Script URLs ---
@@ -1033,6 +1046,30 @@
             const isVisible = container.style.display === 'block';
             container.style.display = isVisible ? 'none' : 'block';
             toggle.style.transform = isVisible ? 'rotate(0deg)' : 'rotate(90deg)';
+        }
+
+        async function clearCacheAndReload() {
+            try {
+                // Service Workerの登録解除
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                // Cache APIのクリア
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    for (const cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                    }
+                }
+                // 強制リロード
+                window.location.reload(true);
+            } catch (e) {
+                console.error('Cache clear failed:', e);
+                window.location.reload(true);
+            }
         }
 
         init();
