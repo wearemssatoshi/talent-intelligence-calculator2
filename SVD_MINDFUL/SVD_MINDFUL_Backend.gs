@@ -157,6 +157,8 @@ function doGet(e) {
       const name = e?.parameter?.name || '';
       const pin = e?.parameter?.pin || '';
       const base = e?.parameter?.base || '';
+      const goalsThisYear = e?.parameter?.goalsThisYear || '[]';
+      const goalsFuture = e?.parameter?.goalsFuture || '[]';
       
       if (!name || !pin) {
         return ContentService.createTextOutput(JSON.stringify({ 
@@ -165,7 +167,7 @@ function doGet(e) {
         })).setMimeType(ContentService.MimeType.JSON);
       }
       
-      return registerUser(name, pin, base);
+      return registerUser(name, pin, base, goalsThisYear, goalsFuture);
     }
     
     // ============ PIN認証: ログイン ============
@@ -198,6 +200,16 @@ function doGet(e) {
       const newPin = e?.parameter?.newPin || '';
       
       return changePinForUser(name, currentPin, newPin);
+    }
+    
+    // ============ 目標更新 ============
+    if (action === 'updateGoals') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      const goalsThisYear = e?.parameter?.goalsThisYear || '[]';
+      const goalsFuture = e?.parameter?.goalsFuture || '[]';
+      
+      return updateUserGoals(name, pin, goalsThisYear, goalsFuture);
     }
     
     // ============ ユーザー検索（移行用） ============
@@ -485,8 +497,6 @@ function forceAuth() {
   console.log('Success!', test.getResponseCode());
 }
 
-// ============ PIN認証システム ============
-
 /**
  * ユーザーシートを取得または作成
  */
@@ -495,10 +505,18 @@ function getUsersSheet() {
   let sheet = ss.getSheetByName('MINDFUL_Users');
   if (!sheet) {
     sheet = ss.insertSheet('MINDFUL_Users');
-    sheet.getRange(1, 1, 1, 7).setValues([[
-      'Name', 'PIN_Hash', 'Base', 'Token_Balance', 'Checkout_Dates', 'Created_At', 'Last_Login'
+    sheet.getRange(1, 1, 1, 9).setValues([[
+      'Name', 'PIN_Hash', 'Base', 'Token_Balance', 'Checkout_Dates', 'Created_At', 'Last_Login', 'Goals_ThisYear', 'Goals_Future'
     ]]);
-    sheet.getRange(1, 1, 1, 7).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, 9).setFontWeight('bold');
+  } else {
+    // 既存シートに目標列がなければ追加
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    if (!headers.includes('Goals_ThisYear')) {
+      const lastCol = sheet.getLastColumn();
+      sheet.getRange(1, lastCol + 1).setValue('Goals_ThisYear');
+      sheet.getRange(1, lastCol + 2).setValue('Goals_Future');
+    }
   }
   return sheet;
 }
@@ -514,7 +532,7 @@ function hashPin(pin) {
 /**
  * ユーザー登録
  */
-function registerUser(name, pin, base) {
+function registerUser(name, pin, base, goalsThisYear, goalsFuture) {
   try {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
@@ -534,7 +552,8 @@ function registerUser(name, pin, base) {
     const pinHash = hashPin(pin);
     const now = new Date().toISOString();
     
-    sheet.appendRow([name, pinHash, base, 0, '[]', now, now]);
+    // 目標を含めて保存
+    sheet.appendRow([name, pinHash, base, 0, '[]', now, now, goalsThisYear || '[]', goalsFuture || '[]']);
     
     return ContentService.createTextOutput(JSON.stringify({ 
       success: true, 
@@ -564,16 +583,20 @@ function loginUser(name, pin) {
         // ログイン成功 - 最終ログイン時刻を更新
         sheet.getRange(i + 1, 7).setValue(new Date().toISOString());
         
-        // ユーザーデータを返す
+        // ユーザーデータを返す（目標を含む）
         const tokenBalance = data[i][3] || 0;
         const checkoutDates = data[i][4] || '[]';
+        const goalsThisYear = data[i][7] || '[]';
+        const goalsFuture = data[i][8] || '[]';
         
         return ContentService.createTextOutput(JSON.stringify({ 
           success: true, 
           name: name,
           base: data[i][2] || '',
           tokenBalance: tokenBalance,
-          checkoutDates: JSON.parse(checkoutDates)
+          checkoutDates: JSON.parse(checkoutDates),
+          goalsThisYear: JSON.parse(goalsThisYear),
+          goalsFuture: JSON.parse(goalsFuture)
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
@@ -690,6 +713,41 @@ function changePinForUser(name, currentPin, newPin) {
         return ContentService.createTextOutput(JSON.stringify({ 
           success: true, 
           message: 'PINを変更しました'
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: 'ユーザーが見つかりません'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, 
+      error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * 目標を更新
+ */
+function updateUserGoals(name, pin, goalsThisYear, goalsFuture) {
+  try {
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const pinHash = hashPin(pin);
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name && data[i][1] === pinHash) {
+        // 目標を更新
+        sheet.getRange(i + 1, 8).setValue(goalsThisYear || '[]');
+        sheet.getRange(i + 1, 9).setValue(goalsFuture || '[]');
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          message: '目標を更新しました'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }

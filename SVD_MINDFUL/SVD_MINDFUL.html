@@ -2841,8 +2841,8 @@
                 const profile = { name, base: selectedBase, pin: pin, goalsThisYear, goalsFuture };
                 localStorage.setItem('mindful_profile', JSON.stringify(profile));
 
-                // バックエンドにも登録（非同期）
-                registerToBackend(name, pin, selectedBase);
+                // バックエンドにも登録（非同期）- 目標を含める
+                registerToBackend(name, pin, selectedBase, goalsThisYear, goalsFuture);
 
                 showUserBadge(profile);
                 showGoalsDisplay(profile);
@@ -2851,12 +2851,14 @@
         }
 
         // バックエンドにユーザー登録
-        async function registerToBackend(name, pin, base) {
+        async function registerToBackend(name, pin, base, goalsThisYear, goalsFuture) {
             const url = SCRIPT_URLS[base];
             if (!url) return;
 
             try {
-                const response = await fetch(`${url}?action=register&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}`);
+                const goalsThisYearStr = encodeURIComponent(JSON.stringify(goalsThisYear || []));
+                const goalsFutureStr = encodeURIComponent(JSON.stringify(goalsFuture || []));
+                const response = await fetch(`${url}?action=register&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}`);
                 const result = await response.json();
                 console.log('Backend registration:', result);
             } catch (e) {
@@ -2894,13 +2896,13 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // ログイン成功！データを復元
+                        // ログイン成功！データを復元（目標を含む）
                         const profile = {
                             name: result.name,
                             base: result.base || base,
                             pin: pin,
-                            goalsThisYear: [],
-                            goalsFuture: []
+                            goalsThisYear: result.goalsThisYear || [],
+                            goalsFuture: result.goalsFuture || []
                         };
                         localStorage.setItem('mindful_profile', JSON.stringify(profile));
 
@@ -2916,6 +2918,7 @@
 
                         loginSuccess = true;
                         showUserBadge(profile);
+                        showGoalsDisplay(profile);
                         updateTokenDisplay();
                         showScreen('screen-morning');
                         break;
@@ -3210,10 +3213,30 @@
 
             localStorage.setItem('mindful_profile', JSON.stringify(profile));
 
+            // バックエンドにも同期
+            syncGoalsToBackend(profile);
+
             // 表示を更新
             showGoalsDisplay(profile);
             showProfile();
             closeGoalsEditor();
+        }
+
+        // 目標をバックエンドに同期
+        async function syncGoalsToBackend(profile) {
+            const base = profile.base || todayBase || 'moiwayama';
+            const url = SCRIPT_URLS[base];
+            if (!url || !profile.pin) return;
+
+            try {
+                const goalsThisYearStr = encodeURIComponent(JSON.stringify(profile.goalsThisYear || []));
+                const goalsFutureStr = encodeURIComponent(JSON.stringify(profile.goalsFuture || []));
+                const response = await fetch(`${url}?action=updateGoals&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}`);
+                const result = await response.json();
+                console.log('Goals sync:', result);
+            } catch (e) {
+                console.error('Goals sync error:', e);
+            }
         }
 
         function handlePhotoUpload(event) {
