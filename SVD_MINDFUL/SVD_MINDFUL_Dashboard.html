@@ -260,12 +260,15 @@
         }
 
         .memo-preview-text {
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-gray);
-            max-width: 120px;
-            white-space: nowrap;
+            max-width: 150px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.4;
         }
 
         .memo-full-content {
@@ -946,7 +949,7 @@
                     const dateStr = new Date(r.timestamp).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' });
                     const memoText = r.memo || '';
                     const hasMemo = memoText && memoText.trim().length > 0;
-                    const memoPreview = hasMemo ? (memoText.length > 12 ? memoText.substring(0, 12) + '...' : memoText) : '-';
+                    const memoPreview = hasMemo ? (memoText.length > 30 ? memoText.substring(0, 30) + '...' : memoText) : '-';
 
                     return `
                     <tr>
