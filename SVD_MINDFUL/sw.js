@@ -1,7 +1,7 @@
-// SVD MINDFUL Service Worker v3.2
+// SVD MINDFUL Service Worker v3.5
 // Purpose: Cache management with automatic updates
 
-const CACHE_VERSION = 'mindful-v3.2';
+const CACHE_VERSION = 'mindful-v3.5';
 const CACHE_FILES = [
     './',
     './index.html',
