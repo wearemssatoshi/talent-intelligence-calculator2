@@ -458,7 +458,7 @@
             <table id="reflectionTable">
                 <thead>
                     <tr>
-                        <th>Time</th>
+                        <th>Date</th>
                         <th>Name</th>
                         <th>Quest</th>
                         <th>Rating</th>
@@ -533,8 +533,14 @@
             const baseParam = params.get('base');
             if (baseParam && SCRIPT_URLS[baseParam]) {
                 currentBase = baseParam;
-                document.querySelectorAll('.base-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector(`.base-tab[data-base="${baseParam}"]`)?.classList.add('active');
+                // 指定された拠点のタブのみ表示（プライバシー対応）
+                document.querySelectorAll('.base-tab').forEach(t => {
+                    if (t.dataset.base === baseParam) {
+                        t.classList.add('active');
+                    } else {
+                        t.style.display = 'none'; // 他の拠点タブを非表示
+                    }
+                });
             }
             selectPeriod('today');
             loadData();
@@ -860,16 +866,35 @@
             if (filteredReflections.length === 0) {
                 reflectionBody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="icon">💭</div><div>この期間の振り返りはありません</div></td></tr>';
             } else {
-                reflectionBody.innerHTML = filteredReflections.map(r => `
+                reflectionBody.innerHTML = filteredReflections.map((r, idx) => {
+                    const dateStr = new Date(r.timestamp).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' });
+                    const memoText = r.memo || '-';
+                    const memoPreview = memoText.length > 15 ? memoText.substring(0, 15) + '...' : memoText;
+                    const hasMemo = memoText !== '-' && memoText.length > 15;
+
+                    return `
                     <tr>
-                        <td>${new Date(r.timestamp).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}</td>
+                        <td>${dateStr}</td>
                         <td>${r.name}</td>
                         <td>#${r.questId} ${r.questTitle}</td>
                         <td><span class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</span></td>
                         <td style="color: var(--gold); font-weight: 600;">${r.tokenEarned ? '+' + r.tokenEarned : '-'}</td>
-                        <td>${r.memo || '-'}</td>
+                        <td class="memo-cell" ${hasMemo ? `onclick="toggleMemo(this)" style="cursor: pointer;"` : ''}>
+                            <span class="memo-preview">${memoPreview}</span>
+                            ${hasMemo ? `<span class="memo-full" style="display: none;">${memoText}</span>` : ''}
+                        </td>
                     </tr>
-                `).join('');
+                `}).join('');
+            }
+        }
+
+        function toggleMemo(cell) {
+            const preview = cell.querySelector('.memo-preview');
+            const full = cell.querySelector('.memo-full');
+            if (preview && full) {
+                const isExpanded = full.style.display !== 'none';
+                preview.style.display = isExpanded ? 'inline' : 'none';
+                full.style.display = isExpanded ? 'none' : 'inline';
             }
         }
 
