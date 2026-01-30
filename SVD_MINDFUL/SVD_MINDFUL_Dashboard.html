@@ -301,6 +301,37 @@
             border-color: var(--navy);
             color: var(--navy);
         }
+
+        /* モバイル対応: テーブル横スクロール */
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table {
+                min-width: 600px;
+            }
+
+            th,
+            td {
+                padding: 10px 12px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            th {
+                font-size: 9px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            .stat-label {
+                font-size: 9px;
+            }
+        }
     </style>
 </head>
 
@@ -445,6 +476,27 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="section-title" style="margin-top: 35px;">📋 MEMBER LIST</div>
+        <div class="table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>登録日</th>
+                        <th>🪙 Tokens</th>
+                    </tr>
+                </thead>
+                <tbody id="usersBody">
+                    <tr>
+                        <td colspan="3" class="empty-state">
+                            <div class="icon">👥</div>
+                            <div>メンバーデータを読み込み中...</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <footer>SAPPORO VIEWTIFUL DINING — ORIGIN</footer>
@@ -473,10 +525,50 @@
 
         let startDate = getLocalDateString(new Date());
         let endDate = getLocalDateString(new Date());
+        let usersData = []; // メンバー一覧用
 
         function init() {
+            // URLパラメータで拠点を指定可能に
+            const params = new URLSearchParams(window.location.search);
+            const baseParam = params.get('base');
+            if (baseParam && SCRIPT_URLS[baseParam]) {
+                currentBase = baseParam;
+                document.querySelectorAll('.base-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector(`.base-tab[data-base="${baseParam}"]`)?.classList.add('active');
+            }
             selectPeriod('today');
             loadData();
+            loadUsersData();
+        }
+
+        // メンバー一覧を取得
+        async function loadUsersData() {
+            const url = SCRIPT_URLS[currentBase];
+            if (!url) return;
+            try {
+                const response = await fetch(url + '?action=users');
+                const result = await response.json();
+                usersData = result.users || [];
+                renderUsersTable();
+            } catch (e) {
+                console.log('Users data not available:', e);
+            }
+        }
+
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersBody');
+            if (!tbody || usersData.length === 0) return;
+
+            tbody.innerHTML = usersData.map(u => {
+                const createdDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+                return `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${createdDate}</td>
+                        <td style="color: var(--gold); font-weight: 600;">${u.tokenBalance || 0}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function selectPeriod(period) {
@@ -646,6 +738,7 @@
             document.querySelectorAll('.base-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.base-tab[data-base="${base}"]`).classList.add('active');
             loadData();
+            loadUsersData();
         }
 
         async function loadData() {
