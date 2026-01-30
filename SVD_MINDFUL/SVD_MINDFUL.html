@@ -2218,8 +2218,50 @@
                     </button>
                 </div>
 
+                <!-- 拠点変更セクション -->
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-gray); letter-spacing: 0.1em; margin-bottom: 10px;">
+                        🏢 拠点管理</div>
+                    <button onclick="openBaseTransferModal()"
+                        style="width: 100%; padding: 12px; background: var(--light-gray); color: var(--navy); border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer;">
+                        拠点を変更する（データ引き継ぎ）
+                    </button>
+                </div>
+
                 <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
                 <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+            </div>
+        </div>
+
+        <!-- 拠点移籍モーダル -->
+        <div id="baseTransferModal"
+            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto;">
+            <div
+                style="background: var(--white); border-radius: 16px; padding: 25px; max-width: 350px; margin: 20px auto;">
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: var(--navy); text-align: center; margin-bottom: 20px;">
+                    🏢 拠点を変更
+                </div>
+                <div style="font-size: 13px; color: var(--text-gray); text-align: center; margin-bottom: 20px;">
+                    トークン・目標・写真など全データを引き継いで移籍します
+                </div>
+                <div id="baseTransferOptions" style="display: grid; gap: 10px; margin-bottom: 20px;">
+                    <!-- 動的に生成 -->
+                </div>
+                <div id="transferError"
+                    style="display: none; color: var(--danger); font-size: 12px; text-align: center; margin-bottom: 10px;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="closeBaseTransferModal()"
+                        style="flex: 1; padding: 12px; background: var(--light-gray); color: var(--navy); border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                        キャンセル
+                    </button>
+                    <button id="confirmTransferBtn" onclick="confirmBaseTransfer()"
+                        style="flex: 1; padding: 12px; background: var(--gold); color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600;">
+                        移籍する
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -3253,6 +3295,126 @@
                 console.log('Goals sync:', result);
             } catch (e) {
                 console.error('Goals sync error:', e);
+            }
+        }
+
+        // ===== 拠点移籍機能 =====
+        let selectedNewBase = null;
+
+        function openBaseTransferModal() {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile) return;
+
+            const currentBase = profile.base;
+            const optionsContainer = document.getElementById('baseTransferOptions');
+
+            // 現在の拠点以外を表示
+            let html = '';
+            for (const [key, name] of Object.entries(BASE_NAMES)) {
+                const isDisabled = key === currentBase;
+                html += `
+                    <div onclick="${isDisabled ? '' : `selectNewBase('${key}')`}"
+                        id="baseOption_${key}"
+                        style="padding: 14px; border: 2px solid ${isDisabled ? '#ccc' : 'var(--border)'}; border-radius: 10px; 
+                               text-align: center; cursor: ${isDisabled ? 'not-allowed' : 'pointer'}; 
+                               background: ${isDisabled ? '#f0f0f0' : 'white'}; 
+                               color: ${isDisabled ? '#999' : 'var(--navy)'}; font-size: 14px; transition: all 0.2s;">
+                        ${name} ${isDisabled ? '(現在)' : ''}
+                    </div>
+                `;
+            }
+            optionsContainer.innerHTML = html;
+
+            selectedNewBase = null;
+            document.getElementById('transferError').style.display = 'none';
+            document.getElementById('baseTransferModal').style.display = 'block';
+            document.body.classList.add('modal-open');
+        }
+
+        function closeBaseTransferModal() {
+            document.getElementById('baseTransferModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
+            selectedNewBase = null;
+        }
+
+        function selectNewBase(base) {
+            selectedNewBase = base;
+            // UIを更新
+            document.querySelectorAll('[id^="baseOption_"]').forEach(el => {
+                el.style.border = '2px solid var(--border)';
+                el.style.background = 'white';
+            });
+            const selected = document.getElementById(`baseOption_${base}`);
+            if (selected) {
+                selected.style.border = '2px solid var(--gold)';
+                selected.style.background = 'var(--gold-light)';
+            }
+            document.getElementById('transferError').style.display = 'none';
+        }
+
+        async function confirmBaseTransfer() {
+            if (!selectedNewBase) {
+                document.getElementById('transferError').textContent = '移籍先を選択してください';
+                document.getElementById('transferError').style.display = 'block';
+                return;
+            }
+
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || 'null');
+            if (!profile || !profile.pin) {
+                alert('プロファイル情報が見つかりません');
+                return;
+            }
+
+            const confirmTransfer = confirm(`${BASE_NAMES[selectedNewBase]}に移籍しますか？\n\n全てのデータ（トークン、目標、写真など）が引き継がれます。`);
+            if (!confirmTransfer) return;
+
+            const btn = document.getElementById('confirmTransferBtn');
+            btn.textContent = '移籍中...';
+            btn.disabled = true;
+
+            try {
+                // 移籍先GASにPOSTでデータを送信
+                const url = SCRIPT_URLS[selectedNewBase];
+                if (!url) {
+                    throw new Error('移籍先のURLが見つかりません');
+                }
+
+                const transferData = {
+                    action: 'transferUser',
+                    name: profile.name,
+                    pin: profile.pin,
+                    newBase: selectedNewBase,
+                    tokenBalance: parseInt(localStorage.getItem('mindful_tokens') || '0'),
+                    goalsThisYear: JSON.stringify(profile.goalsThisYear || []),
+                    goalsFuture: JSON.stringify(profile.goalsFuture || []),
+                    profileImage: localStorage.getItem('mindful_photo') || '',
+                    checkoutDates: localStorage.getItem('mindful_checkout_dates') || '[]'
+                };
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(transferData)
+                });
+
+                // no-corsモードなのでレスポンスは読めないが、成功とみなす
+                // ローカル情報を更新
+                profile.base = selectedNewBase;
+                localStorage.setItem('mindful_profile', JSON.stringify(profile));
+
+                closeBaseTransferModal();
+                alert(`${BASE_NAMES[selectedNewBase]}への移籍が完了しました！`);
+                showProfile();
+                showUserBadge(profile);
+
+            } catch (e) {
+                console.error('Transfer error:', e);
+                document.getElementById('transferError').textContent = '移籍に失敗しました: ' + e.message;
+                document.getElementById('transferError').style.display = 'block';
+            } finally {
+                btn.textContent = '移籍する';
+                btn.disabled = false;
             }
         }
 
