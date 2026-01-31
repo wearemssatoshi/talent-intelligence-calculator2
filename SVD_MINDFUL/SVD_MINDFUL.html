@@ -2256,6 +2256,8 @@
 
                 <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
                 <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
+                <button class="btn-secondary" onclick="forceUpdate()" style="margin-top: 10px; font-size: 10px;">🔄
+                    Force Update (v3.5)</button>
             </div>
         </div>
 
@@ -4053,6 +4055,13 @@
                     (screenId === 'screen-profile' && i === 4)
                 );
             });
+        }
+
+        // Force Update - キャッシュをクリアして最新版をロード
+        function forceUpdate() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('v', Date.now());
+            window.location.href = url.toString();
         }
 
         // ============ INSIGHT - 記事キュレーション ============
