@@ -281,12 +281,13 @@ function doGet(e) {
     const rows = sheet.getDataRange().getValues();
     const headers = rows[0];
     
-    // Column indices
+    // Column indices (現在のスプレッドシート構造に合わせて調整)
+    // 注: PhotoData列は存在しないため-1、スキルはK列(10)から開始
     const COL = {
       TIMESTAMP: 0, NAME: 1, AFFILIATION: 2, JOB_TITLE: 3, 
       TYPE_SELF: 4, TYPE_OTHER: 5, TOTAL_SCORE: 6, 
-      QUALIFICATIONS: 7, QUAL_SCORE: 8, MEISTER_RANK: 9, PHOTO_DATA: 10,
-      SKILLS_START: 11, SKILLS_END: 35
+      QUALIFICATIONS: 7, QUAL_SCORE: 8, MEISTER_RANK: 9, PHOTO_DATA: -1,
+      SKILLS_START: 10, SKILLS_END: 33
     };
     
     switch (action) {
@@ -327,7 +328,7 @@ function doGet(e) {
               Qualifications: row[COL.QUALIFICATIONS],
               QualScore: row[COL.QUAL_SCORE],
               MeisterRank: row[COL.MEISTER_RANK],
-              PhotoData: row[COL.PHOTO_DATA] || ''
+              PhotoData: COL.PHOTO_DATA >= 0 ? (row[COL.PHOTO_DATA] || '') : ''
             };
             
             // Add skill scores
@@ -371,7 +372,7 @@ function doGet(e) {
             score: row[COL.TOTAL_SCORE],
             qualifications: row[COL.QUALIFICATIONS],
             meisterRank: row[COL.MEISTER_RANK],
-            photoData: row[COL.PHOTO_DATA] || '',
+            photoData: COL.PHOTO_DATA >= 0 ? (row[COL.PHOTO_DATA] || '') : '',
             detailedScores: row.slice(COL.SKILLS_START, COL.SKILLS_END + 1)
           });
         }
