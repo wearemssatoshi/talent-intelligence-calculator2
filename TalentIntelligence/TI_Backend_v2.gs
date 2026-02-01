@@ -353,7 +353,8 @@ function doGet(e) {
           .setMimeType(ContentService.MimeType.JSON);
       }
       
-      // 全データ取得（ダッシュボード用）
+      // 全データ取得（ダッシュボード用） - Manager Dashboard互換エイリアス
+      case 'getStaffData':
       case 'all': {
         const allData = [];
         
