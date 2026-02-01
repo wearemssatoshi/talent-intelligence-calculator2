@@ -2161,18 +2161,23 @@
         </div>
 
         <!-- SCREEN 7: PROFILE VIEW -->
-        <!-- PDF Viewer Screen -->
+        <!-- PDF Viewer Screen (Simple Link Mode) -->
         <div class="screen" id="screen-pdf-viewer"
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: white;">
-            <div style="height: 100%; display: flex; flex-direction: column;">
-                <header
-                    style="background: var(--navy); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-                    <div style="font-weight: 600; font-size: 14px;">📖 SVD Brand Guide</div>
-                    <button onclick="closePdf()"
-                        style="background: var(--gold); color: var(--navy); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer;">✕
-                        閉じる</button>
-                </header>
-                <iframe id="pdf-frame" style="flex: 1; border: none; width: 100%;"></iframe>
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: linear-gradient(180deg, var(--navy) 0%, #1a2744 100%);">
+            <div
+                style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
+                <div style="font-size: 64px; margin-bottom: 20px;">📖</div>
+                <div
+                    style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 8px;">
+                    SVD Brand Guide</div>
+                <div style="font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 40px;">v1.1 - ブランドコンセプトを確認する
+                </div>
+                <a id="pdf-link" href="" target="_blank"
+                    style="display: inline-block; background: var(--gold); color: var(--navy); padding: 16px 32px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; margin-bottom: 16px;">📄
+                    PDFを開く</a>
+                <button onclick="closePdf()"
+                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 12px 24px; border-radius: 8px; font-size: 14px; cursor: pointer;">←
+                    戻る</button>
             </div>
         </div>
 
@@ -4071,20 +4076,15 @@
             });
         }
 
-        // PDF Viewer (Google Docs Viewer for cross-browser compatibility)
+        // PDF Viewer (Simple Link Mode - most compatible)
         let lastScreenBeforePdf = 'screen-morning';
         function openPdf(url) {
             const activeScreen = document.querySelector('.screen.active');
             if (activeScreen) lastScreenBeforePdf = activeScreen.id;
-            // Convert relative URL to absolute URL
-            const fullUrl = new URL(url, window.location.href).href;
-            // Use Google Docs Viewer for better compatibility (especially iOS)
-            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
-            document.getElementById('pdf-frame').src = viewerUrl;
+            document.getElementById('pdf-link').href = url;
             showScreen('screen-pdf-viewer');
         }
         function closePdf() {
-            document.getElementById('pdf-frame').src = '';
             showScreen(lastScreenBeforePdf);
         }
 
