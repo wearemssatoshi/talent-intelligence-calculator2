@@ -18,7 +18,7 @@
 // CONFIG
 // ==============================================
 const CONFIG = {
-  SHEET_NAME: 'TI_Evaluations',
+  SHEET_NAME: 'StaffData',
   VERSION: '2.0'
 };
 
