@@ -4071,12 +4071,16 @@
             });
         }
 
-        // PDF Viewer
+        // PDF Viewer (Google Docs Viewer for cross-browser compatibility)
         let lastScreenBeforePdf = 'screen-morning';
         function openPdf(url) {
             const activeScreen = document.querySelector('.screen.active');
             if (activeScreen) lastScreenBeforePdf = activeScreen.id;
-            document.getElementById('pdf-frame').src = url;
+            // Convert relative URL to absolute URL
+            const fullUrl = new URL(url, window.location.href).href;
+            // Use Google Docs Viewer for better compatibility (especially iOS)
+            const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(fullUrl)}&embedded=true`;
+            document.getElementById('pdf-frame').src = viewerUrl;
             showScreen('screen-pdf-viewer');
         }
         function closePdf() {
