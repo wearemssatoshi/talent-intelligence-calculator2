@@ -14,18 +14,19 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
 
         :root {
-            --primary-color: #0f172a;
-            --secondary-color: #B8995C;
+            --primary-color: #1E3A5F;
+            --primary-dark: #0F2A4A;
+            --secondary-color: #C9A962;
             --accent-color: #D4AF37;
-            --background-color: #f8fafc;
+            --background-color: #FAFAFA;
             --text-color: #1e293b;
             --light-text-color: #64748b;
             --border-color: #e2e8f0;
             --card-bg: #FFFFFF;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
-            --gold-glow: 0 0 40px rgba(184, 153, 92, 0.3);
-            --premium-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            --gold-glow: 0 0 40px rgba(201, 169, 98, 0.3);
+            --premium-gradient: linear-gradient(135deg, #1E3A5F 0%, #0F2A4A 100%);
         }
 
         * {
@@ -180,31 +181,47 @@
 
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem 0;
+            margin-bottom: 2rem;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 8px 32px rgba(15, 42, 74, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 30% 0%, rgba(201, 169, 98, 0.15) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .header-logo {
-            width: 180px;
+            width: 160px;
             height: auto;
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
+            margin-bottom: 1rem;
+            filter: brightness(0) invert(1);
         }
 
         header h1 {
             font-family: 'Montserrat', sans-serif;
-            color: var(--primary-color);
-            font-weight: 800;
-            font-size: 2.2rem;
+            color: white;
+            font-weight: 700;
+            font-size: 1.8rem;
             margin: 0;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             text-transform: uppercase;
         }
 
         header p {
             color: var(--secondary-color);
             margin-top: 0.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             letter-spacing: 0.15em;
             text-transform: uppercase;
