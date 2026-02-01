@@ -21,6 +21,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <!-- PDF.js for in-app PDF viewing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         :root {
             --white: #FFFFFF;
@@ -2161,23 +2163,34 @@
         </div>
 
         <!-- SCREEN 7: PROFILE VIEW -->
-        <!-- PDF Viewer Screen (Simple Link Mode) -->
+        <!-- PDF Viewer Screen (PDF.js with pinch zoom) -->
         <div class="screen" id="screen-pdf-viewer"
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: linear-gradient(180deg, var(--navy) 0%, #1a2744 100%);">
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: #333; display: flex; flex-direction: column;">
+            <!-- PDF Viewer Header -->
             <div
-                style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;">
-                <div style="font-size: 64px; margin-bottom: 20px;">📖</div>
-                <div
-                    style="font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 8px;">
-                    SVD Brand Guide</div>
-                <div style="font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 40px;">v1.1 - ブランドコンセプトを確認する
+                style="background: var(--navy); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+                <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 14px;">📖 SVD Brand
+                    Guide</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="pdfPageInfo" style="font-size: 12px; color: rgba(255,255,255,0.7);">1 / 1</span>
+                    <button onclick="closePdf()"
+                        style="background: var(--gold); color: var(--navy); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer;">✕
+                        閉じる</button>
                 </div>
-                <a id="pdf-link" href="" target="_blank"
-                    style="display: inline-block; background: var(--gold); color: var(--navy); padding: 16px 32px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; margin-bottom: 16px;">📄
-                    PDFを開く</a>
-                <button onclick="closePdf()"
-                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 12px 24px; border-radius: 8px; font-size: 14px; cursor: pointer;">←
-                    戻る</button>
+            </div>
+            <!-- PDF Canvas Container (scrollable and zoomable) -->
+            <div id="pdfContainer"
+                style="flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 10px;">
+            </div>
+            <!-- Zoom Controls -->
+            <div
+                style="background: var(--navy); padding: 10px 16px; display: flex; justify-content: center; gap: 15px; flex-shrink: 0;">
+                <button onclick="pdfZoomOut()"
+                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; font-size: 16px; cursor: pointer;">➖</button>
+                <span id="pdfZoomLevel"
+                    style="color: white; font-size: 14px; display: flex; align-items: center;">100%</span>
+                <button onclick="pdfZoomIn()"
+                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; font-size: 16px; cursor: pointer;">➕</button>
             </div>
         </div>
 
@@ -4076,15 +4089,86 @@
             });
         }
 
-        // PDF Viewer (Simple Link Mode - most compatible)
+        // PDF Viewer with PDF.js
         let lastScreenBeforePdf = 'screen-morning';
-        function openPdf(url) {
+        let pdfDoc = null;
+        let pdfScale = 1.0;
+        const PDF_SCALE_STEP = 0.25;
+        const PDF_MIN_SCALE = 0.5;
+        const PDF_MAX_SCALE = 3.0;
+
+        async function openPdf(url) {
             const activeScreen = document.querySelector('.screen.active');
             if (activeScreen) lastScreenBeforePdf = activeScreen.id;
-            document.getElementById('pdf-link').href = url;
             showScreen('screen-pdf-viewer');
+
+            // Reset zoom
+            pdfScale = 1.0;
+            document.getElementById('pdfZoomLevel').textContent = '100%';
+            document.getElementById('pdfContainer').innerHTML = '<div style="color: white; padding: 40px;">Loading PDF...</div>';
+
+            try {
+                // Set worker source
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+                // Load PDF
+                pdfDoc = await pdfjsLib.getDocument(url).promise;
+                renderAllPages();
+            } catch (err) {
+                console.error('PDF load error:', err);
+                document.getElementById('pdfContainer').innerHTML = `
+                    <div style="color: white; padding: 40px; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                        <div>PDFの読み込みに失敗しました</div>
+                        <a href="${url}" target="_blank" style="color: var(--gold); margin-top: 10px; display: inline-block;">外部で開く</a>
+                    </div>
+                `;
+            }
         }
+
+        async function renderAllPages() {
+            if (!pdfDoc) return;
+            const container = document.getElementById('pdfContainer');
+            container.innerHTML = '';
+
+            document.getElementById('pdfPageInfo').textContent = `${pdfDoc.numPages} ページ`;
+
+            for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                const page = await pdfDoc.getPage(pageNum);
+                const viewport = page.getViewport({ scale: pdfScale * 1.5 }); // Base scale for mobile readability
+
+                const canvas = document.createElement('canvas');
+                canvas.style.maxWidth = '100%';
+                canvas.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5)';
+                canvas.style.borderRadius = '4px';
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                container.appendChild(canvas);
+            }
+        }
+
+        function pdfZoomIn() {
+            if (pdfScale < PDF_MAX_SCALE) {
+                pdfScale += PDF_SCALE_STEP;
+                document.getElementById('pdfZoomLevel').textContent = Math.round(pdfScale * 100) + '%';
+                renderAllPages();
+            }
+        }
+
+        function pdfZoomOut() {
+            if (pdfScale > PDF_MIN_SCALE) {
+                pdfScale -= PDF_SCALE_STEP;
+                document.getElementById('pdfZoomLevel').textContent = Math.round(pdfScale * 100) + '%';
+                renderAllPages();
+            }
+        }
+
         function closePdf() {
+            pdfDoc = null;
+            document.getElementById('pdfContainer').innerHTML = '';
             showScreen(lastScreenBeforePdf);
         }
 
