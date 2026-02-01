@@ -237,6 +237,13 @@ function doGet(e) {
       return getUsersList();
     }
     
+    // ============ トークンランキング（ダッシュボード用） ============
+    if (action === 'ranking') {
+      const period = e?.parameter?.period || 'week';
+      const base = e?.parameter?.base || 'all';
+      return getTokenRanking(period, base);
+    }
+    
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
@@ -1043,6 +1050,121 @@ function getUsersList() {
       success: false,
       error: error.message,
       users: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * トークンランキングを取得（ダッシュボード用）
+ * 期間別・拠点別でToken EarnedをTOP3で返す
+ * @param {string} period - today/yesterday/week/month/all
+ * @param {string} base - all/okurayama/moiwa/teletou/akarenga
+ */
+function getTokenRanking(period, base) {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('MINDFUL_Log');
+    
+    if (!sheet) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: 'MINDFUL_Logシートが見つかりません',
+        ranking: []
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = sheet.getDataRange().getValues();
+    
+    // 期間の開始日を計算（JSTで計算）
+    const now = new Date();
+    const jstOffset = 9 * 60 * 60 * 1000; // JST = UTC+9
+    const nowJST = new Date(now.getTime() + jstOffset);
+    const todayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
+    
+    let startDate;
+    switch (period) {
+      case 'today':
+        startDate = todayJST;
+        break;
+      case 'yesterday':
+        startDate = new Date(todayJST.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case 'week':
+        startDate = new Date(todayJST.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case 'month':
+        startDate = new Date(todayJST.getFullYear(), todayJST.getMonth(), 1);
+        break;
+      case 'all':
+      default:
+        startDate = new Date(0); // 全期間
+        break;
+    }
+    
+    // 拠点名のマッピング
+    const baseMap = {
+      'okurayama': '大倉山',
+      'moiwa': '藻岩山',
+      'teletou': 'テレビ塔',
+      'akarenga': '赤れんが'
+    };
+    
+    // ユーザー別にToken Earnedを集計
+    const tokenByUser = {};
+    
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const timestamp = new Date(row[0]);
+      const rowType = row[1];
+      const userName = row[2];
+      const rowBase = row[3];
+      const tokenEarned = Number(row[19]) || 0; // Token Earned列
+      
+      // reflectionタイプ（C/O）のみカウント
+      if (rowType !== 'reflection') continue;
+      
+      // 期間フィルタ
+      if (timestamp < startDate) continue;
+      
+      // 拠点フィルタ
+      if (base && base !== 'all') {
+        const targetBase = baseMap[base];
+        if (targetBase && rowBase !== targetBase) continue;
+      }
+      
+      // トークンがない場合はスキップ
+      if (tokenEarned <= 0) continue;
+      
+      // ユーザー別に集計
+      if (!tokenByUser[userName]) {
+        tokenByUser[userName] = { name: userName, base: rowBase, tokens: 0 };
+      }
+      tokenByUser[userName].tokens += tokenEarned;
+    }
+    
+    // ランキング作成（TOP3）
+    const ranking = Object.values(tokenByUser)
+      .sort((a, b) => b.tokens - a.tokens)
+      .slice(0, 3)
+      .map((user, index) => ({
+        rank: index + 1,
+        name: user.name,
+        base: user.base,
+        tokens: user.tokens
+      }));
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      period: period,
+      base: base || 'all',
+      ranking: ranking
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false,
+      error: error.message,
+      ranking: []
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
