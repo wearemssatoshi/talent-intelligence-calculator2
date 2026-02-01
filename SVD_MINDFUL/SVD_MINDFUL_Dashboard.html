@@ -400,6 +400,190 @@
                 font-size: 9px;
             }
         }
+
+        /* ===== PODIUM RANKING STYLES ===== */
+        .podium-section {
+            margin: 35px 0;
+        }
+
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 15px;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, var(--off-white) 0%, var(--white) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            min-height: 280px;
+        }
+
+        .podium-place {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .podium-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .podium-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+            text-align: center;
+            max-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+
+        .podium-tokens {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .podium-base {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--white);
+            border-radius: 8px 8px 0 0;
+            padding: 15px 25px;
+            min-width: 100px;
+        }
+
+        /* 1位: ゴールド - 中央 - 最も高い */
+        .podium-place.first {
+            order: 2;
+        }
+
+        .podium-place.first .podium-avatar {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .podium-place.first .podium-tokens {
+            color: #D4A400;
+        }
+
+        .podium-place.first .podium-base {
+            background: linear-gradient(180deg, #FFD700 0%, #D4A400 100%);
+            height: 120px;
+        }
+
+        /* 2位: シルバー - 左 */
+        .podium-place.second {
+            order: 1;
+        }
+
+        .podium-place.second .podium-avatar {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.4);
+        }
+
+        .podium-place.second .podium-tokens {
+            color: #808080;
+        }
+
+        .podium-place.second .podium-base {
+            background: linear-gradient(180deg, #C0C0C0 0%, #909090 100%);
+            height: 90px;
+        }
+
+        /* 3位: ブロンズ - 右 */
+        .podium-place.third {
+            order: 3;
+        }
+
+        .podium-place.third .podium-avatar {
+            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+        }
+
+        .podium-place.third .podium-tokens {
+            color: #8B4513;
+        }
+
+        .podium-place.third .podium-base {
+            background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
+            height: 60px;
+        }
+
+        .podium-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .podium-container {
+                padding: 20px 10px;
+                gap: 10px;
+                min-height: 220px;
+            }
+
+            .podium-avatar {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+
+            .podium-name {
+                font-size: 11px;
+                max-width: 70px;
+            }
+
+            .podium-tokens {
+                font-size: 14px;
+            }
+
+            .podium-base {
+                min-width: 70px;
+                padding: 10px 15px;
+            }
+
+            .podium-place.first .podium-base {
+                height: 80px;
+            }
+
+            .podium-place.second .podium-base {
+                height: 60px;
+            }
+
+            .podium-place.third .podium-base {
+                height: 40px;
+            }
+        }
     </style>
 </head>
 
@@ -510,6 +694,14 @@
             <div class="stat-card" style="border-color: var(--gold);">
                 <div class="stat-label">🏆 Total Tokens</div>
                 <div class="stat-value" style="color: var(--gold);" id="statTotalTokens">--</div>
+            </div>
+        </div>
+
+        <!-- TOKEN RANKING PODIUM -->
+        <div class="podium-section">
+            <div class="section-title">🏆 TOKEN RANKING</div>
+            <div class="podium-container" id="podiumContainer">
+                <div class="podium-empty">ランキングを読み込み中...</div>
             </div>
         </div>
 
@@ -673,6 +865,7 @@
             selectPeriod('today');
             loadData();
             loadUsersData();
+            loadTokenRanking();
         }
 
         // メンバー一覧を取得
@@ -701,6 +894,75 @@
                         <td>${createdDate}</td>
                         <td style="color: var(--gold); font-weight: 600;">${u.tokenBalance || 0}</td>
                     </tr>
+                `;
+            }).join('');
+        }
+
+        // トークンランキングを取得
+        async function loadTokenRanking() {
+            const url = SCRIPT_URLS[currentBase];
+            if (!url) return;
+
+            // 期間マッピング（Frontend → Backend）
+            const periodMap = {
+                'today': 'today',
+                'yesterday': 'yesterday',
+                'week': 'week',
+                'month': 'month',
+                'quarter': 'month', // 四半期は月に近似
+                'year': 'all',      // 年間は全期間に近似
+                'custom': 'week',   // カスタムはweekに近似
+                'single': 'today'   // 単一日はtodayに近似
+            };
+
+            // 拠点マッピング（Frontend → Backend）
+            const baseMap = {
+                'moiwayama': 'moiwa',
+                'okurayama': 'okurayama',
+                'tvtower': 'teletou',
+                'akarenga': 'akarenga'
+            };
+
+            const period = periodMap[currentPeriod] || 'week';
+            const base = baseMap[currentBase] || 'all';
+
+            try {
+                const response = await fetch(`${url}?action=ranking&period=${period}&base=${base}`);
+                const result = await response.json();
+
+                if (result.success && result.ranking) {
+                    renderPodium(result.ranking);
+                } else {
+                    renderPodium([]);
+                }
+            } catch (e) {
+                console.log('Ranking data not available:', e);
+                renderPodium([]);
+            }
+        }
+
+        // ポディウム表示
+        function renderPodium(ranking) {
+            const container = document.getElementById('podiumContainer');
+            if (!container) return;
+
+            if (!ranking || ranking.length === 0) {
+                container.innerHTML = '<div class="podium-empty">📊 この期間のランキングデータがありません</div>';
+                return;
+            }
+
+            const placeClass = ['first', 'second', 'third'];
+            const placeEmoji = ['🥇', '🥈', '🥉'];
+
+            container.innerHTML = ranking.map((user, index) => {
+                if (index > 2) return ''; // TOP3のみ
+                return `
+                    <div class="podium-place ${placeClass[index]}" style="animation-delay: ${index * 0.1}s">
+                        <div class="podium-avatar">${placeEmoji[index]}</div>
+                        <div class="podium-name">${user.name}</div>
+                        <div class="podium-tokens">🪙 ${user.tokens}</div>
+                        <div class="podium-base">${index + 1}位</div>
+                    </div>
                 `;
             }).join('');
         }
@@ -750,6 +1012,7 @@
             document.getElementById('customDatePicker').style.display = 'none';
             updatePeriodDisplay();
             renderFilteredData();
+            loadTokenRanking();
         }
 
         function toggleCustomDate() {
@@ -890,6 +1153,7 @@
             document.querySelector(`.base-tab[data-base="${base}"]`).classList.add('active');
             loadData();
             loadUsersData();
+            loadTokenRanking();
         }
 
         async function loadData() {
