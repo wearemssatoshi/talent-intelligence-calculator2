@@ -1340,18 +1340,29 @@
                     scores = scores.split(',').map(Number);
                 }
 
-                if (!scores || scores.length < 24) return;
+                let pAvg, sAvg, eAvg, mgAvg;
 
-                let p = 0, s = 0, e = 0, mg = 0;
-                for (let i = 0; i < 6; i++) p += scores[i];
-                for (let i = 6; i < 12; i++) s += scores[i];
-                for (let i = 12; i < 18; i++) e += scores[i];
-                for (let i = 18; i < 24; i++) mg += scores[i];
+                // detailedScoresが有効な場合は詳細計算
+                if (scores && scores.length >= 24) {
+                    let p = 0, s = 0, e = 0, mg = 0;
+                    for (let i = 0; i < 6; i++) p += Number(scores[i]) || 0;
+                    for (let i = 6; i < 12; i++) s += Number(scores[i]) || 0;
+                    for (let i = 12; i < 18; i++) e += Number(scores[i]) || 0;
+                    for (let i = 18; i < 24; i++) mg += Number(scores[i]) || 0;
 
-                const pAvg = p / 6;
-                const sAvg = s / 6;
-                const eAvg = e / 6;
-                const mgAvg = mg / 6;
+                    pAvg = p / 6;
+                    sAvg = s / 6;
+                    eAvg = e / 6;
+                    mgAvg = mg / 6;
+                } else {
+                    // detailedScoresがない場合は総合スコアから概算
+                    const totalScore = Number(m.score) || 0;
+                    const avgPerCategory = totalScore / 4;
+                    pAvg = avgPerCategory;
+                    sAvg = avgPerCategory;
+                    eAvg = avgPerCategory;
+                    mgAvg = avgPerCategory;
+                }
 
                 teamCategoryScores[0] += pAvg;
                 teamCategoryScores[1] += sAvg;
