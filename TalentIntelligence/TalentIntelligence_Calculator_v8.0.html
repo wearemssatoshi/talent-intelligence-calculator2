@@ -2302,32 +2302,18 @@
 
                     // v8.0: ルールベースAIアドバイスを生成・表示
                     try {
+                        // 直接SELECT要素からスコアを取得
+                        const getVal = (id) => parseInt(document.getElementById(id)?.value) || 0;
                         const scores = {
                             totalScore: finalScore,
-                            p1: rawScores["パーソル力"]["アウェアネス（気づき）"],
-                            p2: rawScores["パーソル力"]["オーガナイズ（整理力）"],
-                            p3: rawScores["パーソル力"]["プレゼンテーション（表現）"],
-                            p4: rawScores["パーソル力"]["コミュニケーション"],
-                            p5: rawScores["パーソル力"]["コンプライアンス（遵守）"],
-                            p6: rawScores["パーソル力"]["インテグリティ（誠実さ）"],
-                            s1: rawScores["サービススキル"]["リスポンス（応対）"],
-                            s2: rawScores["サービススキル"]["ホスピタリティ（歓待）"],
-                            s3: rawScores["サービススキル"]["コンテキスト（状況把握）"],
-                            s4: rawScores["サービススキル"]["アダプタビリティ（順応）"],
-                            s5: rawScores["サービススキル"]["プロアクティブ（先取り）"],
-                            s6: rawScores["サービススキル"]["エンパシー（共感）"],
-                            e1: rawScores["経験・資格"]["プロダクト知識"],
-                            e2: rawScores["経験・資格"]["テクニカルスキル"],
-                            e3: rawScores["経験・資格"]["プロブレム・ソルビング（問題解決）"],
-                            e4: rawScores["経験・資格"]["アナリティカル（分析力）"],
-                            e5: rawScores["経験・資格"]["テクノロジー（IT活用）"],
-                            e6: rawScores["経験・資格"]["ラーニング（学習）"],
-                            m1: rawScores["マネジメントスキル"]["リーダーシップ"],
-                            m2: rawScores["マネジメントスキル"]["ストラテジー（戦略思考）"],
-                            m3: rawScores["マネジメントスキル"]["デシジョンメイキング（決断）"],
-                            m4: rawScores["マネジメントスキル"]["チームビルディング（育成）"],
-                            m5: rawScores["マネジメントスキル"]["コンフリクト（葛藤解消）"],
-                            m6: rawScores["マネジメントスキル"]["モチベーション（動機付け）"]
+                            p1: getVal('p1'), p2: getVal('p2'), p3: getVal('p3'),
+                            p4: getVal('p4'), p5: getVal('p5'), p6: getVal('p6'),
+                            s1: getVal('s1'), s2: getVal('s2'), s3: getVal('s3'),
+                            s4: getVal('s4'), s5: getVal('s5'), s6: getVal('s6'),
+                            e1: getVal('e1'), e2: getVal('e2'), e3: getVal('e3'),
+                            e4: getVal('e4'), e5: getVal('e5'), e6: getVal('e6'),
+                            m1: getVal('m1'), m2: getVal('m2'), m3: getVal('m3'),
+                            m4: getVal('m4'), m5: getVal('m5'), m6: getVal('m6')
                         };
                         const advice = generateLocalAdvice(scores);
                         displayAdvice(advice);
