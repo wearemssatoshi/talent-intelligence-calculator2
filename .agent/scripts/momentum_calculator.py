@@ -65,54 +65,74 @@ def calculate_momentum(file_path: str, date_col: str = None, sales_col: str = No
         df['month'] = df[date_col].dt.month
         df['day'] = df[date_col].dt.day
         
-        # ===== 曜日係数 =====
+        # ===== 曜日係数 (SAT's Momentum Peaks Index) =====
+        # Scale: 1-5 based on actual base index data
         weekday_factor = {
-            0: 0.7,  # 月曜
-            1: 0.7,  # 火曜
-            2: 0.8,  # 水曜
-            3: 0.85, # 木曜
-            4: 1.0,  # 金曜
-            5: 1.3,  # 土曜
-            6: 1.2   # 日曜
+            0: 2,  # 月曜 (閑散)
+            1: 2,  # 火曜
+            2: 2,  # 水曜
+            3: 3,  # 木曜 (週末準備)
+            4: 4,  # 金曜 (週末需要開始)
+            5: 5,  # 土曜 (最大需要)
+            6: 4   # 日曜 (週末需要)
         }
         df['weekday_factor'] = df['weekday'].map(weekday_factor)
         
-        # ===== 季節係数 =====
-        def season_factor(row):
+        # ===== 月別季節係数 (SAT's Momentum Peaks Index) =====
+        # Scale: 1-5 based on 藻岩山 base index data
+        season_index = {
+            1: 2,   # 1月: お正月 / お正月明け反動
+            2: 3,   # 2月: 雪まつり / 冬の出控え
+            3: 3,   # 3月: 春・雪解け
+            4: 1,   # 4月: 春・GW準備 / 運休期間
+            5: 3,   # 5月: GW / GW明け反動
+            6: 4,   # 6月: 初夏・新緑・よさこい・神宮祭
+            7: 5,   # 7月: 夏・ビアガーデン・PMF・花火
+            8: 5,   # 8月: 夏休み・北海道マラソン
+            9: 5,   # 9月: オータムフェスト
+            10: 5,  # 10月: 秋・紅葉
+            11: 3,  # 11月: ホワイトイルミネーション / 端境期
+            12: 5   # 12月: クリスマス・イルミネーション
+        }
+        df['season_factor'] = df['month'].map(season_index)
+        
+        # ===== イベントブースト =====
+        def event_boost(row):
             m, d = row['month'], row['day']
-            # GW (4/29-5/5)
+            boost = 0
+            # GW (4/29-5/5): +1
             if (m == 4 and d >= 29) or (m == 5 and d <= 5):
-                return 1.5
-            # お盆 (8/10-8/16)
+                boost += 1
+            # 雪まつり (2/4-2/11): +1
+            if m == 2 and 4 <= d <= 11:
+                boost += 1
+            # お盆 (8/10-8/16): +1
             if m == 8 and 10 <= d <= 16:
-                return 1.4
-            # 年末年始 (12/28-1/3)
+                boost += 1
+            # 年末年始 (12/28-1/3): +1
             if (m == 12 and d >= 28) or (m == 1 and d <= 3):
-                return 1.4
-            # 春休み・夏休み
-            if m in [3, 7, 8]:
-                return 1.1
-            # 閑散期
-            if m in [1, 2, 6]:
-                return 0.8
-            return 1.0
+                boost += 1
+            # オータムフェスト (9月中旬-10月上旬): +0.5
+            if m == 9 and d >= 10:
+                boost += 0.5
+            return boost
         
-        df['season_factor'] = df.apply(season_factor, axis=1)
+        df['event_boost'] = df.apply(event_boost, axis=1)
         
-        # ===== 売上の相対値（0-100スケール）=====
+        # ===== 売上の相対値（0-100スケール）→ 来場者指数の代用 =====
         sales_min = df[sales_col].min()
         sales_max = df[sales_col].max()
-        df['sales_normalized'] = ((df[sales_col] - sales_min) / (sales_max - sales_min)) * 100
+        # 来場者指数相当（1-5スケール）
+        df['visitor_factor'] = 1 + ((df[sales_col] - sales_min) / (sales_max - sales_min)) * 4
         
-        # ===== モメンタム計算 =====
-        # 基本: 売上相対値 × 曜日係数 × 季節係数
-        df['momentum_raw'] = df['sales_normalized'] * df['weekday_factor'] * df['season_factor']
+        # ===== モメンタム計算 (SAT's TOTAL拠点指数) =====
+        # TOTAL = (①季節指数 + ②曜日指数 + ③来場者指数) / 3 + イベントブースト
+        df['momentum_raw'] = (df['season_factor'] + df['weekday_factor'] + df['visitor_factor']) / 3 + df['event_boost']
         
-        # 0-100にスケーリング
-        mom_min = df['momentum_raw'].min()
-        mom_max = df['momentum_raw'].max()
-        df['momentum'] = ((df['momentum_raw'] - mom_min) / (mom_max - mom_min)) * 100
-        df['momentum'] = df['momentum'].round(1)
+        # 0-100にスケーリング（5段階を100点満点に変換）
+        # 最大値は約5+1(event) = 6、最小値は約1
+        df['momentum'] = ((df['momentum_raw'] - 1) / 5) * 100
+        df['momentum'] = df['momentum'].clip(0, 100).round(1)
         
         # ===== 分析結果 =====
         result = {
