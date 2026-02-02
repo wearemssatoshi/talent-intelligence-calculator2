@@ -2185,15 +2185,13 @@
         <div class="screen" id="screen-pdf-viewer"
             style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: #333; flex-direction: column;">
             <!-- PDF Viewer Header -->
-            <div
-                style="background: var(--navy); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+            <div onclick="closePdf()"
+                style="background: var(--navy); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; cursor: pointer;">
                 <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 14px;">📖 SVD Brand
                     Guide</div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span id="pdfPageInfo" style="font-size: 12px; color: rgba(255,255,255,0.7);">1 / 1</span>
-                    <button onclick="closePdf(); return false;"
-                        style="background: var(--gold); color: var(--navy); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; -webkit-tap-highlight-color: transparent;">✕
-                        閉じる</button>
+                    <span style="font-size: 20px;">✕</span>
                 </div>
             </div>
             <!-- PDF Canvas Container (scrollable and zoomable) -->
