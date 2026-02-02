@@ -1897,6 +1897,16 @@
                 </div>
             </div>
 
+            <!-- Announcements Section -->
+            <div id="announcementsSection" style="margin-bottom: 20px;">
+                <div class="section-title" style="display: flex; align-items: center; gap: 8px;">
+                    📢 お知らせ
+                    <span id="announcementsCount"
+                        style="background: var(--gold); color: var(--navy); font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600;"></span>
+                </div>
+                <div id="announcementsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+
             <div class="section-title">Today's Shift</div>
             <div class="health-check-card" style="padding: 16px; margin-bottom: 20px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -4103,6 +4113,61 @@
                     (screenId === 'screen-profile' && i === 4)
                 );
             });
+
+            // Load announcements when STAY screen is shown
+            if (screenId === 'screen-active') {
+                loadAnnouncements();
+            }
+        }
+
+        // ============ ANNOUNCEMENTS ============
+        async function loadAnnouncements() {
+            const url = SCRIPT_URLS[currentUser.base];
+            if (!url) return;
+
+            try {
+                const response = await fetch(`${url}?action=announcements`);
+                const result = await response.json();
+
+                if (result.success && result.announcements) {
+                    renderAnnouncements(result.announcements);
+                }
+            } catch (e) {
+                console.log('Announcements not available:', e);
+            }
+        }
+
+        function renderAnnouncements(announcements) {
+            const container = document.getElementById('announcementsList');
+            const countEl = document.getElementById('announcementsCount');
+
+            if (!container) return;
+
+            if (!announcements || announcements.length === 0) {
+                container.innerHTML = '<div style="padding: 16px; background: var(--light-gray); border-radius: 10px; font-size: 12px; color: var(--text-gray); text-align: center;">お知らせはありません</div>';
+                if (countEl) countEl.textContent = '';
+                return;
+            }
+
+            // 最新5件のみ表示
+            const recent = announcements.slice(0, 5);
+            if (countEl) countEl.textContent = recent.length;
+
+            container.innerHTML = recent.map(ann => {
+                const date = new Date(ann.date);
+                const dateStr = date.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
+                const timeStr = date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+
+                return `
+                    <div style="padding: 14px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 11px; color: var(--gold); font-weight: 600;">${ann.author}</span>
+                            <span style="font-size: 10px; color: var(--text-gray);">${dateStr} ${timeStr}</span>
+                        </div>
+                        <div style="font-size: 13px; color: var(--navy); line-height: 1.6; white-space: pre-wrap;">${ann.content}</div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // PDF Viewer with PDF.js

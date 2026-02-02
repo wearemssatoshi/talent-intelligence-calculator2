@@ -790,6 +790,35 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- ANNOUNCEMENT セクション -->
+        <div class="section-title" style="margin-top: 35px;">📢 ANNOUNCEMENT</div>
+        <div style="background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 20px;">
+            <textarea id="announcementContent" rows="3" placeholder="全スタッフへのお知らせを入力..." style="
+                width: 100%;
+                padding: 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-family: 'Inter', sans-serif;
+                font-size: 13px;
+                resize: vertical;
+                box-sizing: border-box;
+            "></textarea>
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+                <button onclick="postAnnouncement()" style="
+                    padding: 10px 24px;
+                    background: var(--navy);
+                    color: var(--white);
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                ">📤 投稿する</button>
+            </div>
+        </div>
     </main>
 
     <footer style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
@@ -1335,6 +1364,43 @@
             } catch (e) {
                 console.error('Cache clear failed:', e);
                 window.location.reload(true);
+            }
+        }
+
+        // アナウンスメント投稿
+        async function postAnnouncement() {
+            const content = document.getElementById('announcementContent').value.trim();
+            if (!content) {
+                alert('内容を入力してください');
+                return;
+            }
+
+            const url = SCRIPT_URLS[currentBase];
+            if (!url) {
+                alert('拠点が選択されていません');
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'postAnnouncement',
+                        content: content,
+                        author: '管理者'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('✅ アナウンスメントを投稿しました！');
+                    document.getElementById('announcementContent').value = '';
+                } else {
+                    alert('❌ 投稿に失敗しました: ' + (result.error || '不明なエラー'));
+                }
+            } catch (e) {
+                alert('❌ 投稿に失敗しました: ' + e.message);
             }
         }
 
