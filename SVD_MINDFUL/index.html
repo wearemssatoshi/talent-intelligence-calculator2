@@ -4083,6 +4083,13 @@
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
+
+            // Hide header/footer/nav for PDF viewer
+            const isPdf = screenId === 'screen-pdf-viewer';
+            document.querySelector('header').style.display = isPdf ? 'none' : '';
+            document.querySelector('footer').style.display = isPdf ? 'none' : '';
+            document.querySelector('nav').style.display = isPdf ? 'none' : '';
+
             document.querySelectorAll('.nav-item').forEach((n, i) => {
                 n.classList.toggle('active',
                     (screenId === 'screen-morning' && i === 0) ||
@@ -4105,6 +4112,10 @@
         async function openPdf(url) {
             const activeScreen = document.querySelector('.screen.active');
             if (activeScreen) lastScreenBeforePdf = activeScreen.id;
+
+            // Add history entry so back button closes PDF
+            history.pushState({ pdf: true }, '', '');
+
             showScreen('screen-pdf-viewer');
 
             // Reset zoom
@@ -4174,6 +4185,14 @@
             document.getElementById('pdfContainer').innerHTML = '';
             showScreen(lastScreenBeforePdf);
         }
+
+        // Handle browser back button for PDF viewer
+        window.addEventListener('popstate', function (e) {
+            const pdfViewer = document.getElementById('screen-pdf-viewer');
+            if (pdfViewer && pdfViewer.classList.contains('active')) {
+                closePdf();
+            }
+        });
 
         // Force Update - キャッシュをクリアして最新版をロード
         function forceUpdate() {
