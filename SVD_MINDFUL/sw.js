@@ -1,7 +1,7 @@
-// SVD MINDFUL Service Worker v3.5
+// SVD MINDFUL Service Worker v3.6
 // Purpose: Cache management with automatic updates
 
-const CACHE_VERSION = 'mindful-v3.5';
+const CACHE_VERSION = 'mindful-v3.6';
 const CACHE_FILES = [
     './',
     './index.html',
@@ -60,6 +60,11 @@ self.addEventListener('activate', (event) => {
 // Fetch event - Network First strategy for HTML, Cache First for assets
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
+
+    // Bypass POST requests and API calls - don't cache them
+    if (event.request.method !== 'GET' || url.hostname.includes('script.google.com') || url.hostname.includes('googleapis.com')) {
+        return;
+    }
 
     // For HTML files, always try network first
     if (event.request.destination === 'document' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname.endsWith('/')) {
