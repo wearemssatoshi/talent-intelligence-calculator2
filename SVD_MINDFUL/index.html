@@ -2181,34 +2181,27 @@
         </div>
 
         <!-- SCREEN 7: PROFILE VIEW -->
-        <!-- PDF Viewer Screen (PDF.js with pinch zoom) -->
+        <!-- PDF Viewer Screen - Minimal Design -->
         <div class="screen" id="screen-pdf-viewer"
-            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: #333; flex-direction: column;">
-            <!-- PDF Viewer Header -->
-            <div
-                style="background: var(--navy); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; position: relative; z-index: 10;">
-                <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 14px;">📖 SVD Brand
-                    Guide</div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span id="pdfPageInfo" style="font-size: 12px; color: rgba(255,255,255,0.7);">1 / 1</span>
-                    <button onclick="closePdf()"
-                        style="background: var(--gold); color: var(--navy); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer;">✕
-                        閉じる</button>
-                </div>
+            style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: rgba(0,0,0,0.95); flex-direction: column;">
+            <!-- Tap to close hint -->
+            <div onclick="closePdf()"
+                style="background: var(--navy); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                <div style="font-size: 13px; opacity: 0.8;">← タップで戻る</div>
+                <span id="pdfPageInfo" style="font-size: 12px; opacity: 0.6;"></span>
             </div>
-            <!-- PDF Canvas Container (scrollable and zoomable) -->
-            <div id="pdfContainer"
+            <!-- PDF Content -->
+            <div id="pdfContainer" onclick="event.stopPropagation()"
                 style="flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 10px;">
             </div>
-            <!-- Zoom Controls -->
-            <div
-                style="background: var(--navy); padding: 10px 16px; display: flex; justify-content: center; gap: 15px; flex-shrink: 0; position: relative; z-index: 10;">
-                <button onclick="pdfZoomOut()"
-                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; font-size: 16px; cursor: pointer;">➖</button>
+            <!-- Simple Zoom -->
+            <div style="background: var(--navy); padding: 8px; display: flex; justify-content: center; gap: 20px;">
+                <button onclick="pdfZoomOut(); event.stopPropagation();"
+                    style="background: none; color: white; border: none; font-size: 24px; cursor: pointer; padding: 8px 16px;">−</button>
                 <span id="pdfZoomLevel"
                     style="color: white; font-size: 14px; display: flex; align-items: center;">100%</span>
-                <button onclick="pdfZoomIn()"
-                    style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; font-size: 16px; cursor: pointer;">➕</button>
+                <button onclick="pdfZoomIn(); event.stopPropagation();"
+                    style="background: none; color: white; border: none; font-size: 24px; cursor: pointer; padding: 8px 16px;">+</button>
             </div>
         </div>
 
