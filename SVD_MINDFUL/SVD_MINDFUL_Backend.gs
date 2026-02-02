@@ -22,6 +22,11 @@ function doPost(e) {
       return handleTransferUser(data);
     }
     
+    // ============ アナウンスメント投稿 ============
+    if (data.action === 'postAnnouncement') {
+      return postAnnouncement(data.content, data.author);
+    }
+    
     // MINDFUL_Logシートを取得または作成
     let sheet = ss.getSheetByName('MINDFUL_Log');
     if (!sheet) {
@@ -265,6 +270,11 @@ function doGet(e) {
       };
       
       return askSatoshiAI(question, userContext);
+    }
+    
+    // ============ アナウンスメント取得 ============
+    if (action === 'announcements') {
+      return getAnnouncements();
     }
     
     // デフォルト: ダッシュボード用データ取得
@@ -1165,6 +1175,96 @@ function getTokenRanking(period, base) {
       success: false,
       error: error.message,
       ranking: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ============ アナウンスメント機能 ============
+
+/**
+ * アナウンスメントシートを取得または作成
+ */
+function getAnnouncementsSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName('MINDFUL_Announcements');
+  if (!sheet) {
+    sheet = ss.insertSheet('MINDFUL_Announcements');
+    sheet.getRange(1, 1, 1, 4).setValues([['ID', 'Date', 'Author', 'Content']]);
+    sheet.getRange(1, 1, 1, 4).setFontWeight('bold');
+  }
+  return sheet;
+}
+
+/**
+ * アナウンスメント一覧を取得
+ */
+function getAnnouncements() {
+  try {
+    const sheet = getAnnouncementsSheet();
+    const data = sheet.getDataRange().getValues();
+    
+    if (data.length <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: true,
+        announcements: []
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const announcements = [];
+    for (let i = 1; i < data.length; i++) {
+      announcements.push({
+        id: data[i][0] || '',
+        date: data[i][1] || '',
+        author: data[i][2] || '',
+        content: data[i][3] || ''
+      });
+    }
+    
+    // 新しい順にソート
+    announcements.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      announcements: announcements
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false,
+      error: error.message,
+      announcements: []
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * アナウンスメントを投稿
+ */
+function postAnnouncement(content, author) {
+  try {
+    if (!content) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false,
+        error: '内容を入力してください'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const sheet = getAnnouncementsSheet();
+    const id = 'ann_' + Date.now();
+    const now = new Date().toISOString();
+    
+    sheet.appendRow([id, now, author || '管理者', content]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: true,
+      message: 'アナウンスメントを投稿しました',
+      id: id
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
