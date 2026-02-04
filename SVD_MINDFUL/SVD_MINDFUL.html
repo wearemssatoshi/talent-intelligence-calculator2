@@ -4294,24 +4294,15 @@
             try {
                 // 相談者プロファイルと履歴を取得
                 const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
-                const chatHistory = JSON.parse(localStorage.getItem('mindful_chat_history') || '[]');
 
-                // 履歴を文字列に変換（最新5件）
-                const historyText = chatHistory.slice(-5).map(h =>
-                    `${h.date}: ${h.topic}について相談`
-                ).join('\n');
-
-                // クエリパラメータを構築
+                // クエリパラメータを構築（OpenClaw SATOSHI AI）
                 const params = new URLSearchParams({
-                    action: 'chat',
-                    q: question,
-                    name: profile.name || '',
-                    base: profile.base || '',
-                    role: profile.role || '',
-                    history: historyText
+                    action: 'askSatoshi',
+                    message: question,
+                    userId: profile.name || 'anonymous'
                 });
 
-                // GAS経由でGemini APIにリクエスト
+                // GAS経由でOpenClaw SATOSHI AIにリクエスト
                 const response = await fetch(AI_API_URL + '?' + params.toString(), {
                     method: 'GET',
                     mode: 'cors'
@@ -4320,7 +4311,7 @@
                 let aiResponse;
                 if (response.ok) {
                     const data = await response.json();
-                    aiResponse = data.response || generateLocalResponse(question);
+                    aiResponse = data.reply || generateLocalResponse(question);
                 } else {
                     aiResponse = generateLocalResponse(question);
                 }
