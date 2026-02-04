@@ -1367,7 +1367,7 @@
             }
         }
 
-        // アナウンスメント投稿
+        // アナウンスメント投稿（CORS回避のためGETリクエストを使用）
         async function postAnnouncement() {
             const content = document.getElementById('announcementContent').value.trim();
             if (!content) {
@@ -1382,17 +1382,16 @@
             }
 
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'postAnnouncement',
-                        content: content,
-                        author: '管理者'
-                    })
+                // CORS回避: GETリクエストでURLパラメータとして送信
+                const params = new URLSearchParams({
+                    action: 'postAnnouncement',
+                    content: content,
+                    author: '管理者'
                 });
 
+                const response = await fetch(`${url}?${params.toString()}`);
                 const result = await response.json();
+
                 if (result.success) {
                     alert('✅ アナウンスメントを投稿しました！');
                     document.getElementById('announcementContent').value = '';

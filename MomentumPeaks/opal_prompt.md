@@ -13,7 +13,7 @@ Google Opal（Google LabsのノーコードAIツール）でアプリを作成�
 
 【機能要件】
 1. ユーザーに以下の情報を順番に聞いてください：
-   - 拠点（選択肢:MOIWAYMA_JW,MOIWAYAMA_JW_TO,TV_TOWER_GA,TV_TOWER_BG,TV_TOWER_BAR,OKURAYAMA_NP,OKURAYAMA_Ce,OKURAYAMA_Rp,AKARENGA_BQ,AKARENGA_RYBから選ばせる）
+   - 拠点（選択肢: JW, GA, NP, MOIWA, TV_TOWER, AKARENGA_BQ, AKARENGA_RYBから選ばせる）
    - 日付（デフォルトは今日）
    - 実績客数（数字のみ）
    - 実績売上（数字のみ）

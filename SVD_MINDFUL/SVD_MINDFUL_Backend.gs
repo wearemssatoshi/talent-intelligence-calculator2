@@ -162,6 +162,25 @@ function doGet(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
+    // ============ SATOSHI AI (OpenClaw) 連携 ============
+    if (action === 'askSatoshi') {
+      const message = e?.parameter?.message || '';
+      const userId = e?.parameter?.userId || 'anonymous';
+      
+      if (!message) {
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: false, 
+          error: 'メッセージを入力してください' 
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      const reply = callOpenClawGateway(message, userId);
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: true, 
+        reply: reply 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
     // ============ PIN認証: ユーザー登録 ============
     if (action === 'register') {
       const name = e?.parameter?.name || '';
@@ -270,6 +289,13 @@ function doGet(e) {
       };
       
       return askSatoshiAI(question, userContext);
+    }
+    
+    // ============ アナウンスメント投稿（GET経由：CORS回避） ============
+    if (action === 'postAnnouncement') {
+      const content = e?.parameter?.content || '';
+      const author = e?.parameter?.author || '管理者';
+      return postAnnouncement(content, author);
     }
     
     // ============ アナウンスメント取得 ============
@@ -1111,12 +1137,14 @@ function getTokenRanking(period, base) {
         break;
     }
     
-    // 拠点名のマッピング
+    // 拠点名のマッピング（ダッシュボードからの値 → スプレッドシートに保存されている値）
+    // フロントエンドのbaseMap: 'moiwayama' → 'moiwa', 'tvtower' → 'teletou'
+    // スプレッドシートには英語名(moiwayama, okurayama, tvtower, akarenga)が保存されている
     const baseMap = {
-      'okurayama': '大倉山',
-      'moiwa': '藻岩山',
-      'teletou': 'テレビ塔',
-      'akarenga': '赤れんが'
+      'okurayama': 'okurayama',
+      'moiwa': 'moiwayama',
+      'teletou': 'tvtower',
+      'akarenga': 'akarenga'
     };
     
     // ユーザー別にToken Earnedを集計
@@ -1268,3 +1296,44 @@ function postAnnouncement(content, author) {
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+// ============ SATOSHI AI (OpenClaw Gateway) 連携 ============
+
+/**
+ * OpenClaw Gateway経由でSATOSHI AIに質問を送信
+ * @param {string} message - 質問メッセージ
+ * @param {string} userId - ユーザーID
+ * @return {string} AIからの回答
+ */
+function callOpenClawGateway(message, userId) {
+  const GATEWAY_URL = 'https://sat-macbook-pro.tail243dad.ts.net/v1/chat/completions';
+  const TOKEN = PropertiesService.getScriptProperties().getProperty('OPENCLAW_TOKEN');
+  
+  if (!TOKEN) {
+    return 'OPENCLAW_TOKENが設定されていません。スクリプトプロパティを確認してください。';
+  }
+  
+  const options = {
+    method: 'post',
+    headers: {
+      'Authorization': 'Bearer ' + TOKEN,
+      'Content-Type': 'application/json'
+    },
+    payload: JSON.stringify({
+      model: 'openclaw:main',
+      messages: [{ role: 'user', content: message }],
+      user: userId
+    }),
+    muteHttpExceptions: true
+  };
+  
+  try {
+    const response = UrlFetchApp.fetch(GATEWAY_URL, options);
+    const data = JSON.parse(response.getContentText());
+    return data.choices[0].message.content || '回答を取得できませんでした';
+  } catch (e) {
+    console.error('OpenClaw Error:', e);
+    return 'SATOSHIに接続できませんでした。後でお試しください。';
+  }
+}
+
