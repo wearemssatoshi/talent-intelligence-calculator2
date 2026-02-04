@@ -1,0 +1,12 @@
+{
+    "graph": {
+        "hideUnresolved": false,
+        "showOrphans": true
+    },
+    "dailyNotes": {
+        "enabled": true,
+        "folder": "00_INBOX",
+        "templateLocation": "Templates/Daily.md",
+        "format": "YYYY-MM-DD"
+    }
+}

@@ -1,0 +1,264 @@
+{
+  "main": {
+    "id": "8785f68c327a8e40",
+    "type": "split",
+    "children": [
+      {
+        "id": "53bd92477c7e8742",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "023198e32c0bd616",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "01_PROJECTS/ビアガーデン革命・第一章.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ビアガーデン革命・第一章"
+            }
+          },
+          {
+            "id": "6f7a2562f82f3543",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          },
+          {
+            "id": "27a4e19827d96e25",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "- [ ] 月次報告を作成する 🔁 every month on the 1st.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "- [ ] 月次報告を作成する 🔁 every month on the 1st"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "c0f378e344ccd491",
+    "type": "split",
+    "children": [
+      {
+        "id": "675d959c09b7caeb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b6307b393177b600",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "02584ba6d2ffde8e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "file:",
+                "matchingCase": true,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabeticalReverse"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "821305f8e69e6fd5",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "1951be84874c90bd",
+    "type": "split",
+    "children": [
+      {
+        "id": "dca723d266aba519",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bb4aeae55db8d753",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "03_RESOURCES/Obsidian最高性能プラグイン設定ガイド.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Obsidian最高性能プラグイン設定ガイド"
+            }
+          },
+          {
+            "id": "72738f70d107ec32",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "03_RESOURCES/Obsidian最高性能プラグイン設定ガイド.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Obsidian最高性能プラグイン設定ガイド"
+            }
+          },
+          {
+            "id": "d1ab6a3ae9ec2493",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "33d54d309886e7dd",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "8695511bc532005e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "03_RESOURCES/Obsidian最高性能プラグイン設定ガイド.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Obsidian最高性能プラグイン設定ガイド"
+            }
+          },
+          {
+            "id": "9da20089140c8031",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false,
+      "obsidian-kanban:Create new board": false
+    }
+  },
+  "active": "b6307b393177b600",
+  "lastOpenFiles": [
+    "01_PROJECTS/MINDFULフロントエンドリファレンス.md",
+    "01_PROJECTS/MINDFUL開発リファレンス.md",
+    "Untitled 3.base",
+    "Untitled Kanban 2.md",
+    "SAPPORO VIEWTIFUL DINING.md",
+    "Untitled Kanban.md",
+    "Untitled 1.base",
+    "Untitled 2.base",
+    "Untitled.base",
+    "01_PROJECTS/note記事一覧.md",
+    "01_PROJECTS/ビアガーデン革命・第一章.md",
+    "01_PROJECTS/SVD MINDFUL.md",
+    "Untitled Kanban 1.md",
+    "My Tasks.md",
+    "2026-02-04.md",
+    "- [ ] 月次報告を作成する 🔁 every month on the 1st.md",
+    "01_PROJECTS/SVD.md",
+    "03_RESOURCES/Obsidian最高性能プラグイン設定ガイド.md",
+    "SVD戦略MOC.md",
+    "03_RESOURCES/Obsidian活用ガイド.md",
+    "01_PROJECTS/ビアガーデン革命・第二章.md",
+    "01_PROJECTS/note - デザインの四原則をレストランサービスに.md",
+    "00_INBOX/2026-02-04.md",
+    "01_PROJECTS/note - 中長期での戦略ストーリーを夢想する.md",
+    "01_PROJECTS/note - 何かを始めるのに遅いということはない.md",
+    "01_PROJECTS/note - レストランは儲からない.md",
+    "01_PROJECTS/note - レストランには幸せしかない.md",
+    "01_PROJECTS/note - やらないことを決める.md",
+    "01_PROJECTS/note - サービスに価格をつけることの重要性.md",
+    "何かを始めるのに遅いということはない.md",
+    "Untitled.canvas",
+    "Untitled 1.canvas",
+    "Untitled 2.canvas",
+    "Templates",
+    "04_ARCHIVE",
+    "03_RESOURCES",
+    "02_AREAS",
+    "01_PROJECTS",
+    "00_INBOX"
+  ]
+}
