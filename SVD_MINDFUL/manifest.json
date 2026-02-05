@@ -1,0 +1,22 @@
+{
+    "name": "SVD MINDFUL",
+    "short_name": "MINDFUL",
+    "description": "Daily Health & Quest Tracker - IGNITION GET YOUR GREEN LIGHT",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#0D1117",
+    "theme_color": "#1F6B4A",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "logo/SVD_icon_square.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "logo/SVD_icon_square.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
