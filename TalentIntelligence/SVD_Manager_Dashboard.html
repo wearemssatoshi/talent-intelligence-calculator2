@@ -1188,6 +1188,12 @@
                 </div>
 
                 <div class="staff-modal-section">
+                    <h4>🏢 所属店舗（クリックで変更）</h4>
+                    <div id="modal-affiliation-chips" class="role-chips-edit">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
                     <h4>🏷️ ロール（クリックで選択）</h4>
                     <div id="modal-role-chips" class="role-chips-edit">
                     </div>
@@ -1286,6 +1292,19 @@
             'hotesse': { emoji: '👔', label: 'Hôtesse', color: '#795548' }
         };
 
+        // 店舗（所属）定数
+        const AFFILIATION_LABELS = {
+            'JW': { emoji: '💎', label: 'JEWELS', color: '#1E3A5F' },
+            'NP': { emoji: '🏔️', label: 'ヌーベルプース', color: '#2E7D32' },
+            'BQ': { emoji: '🍖', label: 'BQ', color: '#8B4513' },
+            'GA': { emoji: '🌿', label: 'GARDEN', color: '#4CAF50' },
+            'BG': { emoji: '🍺', label: 'ビアガーデン', color: '#FF9800' },
+            'RYB': { emoji: '🐷', label: 'RYB', color: '#E91E63' },
+            'RP': { emoji: '🎪', label: 'RP', color: '#9C27B0' },
+            'CL': { emoji: '🦞', label: 'CL', color: '#F44336' },
+            'POP': { emoji: '🎉', label: 'POP UP', color: '#00BCD4' }
+        };
+
         function formatRoleChips(rolesStr) {
             if (!rolesStr || typeof rolesStr !== 'string') return '';
             if (rolesStr.trim() === '') return '';
@@ -1355,6 +1374,10 @@
                 <div><strong>更新日:</strong> ${staff.timestamp ? new Date(staff.timestamp).toLocaleDateString('ja-JP') : '-'}</div>
             `;
 
+            // Affiliation Chips (Editable - Single Select)
+            const affiliationContainer = document.getElementById('modal-affiliation-chips');
+            renderAffiliationChipsEditable(affiliationContainer, staff.affiliation || '');
+
             // Role Chips (Editable)
             const rolesContainer = document.getElementById('modal-role-chips');
             selectedRolesInModal = (staff.roles && typeof staff.roles === 'string') ? staff.roles.split(',').map(r => r.trim()).filter(r => r) : [];
@@ -1386,6 +1409,29 @@
 
             // Show modal
             document.getElementById('staff-modal').style.display = 'block';
+        }
+
+        // Selected affiliation in modal (single select)
+        let selectedAffiliationInModal = '';
+
+        function renderAffiliationChipsEditable(container, currentAffiliation) {
+            selectedAffiliationInModal = currentAffiliation;
+            const allAffiliations = Object.keys(AFFILIATION_LABELS);
+            container.innerHTML = allAffiliations.map(affKey => {
+                const info = AFFILIATION_LABELS[affKey];
+                const isSelected = selectedAffiliationInModal === affKey;
+                return `<button type="button" class="role-chip-btn ${isSelected ? 'selected' : ''}" 
+                    onclick="selectAffiliationInModal('${affKey}')"
+                    style="${isSelected ? `background: ${info.color}; color: white; border-color: ${info.color};` : ''}">
+                    ${info.emoji} ${info.label}
+                </button>`;
+            }).join('');
+        }
+
+        function selectAffiliationInModal(affKey) {
+            selectedAffiliationInModal = affKey;
+            const container = document.getElementById('modal-affiliation-chips');
+            renderAffiliationChipsEditable(container, affKey);
         }
 
         function renderRoleChipsEditable(container) {
@@ -1434,6 +1480,7 @@
                 formData.append('action', 'update');
                 formData.append('targetName', currentEditStaff.name);
                 formData.append('targetAffiliation', currentEditStaff.affiliation || '');
+                formData.append('newAffiliation', selectedAffiliationInModal); // 新しい所属
                 formData.append('roles', selectedRolesInModal.join(','));
                 formData.append('qualifications', document.getElementById('modal-qualifications').value);
 
@@ -1446,6 +1493,7 @@
 
                 if (result.result === 'success') {
                     // Update local data
+                    currentEditStaff.affiliation = selectedAffiliationInModal; // 所属更新
                     currentEditStaff.roles = selectedRolesInModal.join(',');
                     currentEditStaff.qualifications = document.getElementById('modal-qualifications').value;
 
