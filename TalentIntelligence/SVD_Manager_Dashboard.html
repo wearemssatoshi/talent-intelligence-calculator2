@@ -1357,7 +1357,7 @@
 
             // Role Chips (Editable)
             const rolesContainer = document.getElementById('modal-role-chips');
-            selectedRolesInModal = staff.roles ? staff.roles.split(',').map(r => r.trim()).filter(r => r) : [];
+            selectedRolesInModal = (staff.roles && typeof staff.roles === 'string') ? staff.roles.split(',').map(r => r.trim()).filter(r => r) : [];
             renderRoleChipsEditable(rolesContainer);
 
             // Skill Matrix
