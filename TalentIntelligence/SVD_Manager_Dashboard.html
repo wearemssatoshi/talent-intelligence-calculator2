@@ -795,6 +795,196 @@
                 gap: 1rem;
             }
         }
+
+        /* === STAFF DETAIL MODAL STYLES === */
+        .staff-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .staff-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, -45%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .staff-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .staff-modal-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .staff-modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--light-text-color);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .staff-modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .staff-modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .staff-modal-section h4 {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Editable Role Chips */
+        .role-chips-edit {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .role-chip-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .role-chip-btn:hover {
+            border-color: var(--secondary-color);
+        }
+
+        .role-chip-btn.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .staff-modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .skill-score-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .skill-category-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .skill-category-box h5 {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .skill-scores-row {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .skill-score-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 
@@ -812,8 +1002,7 @@
             <h2>1. Load Staff Data</h2>
             <p>Google Sheetsから最新のスタッフデータを読み込みます。</p>
             <div style="display: flex; gap: 1rem; align-items: center;">
-                <input type="text" id="script-url" placeholder="Enter Google Apps Script Web App URL"
-                    value="https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec"
+                <input type="text" id="script-url" placeholder="GAS Web App URLを入力してください" value=""
                     style="flex: 1; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px;">
                 <button id="load-data-btn" class="btn">Load Data</button>
             </div>
@@ -982,6 +1171,47 @@
             </div>
         </div>
 
+        <!-- Staff Detail Modal -->
+        <div id="staff-modal" class="staff-modal-overlay" onclick="if(event.target === this) closeStaffModal()">
+            <div class="staff-modal-content">
+                <div class="staff-modal-header">
+                    <h2 id="modal-staff-name">スタッフ詳細</h2>
+                    <button class="staff-modal-close" onclick="closeStaffModal()">&times;</button>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>基本情報</h4>
+                    <div id="modal-basic-info"
+                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>🏷️ ロール（クリックで選択）</h4>
+                    <div id="modal-role-chips" class="role-chips-edit">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>📊 スキルマトリクス</h4>
+                    <div id="modal-skill-matrix" class="skill-score-grid">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>📜 資格</h4>
+                    <textarea id="modal-qualifications" rows="2"
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; resize: vertical;"
+                        placeholder="資格を入力..."></textarea>
+                </div>
+
+                <div class="staff-modal-actions">
+                    <button class="btn-cancel" onclick="closeStaffModal()">キャンセル</button>
+                    <button class="btn-save" onclick="saveStaffUpdate()">💾 保存</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer
             style="text-align: center; margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-color);">
@@ -990,7 +1220,7 @@
                 SAPPORO VIEWTIFUL DINING — ORIGIN
             </p>
             <p style="font-size: 0.75rem; color: var(--light-text-color); margin: 0.5rem 0 0 0;">
-                © 2024-2025 SVD. All rights reserved.
+                © 2025-2026 SVD. All rights reserved.
             </p>
         </footer>
 
@@ -1040,6 +1270,198 @@
             "Iron": { best: ["Crystal", "Striker"], caution: ["Flare", "Rogue"] },
             "Bliss": { best: ["Emperor", "Iron"], caution: ["Rogue", "Night Shift"] }
         };
+
+        // --- ROLE DISPLAY HELPERS (v2.1) ---
+        const ROLE_LABELS = {
+            'director': { emoji: '①', label: 'Directeur', color: '#1E3A5F' },
+            'maitre': { emoji: '②', label: "Maître d'hôtel", color: '#2E5A8F' },
+            'chef-de-rang-1': { emoji: '③', label: 'Chef de Rang 1', color: '#3E7ABF' },
+            'chef-de-rang-2': { emoji: '④', label: 'Chef de Rang 2', color: '#4E9AEF' },
+            'commis': { emoji: '⑤', label: 'Commis', color: '#6EBAFF' },
+            'sommelier': { emoji: '🍷', label: 'Sommelier', color: '#8B0000' },
+            'barman': { emoji: '🍸', label: 'Barman', color: '#4A0080' },
+            'cuisinier': { emoji: '👨‍🍳', label: 'Cuisinier', color: '#2E7D32' },
+            'patissier': { emoji: '🍰', label: 'Pâtissier', color: '#E91E63' },
+            'hotesse': { emoji: '👔', label: 'Hôtesse', color: '#795548' }
+        };
+
+        function formatRoleChips(rolesStr) {
+            if (!rolesStr || rolesStr.trim() === '') return '';
+            const roles = rolesStr.split(',').map(r => r.trim()).filter(r => r);
+            if (roles.length === 0) return '';
+
+            const chips = roles.map(role => {
+                const info = ROLE_LABELS[role] || { emoji: '🏷️', label: role, color: '#546E7A' };
+                return `<span style="
+                    display: inline-block;
+                    font-size: 0.7rem;
+                    background: ${info.color};
+                    color: white;
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    margin: 2px 2px 0 0;
+                ">${info.emoji} ${info.label}</span>`;
+            }).join('');
+
+            return `<div style="margin-top: 0.3rem;">${chips}</div>`;
+        }
+
+        function formatRoleChipsCompact(rolesStr) {
+            if (!rolesStr || rolesStr.trim() === '') return '';
+            const roles = rolesStr.split(',').map(r => r.trim()).filter(r => r);
+            if (roles.length === 0) return '';
+
+            const chips = roles.slice(0, 3).map(role => {
+                const info = ROLE_LABELS[role] || { emoji: '🏷️', label: role, color: '#546E7A' };
+                return `<span style="
+                    display: inline-block;
+                    font-size: 0.65rem;
+                    background: ${info.color};
+                    color: white;
+                    padding: 1px 5px;
+                    border-radius: 8px;
+                    margin-right: 2px;
+                ">${info.emoji}</span>`;
+            }).join('');
+
+            const extra = roles.length > 3 ? `<span style="font-size:0.65rem; color:#90A4AE;">+${roles.length - 3}</span>` : '';
+            return `<div style="margin-top: 0.2rem;">${chips}${extra}</div>`;
+        }
+
+        // --- STAFF DETAIL MODAL FUNCTIONS ---
+        let currentEditStaff = null;
+        let selectedRolesInModal = [];
+
+        function openStaffModal(staffIndex) {
+            const staff = allStaffData[staffIndex];
+            if (!staff) return;
+
+            currentEditStaff = staff;
+
+            // Header
+            document.getElementById('modal-staff-name').textContent = staff.name;
+
+            // Basic Info
+            const basicInfo = document.getElementById('modal-basic-info');
+            basicInfo.innerHTML = `
+                <div><strong>所属:</strong> ${staff.affiliation || '-'}</div>
+                <div><strong>役職:</strong> ${staff.jobTitle || '-'}</div>
+                <div><strong>タイプ:</strong> ${staff.type || '-'}</div>
+                <div><strong>ランク:</strong> ${staff.meisterRank || 'Rookie'}</div>
+                <div><strong>スコア:</strong> ${Number(staff.score).toFixed(2)}</div>
+                <div><strong>更新日:</strong> ${staff.timestamp ? new Date(staff.timestamp).toLocaleDateString('ja-JP') : '-'}</div>
+            `;
+
+            // Role Chips (Editable)
+            const rolesContainer = document.getElementById('modal-role-chips');
+            selectedRolesInModal = staff.roles ? staff.roles.split(',').map(r => r.trim()).filter(r => r) : [];
+            renderRoleChipsEditable(rolesContainer);
+
+            // Skill Matrix
+            const skillMatrix = document.getElementById('modal-skill-matrix');
+            const skillCategories = [
+                { name: 'Productive (P)', prefix: 'p', color: '#D50000' },
+                { name: 'Social (S)', prefix: 's', color: '#0D47A1' },
+                { name: 'Emotional (E)', prefix: 'e', color: '#00C853' },
+                { name: 'Logical (M)', prefix: 'm', color: '#FFAB00' }
+            ];
+            skillMatrix.innerHTML = skillCategories.map(cat => `
+                <div class="skill-category-box">
+                    <h5 style="color: ${cat.color}">${cat.name}</h5>
+                    <div class="skill-scores-row">
+                        ${[1, 2, 3, 4, 5, 6].map(i => `
+                            <span class="skill-score-badge" style="background: ${cat.color}">
+                                ${cat.prefix}${i}: ${staff[`${cat.prefix}${i}`] || 0}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Qualifications
+            document.getElementById('modal-qualifications').value = staff.qualifications || '';
+
+            // Show modal
+            document.getElementById('staff-modal').style.display = 'block';
+        }
+
+        function renderRoleChipsEditable(container) {
+            const allRoles = Object.keys(ROLE_LABELS);
+            container.innerHTML = allRoles.map(roleKey => {
+                const info = ROLE_LABELS[roleKey];
+                const isSelected = selectedRolesInModal.includes(roleKey);
+                return `<button type="button" class="role-chip-btn ${isSelected ? 'selected' : ''}" 
+                    onclick="toggleRoleInModal('${roleKey}')">
+                    ${info.emoji} ${info.label}
+                </button>`;
+            }).join('');
+        }
+
+        function toggleRoleInModal(roleKey) {
+            const idx = selectedRolesInModal.indexOf(roleKey);
+            if (idx === -1) {
+                selectedRolesInModal.push(roleKey);
+            } else {
+                selectedRolesInModal.splice(idx, 1);
+            }
+            renderRoleChipsEditable(document.getElementById('modal-role-chips'));
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staff-modal').style.display = 'none';
+            currentEditStaff = null;
+            selectedRolesInModal = [];
+        }
+
+        async function saveStaffUpdate() {
+            if (!currentEditStaff) return;
+
+            const scriptUrl = document.getElementById('script-url').value;
+            if (!scriptUrl) {
+                alert('スクリプトURLが設定されていません');
+                return;
+            }
+
+            const saveBtn = document.querySelector('.btn-save');
+            saveBtn.textContent = '保存中...';
+            saveBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'update');
+                formData.append('targetName', currentEditStaff.name);
+                formData.append('targetAffiliation', currentEditStaff.affiliation || '');
+                formData.append('roles', selectedRolesInModal.join(','));
+                formData.append('qualifications', document.getElementById('modal-qualifications').value);
+
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    // Update local data
+                    currentEditStaff.roles = selectedRolesInModal.join(',');
+                    currentEditStaff.qualifications = document.getElementById('modal-qualifications').value;
+
+                    // Re-render member selection
+                    renderMemberSelection();
+
+                    closeStaffModal();
+                    alert('✅ データを更新しました！');
+                } else {
+                    alert('❌ エラー: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('❌ 保存に失敗しました: ' + error.message);
+            } finally {
+                saveBtn.textContent = '💾 保存';
+                saveBtn.disabled = false;
+            }
+        }
 
         // --- APP LOGIC ---
         let allStaffData = [];
@@ -1117,9 +1539,28 @@
                         <p>${staff.affiliation} / ${staff.jobTitle || '-'} | ${typeName}</p>
                         <p>Score: ${Number(staff.score).toFixed(2)}</p>
                         <p style="font-size:0.8rem; color:#78909C; margin-top:0.2rem;">${staff.qualifications || '-'}</p>
+                        ${formatRoleChips(staff.roles)}
                     </div>
-                    <div class="add-icon" style="font-size: 1.5rem; color: var(--border-color);">+</div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="detail-btn" data-index="${index}" style="
+                            background: #f1f5f9; 
+                            border: 1px solid #e2e8f0; 
+                            border-radius: 6px; 
+                            padding: 0.4rem 0.6rem; 
+                            font-size: 0.75rem; 
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        ">📝 詳細</button>
+                        <div class="add-icon" style="font-size: 1.5rem; color: var(--border-color);">+</div>
+                    </div>
                 `;
+
+                // Detail button click (stops propagation to prevent toggle)
+                card.querySelector('.detail-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openStaffModal(index);
+                });
+
                 container.appendChild(card);
             });
         }
@@ -1194,6 +1635,7 @@
                         <div>
                             <div style="font-weight:bold; font-size:1.1rem;">${member.name}</div>
                             <div style="font-size:0.8rem; color:#90A4AE;">${rank}</div>
+                            ${formatRoleChipsCompact(member.roles)}
                         </div>
                     </div>
                     <div style="font-family: 'Teko', sans-serif; font-size: 1.5rem; font-weight:bold; color:var(--primary-color);">

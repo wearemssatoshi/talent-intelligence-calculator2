@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVD Talent Intelligence Calculator v8.0</title>
+    <title>SVD Talent Intelligence Calculator v8.1</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -671,6 +671,87 @@
                 /* 1 column on mobile */
             }
         }
+
+        /* Role Chips Styles */
+        .role-section {
+            margin-top: 1.5rem;
+            border-top: 1px solid #eee;
+            padding-top: 1.5rem;
+        }
+
+        .role-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .role-section-title {
+            font-weight: 500;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .role-count-badge {
+            font-size: 0.85rem;
+            background: #E0E0E0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: var(--light-text-color);
+        }
+
+        .role-count-badge.active {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .role-chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .role-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .role-chip:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .role-chip.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(201, 169, 98, 0.3);
+        }
+
+        .role-chip input {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .role-chips-container {
+                gap: 0.4rem;
+            }
+
+            .role-chip {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 
@@ -679,7 +760,7 @@
         <header>
             <img src="../logo/SVD_logo_Black.png" alt="SVD Logo" class="header-logo">
             <h1>Talent Intelligence</h1>
-            <p>The Coaching Model v8.0</p>
+            <p>The Coaching Model v8.1</p>
         </header>
         <div class="card">
             <div class="user-info-grid">
@@ -800,6 +881,62 @@
                 </div>
             </div>
         </div>
+
+        <!-- Role Selection Section -->
+        <div class="card">
+            <div class="role-section" style="margin-top: 0; border-top: none; padding-top: 0;">
+                <div class="role-section-header">
+                    <span class="role-section-title">🏅 ロール / Rôles <span
+                            style="font-weight: 400; color: var(--light-text-color);">(複数選択可)</span></span>
+                    <span id="role-count-badge" class="role-count-badge">0 selected</span>
+                </div>
+                <div id="role-chips-container" class="role-chips-container">
+                    <!-- Management Hierarchy -->
+                    <label class="role-chip" data-role="director">
+                        <input type="checkbox" name="roles" value="director">
+                        <span>① Directeur / 拠点責任者</span>
+                    </label>
+                    <label class="role-chip" data-role="maitre">
+                        <input type="checkbox" name="roles" value="maitre">
+                        <span>② Maître d'hôtel / 店舗責任者</span>
+                    </label>
+                    <label class="role-chip" data-role="chef-de-rang-1">
+                        <input type="checkbox" name="roles" value="chef-de-rang-1">
+                        <span>③ Chef de Rang 1 / 時間帯責任者</span>
+                    </label>
+                    <label class="role-chip" data-role="chef-de-rang-2">
+                        <input type="checkbox" name="roles" value="chef-de-rang-2">
+                        <span>④ Chef de Rang 2 / エリア責任者</span>
+                    </label>
+                    <label class="role-chip" data-role="commis">
+                        <input type="checkbox" name="roles" value="commis">
+                        <span>⑤ Commis de Rang / 担当</span>
+                    </label>
+                    <!-- Specialty Roles -->
+                    <label class="role-chip" data-role="sommelier">
+                        <input type="checkbox" name="roles" value="sommelier">
+                        <span>🍷 Sommelier / ソムリエ</span>
+                    </label>
+                    <label class="role-chip" data-role="barman">
+                        <input type="checkbox" name="roles" value="barman">
+                        <span>🍸 Barman / バーテンダー</span>
+                    </label>
+                    <label class="role-chip" data-role="cuisinier">
+                        <input type="checkbox" name="roles" value="cuisinier">
+                        <span>👨‍🍳 Cuisinier / 調理担当</span>
+                    </label>
+                    <label class="role-chip" data-role="patissier">
+                        <input type="checkbox" name="roles" value="patissier">
+                        <span>🍰 Pâtissier / パティシエ</span>
+                    </label>
+                    <label class="role-chip" data-role="hotesse">
+                        <input type="checkbox" name="roles" value="hotesse">
+                        <span>👔 Hôtesse / レセプショニスト</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
         <div id="skill-matrix">
             <!-- Accordions will be inserted here -->
         </div>
@@ -1164,6 +1301,10 @@
                     formData.append('qualificationScore', document.getElementById('qual-score')?.textContent || '0');
                     formData.append('meisterRank', document.getElementById('meister-rank')?.textContent || 'Rookie');
 
+                    // ロールデータ (v8.1)
+                    const selectedRoles = getSelectedRoles();
+                    formData.append('roles', selectedRoles.join(','));
+
                     // 写真データ（Base64）
                     if (profilePhotoData) {
                         formData.append('photoData', profilePhotoData);
@@ -1411,6 +1552,55 @@
                 badgeEl.textContent = rank;
                 badgeEl.style.background = color;
                 badgeEl.style.color = totalPoints >= 31 ? "black" : "white";
+            }
+
+            // === ROLE CHIPS FUNCTIONALITY ===
+            function initRoles() {
+                const container = document.getElementById('role-chips-container');
+                if (!container) return;
+
+                container.addEventListener('change', function (e) {
+                    if (e.target.type === 'checkbox') {
+                        updateRoleSelection(e.target);
+                    }
+                });
+
+                // Also allow clicking on the label
+                container.addEventListener('click', function (e) {
+                    const chip = e.target.closest('.role-chip');
+                    if (chip && e.target.type !== 'checkbox') {
+                        const checkbox = chip.querySelector('input[type="checkbox"]');
+                        if (checkbox) {
+                            checkbox.checked = !checkbox.checked;
+                            updateRoleSelection(checkbox);
+                        }
+                    }
+                });
+            }
+
+            function updateRoleSelection(checkbox) {
+                const chip = checkbox.closest('.role-chip');
+                if (checkbox.checked) {
+                    chip.classList.add('selected');
+                } else {
+                    chip.classList.remove('selected');
+                }
+                updateRoleCount();
+            }
+
+            function updateRoleCount() {
+                const selected = document.querySelectorAll('input[name="roles"]:checked');
+                const badge = document.getElementById('role-count-badge');
+                if (badge) {
+                    const count = selected.length;
+                    badge.textContent = count === 0 ? '0 selected' : `${count} selected`;
+                    badge.classList.toggle('active', count > 0);
+                }
+            }
+
+            function getSelectedRoles() {
+                const selected = document.querySelectorAll('input[name="roles"]:checked');
+                return Array.from(selected).map(cb => cb.value);
             }
 
             function animateValue(obj, start, end, duration) {
@@ -2345,6 +2535,7 @@
                 populateTypeSelects();
                 initQualifications();
                 updateQualificationScore();
+                initRoles(); // v8.1: Initialize role chips
 
                 const calculateBtn = document.getElementById('calculate-btn');
 
