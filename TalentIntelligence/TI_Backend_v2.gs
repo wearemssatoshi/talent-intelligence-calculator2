@@ -235,6 +235,7 @@ function doPost(e) {
       };
       
       // 更新可能なフィールド
+      if (getParam('newAffiliation')) sheet.getRange(targetRow, COL.AFFILIATION).setValue(getParam('newAffiliation'));
       if (getParam('roles')) sheet.getRange(targetRow, COL.ROLES).setValue(getParam('roles'));
       if (getParam('jobTitle')) sheet.getRange(targetRow, COL.JOB_TITLE).setValue(getParam('jobTitle'));
       if (getParam('TypeOther')) sheet.getRange(targetRow, COL.TYPE_OTHER).setValue(getParam('TypeOther'));
