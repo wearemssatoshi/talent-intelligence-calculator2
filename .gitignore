@@ -1,3 +1,9 @@
 # Ignore environment variables file
 .env
 RYB/
+
+# Ignore embedded git repositories
+7Habits_Daily/
+TSS/
+svd_fix_temp/
+svd_mindful_clone/
