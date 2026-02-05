@@ -19,7 +19,7 @@
 // ==============================================
 const CONFIG = {
   SHEET_NAME: 'StaffData',
-  VERSION: '2.0'
+  VERSION: '2.1'
 };
 
 // ==============================================
@@ -173,7 +173,7 @@ function generateAdvice(scores) {
 }
 
 // ==============================================
-// doPost - 評価データ保存（写真含む）
+// doPost - 評価データ保存・更新
 // ==============================================
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -186,10 +186,9 @@ function doPost(e) {
     // シートがなければ作成
     if (!sheet) {
       sheet = ss.insertSheet(CONFIG.SHEET_NAME);
-      // ヘッダー設定
       const headers = [
         'Timestamp', 'Name', 'Affiliation', 'JobTitle', 'TypeSelf', 'TypeOther',
-        'TotalScore', 'Qualifications', 'QualScore', 'MeisterRank', 'PhotoData',
+        'TotalScore', 'Qualifications', 'QualScore', 'MeisterRank', 'Roles', 'PhotoData',
         'p1', 'p2', 'p3', 'p4', 'p5', 'p6',
         's1', 's2', 's3', 's4', 's5', 's6',
         'e1', 'e2', 'e3', 'e4', 'e5', 'e6',
@@ -198,10 +197,79 @@ function doPost(e) {
       sheet.appendRow(headers);
     }
     
-    // Helper to get param
     const getParam = (name) => e.parameter[name] || '';
+    const action = getParam('action') || 'save';
     
-    // Build row data
+    // --- ACTION: UPDATE (既存データ更新) ---
+    if (action === 'update') {
+      const targetName = getParam('targetName');
+      const targetAffiliation = getParam('targetAffiliation');
+      
+      if (!targetName) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ result: 'error', error: 'targetName is required for update' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // 行を検索
+      const rows = sheet.getDataRange().getValues();
+      let targetRow = -1;
+      for (let i = rows.length - 1; i >= 1; i--) {
+        if (rows[i][1] === targetName && (targetAffiliation === '' || rows[i][2] === targetAffiliation)) {
+          targetRow = i + 1; // 1-indexed
+          break;
+        }
+      }
+      
+      if (targetRow === -1) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ result: 'error', error: 'Staff not found: ' + targetName }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // 部分更新: 指定されたフィールドのみ更新
+      const COL = {
+        TIMESTAMP: 1, NAME: 2, AFFILIATION: 3, JOB_TITLE: 4, TYPE_SELF: 5, TYPE_OTHER: 6,
+        TOTAL_SCORE: 7, QUALIFICATIONS: 8, QUAL_SCORE: 9, MEISTER_RANK: 10, ROLES: 11, PHOTO_DATA: 12,
+        SKILLS_START: 13
+      };
+      
+      // 更新可能なフィールド
+      if (getParam('roles')) sheet.getRange(targetRow, COL.ROLES).setValue(getParam('roles'));
+      if (getParam('jobTitle')) sheet.getRange(targetRow, COL.JOB_TITLE).setValue(getParam('jobTitle'));
+      if (getParam('TypeOther')) sheet.getRange(targetRow, COL.TYPE_OTHER).setValue(getParam('TypeOther'));
+      if (getParam('meisterRank')) sheet.getRange(targetRow, COL.MEISTER_RANK).setValue(getParam('meisterRank'));
+      if (getParam('qualifications')) sheet.getRange(targetRow, COL.QUALIFICATIONS).setValue(getParam('qualifications'));
+      
+      // スキルスコア更新
+      const skillParams = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6','e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
+      skillParams.forEach((skill, idx) => {
+        if (getParam(skill)) {
+          sheet.getRange(targetRow, COL.SKILLS_START + idx).setValue(getParam(skill));
+        }
+      });
+      
+      // TotalScore再計算（スキルが更新された場合）
+      if (getParam('totalScore')) {
+        sheet.getRange(targetRow, COL.TOTAL_SCORE).setValue(getParam('totalScore'));
+      }
+      
+      // タイムスタンプ更新
+      sheet.getRange(targetRow, COL.TIMESTAMP).setValue(new Date());
+      
+      SpreadsheetApp.flush();
+      
+      return ContentService
+        .createTextOutput(JSON.stringify({ 
+          result: 'success', 
+          message: 'データを更新しました: ' + targetName,
+          updatedRow: targetRow,
+          version: CONFIG.VERSION
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // --- ACTION: SAVE (新規追加 - 既存動作) ---
     const nextRow = [];
     nextRow.push(new Date()); // Timestamp
     nextRow.push(getParam('user-name')); // Name
@@ -213,6 +281,7 @@ function doPost(e) {
     nextRow.push(getParam('qualifications')); // Qualifications
     nextRow.push(getParam('qualificationScore')); // QualScore
     nextRow.push(getParam('meisterRank')); // MeisterRank
+    nextRow.push(getParam('roles')); // Roles (v2.1: comma-separated)
     nextRow.push(getParam('photoData')); // PhotoData (Base64)
     
     // Skill Matrix Scores (p1-m6)
@@ -257,6 +326,7 @@ function doPost(e) {
   }
 }
 
+
 // ==============================================
 // doGet - データ取得 (action: list, search, history, advice)
 // ==============================================
@@ -286,8 +356,8 @@ function doGet(e) {
     const COL = {
       TIMESTAMP: 0, NAME: 1, AFFILIATION: 2, JOB_TITLE: 3, 
       TYPE_SELF: 4, TYPE_OTHER: 5, TOTAL_SCORE: 6, 
-      QUALIFICATIONS: 7, QUAL_SCORE: 8, MEISTER_RANK: 9, PHOTO_DATA: -1,
-      SKILLS_START: 10, SKILLS_END: 33
+      QUALIFICATIONS: 7, QUAL_SCORE: 8, MEISTER_RANK: 9, ROLES: 10, PHOTO_DATA: 11,
+      SKILLS_START: 12, SKILLS_END: 35
     };
     
     switch (action) {
@@ -328,6 +398,7 @@ function doGet(e) {
               Qualifications: row[COL.QUALIFICATIONS],
               QualScore: row[COL.QUAL_SCORE],
               MeisterRank: row[COL.MEISTER_RANK],
+              Roles: row[COL.ROLES] || '',
               PhotoData: COL.PHOTO_DATA >= 0 ? (row[COL.PHOTO_DATA] || '') : ''
             };
             
@@ -372,6 +443,7 @@ function doGet(e) {
             score: row[COL.TOTAL_SCORE],
             qualifications: row[COL.QUALIFICATIONS],
             meisterRank: row[COL.MEISTER_RANK],
+            roles: row[COL.ROLES] || '',
             photoData: COL.PHOTO_DATA >= 0 ? (row[COL.PHOTO_DATA] || '') : '',
             detailedScores: row.slice(COL.SKILLS_START, COL.SKILLS_END + 1)
           });
