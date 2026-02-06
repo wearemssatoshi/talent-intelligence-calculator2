@@ -804,19 +804,31 @@
                 resize: vertical;
                 box-sizing: border-box;
             "></textarea>
-            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px;">
                 <button onclick="postAnnouncement()" style="
                     padding: 10px 24px;
-                    background: var(--navy);
-                    color: var(--white);
-                    border: none;
+                    background: var(--white);
+                    color: var(--navy);
+                    border: 1px solid var(--navy);
                     border-radius: 8px;
                     font-family: 'Montserrat', sans-serif;
                     font-size: 12px;
                     font-weight: 600;
                     cursor: pointer;
                     transition: all 0.2s;
-                ">📤 投稿する</button>
+                ">📤 現在の拠点に送信</button>
+                <button onclick="postAnnouncementToAllBases()" style="
+                    padding: 10px 24px;
+                    background: var(--gold);
+                    color: var(--navy-dark);
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                ">📢 全拠点に送信</button>
             </div>
         </div>
     </main>
@@ -1400,6 +1412,55 @@
                 }
             } catch (e) {
                 alert('❌ 投稿に失敗しました: ' + e.message);
+            }
+        }
+
+        // 全拠点に一括送信
+        async function postAnnouncementToAllBases() {
+            const content = document.getElementById('announcementContent').value.trim();
+            if (!content) {
+                alert('内容を入力してください');
+                return;
+            }
+
+            const baseNames = {
+                moiwayama: '🏔️ 藻岩山',
+                okurayama: '⛷️ 大倉山',
+                tvtower: '🗼 テレビ塔',
+                akarenga: '🧱 赤れんが'
+            };
+
+            const results = { success: [], failed: [] };
+
+            for (const [base, url] of Object.entries(SCRIPT_URLS)) {
+                try {
+                    const params = new URLSearchParams({
+                        action: 'postAnnouncement',
+                        content: content,
+                        author: '管理者（全拠点）'
+                    });
+
+                    const response = await fetch(`${url}?${params.toString()}`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        results.success.push(baseNames[base] || base);
+                    } else {
+                        results.failed.push(baseNames[base] || base);
+                    }
+                } catch (e) {
+                    results.failed.push(baseNames[base] || base);
+                }
+            }
+
+            // 結果表示
+            if (results.failed.length === 0) {
+                alert(`✅ 全拠点に送信完了！\n\n${results.success.join('\n')}`);
+                document.getElementById('announcementContent').value = '';
+            } else if (results.success.length > 0) {
+                alert(`⚠️ 一部送信失敗\n\n✅ 成功: ${results.success.join(', ')}\n❌ 失敗: ${results.failed.join(', ')}`);
+            } else {
+                alert('❌ 全拠点で送信失敗しました');
             }
         }
 
