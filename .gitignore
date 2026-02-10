@@ -9,3 +9,4 @@ svd_fix_temp/
 svd_mindful_clone/
 SVD_TACTICS/
 agent-bus/
+.agent/mcp/gcp-oauth.keys.json

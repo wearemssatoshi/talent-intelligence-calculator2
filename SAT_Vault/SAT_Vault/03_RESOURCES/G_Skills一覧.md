@@ -83,15 +83,50 @@ MCP（Model Context Protocol）サーバーの構築ガイド。Phase 3（Google
 
 ---
 
+## 🔒 Phase 2: セキュリティ＆Web品質（2026-02-10 導入）
+
+### 🔒 security-review
+XSS/CSRF/SQL注入/認証/シークレット管理。Source: sickn33
+
+### 🔍 web-quality-audit / ⚡ performance / 📊 core-web-vitals / ♿ accessibility / 🔎 seo / ✅ best-practices
+Lighthouseベースの6軸品質監査。Source: addyosmani/web-quality-skills
+
+---
+
+## 🔌 Phase 3: MCP連携（2026-02-10 接続完了）
+
+### 📅 Google Calendar MCP
+OAuth2認証済み。12ツール（list/create/update/delete events、freebusy等）。
+Token: `~/.config/google-calendar-mcp/tokens.json`
+
+---
+
+## 📰 Phase 4: コンテンツ＆リサーチ（2026-02-10 導入）
+
+### 📰 daily-news-report
+プリセットURL群からのAIニュース集約。
+
+### 🔬 last30days
+Reddit + X + Web の30日間トレンドリサーチ。
+
+### ⚡ web-performance-optimization
+Core Web Vitals & ローディング速度最適化。
+
+### 🖼️ imagen
+AI画像生成スキル。
+
+---
+
 ## 📋 導入ロードマップ
 
 | Phase | 内容 | ステータス |
 |---|---|---|
 | Phase 1 | 公式9スキル | ✅ 完了 |
-| Phase 2 | security-review, SEO, Lighthouse | 🔜 次回 |
-| Phase 3 | Google Calendar MCP | 🔜 OAuth2設定要 |
-| Phase 4 | daily-news, リサーチ系 | 📋 計画中 |
+| Phase 2 | セキュリティ＆品質7スキル | ✅ 完了 |
+| Phase 3 | Google Calendar MCP | ✅ 接続完了 |
+| Phase 4 | リサーチ＆コンテンツ4スキル | ✅ 完了 |
 | Phase 5 | gas-development, shift-scheduler | 📋 計画中 |
+
 
 ---
 
