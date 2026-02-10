@@ -1,0 +1,280 @@
+{
+    "version": "1.0.0",
+    "bases": {
+        "moiwayama": {
+            "id": "MOIWAYAMA",
+            "name_ja": "藻岩山",
+            "stores": [
+                {
+                    "id": "JW",
+                    "name": "The Jewels",
+                    "segments": [
+                        "LUNCH",
+                        "DINNER"
+                    ],
+                    "base_staff": 8
+                },
+                {
+                    "id": "JW_TAKEOUT",
+                    "name": "JW TakeOut",
+                    "segments": [
+                        "ALL_DAY"
+                    ],
+                    "base_staff": 2
+                }
+            ],
+            "visitor_source": "ロープウェイ+ミニケーブル乗車人数",
+            "season_overrides": {
+                "4": {
+                    "index": 1.00,
+                    "note": "運休期間"
+                }
+            }
+        },
+        "okurayama": {
+            "id": "OKURAYAMA",
+            "name_ja": "大倉山",
+            "stores": [
+                {
+                    "id": "NP",
+                    "name": "Nouvelle Pousse Okurayama",
+                    "segments": [
+                        "LUNCH",
+                        "DINNER"
+                    ],
+                    "base_staff": 10
+                },
+                {
+                    "id": "CELESTE",
+                    "name": "CELESTÉ",
+                    "segments": [
+                        "ALL_DAY"
+                    ],
+                    "base_staff": 3
+                },
+                {
+                    "id": "PEPOS",
+                    "name": "PEPOS",
+                    "segments": [
+                        "ALL_DAY"
+                    ],
+                    "base_staff": 2
+                }
+            ],
+            "visitor_source": "ジャンプ場入場者数",
+            "season_overrides": {}
+        },
+        "tv_tower": {
+            "id": "TV_TOWER",
+            "name_ja": "さっぽろテレビ塔",
+            "stores": [
+                {
+                    "id": "GA",
+                    "name": "The Garden Sapporo Hokkaido Grille",
+                    "segments": [
+                        "LUNCH",
+                        "DINNER"
+                    ],
+                    "base_staff": 12
+                },
+                {
+                    "id": "GA_WINEBAR",
+                    "name": "GA Wine Bar",
+                    "segments": [
+                        "NIGHT"
+                    ],
+                    "base_staff": 3
+                },
+                {
+                    "id": "GA_BANQUET",
+                    "name": "GA Banquet",
+                    "segments": [
+                        "EVENT"
+                    ],
+                    "base_staff": 5
+                },
+                {
+                    "id": "BG",
+                    "name": "Beer Garden",
+                    "segments": [
+                        "SUMMER"
+                    ],
+                    "base_staff": 15
+                }
+            ],
+            "visitor_source": "展望台入場者数",
+            "season_overrides": {}
+        },
+        "akarenga": {
+            "id": "AKARENGA",
+            "name_ja": "赤れんがテラス",
+            "stores": [
+                {
+                    "id": "BQ",
+                    "name": "La Brique Sapporo Akarenga Terrace",
+                    "segments": [
+                        "LUNCH",
+                        "DINNER"
+                    ],
+                    "base_staff": 8
+                },
+                {
+                    "id": "RYB",
+                    "name": "Rusutsu Yotei Tonkatsu Terrace by BQ",
+                    "segments": [
+                        "LUNCH",
+                        "DINNER"
+                    ],
+                    "base_staff": 6
+                }
+            ],
+            "visitor_source": "(理論整理中)",
+            "season_overrides": {}
+        }
+    },
+    "sekki_coefficients": {
+        "大雪": {
+            "rank": 1,
+            "period": "12/07-12/21",
+            "coefficient": 1.50
+        },
+        "冬至": {
+            "rank": 2,
+            "period": "12/22-01/05",
+            "coefficient": 1.50
+        },
+        "小雪": {
+            "rank": 3,
+            "period": "11/22-12/06",
+            "coefficient": 1.40
+        },
+        "立冬": {
+            "rank": 4,
+            "period": "11/07-11/21",
+            "coefficient": 1.40
+        },
+        "春分": {
+            "rank": 5,
+            "period": "03/21-04/04",
+            "coefficient": 1.30
+        },
+        "清明": {
+            "rank": 6,
+            "period": "04/05-04/19",
+            "coefficient": 1.30
+        },
+        "大暑": {
+            "rank": 7,
+            "period": "07/23-08/06",
+            "coefficient": 1.30
+        },
+        "立秋": {
+            "rank": 8,
+            "period": "08/07-08/22",
+            "coefficient": 1.30
+        },
+        "霜降": {
+            "rank": 9,
+            "period": "10/23-11/06",
+            "coefficient": 1.20
+        },
+        "寒露": {
+            "rank": 10,
+            "period": "10/08-10/22",
+            "coefficient": 1.20
+        },
+        "小寒": {
+            "rank": 11,
+            "period": "01/06-01/19",
+            "coefficient": 1.10
+        },
+        "立夏": {
+            "rank": 12,
+            "period": "05/06-05/20",
+            "coefficient": 1.10
+        },
+        "啓蟄": {
+            "rank": 13,
+            "period": "03/06-03/20",
+            "coefficient": 1.10
+        },
+        "小暑": {
+            "rank": 14,
+            "period": "07/07-07/22",
+            "coefficient": 1.10
+        },
+        "秋分": {
+            "rank": 15,
+            "period": "09/23-10/07",
+            "coefficient": 1.00
+        },
+        "白露": {
+            "rank": 16,
+            "period": "09/08-09/22",
+            "coefficient": 1.00
+        },
+        "穀雨": {
+            "rank": 17,
+            "period": "04/20-05/05",
+            "coefficient": 1.00
+        },
+        "小満": {
+            "rank": 18,
+            "period": "05/21-06/05",
+            "coefficient": 0.90
+        },
+        "処暑": {
+            "rank": 19,
+            "period": "08/23-09/07",
+            "coefficient": 0.90
+        },
+        "芒種": {
+            "rank": 20,
+            "period": "06/06-06/20",
+            "coefficient": 0.85
+        },
+        "夏至": {
+            "rank": 21,
+            "period": "06/21-07/06",
+            "coefficient": 0.80
+        },
+        "大寒": {
+            "rank": 22,
+            "period": "01/20-02/03",
+            "coefficient": 0.80
+        },
+        "立春": {
+            "rank": 23,
+            "period": "02/04-02/18",
+            "coefficient": 0.75
+        },
+        "雨水": {
+            "rank": 24,
+            "period": "02/19-03/05",
+            "coefficient": 0.70
+        }
+    },
+    "season_index": {
+        "1": 2.00,
+        "2": 3.00,
+        "3": 3.00,
+        "4": 1.00,
+        "5": 3.00,
+        "6": 4.00,
+        "7": 5.00,
+        "8": 5.00,
+        "9": 5.00,
+        "10": 5.00,
+        "11": 3.00,
+        "12": 5.00
+    },
+    "weekday_index": {
+        "0": 2.00,
+        "1": 2.00,
+        "2": 2.00,
+        "3": 3.00,
+        "4": 4.00,
+        "5": 5.00,
+        "6": 4.00
+    }
+}
