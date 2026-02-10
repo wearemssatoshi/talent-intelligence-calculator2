@@ -34,9 +34,22 @@ Excelファイルの読み込みと解析。
 ## 🔧 expansion / orbit / updraft
 開発・運用系のユーティリティスキル群。
 
+## 🛰️ g-satellites（12視点レビューシステム）
+Gの独自6サテライト。SATOSHIの6体と補完的に機能し、合計12視点でレビューする。
+
+| ID | 名前 | 一字 | 役割 |
+|---|---|---|---|
+| G-01 | NEWTON | 算 | データ実装・シミュレーション実行 |
+| G-02 | DAVINCI | 創 | クリエイティブ・ビジュアル設計 |
+| G-03 | DARWIN | 進 | 市場・競合・進化的分析 |
+| G-04 | TESLA | 技 | SVD-OS実装仕様 |
+| G-05 | PASTEUR | 観 | エビデンス収集・科学的検証 |
+| G-06 | DRUCKER | 経 | 経営戦略・マネジメント総括 |
+
 ---
 
 ## 参考
 - スキルの実体: [[dotfiles/.agent/skills/]]
 - [[SAT_G_Partnership_Constitution]]
 - [[AIっぽい文章表現大全_G執筆ルール]]
+- [[wearems_プロジェクト構造]]
