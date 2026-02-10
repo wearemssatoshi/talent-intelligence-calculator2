@@ -115,6 +115,17 @@ Core Web Vitals & ローディング速度最適化。
 ### 🖼️ imagen
 AI画像生成スキル。
 
+## 🔵 Phase 5: WEAREMS自作スキル（2026-02-11 創造）
+
+### ⚙️ gas-development
+GASウェブアプリの標準開発スキル。MINDFULブループリント、Action Dispatcher、JST Date Alignment、Multi-Remote Deployment、Known Trapsを体系化。
+
+### 📅 shift-scheduler（ワンボタンシフト生成）
+MP（需要）× TI（供給）= 最適シフト。段階的成熟モデル：
+- **Lv.1**: テンプレートモード（現在）
+- **Lv.2**: 推奨モード（MP/TI基本指数設定後）
+- **Lv.3**: ワンボタンモード（全データ完備時 → 究極目標）
+
 ---
 
 ## 📋 導入ロードマップ
@@ -125,7 +136,8 @@ AI画像生成スキル。
 | Phase 2 | セキュリティ＆品質7スキル | ✅ 完了 |
 | Phase 3 | Google Calendar MCP | ✅ 接続完了 |
 | Phase 4 | リサーチ＆コンテンツ4スキル | ✅ 完了 |
-| Phase 5 | gas-development, shift-scheduler | 📋 計画中 |
+| Phase 5 | gas-development, shift-scheduler | ✅ 完了 🔵 |
+
 
 
 ---
