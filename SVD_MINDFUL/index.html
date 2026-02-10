@@ -2102,50 +2102,57 @@
                 <div
                     style="font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.15em; margin-top: 25px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(201,169,98,0.3);">
                     🎯 SVD TACTICS</div>
-                <a href="https://wearemssatoshi.github.io/SVD_TACTICS/" target="_blank" rel="noopener"
-                    style="text-decoration: none;">
+                <div onclick="trackKnowledgeView('tactics')" style="cursor: pointer; text-decoration: none;">
                     <div
                         style="background: linear-gradient(135deg, var(--white), rgba(212,175,55,0.05)); border: 1px solid var(--gold); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; margin-bottom: 10px;">
                         <span style="font-size: 20px;">📊</span>
-                        <div>
+                        <div style="flex: 1;">
                             <div
                                 style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
                                 食品消費税ゼロ政策 影響分析</div>
                             <div style="font-size: 10px; color: var(--text-gray);">SVD Intelligence Report — 2026.02
                             </div>
                         </div>
+                        <span id="knowledgeBadge_tactics"
+                            style="font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--gold); white-space: nowrap;">🪙
+                            +5</span>
                     </div>
-                </a>
+                </div>
 
                 <div
                     style="font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; color: var(--navy); letter-spacing: 0.15em; margin-top: 25px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); opacity: 0.6;">
                     📚 KNOWLEDGE</div>
-                <a href="https://wearemssatoshi.github.io/deliciousness/" target="_blank" rel="noopener"
-                    style="text-decoration: none;">
+                <div onclick="trackKnowledgeView('deliciousness')"
+                    style="cursor: pointer; text-decoration: none; margin-bottom: 10px;">
                     <div
                         style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
                         <span style="font-size: 20px;">✨</span>
-                        <div>
+                        <div style="flex: 1;">
                             <div
                                 style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
                                 美味しさの定義</div>
                             <div style="font-size: 10px; color: var(--text-gray);">The Definition of Deliciousness</div>
                         </div>
+                        <span id="knowledgeBadge_deliciousness"
+                            style="font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--gold); white-space: nowrap;">🪙
+                            +5</span>
                     </div>
-                </a>
-                <a href="https://wearemssatoshi.github.io/momentum-peaks/" target="_blank" rel="noopener"
-                    style="text-decoration: none;">
+                </div>
+                <div onclick="trackKnowledgeView('momentum')" style="cursor: pointer; text-decoration: none;">
                     <div
                         style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;">
                         <span style="font-size: 20px;">📈</span>
-                        <div>
+                        <div style="flex: 1;">
                             <div
                                 style="font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; color: var(--navy);">
                                 MOMENTUM PEAKS とは？</div>
                             <div style="font-size: 10px; color: var(--text-gray);">SVDの精密予測ロジックを解説</div>
                         </div>
+                        <span id="knowledgeBadge_momentum"
+                            style="font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--gold); white-space: nowrap;">🪙
+                            +5</span>
                     </div>
-                </a>
+                </div>
                 <a href="https://guide.michelin.com/jp/ja" target="_blank" rel="noopener"
                     style="text-decoration: none;">
                     <div
@@ -4049,6 +4056,73 @@
                 ).join('');
             }
         }
+
+        // ===== KNOWLEDGE VIEWING TOKEN SYSTEM =====
+        const KNOWLEDGE_ITEMS = {
+            tactics: { url: 'https://wearemssatoshi.github.io/SVD_TACTICS/', label: '食品消費税ゼロ政策' },
+            deliciousness: { url: 'https://wearemssatoshi.github.io/deliciousness/', label: '美味しさの定義' },
+            momentum: { url: 'https://wearemssatoshi.github.io/momentum-peaks/', label: 'MOMENTUM PEAKS' }
+        };
+        const KNOWLEDGE_TOKEN_REWARD = 5;
+
+        function getKnowledgeViewKey() {
+            const now = new Date();
+            const jstOffset = 9 * 60;
+            const jst = new Date(now.getTime() + (now.getTimezoneOffset() + jstOffset) * 60000);
+            const today = jst.toISOString().split('T')[0];
+            return `mindful_knowledge_viewed_${today}`;
+        }
+
+        function getViewedKnowledge() {
+            return JSON.parse(localStorage.getItem(getKnowledgeViewKey()) || '[]');
+        }
+
+        function trackKnowledgeView(id) {
+            const viewed = getViewedKnowledge();
+            if (!viewed.includes(id)) {
+                viewed.push(id);
+                localStorage.setItem(getKnowledgeViewKey(), JSON.stringify(viewed));
+                addTokens(KNOWLEDGE_TOKEN_REWARD);
+                // Show toast notification
+                showKnowledgeTokenToast(KNOWLEDGE_ITEMS[id].label);
+            }
+            updateKnowledgeBadges();
+            window.open(KNOWLEDGE_ITEMS[id].url, '_blank');
+        }
+
+        function updateKnowledgeBadges() {
+            const viewed = getViewedKnowledge();
+            Object.keys(KNOWLEDGE_ITEMS).forEach(id => {
+                const badge = document.getElementById(`knowledgeBadge_${id}`);
+                if (badge) {
+                    if (viewed.includes(id)) {
+                        badge.textContent = '✅ 獲得済み';
+                        badge.style.color = '#2ecc71';
+                    } else {
+                        badge.textContent = '🪙 +5';
+                        badge.style.color = 'var(--gold)';
+                    }
+                }
+            });
+        }
+
+        function showKnowledgeTokenToast(label) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--navy), var(--navy-dark)); color: var(--gold); padding: 12px 24px; border-radius: 30px; font-family: Montserrat, sans-serif; font-size: 13px; font-weight: 600; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid var(--gold); animation: tokenToastIn 0.4s ease-out;';
+            toast.innerHTML = `🪙 +5 TOKEN <span style="font-weight: 400; opacity: 0.8; margin-left: 6px;">${label}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.5s, transform 0.5s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                setTimeout(() => toast.remove(), 500);
+            }, 2500);
+        }
+
+        // Initialize knowledge badges on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(updateKnowledgeBadges, 500);
+        });
 
         async function sendToSheets(type, tokenData = null) {
             const profile = JSON.parse(localStorage.getItem('mindful_profile'));
