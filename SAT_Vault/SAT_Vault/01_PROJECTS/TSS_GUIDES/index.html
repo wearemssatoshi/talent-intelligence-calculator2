@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TSS かんたんガイド</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #D4AF37;
+  --gold-dark: #B8960C;
+  --gold-light: rgba(212, 175, 55, 0.12);
+  --gold-glow: rgba(212, 175, 55, 0.25);
+  --bg: #FFFDF5;
+  --bg-card: #FFFFFF;
+  --text: #1a1a1a;
+  --text-gray: #5a5a5a;
+  --text-light: #999;
+  --border: rgba(26, 26, 26, 0.08);
+  --shadow: 0 2px 16px rgba(0,0,0,0.05);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #FBF5B7, #E5C158, #D4AF37, #C6A355);
+  padding: 3.5rem 1.5rem 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 60%);
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 30px;
+  background: var(--bg);
+  border-radius: 30px 30px 0 0;
+}
+
+.hero-icon {
+  font-size: 3.5rem;
+  margin-bottom: 0.8rem;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #2D2308;
+  letter-spacing: 0.03em;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  color: #5C4010;
+  letter-spacing: 0.3em;
+  margin-top: 0.3rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-desc {
+  font-size: 0.9rem;
+  color: #4A3200;
+  margin-top: 1.2rem;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+  line-height: 1.7;
+}
+
+/* Navigation */
+.nav-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.2rem 1.5rem 0.5rem;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.nav-dot {
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-gray);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.nav-dot:hover, .nav-dot:active {
+  background: var(--gold-light);
+  border-color: var(--gold);
+  color: var(--gold-dark);
+}
+
+/* Sections */
+.section {
+  padding: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
+}
+
+.section-desc {
+  font-size: 0.88rem;
+  color: var(--text-gray);
+  margin-bottom: 1.5rem;
+}
+
+/* Main Feature Highlight */
+.main-feature {
+  background: linear-gradient(135deg, #2D2308, #4A3D14);
+  border-radius: 20px;
+  padding: 1.8rem 1.5rem;
+  margin: 1rem 0 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-feature::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.main-feature .mf-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: #2D2308;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.8rem;
+  border-radius: 100px;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+
+.main-feature .mf-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.main-feature h3 {
+  color: var(--gold);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  position: relative;
+}
+
+.main-feature p {
+  color: rgba(255,255,255,0.7);
+  font-size: 0.82rem;
+  position: relative;
+  line-height: 1.7;
+}
+
+/* Tab Cards */
+.tabs-scroll {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  padding: 0.5rem 0 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tabs-scroll::-webkit-scrollbar { display: none; }
+
+.tab-card {
+  min-width: 130px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.3rem 1rem;
+  text-align: center;
+  scroll-snap-align: start;
+  box-shadow: var(--shadow);
+}
+
+.tab-card.primary {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, rgba(212,175,55,0.06) 0%, var(--bg-card) 100%);
+  position: relative;
+}
+
+.tab-card.primary::before {
+  content: 'MAIN';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  color: #2D2308;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  letter-spacing: 0.1em;
+}
+
+.tab-card .icon {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.tab-card .name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.tab-card .desc {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* Steps */
+.steps { margin: 1rem 0; }
+
+.step {
+  display: flex;
+  gap: 0.9rem;
+  margin-bottom: 1.2rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  width: 32px; height: 32px; min-width: 32px;
+  background: linear-gradient(135deg, var(--gold), #FFD700);
+  color: #2D2308;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 8px var(--gold-glow);
+}
+
+.step-text { flex: 1; padding-top: 0.2rem; }
+.step-text strong { display: block; font-size: 0.9rem; margin-bottom: 0.15rem; }
+.step-text .note { font-size: 0.78rem; color: var(--text-light); }
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 1.5rem 0;
+}
+
+/* Token Section - Contribution Style */
+.contrib-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.6rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.contrib-card .c-icon {
+  font-size: 1.3rem;
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-light);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.contrib-card .c-info { flex: 1; }
+.contrib-card .c-name { font-weight: 700; font-size: 0.88rem; }
+.contrib-card .c-desc { font-size: 0.75rem; color: var(--text-light); }
+
+/* Tip Box */
+.tip {
+  background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,215,0,0.03));
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+}
+
+.tip-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--gold-dark);
+  margin-bottom: 0.3rem;
+}
+
+.tip p { font-size: 0.82rem; color: #5C4010; margin: 0; }
+
+/* Accordion */
+.accordion { margin-bottom: 0.6rem; }
+
+.accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: var(--shadow);
+  transition: all 0.3s;
+  text-align: left;
+  gap: 0.6rem;
+}
+
+.accordion-toggle:active { background: var(--gold-light); }
+.accordion-toggle .a-left { display: flex; align-items: center; gap: 0.6rem; }
+.accordion-toggle .arrow { font-size: 0.8rem; color: var(--text-light); transition: transform 0.3s; }
+.accordion.open .arrow { transform: rotate(90deg); }
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.accordion.open .accordion-body { max-height: 500px; }
+
+.accordion-inner {
+  padding: 1rem 1.2rem;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  line-height: 1.8;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  margin-top: -14px;
+}
+
+.accordion-inner ul { padding-left: 1rem; }
+.accordion-inner ul li { margin-bottom: 0.3rem; }
+
+/* Help */
+.help-box {
+  background: linear-gradient(135deg, #2D2308, #4A3D14);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.help-box .h-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+.help-box h3 { color: var(--gold); font-size: 1rem; margin-bottom: 0.5rem; }
+.help-box p { color: rgba(255,255,255,0.7); font-size: 0.82rem; }
+
+/* Footer */
+footer {
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.footer-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--text-light);
+}
+
+.footer-brand .wearems { color: var(--gold); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<header class="hero">
+  <span class="hero-icon">🤝</span>
+  <h1>TEAM SYNERGY STAGE</h1>
+  <div class="hero-sub">SIMPLE GUIDE</div>
+  <p class="hero-desc">チームのシナジーを最大化する<br>コミュニケーションアプリ</p>
+</header>
+
+<!-- Nav -->
+<nav class="nav-dots">
+  <a href="#about" class="nav-dot">概要</a>
+  <a href="#start" class="nav-dot">はじめ方</a>
+  <a href="#screens" class="nav-dot">使い方</a>
+  <a href="#contrib" class="nav-dot">貢献度</a>
+</nav>
+
+<!-- Section 1: About -->
+<section class="section" id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">チームの力を最大限に</h2>
+  <p class="section-desc">
+    TEAM SYNERGY STAGE は、スケジュール調整・チームコミュニケーション・タスク管理をひとつにまとめたアプリです。日々の貢献が可視化され、チーム全体のシナジーが生まれます。
+  </p>
+
+  <!-- Main Feature: Schedule -->
+  <div class="main-feature">
+    <span class="mf-badge">MAIN FEATURE</span>
+    <span class="mf-icon">📅</span>
+    <h3>スケジュール調整</h3>
+    <p>チーム全体のスケジュールを共有・調整。<br>誰がいつ動けるか、一目で把握できます。</p>
+  </div>
+
+  <div class="section-label" style="margin-top: 1.5rem;">5 Screens</div>
+  <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">5つの画面</h3>
+
+  <div class="tabs-scroll">
+    <div class="tab-card">
+      <span class="icon">🏠</span>
+      <div class="name">ホーム</div>
+      <div class="desc">お知らせ<br>クエスト</div>
+    </div>
+    <div class="tab-card">
+      <span class="icon">📋</span>
+      <div class="name">ボード</div>
+      <div class="desc">チーム内の<br>情報共有</div>
+    </div>
+    <div class="tab-card primary">
+      <span class="icon">📅</span>
+      <div class="name">スケジュール</div>
+      <div class="desc">予定管理<br>タスク</div>
+    </div>
+    <div class="tab-card">
+      <span class="icon">🤖</span>
+      <div class="name">JINSEI AI</div>
+      <div class="desc">AIに<br>何でも相談</div>
+    </div>
+    <div class="tab-card">
+      <span class="icon">👤</span>
+      <div class="name">プロフィール</div>
+      <div class="desc">貢献度<br>確認</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">💡 ポイント</div>
+    <p>画面下のナビバーからいつでも切り替えできます。</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Section 2: Getting Started -->
+<section class="section" id="start">
+  <div class="section-label">Getting Started</div>
+  <h2 class="section-title">はじめ方</h2>
+
+  <p class="section-desc" style="font-weight: 500; color: var(--text);">🆕 はじめてのログイン</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>アプリを開く</strong>
+        <span class="note">共有URLまたはホーム画面アイコンから</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>名前を入力する</strong>
+        <span class="note">チーム内で使う名前を入力</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <strong>「登録」ボタンをタップ</strong>
+        <span class="note">ホーム画面が表示されたら完了！</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="section-desc" style="font-weight: 500; color: var(--text);">🔑 2回目以降</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <strong>「すでにアカウントをお持ちの方」をタップ</strong>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <strong>名前を入力してログイン</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">📱 ホーム画面に追加</div>
+    <p>ブラウザのメニューから「ホーム画面に追加」を選ぶと、アプリのように使えます！</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Section 3: Screen Guide -->
+<section class="section" id="screens">
+  <div class="section-label">How to Use</div>
+  <h2 class="section-title">各画面の使い方</h2>
+
+  <div class="accordion" onclick="this.classList.toggle('open')">
+    <button class="accordion-toggle">
+      <span class="a-left">🏠 ホーム</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <ul>
+          <li><strong>お知らせ</strong>を確認できます</li>
+          <li><strong>今日のクエスト</strong>が表示されます</li>
+          <li>画面上部に<strong>貢献度トークン</strong>を表示</li>
+          <li>チームの最新情報をチェック</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" onclick="this.classList.toggle('open')">
+    <button class="accordion-toggle">
+      <span class="a-left">📋 ボード</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <ul>
+          <li>チーム内の<strong>情報共有</strong>の場</li>
+          <li><strong>投稿ボタン</strong>から発信</li>
+          <li>他のメンバーの投稿に<strong>❤️ リアクション</strong></li>
+          <li>チームのコミュニケーションを活性化</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion open" onclick="this.classList.toggle('open')">
+    <button class="accordion-toggle" style="border-color: var(--gold); background: rgba(212,175,55,0.03);">
+      <span class="a-left">📅 スケジュール（メイン機能）</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="accordion-body">
+      <div class="accordion-inner" style="border-color: var(--gold);">
+        <ul>
+          <li><strong>カレンダー</strong>でチーム全体の予定を確認</li>
+          <li><strong>イベント登録</strong>で予定を共有</li>
+          <li><strong>タスク管理</strong>：やることリストを作成</li>
+          <li>完了したら<strong>チェック ✅</strong></li>
+          <li>フィルターで表示を切り替え</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" onclick="this.classList.toggle('open')">
+    <button class="accordion-toggle">
+      <span class="a-left">🤖 JINSEI AI</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <ul>
+          <li>AIに<strong>何でも相談</strong>できます</li>
+          <li>仕事の悩み、チームのこと、人生のこと</li>
+          <li><strong>チャット形式</strong>で気軽に話しかけて</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" onclick="this.classList.toggle('open')">
+    <button class="accordion-toggle">
+      <span class="a-left">👤 プロフィール</span>
+      <span class="arrow">▶</span>
+    </button>
+    <div class="accordion-body">
+      <div class="accordion-inner">
+        <ul>
+          <li><strong>貢献度トークン</strong>の残高を確認</li>
+          <li>これまでの<strong>活動履歴</strong>を振り返り</li>
+          <li>プロフィール情報の確認・編集</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Section 4: Contribution -->
+<section class="section" id="contrib">
+  <div class="section-label">Contribution</div>
+  <h2 class="section-title">🪙 貢献度トークン（TSST）</h2>
+  <p class="section-desc">
+    TSSでは、日々のチーム活動が<strong>「貢献度」として可視化</strong>されます。トークン（TSST）はあなたのチームへの貢献を数字で表したものです。
+  </p>
+
+  <div class="contrib-card">
+    <div class="c-icon">📅</div>
+    <div class="c-info">
+      <div class="c-name">スケジュール共有</div>
+      <div class="c-desc">予定を登録してチームに貢献</div>
+    </div>
+  </div>
+  <div class="contrib-card">
+    <div class="c-icon">📋</div>
+    <div class="c-info">
+      <div class="c-name">情報共有</div>
+      <div class="c-desc">ボードへの投稿でチームを活性化</div>
+    </div>
+  </div>
+  <div class="contrib-card">
+    <div class="c-icon">✅</div>
+    <div class="c-info">
+      <div class="c-name">タスク完了</div>
+      <div class="c-desc">やるべきことをしっかりやる</div>
+    </div>
+  </div>
+  <div class="contrib-card">
+    <div class="c-icon">❤️</div>
+    <div class="c-info">
+      <div class="c-name">リアクション</div>
+      <div class="c-desc">仲間の投稿を認め合う</div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">🤝 トークンの意味</div>
+    <p>トークンはゲームのポイントではありません。<strong>あなたのチームへの貢献を「見える化」する仕組み</strong>です。お互いの貢献を認め合い、より強いチームを作りましょう。</p>
+  </div>
+
+  <!-- Help -->
+  <div class="help-box">
+    <span class="h-icon">🤖</span>
+    <h3>困ったときは</h3>
+    <p>まずは JINSEI AI に聞いてみよう！<br>それでも解決しない場合は管理者に相談してください。</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-brand">
+    TEAM SYNERGY STAGE<br>
+    Powered by <span class="wearems">WEAREMS</span>
+  </div>
+</footer>
+
+<script>
+const navDots = document.querySelectorAll('.nav-dot');
+const sections = document.querySelectorAll('section[id]');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 80;
+    if (pageYOffset >= sectionTop) {
+      current = section.getAttribute('id');
+    }
+  });
+  navDots.forEach(dot => {
+    dot.style.background = '';
+    dot.style.borderColor = '';
+    dot.style.color = '';
+    if (dot.getAttribute('href') === '#' + current) {
+      dot.style.background = 'var(--gold-light)';
+      dot.style.borderColor = 'var(--gold)';
+      dot.style.color = 'var(--gold-dark)';
+    }
+  });
+});
+</script>
+
+</body>
+</html>
