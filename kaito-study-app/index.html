@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>KAITO QUEST — Study & Earn</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --card: #14141f;
+  --card-hover: #1a1a2e;
+  --border: #1e1e30;
+  --text: #e8e8f0;
+  --text-dim: #888899;
+  --accent: #6c5ce7;
+  --accent-glow: rgba(108,92,231,0.3);
+  --gold: #f0c040;
+  --gold-glow: rgba(240,192,64,0.3);
+  --green: #00d2a0;
+  --red: #ff6b6b;
+  --blue: #4dabf7;
+  --orange: #ff922b;
+  --pink: #f06595;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Header */
+.header {
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--accent), var(--blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header .subtitle {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+/* Balance Card */
+.balance-card {
+  margin: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.balance-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+.balance-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.balance-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 8px 0;
+  text-shadow: 0 0 30px var(--gold-glow);
+}
+.balance-unit {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-left: 4px;
+}
+.balance-yen {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+.balance-yen span {
+  color: var(--green);
+}
+
+/* Stats Row */
+.stats-row {
+  display: flex;
+  gap: 10px;
+  margin: 0 20px 20px;
+}
+.stat-box {
+  flex: 1;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+.stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* Timer Section */
+.timer-section {
+  margin: 0 20px 20px;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.subject-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.subject-btn {
+  padding: 10px 4px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Inter', sans-serif;
+}
+.subject-btn.active {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(108,92,231,0.15);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+.subject-btn .emoji {
+  display: block;
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+}
+
+.timer-display {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin: 16px 0;
+  letter-spacing: 2px;
+}
+.timer-display.running {
+  color: var(--green);
+  text-shadow: 0 0 20px rgba(0,210,160,0.3);
+}
+.timer-earning {
+  font-size: 0.85rem;
+  color: var(--gold);
+  margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.timer-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+}
+.timer-btn.start {
+  background: linear-gradient(135deg, var(--accent), #845ef7);
+  color: white;
+  box-shadow: 0 4px 20px var(--accent-glow);
+}
+.timer-btn.start:active {
+  transform: scale(0.98);
+}
+.timer-btn.stop {
+  background: linear-gradient(135deg, var(--red), #e03131);
+  color: white;
+}
+.timer-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Quest Log */
+.section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0 20px 12px;
+}
+.quest-list {
+  margin: 0 20px 20px;
+}
+.quest-item {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.quest-emoji { font-size: 1.3rem; }
+.quest-info { flex: 1; }
+.quest-subject {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.quest-time {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+.quest-reward {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* Weekly Chart */
+.chart-section {
+  margin: 0 20px 20px;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 120px;
+  margin-top: 12px;
+}
+.chart-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.chart-bar {
+  width: 28px;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, var(--accent), #845ef7);
+  min-height: 4px;
+  transition: height 0.5s ease;
+}
+.chart-bar.today {
+  background: linear-gradient(180deg, var(--gold), #f59f00);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+.chart-day {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+.chart-min {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+
+/* Level */
+.level-section {
+  margin: 0 20px 20px;
+  background: var(--card);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+.level-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.level-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.level-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+.level-bar-bg {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.level-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--blue));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.level-exp {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Goal */
+.goal-section {
+  margin: 0 20px 30px;
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.goal-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.goal-text {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 8px 0;
+  background: linear-gradient(135deg, var(--gold), #f59f00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.goal-progress {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+/* Reward animation */
+.reward-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: var(--card);
+  border: 2px solid var(--gold);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  z-index: 100;
+  box-shadow: 0 0 60px var(--gold-glow);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+.reward-popup.show {
+  transform: translate(-50%, -50%) scale(1);
+}
+.reward-popup .emoji { font-size: 3rem; }
+.reward-popup .msg {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: 12px 0 8px;
+}
+.reward-popup .amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Reset btn */
+.reset-area {
+  text-align: center;
+  padding: 20px;
+}
+.reset-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>KAITO QUEST</h1>
+  <div class="subtitle">STUDY & EARN — JPYC REWARDS</div>
+</div>
+
+<div class="balance-card">
+  <div class="balance-label">Total Earned</div>
+  <div class="balance-amount" id="totalTokens">0<span class="balance-unit">JPYC</span></div>
+  <div class="balance-yen">≈ ¥<span id="totalYen">0</span></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-value" id="todayMin" style="color:var(--green)">0</div>
+    <div class="stat-label">今日 (分)</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="totalHours" style="color:var(--blue)">0</div>
+    <div class="stat-label">累計 (時間)</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="streak" style="color:var(--orange)">0</div>
+    <div class="stat-label">連続日数 🔥</div>
+  </div>
+</div>
+
+<div class="timer-section">
+  <div class="subject-selector">
+    <button class="subject-btn" data-subject="国語" onclick="selectSubject(this)">
+      <span class="emoji">📖</span>国語
+    </button>
+    <button class="subject-btn" data-subject="数学" onclick="selectSubject(this)">
+      <span class="emoji">📐</span>数学
+    </button>
+    <button class="subject-btn" data-subject="英語" onclick="selectSubject(this)">
+      <span class="emoji">🌍</span>英語
+    </button>
+    <button class="subject-btn" data-subject="社会" onclick="selectSubject(this)">
+      <span class="emoji">🏛️</span>社会
+    </button>
+  </div>
+  <div class="timer-display" id="timerDisplay">00:00:00</div>
+  <div class="timer-earning" id="timerEarning">+0 JPYC</div>
+  <button class="timer-btn start" id="timerBtn" onclick="toggleTimer()" disabled>
+    教科を選んでスタート
+  </button>
+</div>
+
+<div class="section-title">📋 TODAY'S QUEST LOG</div>
+<div class="quest-list" id="questLog">
+  <div class="quest-item" style="justify-content:center; color:var(--text-dim); font-size:0.8rem;">
+    まだクエストがないぞ。教科を選んで始めよう！
+  </div>
+</div>
+
+<div class="section-title">📊 WEEKLY PROGRESS</div>
+<div class="chart-section">
+  <div class="chart-bars" id="weeklyChart"></div>
+</div>
+
+<div class="level-section">
+  <div class="level-header">
+    <div class="level-name" id="levelName">🌱 見習い</div>
+    <div class="level-num">Lv.<span id="levelNum">1</span></div>
+  </div>
+  <div class="level-bar-bg">
+    <div class="level-bar" id="levelBar" style="width:0%"></div>
+  </div>
+  <div class="level-exp" id="levelExp">0 / 60 min</div>
+</div>
+
+<div class="goal-section">
+  <div class="goal-label">🎯 MONTHLY GOAL</div>
+  <div class="goal-text">高校合格への道</div>
+  <div class="goal-progress" id="monthlyProgress">0 / 40 時間</div>
+</div>
+
+<div class="reset-area">
+  <button class="reset-btn" onclick="resetData()">データリセット</button>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeReward()"></div>
+<div class="reward-popup" id="rewardPopup">
+  <div class="emoji">💰</div>
+  <div class="msg">QUEST COMPLETE!</div>
+  <div class="amount" id="rewardAmount">+0 JPYC</div>
+</div>
+
+<script>
+// State
+let state = loadState();
+let timerInterval = null;
+let timerStart = null;
+let selectedSubject = null;
+let currentSeconds = 0;
+
+const RATE_PER_HOUR = 200; // 200 JPYC per hour
+const SUBJECTS = {
+  '国語': '📖',
+  '数学': '📐',
+  '英語': '🌍',
+  '社会': '🏛️'
+};
+const LEVELS = [
+  { name: '🌱 見習い', min: 0 },
+  { name: '📚 初心者', min: 60 },
+  { name: '✏️ 努力家', min: 180 },
+  { name: '🔥 頑張り屋', min: 360 },
+  { name: '⭐ 実力者', min: 600 },
+  { name: '💎 秀才', min: 1000 },
+  { name: '👑 天才', min: 1500 },
+  { name: '🏆 合格確定', min: 2400 },
+];
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('kaito_quest_v1');
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return {
+    totalTokens: 0,
+    totalMinutes: 0,
+    quests: [],
+    dailyMinutes: {},
+    streak: 0,
+    lastStudyDate: null
+  };
+}
+
+function saveState() {
+  localStorage.setItem('kaito_quest_v1', JSON.stringify(state));
+}
+
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function selectSubject(btn) {
+  document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedSubject = btn.dataset.subject;
+  const timerBtn = document.getElementById('timerBtn');
+  if (!timerInterval) {
+    timerBtn.disabled = false;
+    timerBtn.textContent = '▶ START QUEST';
+  }
+}
+
+function toggleTimer() {
+  if (timerInterval) {
+    stopTimer();
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  if (!selectedSubject) return;
+  timerStart = Date.now();
+  currentSeconds = 0;
+  const btn = document.getElementById('timerBtn');
+  btn.textContent = '⏹ COMPLETE QUEST';
+  btn.className = 'timer-btn stop';
+  document.getElementById('timerDisplay').classList.add('running');
+  
+  // Disable subject buttons
+  document.querySelectorAll('.subject-btn').forEach(b => b.style.pointerEvents = 'none');
+  
+  timerInterval = setInterval(() => {
+    currentSeconds = Math.floor((Date.now() - timerStart) / 1000);
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  
+  const minutes = Math.floor(currentSeconds / 60);
+  if (minutes < 1) {
+    // Less than 1 minute, don't count
+    resetTimer();
+    return;
+  }
+  
+  const earned = Math.round((minutes / 60) * RATE_PER_HOUR);
+  
+  // Add quest
+  const quest = {
+    subject: selectedSubject,
+    minutes: minutes,
+    earned: earned,
+    timestamp: new Date().toISOString(),
+    date: today()
+  };
+  state.quests.unshift(quest);
+  
+  // Update totals
+  state.totalTokens += earned;
+  state.totalMinutes += minutes;
+  
+  // Daily minutes
+  if (!state.dailyMinutes[today()]) state.dailyMinutes[today()] = 0;
+  state.dailyMinutes[today()] += minutes;
+  
+  // Streak
+  updateStreak();
+  
+  saveState();
+  
+  // Show reward
+  showReward(earned);
+  
+  // Reset timer
+  resetTimer();
+  updateUI();
+}
+
+function resetTimer() {
+  const btn = document.getElementById('timerBtn');
+  btn.className = 'timer-btn start';
+  btn.textContent = selectedSubject ? '▶ START QUEST' : '教科を選んでスタート';
+  btn.disabled = !selectedSubject;
+  document.getElementById('timerDisplay').classList.remove('running');
+  document.getElementById('timerDisplay').textContent = '00:00:00';
+  document.getElementById('timerEarning').textContent = '+0 JPYC';
+  currentSeconds = 0;
+  
+  document.querySelectorAll('.subject-btn').forEach(b => b.style.pointerEvents = 'auto');
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(currentSeconds / 3600);
+  const m = Math.floor((currentSeconds % 3600) / 60);
+  const s = currentSeconds % 60;
+  document.getElementById('timerDisplay').textContent = 
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  
+  const earnedSoFar = Math.round((currentSeconds / 3600) * RATE_PER_HOUR);
+  document.getElementById('timerEarning').textContent = `+${earnedSoFar} JPYC`;
+}
+
+function updateStreak() {
+  const d = new Date();
+  const todayStr = today();
+  const yesterday = new Date(d.getTime() - 86400000).toISOString().slice(0, 10);
+  
+  if (state.lastStudyDate === yesterday || state.lastStudyDate === todayStr) {
+    if (state.lastStudyDate === yesterday) state.streak++;
+  } else if (state.lastStudyDate !== todayStr) {
+    state.streak = 1;
+  }
+  state.lastStudyDate = todayStr;
+}
+
+function showReward(amount) {
+  document.getElementById('rewardAmount').textContent = `+${amount} JPYC`;
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('rewardPopup').classList.add('show');
+}
+
+function closeReward() {
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('rewardPopup').classList.remove('show');
+}
+
+function updateUI() {
+  // Balance
+  document.getElementById('totalTokens').innerHTML = 
+    `${state.totalTokens}<span class="balance-unit">JPYC</span>`;
+  document.getElementById('totalYen').textContent = state.totalTokens;
+  
+  // Stats
+  const todayMin = state.dailyMinutes[today()] || 0;
+  document.getElementById('todayMin').textContent = todayMin;
+  document.getElementById('totalHours').textContent = (state.totalMinutes / 60).toFixed(1);
+  document.getElementById('streak').textContent = state.streak;
+  
+  // Quest log (today only)
+  const todayQuests = state.quests.filter(q => q.date === today());
+  const logEl = document.getElementById('questLog');
+  if (todayQuests.length === 0) {
+    logEl.innerHTML = `<div class="quest-item" style="justify-content:center; color:var(--text-dim); font-size:0.8rem;">
+      まだクエストがないぞ。教科を選んで始めよう！</div>`;
+  } else {
+    logEl.innerHTML = todayQuests.map(q => `
+      <div class="quest-item">
+        <div class="quest-emoji">${SUBJECTS[q.subject] || '📖'}</div>
+        <div class="quest-info">
+          <div class="quest-subject">${q.subject}</div>
+          <div class="quest-time">${q.minutes}分 — ${new Date(q.timestamp).toLocaleTimeString('ja-JP', {hour:'2-digit', minute:'2-digit'})}</div>
+        </div>
+        <div class="quest-reward">+${q.earned}</div>
+      </div>
+    `).join('');
+  }
+  
+  // Weekly chart
+  renderWeeklyChart();
+  
+  // Level
+  updateLevel();
+  
+  // Monthly goal (40 hours)
+  const monthKey = today().slice(0, 7);
+  let monthMin = 0;
+  Object.entries(state.dailyMinutes).forEach(([d, m]) => {
+    if (d.startsWith(monthKey)) monthMin += m;
+  });
+  const monthHours = (monthMin / 60).toFixed(1);
+  document.getElementById('monthlyProgress').textContent = `${monthHours} / 40 時間`;
+}
+
+function renderWeeklyChart() {
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  const chart = document.getElementById('weeklyChart');
+  const d = new Date();
+  const todayIdx = d.getDay();
+  
+  let maxMin = 1;
+  const weekData = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(d.getTime() - i * 86400000);
+    const dateStr = date.toISOString().slice(0, 10);
+    const mins = state.dailyMinutes[dateStr] || 0;
+    if (mins > maxMin) maxMin = mins;
+    weekData.push({
+      day: days[date.getDay()],
+      mins: mins,
+      isToday: i === 0
+    });
+  }
+  
+  chart.innerHTML = weekData.map(w => {
+    const h = Math.max(4, (w.mins / maxMin) * 100);
+    return `
+      <div class="chart-bar-wrap">
+        <div class="chart-min">${w.mins}m</div>
+        <div class="chart-bar ${w.isToday ? 'today' : ''}" style="height:${h}px"></div>
+        <div class="chart-day">${w.day}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function updateLevel() {
+  let lvl = LEVELS[0];
+  let lvlIdx = 0;
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (state.totalMinutes >= LEVELS[i].min) {
+      lvl = LEVELS[i];
+      lvlIdx = i;
+      break;
+    }
+  }
+  const nextLvl = LEVELS[lvlIdx + 1] || { min: lvl.min + 500 };
+  const progress = ((state.totalMinutes - lvl.min) / (nextLvl.min - lvl.min)) * 100;
+  
+  document.getElementById('levelName').textContent = lvl.name;
+  document.getElementById('levelNum').textContent = lvlIdx + 1;
+  document.getElementById('levelBar').style.width = Math.min(100, progress) + '%';
+  document.getElementById('levelExp').textContent = `${state.totalMinutes} / ${nextLvl.min} min`;
+}
+
+function resetData() {
+  if (confirm('本当にリセットする？全データが消えるよ！')) {
+    localStorage.removeItem('kaito_quest_v1');
+    state = loadState();
+    updateUI();
+  }
+}
+
+// Init
+updateUI();
+</script>
+</body>
+</html>

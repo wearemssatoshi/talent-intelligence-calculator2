@@ -1,0 +1,10 @@
+{
+  "name": "KAITO QUEST",
+  "short_name": "KAITO QUEST",
+  "description": "Study & Earn JPYC Rewards",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "icons": []
+}
