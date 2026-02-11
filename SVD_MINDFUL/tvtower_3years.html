@@ -441,6 +441,126 @@
             color: var(--gold);
             font-weight: 600;
         }
+
+        /* ===== RESPONSIVE GRID CLASSES ===== */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .grid-3col-corona {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px 60px;
+            }
+
+            .hero h1 {
+                font-size: 22px;
+            }
+
+            .big-number {
+                font-size: 28px;
+            }
+
+            .big-number-row {
+                gap: 12px;
+            }
+
+            .big-number-arrow {
+                font-size: 18px;
+            }
+
+            /* ランチ & ディナー → 1カラムにスタック */
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+
+            /* コロナ前比較 → 縦スタック */
+            .grid-3col-corona {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            /* 月別パターン → 6列×2行 */
+            .season-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 3px;
+            }
+
+            .season-cell {
+                padding: 6px 1px;
+                font-size: 9px;
+            }
+
+            .season-cell .month-value {
+                font-size: 10px;
+            }
+
+            /* 曜日別 → 横スクロール不要に調整 */
+            .weekday-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 3px;
+            }
+
+            .weekday-cell {
+                padding: 8px 2px;
+            }
+
+            .weekday-name {
+                font-size: 10px;
+            }
+
+            .weekday-value {
+                font-size: 11px;
+            }
+
+            .weekday-idx {
+                font-size: 9px;
+            }
+
+            /* データテーブル小さく */
+            .data-table td {
+                font-size: 12px;
+                padding: 6px 4px;
+            }
+
+            .data-table th {
+                font-size: 10px;
+                padding: 3px 4px;
+            }
+
+            /* カード padding 調整 */
+            .card {
+                padding: 16px 14px;
+            }
+
+            .card-title {
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+
+            /* バーチャート */
+            .bar-fill {
+                font-size: 10px;
+            }
+
+            .bar-label {
+                width: 40px;
+                font-size: 11px;
+            }
+
+            .bar-value {
+                width: 56px;
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 
@@ -487,7 +607,7 @@
             <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
                 テレビ塔拠点の過去最高期（コロナ前）と現在のチーム成果を比較
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+            <div class="grid-3col-corona">
                 <!-- レストラン -->
                 <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
                     <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍽️ レストラン</div>
@@ -580,7 +700,7 @@
         </div>
 
         <!-- ランチ & ディナー -->
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="grid-2col">
             <div class="card">
                 <div class="card-title"><span class="icon">☀️</span> ランチ</div>
                 <table class="data-table">
