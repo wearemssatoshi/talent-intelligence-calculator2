@@ -351,3 +351,58 @@ async function optimisticAction(itemId) {
 }
 ```
 
+### 11. PWA Cache Force-Update Pattern
+
+クリティカルな修正をデプロイしても、**古いService Workerキャッシュが残っているユーザーには届かない**。以下の手順で強制更新する。
+
+**問題**: PWAのSWが古いHTMLをキャッシュしており、新しいコードがユーザーに届かない。特にセキュリティ修正やUXの致命的バグ修正時に深刻。
+
+**修正手順（3点セット）:**
+
+```javascript
+// 1. sw.js — CACHE_NAME のバージョンをバンプ
+const CACHE_NAME = 'tss-cache-v11.0'; // v10.0 → v11.0
+
+// 2. index.html — APP_VERSION をバンプ（バックエンドとの版数照合用）
+const APP_VERSION = 'v10.0'; // v9.0 → v10.0
+
+// 3. sw.js に必ず含めるべき3つのメカニズム
+// (a) install時: skipWaiting() で待機中SWなしで即有効化
+self.addEventListener('install', event => {
+    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+    self.skipWaiting(); // ★ 必須
+});
+
+// (b) activate時: 旧キャッシュ削除 + clients.claim()
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(names =>
+            Promise.all(names.map(name => {
+                if (name !== CACHE_NAME) return caches.delete(name); // ★ 旧キャッシュ削除
+            }))
+        )
+    );
+    self.clients.claim(); // ★ 必須: 全タブで即座に新SW有効
+});
+
+// (c) fetch: Network First戦略 (キャッシュは fallback のみ)
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        fetch(event.request)
+            .then(response => {
+                caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
+                return response;
+            })
+            .catch(() => caches.match(event.request)) // オフライン時のみキャッシュ
+    );
+});
+```
+
+**デプロイチェックリスト:**
+- [ ] `sw.js` の `CACHE_NAME` バージョンをバンプ
+- [ ] `index.html` の `APP_VERSION` をバンプ
+- [ ] `sw.js` に `skipWaiting()` + `clients.claim()` が存在することを確認
+- [ ] fetch戦略が **Network First** であることを確認
+- [ ] git push → GitHub Pages デプロイ
+
+> **注意**: `skipWaiting()` がないと、ユーザーが**全タブを閉じて再度開く**まで新SWが有効にならない。`clients.claim()` がないと、現在開いているタブが新SWの管理下に入らない。両方必須。
