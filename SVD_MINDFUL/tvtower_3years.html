@@ -11,12 +11,15 @@
         :root {
             --gold: #C5A55A;
             --gold-light: #D4B96E;
-            --dark: #1A1A2E;
-            --darker: #12121F;
-            --card: #1E1E32;
-            --card-border: rgba(197, 165, 90, 0.15);
-            --text: #E8E4DC;
-            --text-muted: #9A9A9A;
+            --tower-red: #E85535;
+            --tower-orange: #FF6B4A;
+            --tower-glow: rgba(232, 85, 53, 0.15);
+            --dark: #1E2030;
+            --darker: #171928;
+            --card: #242740;
+            --card-border: rgba(197, 165, 90, 0.18);
+            --text: #EDEAE4;
+            --text-muted: #A0A0B0;
             --accent-green: #4ADE80;
             --accent-blue: #60A5FA;
             --accent-pink: #F472B6;
@@ -32,6 +35,9 @@
         body {
             font-family: 'Noto Sans JP', 'Inter', sans-serif;
             background: var(--darker);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, var(--tower-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(197, 165, 90, 0.06) 0%, transparent 40%);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -50,13 +56,33 @@
             position: relative;
         }
 
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--tower-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
         .hero::after {
             content: '';
             display: block;
-            width: 60px;
+            width: 80px;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            background: linear-gradient(90deg, transparent, var(--tower-red), var(--gold), var(--tower-red), transparent);
             margin: 24px auto 0;
+            position: relative;
+            z-index: 1;
         }
 
         .hero-label {
@@ -150,11 +176,12 @@
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 16px;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .card:hover {
-            border-color: rgba(197, 165, 90, 0.35);
+            border-color: rgba(232, 85, 53, 0.3);
+            box-shadow: 0 4px 24px rgba(232, 85, 53, 0.06);
         }
 
         .card-title {
@@ -454,7 +481,66 @@
             </div>
         </div>
 
-        <!-- レストラン L+D -->
+        <!-- コロナ前最盛期との比較 -->
+        <div class="card" style="border-color: rgba(232,85,53,0.3); border-left: 3px solid var(--tower-red);">
+            <div class="card-title"><span class="icon">🏔️</span> コロナ禍前・最盛期との比較</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+                テレビ塔拠点の過去最高期（コロナ前）と現在のチーム成果を比較
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <!-- レストラン -->
+                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍽️ レストラン</div>
+                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                        ¥4,702<span style="font-size:11px;">万</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div
+                            style="height:100%; width:100%; background:var(--tower-red); border-radius:2px; opacity:0.4;">
+                        </div>
+                    </div>
+                    <div style="font-size:10px; color:var(--text-muted);">2025</div>
+                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--gold);">
+                        ¥1.11<span style="font-size:10px;">億</span></div>
+                    <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">236% 🔥
+                    </div>
+                </div>
+                <!-- 宴会 -->
+                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🥂 宴会</div>
+                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                        ¥3,868<span style="font-size:11px;">万</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div style="height:100%; width:53%; background:var(--gold); border-radius:2px;"></div>
+                    </div>
+                    <div style="font-size:10px; color:var(--text-muted);">2025 (11M)</div>
+                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-blue);">
+                        ¥2,033<span style="font-size:10px;">万</span></div>
+                    <div style="font-size:11px; color:var(--accent-orange); font-weight:600; margin-top:4px;">53% — 伸びしろ
+                    </div>
+                </div>
+                <!-- ビアガーデン -->
+                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍺 ビアガーデン</div>
+                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                        ¥9,240<span style="font-size:11px;">万</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div style="height:100%; width:100%; background:var(--accent-green); border-radius:2px;"></div>
+                    </div>
+                    <div style="font-size:10px; color:var(--text-muted);">2025</div>
+                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-green);">
+                        ¥1.79<span style="font-size:10px;">億</span></div>
+                    <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">194% 🔥
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:12px; font-size:11px; color:var(--text-muted);">
+                レストランとBGはコロナ前を大幅超え。宴会はYear 4の最大の伸びしろ
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-title"><span class="icon">🍽️</span> レストラン（L+D）</div>
             <table class="data-table">
