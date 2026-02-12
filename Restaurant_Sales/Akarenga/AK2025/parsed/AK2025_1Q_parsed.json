@@ -1,0 +1,3030 @@
+{
+  "metadata": {
+    "store_id": "BQ",
+    "store_name": "赤れんが",
+    "base": "AKARENGA",
+    "source_file": "AK2025_1Q.xlsx",
+    "parsed_at": "2026-02-12T18:49:26.930219",
+    "sheets": [
+      "２０２５.05",
+      "2025.06"
+    ],
+    "total_days": 61,
+    "total_months": 2,
+    "tax_mode": "excluded"
+  },
+  "monthly_summary": [
+    {
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "kensu": 0
+        },
+        "afternoon_tea": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "pax": 1575,
+          "sales": 2110465,
+          "kensu": 1575
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "final_total": {
+          "grand_total": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0
+        }
+      },
+      "month": "2025-05",
+      "detected_channels": {
+        "lunch": 3,
+        "at": 11,
+        "dinner": 19,
+        "rest_total": 26,
+        "ryb": 31,
+        "final": 44
+      }
+    },
+    {
+      "channels": {
+        "lunch": {
+          "pax": 118,
+          "sales": 1052880,
+          "kensu": 59
+        },
+        "afternoon_tea": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 150,
+          "sales": 3111790
+        },
+        "ryb": {
+          "pax": 2452,
+          "sales": 3318730,
+          "kensu": 2306
+        },
+        "rest_total": {
+          "pax": 268,
+          "sales": 4164670
+        },
+        "final_total": {
+          "grand_total": 4178470,
+          "seat_fee": 8800,
+          "retail": 0,
+          "flowers": 5000
+        }
+      },
+      "month": "2025-06",
+      "detected_channels": {
+        "lunch": 3,
+        "at": 11,
+        "dinner": 19,
+        "rest_total": 26,
+        "ryb": 31,
+        "final": 44
+      }
+    }
+  ],
+  "daily_data": [
+    {
+      "date": "2025-05-01",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-02",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-03",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-04",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-05",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-06",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-07",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-08",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-09",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-10",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-11",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-12",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 81,
+          "pax": 81,
+          "food_sales": 118065,
+          "bev_sales": 5800,
+          "sales": 123865,
+          "avg_spend": 1529.2
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-13",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 74,
+          "pax": 74,
+          "food_sales": 111350,
+          "bev_sales": 9200,
+          "sales": 120550,
+          "avg_spend": 1629.05
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-14",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 48,
+          "pax": 48,
+          "food_sales": 70350,
+          "bev_sales": 3600,
+          "sales": 73950,
+          "avg_spend": 1540.62
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-15",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 55,
+          "pax": 55,
+          "food_sales": 67900,
+          "bev_sales": 7900,
+          "sales": 75800,
+          "avg_spend": 1378.18
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-16",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 114,
+          "pax": 114,
+          "food_sales": 103700,
+          "bev_sales": 36400,
+          "sales": 140100,
+          "avg_spend": 1228.95
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-17",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 79,
+          "pax": 79,
+          "food_sales": 86200,
+          "bev_sales": 15000,
+          "sales": 101200,
+          "avg_spend": 1281.01
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-18",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 86,
+          "pax": 86,
+          "food_sales": 119000,
+          "bev_sales": 10600,
+          "sales": 129600,
+          "avg_spend": 1506.98
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-19",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 45,
+          "pax": 45,
+          "food_sales": 59350,
+          "bev_sales": 2800,
+          "sales": 62150,
+          "avg_spend": 1381.11
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-20",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 63,
+          "pax": 63,
+          "food_sales": 98900,
+          "bev_sales": 5000,
+          "sales": 103900,
+          "avg_spend": 1649.21
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-21",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 59,
+          "pax": 59,
+          "food_sales": 62050,
+          "bev_sales": 5800,
+          "sales": 67850,
+          "avg_spend": 1150.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-22",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 53,
+          "pax": 53,
+          "food_sales": 68200,
+          "bev_sales": 1900,
+          "sales": 70100,
+          "avg_spend": 1322.64
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-23",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 137,
+          "pax": 137,
+          "food_sales": 92550,
+          "bev_sales": 39600,
+          "sales": 132150,
+          "avg_spend": 964.6
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-24",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 82,
+          "pax": 82,
+          "food_sales": 91700,
+          "bev_sales": 13900,
+          "sales": 105600,
+          "avg_spend": 1287.8
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-25",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 79,
+          "pax": 79,
+          "food_sales": 85250,
+          "bev_sales": 15000,
+          "sales": 100250,
+          "avg_spend": 1268.99
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-26",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 49,
+          "pax": 49,
+          "food_sales": 61750,
+          "bev_sales": 4300,
+          "sales": 66050,
+          "avg_spend": 1347.96
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-27",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 59,
+          "pax": 59,
+          "food_sales": 78250,
+          "bev_sales": 3200,
+          "sales": 81450,
+          "avg_spend": 1380.51
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-28",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 75,
+          "pax": 75,
+          "food_sales": 93200,
+          "bev_sales": 4000,
+          "sales": 97200,
+          "avg_spend": 1296.0
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-29",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 98,
+          "pax": 98,
+          "food_sales": 112100,
+          "bev_sales": 16300,
+          "sales": 128400,
+          "avg_spend": 1310.2
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-30",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 158,
+          "pax": 158,
+          "food_sales": 150300,
+          "bev_sales": 49400,
+          "sales": 199700,
+          "avg_spend": 1263.92
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-05-31",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 81,
+          "pax": 81,
+          "food_sales": 120300,
+          "bev_sales": 10300,
+          "sales": 130600,
+          "avg_spend": 1612.35
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-01",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 73,
+          "pax": 73,
+          "food_sales": 106450,
+          "bev_sales": 12200,
+          "sales": 118650,
+          "avg_spend": 1625.34
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-02",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 63,
+          "pax": 63,
+          "food_sales": 94850,
+          "bev_sales": 3100,
+          "sales": 97950,
+          "avg_spend": 1554.76
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-03",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 41,
+          "pax": 48,
+          "food_sales": 51330,
+          "bev_sales": 6800,
+          "sales": 58130,
+          "avg_spend": 1211.04
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-04",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 67,
+          "pax": 75,
+          "food_sales": 75730,
+          "bev_sales": 16900,
+          "sales": 92630,
+          "avg_spend": 1235.07
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-05",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 69,
+          "pax": 75,
+          "food_sales": 94100,
+          "bev_sales": 10700,
+          "sales": 104800,
+          "avg_spend": 1397.33
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-06",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 109,
+          "pax": 116,
+          "food_sales": 103930,
+          "bev_sales": 28800,
+          "sales": 132730,
+          "avg_spend": 1144.22
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-07",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 109,
+          "pax": 117,
+          "food_sales": 138740,
+          "bev_sales": 22200,
+          "sales": 160940,
+          "avg_spend": 1375.56
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-08",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 113,
+          "pax": 123,
+          "food_sales": 138450,
+          "bev_sales": 29000,
+          "sales": 167450,
+          "avg_spend": 1361.38
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-09",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 66,
+          "pax": 71,
+          "food_sales": 82100,
+          "bev_sales": 11400,
+          "sales": 93500,
+          "avg_spend": 1316.9
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-10",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 50,
+          "pax": 55,
+          "food_sales": 64980,
+          "bev_sales": 6400,
+          "sales": 71380,
+          "avg_spend": 1297.82
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-11",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 0,
+          "sales": 0
+        },
+        "ryb": {
+          "kensu": 63,
+          "pax": 69,
+          "food_sales": 85530,
+          "bev_sales": 11100,
+          "sales": 96630,
+          "avg_spend": 1400.43
+        },
+        "final_total": {
+          "pax": 0,
+          "food": 0,
+          "bev": 0,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 0
+        }
+      }
+    },
+    {
+      "date": "2025-06-12",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 4,
+          "pax": 8,
+          "food_sales": 66000,
+          "bev_sales": 4620,
+          "sales": 70620,
+          "avg_spend": 8827.5
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 6,
+          "food_sales": 86200,
+          "bev_sales": 27320,
+          "sales": 113520,
+          "avg_spend": 18920.0
+        },
+        "rest_total": {
+          "pax": 14,
+          "sales": 184140
+        },
+        "ryb": {
+          "kensu": 59,
+          "pax": 64,
+          "food_sales": 74350,
+          "bev_sales": 9000,
+          "sales": 83350,
+          "avg_spend": 1302.34
+        },
+        "final_total": {
+          "pax": 14,
+          "food": 152200,
+          "bev": 31940,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 184140
+        }
+      }
+    },
+    {
+      "date": "2025-06-13",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 6,
+          "food_sales": 89100,
+          "bev_sales": 26620,
+          "sales": 115720,
+          "avg_spend": 19286.67
+        },
+        "rest_total": {
+          "pax": 6,
+          "sales": 115720
+        },
+        "ryb": {
+          "kensu": 127,
+          "pax": 130,
+          "food_sales": 137460,
+          "bev_sales": 51450,
+          "sales": 188910,
+          "avg_spend": 1453.15
+        },
+        "final_total": {
+          "pax": 6,
+          "food": 89100,
+          "bev": 26620,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 115720
+        }
+      }
+    },
+    {
+      "date": "2025-06-14",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 5,
+          "pax": 9,
+          "food_sales": 69300,
+          "bev_sales": 20240,
+          "sales": 89540,
+          "avg_spend": 9948.89
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 15,
+          "food_sales": 224400,
+          "bev_sales": 71170,
+          "sales": 295570,
+          "avg_spend": 19704.67
+        },
+        "rest_total": {
+          "pax": 24,
+          "sales": 385110
+        },
+        "ryb": {
+          "kensu": 95,
+          "pax": 101,
+          "food_sales": 119330,
+          "bev_sales": 23700,
+          "sales": 143030,
+          "avg_spend": 1416.14
+        },
+        "final_total": {
+          "pax": 24,
+          "food": 293700,
+          "bev": 91410,
+          "seat_fee": 2200,
+          "retail": 0,
+          "flowers": 5000,
+          "deposit": 10000,
+          "grand_total": 392310
+        }
+      }
+    },
+    {
+      "date": "2025-06-15",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 4,
+          "pax": 8,
+          "food_sales": 63800,
+          "bev_sales": 38390,
+          "sales": 102190,
+          "avg_spend": 12773.75
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 10,
+          "food_sales": 150370,
+          "bev_sales": 27390,
+          "sales": 177760,
+          "avg_spend": 17776.0
+        },
+        "rest_total": {
+          "pax": 18,
+          "sales": 279950
+        },
+        "ryb": {
+          "kensu": 85,
+          "pax": 102,
+          "food_sales": 119340,
+          "bev_sales": 21200,
+          "sales": 140540,
+          "avg_spend": 1377.84
+        },
+        "final_total": {
+          "pax": 18,
+          "food": 214170,
+          "bev": 65780,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 279950
+        }
+      }
+    },
+    {
+      "date": "2025-06-16",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 2,
+          "pax": 4,
+          "food_sales": 22000,
+          "bev_sales": 6600,
+          "sales": 28600,
+          "avg_spend": 7150.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 3,
+          "food_sales": 42900,
+          "bev_sales": 10340,
+          "sales": 53240,
+          "avg_spend": 17746.67
+        },
+        "rest_total": {
+          "pax": 7,
+          "sales": 81840
+        },
+        "ryb": {
+          "kensu": 51,
+          "pax": 52,
+          "food_sales": 70050,
+          "bev_sales": 6200,
+          "sales": 76250,
+          "avg_spend": 1466.35
+        },
+        "final_total": {
+          "pax": 7,
+          "food": 64900,
+          "bev": 16940,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 81840
+        }
+      }
+    },
+    {
+      "date": "2025-06-17",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 2,
+          "pax": 3,
+          "food_sales": 16500,
+          "bev_sales": 1980,
+          "sales": 18480,
+          "avg_spend": 6160.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "rest_total": {
+          "pax": 3,
+          "sales": 18480
+        },
+        "ryb": {
+          "kensu": 61,
+          "pax": 65,
+          "food_sales": 76060,
+          "bev_sales": 11400,
+          "sales": 87460,
+          "avg_spend": 1345.54
+        },
+        "final_total": {
+          "pax": 3,
+          "food": 16500,
+          "bev": 1980,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 18480
+        }
+      }
+    },
+    {
+      "date": "2025-06-18",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 3,
+          "pax": 5,
+          "food_sales": 21000,
+          "bev_sales": 9140,
+          "sales": 30140,
+          "avg_spend": 6028.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 2,
+          "food_sales": 30800,
+          "bev_sales": 23650,
+          "sales": 54450,
+          "avg_spend": 27225.0
+        },
+        "rest_total": {
+          "pax": 7,
+          "sales": 84590
+        },
+        "ryb": {
+          "kensu": 74,
+          "pax": 76,
+          "food_sales": 87800,
+          "bev_sales": 16500,
+          "sales": 104300,
+          "avg_spend": 1372.37
+        },
+        "final_total": {
+          "pax": 7,
+          "food": 51800,
+          "bev": 32790,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 84590
+        }
+      }
+    },
+    {
+      "date": "2025-06-19",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 3,
+          "pax": 7,
+          "food_sales": 68200,
+          "bev_sales": 12100,
+          "sales": 80300,
+          "avg_spend": 11471.43
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 2,
+          "food_sales": 26400,
+          "bev_sales": 19800,
+          "sales": 46200,
+          "avg_spend": 23100.0
+        },
+        "rest_total": {
+          "pax": 9,
+          "sales": 126500
+        },
+        "ryb": {
+          "kensu": 64,
+          "pax": 73,
+          "food_sales": 84060,
+          "bev_sales": 7600,
+          "sales": 91660,
+          "avg_spend": 1255.62
+        },
+        "final_total": {
+          "pax": 9,
+          "food": 94600,
+          "bev": 31900,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 126500
+        }
+      }
+    },
+    {
+      "date": "2025-06-20",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 4,
+          "pax": 7,
+          "food_sales": 45100,
+          "bev_sales": 12760,
+          "sales": 57860,
+          "avg_spend": 8265.71
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 14,
+          "food_sales": 202400,
+          "bev_sales": 101090,
+          "sales": 303490,
+          "avg_spend": 21677.86
+        },
+        "rest_total": {
+          "pax": 21,
+          "sales": 361350
+        },
+        "ryb": {
+          "kensu": 140,
+          "pax": 146,
+          "food_sales": 117960,
+          "bev_sales": 47300,
+          "sales": 165260,
+          "avg_spend": 1131.92
+        },
+        "final_total": {
+          "pax": 21,
+          "food": 247500,
+          "bev": 113850,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 361350
+        }
+      }
+    },
+    {
+      "date": "2025-06-21",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 4,
+          "pax": 7,
+          "food_sales": 61600,
+          "bev_sales": 11110,
+          "sales": 72710,
+          "avg_spend": 10387.14
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 20,
+          "food_sales": 252920,
+          "bev_sales": 74800,
+          "sales": 327720,
+          "avg_spend": 16386.0
+        },
+        "rest_total": {
+          "pax": 27,
+          "sales": 400430
+        },
+        "ryb": {
+          "kensu": 86,
+          "pax": 90,
+          "food_sales": 103260,
+          "bev_sales": 17000,
+          "sales": 120260,
+          "avg_spend": 1336.22
+        },
+        "final_total": {
+          "pax": 27,
+          "food": 314520,
+          "bev": 85910,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 400430
+        }
+      }
+    },
+    {
+      "date": "2025-06-22",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 4,
+          "pax": 9,
+          "food_sales": 49500,
+          "bev_sales": 7260,
+          "sales": 56760,
+          "avg_spend": 6306.67
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 9,
+          "food_sales": 86300,
+          "bev_sales": 31570,
+          "sales": 117870,
+          "avg_spend": 13096.67
+        },
+        "rest_total": {
+          "pax": 18,
+          "sales": 174630
+        },
+        "ryb": {
+          "kensu": 81,
+          "pax": 83,
+          "food_sales": 105450,
+          "bev_sales": 14700,
+          "sales": 120150,
+          "avg_spend": 1447.59
+        },
+        "final_total": {
+          "pax": 18,
+          "food": 135800,
+          "bev": 38830,
+          "seat_fee": 4400,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 179030
+        }
+      }
+    },
+    {
+      "date": "2025-06-23",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 0,
+          "pax": 0,
+          "food_sales": 0,
+          "bev_sales": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 11,
+          "food_sales": 187880,
+          "bev_sales": 122980,
+          "sales": 310860,
+          "avg_spend": 28260.0
+        },
+        "rest_total": {
+          "pax": 11,
+          "sales": 310860
+        },
+        "ryb": {
+          "kensu": 36,
+          "pax": 40,
+          "food_sales": 57700,
+          "bev_sales": 7100,
+          "sales": 64800,
+          "avg_spend": 1620.0
+        },
+        "final_total": {
+          "pax": 11,
+          "food": 187880,
+          "bev": 122980,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 310860
+        }
+      }
+    },
+    {
+      "date": "2025-06-24",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "kensu": 5,
+          "pax": 12,
+          "food_sales": 82500,
+          "bev_sales": 16890,
+          "sales": 99390,
+          "avg_spend": 8282.5
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 2,
+          "food_sales": 24200,
+          "bev_sales": 4400,
+          "sales": 28600,
+          "avg_spend": 14300.0
+        },
+        "rest_total": {
+          "pax": 14,
+          "sales": 127990
+        },
+        "ryb": {
+          "kensu": 62,
+          "pax": 63,
+          "food_sales": 76590,
+          "bev_sales": 14600,
+          "sales": 91190,
+          "avg_spend": 1447.46
+        },
+        "final_total": {
+          "pax": 14,
+          "food": 106700,
+          "bev": 21290,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 127990
+        }
+      }
+    },
+    {
+      "date": "2025-06-25",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "kensu": 5,
+          "pax": 10,
+          "food_sales": 64900,
+          "bev_sales": 30150,
+          "sales": 95050,
+          "avg_spend": 9505.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 4,
+          "food_sales": 66880,
+          "bev_sales": 160930,
+          "sales": 227810,
+          "avg_spend": 56952.5
+        },
+        "rest_total": {
+          "pax": 14,
+          "sales": 322860
+        },
+        "ryb": {
+          "kensu": 53,
+          "pax": 55,
+          "food_sales": 66830,
+          "bev_sales": 10100,
+          "sales": 76930,
+          "avg_spend": 1398.73
+        },
+        "final_total": {
+          "pax": 14,
+          "food": 131780,
+          "bev": 191080,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 322860
+        }
+      }
+    },
+    {
+      "date": "2025-06-26",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "kensu": 2,
+          "pax": 6,
+          "food_sales": 33000,
+          "bev_sales": 4950,
+          "sales": 37950,
+          "avg_spend": 6325.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 2,
+          "food_sales": 24200,
+          "bev_sales": 8360,
+          "sales": 32560,
+          "avg_spend": 16280.0
+        },
+        "rest_total": {
+          "pax": 8,
+          "sales": 70510
+        },
+        "ryb": {
+          "kensu": 55,
+          "pax": 55,
+          "food_sales": 76910,
+          "bev_sales": 8400,
+          "sales": 85310,
+          "avg_spend": 1551.09
+        },
+        "final_total": {
+          "pax": 8,
+          "food": 57200,
+          "bev": 13310,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 3300,
+          "grand_total": 70510
+        }
+      }
+    },
+    {
+      "date": "2025-06-27",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "kensu": 1,
+          "pax": 2,
+          "food_sales": 17600,
+          "bev_sales": 7920,
+          "sales": 25520,
+          "avg_spend": 12760.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 17,
+          "food_sales": 243900,
+          "bev_sales": 97450,
+          "sales": 341350,
+          "avg_spend": 20079.41
+        },
+        "rest_total": {
+          "pax": 19,
+          "sales": 366870
+        },
+        "ryb": {
+          "kensu": 110,
+          "pax": 112,
+          "food_sales": 86370,
+          "bev_sales": 38400,
+          "sales": 124770,
+          "avg_spend": 1114.02
+        },
+        "final_total": {
+          "pax": 19,
+          "food": 261500,
+          "bev": 105370,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 366870
+        }
+      }
+    },
+    {
+      "date": "2025-06-28",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "kensu": 3,
+          "pax": 5,
+          "food_sales": 30800,
+          "bev_sales": 10230,
+          "sales": 41030,
+          "avg_spend": 8206.0
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 17,
+          "food_sales": 260700,
+          "bev_sales": 116160,
+          "sales": 376860,
+          "avg_spend": 22168.24
+        },
+        "rest_total": {
+          "pax": 22,
+          "sales": 417890
+        },
+        "ryb": {
+          "kensu": 99,
+          "pax": 100,
+          "food_sales": 119020,
+          "bev_sales": 22200,
+          "sales": 141220,
+          "avg_spend": 1412.2
+        },
+        "final_total": {
+          "pax": 22,
+          "food": 291500,
+          "bev": 126390,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 417890
+        }
+      }
+    },
+    {
+      "date": "2025-06-29",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "kensu": 6,
+          "pax": 12,
+          "food_sales": 68300,
+          "bev_sales": 25970,
+          "sales": 94270,
+          "avg_spend": 7855.83
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 6,
+          "food_sales": 83600,
+          "bev_sales": 12870,
+          "sales": 96470,
+          "avg_spend": 16078.33
+        },
+        "rest_total": {
+          "pax": 18,
+          "sales": 190740
+        },
+        "ryb": {
+          "kensu": 90,
+          "pax": 100,
+          "food_sales": 116620,
+          "bev_sales": 17500,
+          "sales": 134120,
+          "avg_spend": 1341.2
+        },
+        "final_total": {
+          "pax": 18,
+          "food": 151900,
+          "bev": 38840,
+          "seat_fee": 0,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 0,
+          "grand_total": 190740
+        }
+      }
+    },
+    {
+      "date": "2025-06-30",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "kensu": 2,
+          "pax": 4,
+          "food_sales": 44000,
+          "bev_sales": 8470,
+          "sales": 52470,
+          "avg_spend": 13117.5
+        },
+        "afternoon_tea": {
+          "kensu": 0,
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 4,
+          "food_sales": 61600,
+          "bev_sales": 30140,
+          "sales": 91740,
+          "avg_spend": 22935.0
+        },
+        "rest_total": {
+          "pax": 8,
+          "sales": 144210
+        },
+        "ryb": {
+          "kensu": 55,
+          "pax": 60,
+          "food_sales": 79230,
+          "bev_sales": 5200,
+          "sales": 84430,
+          "avg_spend": 1407.17
+        },
+        "final_total": {
+          "pax": 8,
+          "food": 105600,
+          "bev": 38610,
+          "seat_fee": 2200,
+          "retail": 0,
+          "flowers": 0,
+          "deposit": 3300,
+          "grand_total": 146410
+        }
+      }
+    }
+  ]
+}
