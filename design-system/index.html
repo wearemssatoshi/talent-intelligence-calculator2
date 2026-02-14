@@ -1024,6 +1024,173 @@
             stroke-linejoin: round;
         }
 
+        /* ═══ HAMBURGER MENU ═══ */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            z-index: 300;
+        }
+
+        .hamburger-btn svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-1);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke var(--duration) var(--ease);
+        }
+
+        .hamburger-btn:hover svg {
+            stroke: var(--gold);
+        }
+
+        .mobile-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 199;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s var(--ease);
+        }
+
+        .mobile-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--surface);
+            z-index: 250;
+            padding: 80px 30px 40px;
+            box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
+            transition: right 0.35s var(--ease);
+            overflow-y: auto;
+        }
+
+        .mobile-drawer.open {
+            right: 0;
+        }
+
+        .mobile-drawer-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .mobile-drawer-close svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-3);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: stroke var(--duration) var(--ease);
+        }
+
+        .mobile-drawer-close:hover svg {
+            stroke: var(--gold);
+        }
+
+        .mobile-drawer-brand {
+            font-family: var(--font-display);
+            font-weight: var(--w-medium);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 32px;
+        }
+
+        .mobile-nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .mobile-nav-list a {
+            display: block;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: var(--w-regular);
+            color: var(--text-2);
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            letter-spacing: 1px;
+            transition: color var(--duration) var(--ease), padding-left var(--duration) var(--ease);
+        }
+
+        .mobile-nav-list a:hover {
+            color: var(--gold);
+            padding-left: 8px;
+        }
+
+        .mobile-nav-list li:first-child a {
+            border-top: 1px solid var(--border);
+        }
+
+        /* ═══ HERO TYPE PREVIEW ═══ */
+        .hero-type-preview {
+            margin-top: 50px;
+            width: 100%;
+            max-width: 700px;
+            display: grid;
+            gap: 2px;
+        }
+
+        .type-preview-row {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            padding: 14px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: all var(--duration) var(--ease);
+        }
+
+        .type-preview-row:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .type-preview-weight {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: var(--w-medium);
+            color: var(--gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            min-width: 42px;
+            flex-shrink: 0;
+        }
+
+        .type-preview-text {
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
+
         /* ═══ RESPONSIVE ═══ */
         @media (max-width: 768px) {
             .hero h1 {
@@ -1058,9 +1225,25 @@
                 display: none;
             }
 
+            .hamburger-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .switcher-panel {
                 bottom: 16px;
                 right: 16px;
+            }
+
+            .hero-type-preview {
+                max-width: 100%;
+            }
+
+            .type-preview-row {
+                flex-direction: column;
+                gap: 4px;
+                padding: 10px 16px;
             }
         }
 
@@ -1173,8 +1356,35 @@
                 <li><a href="#decoration">Decoration</a></li>
                 <li><a href="#icons">Icons</a></li>
             </ul>
+            <button class="hamburger-btn" id="hamburgerBtn" aria-label="メニューを開く">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
         </div>
     </nav>
+
+    <!-- ═══ MOBILE DRAWER ═══ -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="メニューを閉じる">
+            <svg viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        </button>
+        <div class="mobile-drawer-brand">WEAREMS</div>
+        <ul class="mobile-nav-list">
+            <li><a href="#colors" class="mobile-nav-link">Colors</a></li>
+            <li><a href="#typography" class="mobile-nav-link">Typography</a></li>
+            <li><a href="#components" class="mobile-nav-link">Components</a></li>
+            <li><a href="#readability" class="mobile-nav-link">Readability</a></li>
+            <li><a href="#decoration" class="mobile-nav-link">Decoration</a></li>
+            <li><a href="#icons" class="mobile-nav-link">Icons</a></li>
+        </ul>
+    </div>
 
     <!-- ═══ HERO ═══ -->
     <section class="hero">
@@ -1188,6 +1398,37 @@
         <div class="hero-badge">
             <span class="dot"></span>
             <span>Inter 200 × Gold #b8860b × Whitespace</span>
+        </div>
+
+        <!-- Type Preview: Silent Goldの世界観を一目で伝えるサンプル -->
+        <div class="hero-type-preview">
+            <div class="type-preview-row">
+                <span class="type-preview-weight">W200</span>
+                <span class="type-preview-text" style="font-size:28px;font-weight:200;">The Silence Speaks Louder</span>
+            </div>
+            <div class="type-preview-row">
+                <span class="type-preview-weight">W300</span>
+                <span class="type-preview-text" style="font-size:20px;font-weight:300;">Crafting Elegance Through
+                    Restraint</span>
+            </div>
+            <div class="type-preview-row">
+                <span class="type-preview-weight">W400</span>
+                <span class="type-preview-text"
+                    style="font-family:var(--font-body-ja);font-size:15px;font-weight:400;color:var(--text-2);line-height:1.7;">静謐の中にこそ
+                    本物の品格が宿る</span>
+            </div>
+            <div class="type-preview-row">
+                <span class="type-preview-weight">W500</span>
+                <span class="type-preview-text"
+                    style="font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gold);">Design
+                    is Strategy · Silence is Power</span>
+            </div>
+            <div class="type-preview-row">
+                <span class="type-preview-weight">Mono</span>
+                <span class="type-preview-text"
+                    style="font-family:var(--font-mono);font-size:13px;font-weight:400;color:var(--gold);">font-weight:
+                    200 | letter-spacing: -2px</span>
+            </div>
         </div>
     </section>
 
@@ -2509,6 +2750,32 @@
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2500);
             });
+        });
+        // Hamburger menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        const mobileDrawerClose = document.getElementById('mobileDrawerClose');
+
+        function openDrawer() {
+            mobileOverlay.classList.add('open');
+            mobileDrawer.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            mobileOverlay.classList.remove('open');
+            mobileDrawer.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', openDrawer);
+        mobileOverlay.addEventListener('click', closeDrawer);
+        mobileDrawerClose.addEventListener('click', closeDrawer);
+
+        // Close drawer when a nav link is clicked
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', closeDrawer);
         });
     </script>
 
