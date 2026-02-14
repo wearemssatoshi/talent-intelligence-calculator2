@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVD Design System — Silent Gold</title>
-    <meta name="description" content="SVD-OS デザインシステム「静謐なゴールド（Silent Gold）」— 全トークン & コンポーネント ビジュアルカタログ">
+    <title>WEAREMS Design System — Silent Gold</title>
+    <meta name="description" content="WEAREMS デザインシステム「静謐なゴールド（Silent Gold）」— 全トークン & コンポーネント ビジュアルカタログ">
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Outfit:wght@200;300;400;500&family=Sora:wght@200;300;400;500&family=Plus+Jakarta+Sans:wght@200;300;400;500&family=Space+Grotesk:wght@300;400;500&family=Urbanist:wght@200;300;400;500&family=Noto+Sans+JP:wght@200;300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&family=Noto+Serif+JP:wght@300;400;500;600&family=Outfit:wght@200;300;400;500&family=Sora:wght@200;300;400;500&family=Plus+Jakarta+Sans:wght@200;300;400;500&family=Space+Grotesk:wght@300;400;500&family=Urbanist:wght@200;300;400;500&family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Serif+Display&family=Playfair+Display:wght@400;500;600&family=Crimson+Pro:wght@200;300;400;500&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@200;300;400;500;600&family=Jost:wght@200;300;400;500&family=Raleway:wght@200;300;400;500&family=Poppins:wght@200;300;400;500&family=Rubik:wght@300;400;500&family=Manrope:wght@200;300;400;500&family=DM+Sans:wght@300;400;500&family=Figtree:wght@300;400;500&family=Lora:wght@400;500;600&family=Zen+Maru+Gothic:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Shippori+Mincho:wght@400;500;600&family=BIZ+UDGothic&family=M+PLUS+Rounded+1c:wght@300;400;500&family=Sawarabi+Mincho&display=swap"
         rel="stylesheet">
     <style>
         /* ═════════════════════════════════════
-           SVD DESIGN TOKENS v1.0
+           WEAREMS DESIGN TOKENS v2.0
            "Silent Gold" — 静謐なゴールド
            ═════════════════════════════════════ */
 
@@ -1073,6 +1073,86 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+
+        /* ═══ DECORATION PATTERNS ═══ */
+        .deco-label {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 12px;
+        }
+
+        .deco-code {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-3);
+            margin-top: 12px;
+            padding: 6px 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* ═══ ICON GRID ═══ */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .icon-cell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 8px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            cursor: pointer;
+            transition: all var(--duration) var(--ease);
+        }
+
+        .icon-cell:hover {
+            border-color: var(--gold);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .icon-cell:hover svg {
+            color: var(--gold);
+        }
+
+        .icon-cell svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            color: var(--text-2);
+            transition: color var(--duration) var(--ease);
+        }
+
+        .icon-cell span {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-3);
+            letter-spacing: 0.5px;
+        }
+
+        .icon-cell.copied {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .icon-cell.copied span {
+            color: #22c55e;
+        }
     </style>
 </head>
 
@@ -1082,7 +1162,7 @@
     <nav>
         <div class="nav-inner">
             <div class="nav-brand">
-                <span class="nav-logo">SVD</span>
+                <span class="nav-logo">WEAREMS</span>
                 <span class="nav-title">Design System</span>
             </div>
             <ul class="nav-links">
@@ -1090,18 +1170,20 @@
                 <li><a href="#typography">Type</a></li>
                 <li><a href="#components">Components</a></li>
                 <li><a href="#readability">Readability</a></li>
+                <li><a href="#decoration">Decoration</a></li>
+                <li><a href="#icons">Icons</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- ═══ HERO ═══ -->
     <section class="hero">
-        <p class="hero-eyebrow">SVD-OS Design System v1.0</p>
+        <p class="hero-eyebrow">WEAREMS Design System v2.0</p>
         <h1>Silent <span class="gold">Gold</span></h1>
         <p class="hero-sub">
             静謐なゴールド。<br>
-            Momentum Peaksが切り拓いたデザインの美学を、<br>
-            SVD-OS全体の統一言語として体系化する。
+            WEAREMSが追求するデザインの美学を、<br>
+            全プロジェクトの統一言語として体系化する。
         </p>
         <div class="hero-badge">
             <span class="dot"></span>
@@ -1231,7 +1313,7 @@
                 <span class="type-weight-label">WEIGHT 500</span>
                 <span class="type-use">ラベル・アイブロウ — UPPERCASE + SPACING</span>
             </div>
-            <div class="type-sample-500">SVD-OS Intelligence · Season Index · Philosophy</div>
+            <div class="type-sample-500">WEAREMS Intelligence · Season Index · Philosophy</div>
         </div>
 
         <!-- Mono -->
@@ -1247,7 +1329,7 @@
         <h3 style="font-size: 14px; font-weight: 500; color: var(--navy); margin-top: 50px; margin-bottom: 8px;">ウェイト比較
             — なぜ200-500なのか</h3>
         <p style="font-family: var(--font-body-ja); font-size: 13px; color: var(--text-3); margin-bottom: 20px;">
-            太いフォントは「力強さ」を、細いフォントは「品格」を表現する。SVDが目指すのは後者。
+            太いフォントは「力強さ」を、細いフォントは「品格」を表現する。WEAREMSが目指すのは後者。
         </p>
 
         <div class="weight-compare">
@@ -1321,7 +1403,7 @@
                 <div class="readability-label good">◎ 小さいテキスト — Weight 500 × Letter Spacing</div>
                 <p
                     style="font-size: 11px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px;">
-                    SVD-OS Intelligence
+                    WEAREMS Intelligence
                 </p>
                 <p
                     style="font-family: var(--font-body-ja); font-size: 14px; font-weight: 400; color: var(--text-2); line-height: 1.9;">
@@ -1467,6 +1549,184 @@
             <div class="formula-text">月別 MP = ( KF① + KF② + KF③ ) ÷ 3</div>
             <div class="formula-desc">定数と実績を統合した適正フォーキャスト</div>
         </div>
+
+        <!-- Timeline -->
+        <h3
+            style="font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 50px; margin-bottom: 16px;">
+            Timeline / Steps</h3>
+        <div style="position:relative;padding-left:32px;border-left:2px solid var(--border);max-width:600px;">
+            <div style="position:relative;padding-bottom:32px;">
+                <div
+                    style="position:absolute;left:-39px;top:0;width:14px;height:14px;border-radius:50%;background:var(--gold);border:3px solid var(--surface);">
+                </div>
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">
+                    PHASE 1 — TEMPLATE</div>
+                <div style="font-family:var(--font-body-ja);font-size:14px;color:var(--text-2);line-height:1.8;">
+                    定数テンプレートの構築。過去データを分析し、拠点ごとの標準パターンを確立する。</div>
+            </div>
+            <div style="position:relative;padding-bottom:32px;">
+                <div
+                    style="position:absolute;left:-39px;top:0;width:14px;height:14px;border-radius:50%;background:var(--gold-warm);border:3px solid var(--surface);opacity:0.7;">
+                </div>
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px;">
+                    PHASE 2 — RECOMMENDATION</div>
+                <div style="font-family:var(--font-body-ja);font-size:14px;color:var(--text-3);line-height:1.8;">
+                    AIが提案する最適配置。データに基づく推薦をマネージャーが承認する。</div>
+            </div>
+            <div style="position:relative;">
+                <div
+                    style="position:absolute;left:-39px;top:0;width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--surface);">
+                </div>
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);opacity:0.5;margin-bottom:4px;">
+                    PHASE 3 — ONE BUTTON</div>
+                <div
+                    style="font-family:var(--font-body-ja);font-size:14px;color:var(--text-3);opacity:0.5;line-height:1.8;">
+                    ワンボタンで最適シフトを自動生成。究極の業務革命。</div>
+            </div>
+        </div>
+
+        <!-- Stats / KPI Cards -->
+        <h3
+            style="font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 50px; margin-bottom: 16px;">
+            Stats / KPI Cards</h3>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+            <div class="card" style="padding:24px;text-align:center;">
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">
+                    REVENUE</div>
+                <div style="font-size:32px;font-weight:200;color:var(--navy);letter-spacing:-1px;">¥708M</div>
+                <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 12.3%</div>
+            </div>
+            <div class="card" style="padding:24px;text-align:center;">
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">
+                    CUSTOMERS</div>
+                <div style="font-size:32px;font-weight:200;color:var(--navy);letter-spacing:-1px;">142K</div>
+                <div style="font-size:12px;color:#22c55e;margin-top:4px;">↑ 8.7%</div>
+            </div>
+            <div class="card" style="padding:24px;text-align:center;">
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">
+                    MP SCORE</div>
+                <div style="font-size:32px;font-weight:200;color:var(--gold);letter-spacing:-1px;">3.42</div>
+                <div style="font-size:12px;color:var(--gold);margin-top:4px;">Peak Season</div>
+            </div>
+            <div class="card" style="padding:24px;text-align:center;">
+                <div
+                    style="font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;">
+                    FL RATIO</div>
+                <div style="font-size:32px;font-weight:200;color:var(--navy);letter-spacing:-1px;">58.2%</div>
+                <div style="font-size:12px;color:#ef4444;margin-top:4px;">↓ 1.5%</div>
+            </div>
+        </div>
+
+        <!-- Progress Bars -->
+        <h3
+            style="font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 50px; margin-bottom: 16px;">
+            Progress Bars</h3>
+        <div style="max-width:600px;display:grid;gap:20px;">
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="font-size:12px;font-weight:500;color:var(--navy);">TI Data Coverage</span>
+                    <span style="font-size:12px;font-weight:500;color:var(--gold);">78%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:100px;overflow:hidden;">
+                    <div
+                        style="width:78%;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-warm));border-radius:100px;">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="font-size:12px;font-weight:500;color:var(--navy);">MP Accuracy</span>
+                    <span style="font-size:12px;font-weight:500;color:#22c55e;">92%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:100px;overflow:hidden;">
+                    <div
+                        style="width:92%;height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:100px;">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="font-size:12px;font-weight:500;color:var(--navy);">Shift Optimization</span>
+                    <span style="font-size:12px;font-weight:500;color:var(--text-3);">34%</span>
+                </div>
+                <div style="height:6px;background:var(--border);border-radius:100px;overflow:hidden;">
+                    <div style="width:34%;height:100%;background:var(--border-hover);border-radius:100px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Banners -->
+        <h3
+            style="font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 50px; margin-bottom: 16px;">
+            Alert / Notice Banners</h3>
+        <div style="display:grid;gap:12px;max-width:600px;">
+            <div
+                style="padding:14px 18px;border-radius:8px;background:rgba(34,197,94,0.08);border-left:3px solid #22c55e;display:flex;align-items:center;gap:10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"
+                    stroke-linecap="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span style="font-size:13px;font-weight:400;color:#166534;">データの同期が完了しました</span>
+            </div>
+            <div
+                style="padding:14px 18px;border-radius:8px;background:rgba(59,130,246,0.08);border-left:3px solid #3b82f6;display:flex;align-items:center;gap:10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"
+                    stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span style="font-size:13px;font-weight:400;color:#1e40af;">新しいバージョンが利用可能です</span>
+            </div>
+            <div
+                style="padding:14px 18px;border-radius:8px;background:var(--gold-soft);border-left:3px solid var(--gold);display:flex;align-items:center;gap:10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"
+                    stroke-linecap="round">
+                    <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span style="font-size:13px;font-weight:400;color:var(--navy);">原典定数が未算出のセグメントがあります</span>
+            </div>
+            <div
+                style="padding:14px 18px;border-radius:8px;background:rgba(239,68,68,0.08);border-left:3px solid #ef4444;display:flex;align-items:center;gap:10px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"
+                    stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <span style="font-size:13px;font-weight:400;color:#991b1b;">接続エラーが発生しました</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <h3
+            style="font-size: 12px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-top: 50px; margin-bottom: 16px;">
+            Tabs</h3>
+        <div style="max-width:500px;">
+            <div style="display:flex;border-bottom:1px solid var(--border);gap:0;" id="demoTabs">
+                <button class="demo-tab active" onclick="switchTab(this,0)"
+                    style="padding:10px 20px;font-size:13px;font-weight:500;color:var(--gold);background:none;border:none;border-bottom:2px solid var(--gold);cursor:pointer;font-family:inherit;">Overview</button>
+                <button class="demo-tab" onclick="switchTab(this,1)"
+                    style="padding:10px 20px;font-size:13px;font-weight:400;color:var(--text-3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">Details</button>
+                <button class="demo-tab" onclick="switchTab(this,2)"
+                    style="padding:10px 20px;font-size:13px;font-weight:400;color:var(--text-3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:inherit;">History</button>
+            </div>
+            <div style="padding:20px 0;">
+                <div class="demo-tab-content"
+                    style="font-family:var(--font-body-ja);font-size:14px;color:var(--text-2);line-height:1.8;">
+                    タブでコンテンツを切り替え。店舗別、期間別、セグメント別の表示に最適。</div>
+            </div>
+        </div>
     </section>
 
     <div class="divider" style="max-width: 1100px; margin: 0 auto;"></div>
@@ -1545,11 +1805,518 @@
         </div>
     </section>
 
+    <div class="divider" style="max-width: 1100px; margin: 0 auto;"></div>
+
+    <!-- ═══ ICON CATALOG ═══ -->
+    <section class="section" id="icons">
+        <p class="section-label">Icon Catalog</p>
+        <h2>SVGアイコンライブラリ</h2>
+        <p class="section-desc">
+            クリックでSVGコードをコピー。テーマカラーに連動する統一アイコンセット。すべてstroke-based、24×24 viewBox。
+        </p>
+
+        <!-- Analytics -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            Analytics</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="bar-chart">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 20V10M12 20V4M6 20v-6" />
+                </svg>
+                <span>bar-chart</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="trending-up">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                    <polyline points="17 6 23 6 23 12" />
+                </svg>
+                <span>trending-up</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="pie-chart">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                    <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                </svg>
+                <span>pie-chart</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="activity">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <span>activity</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="target">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <circle cx="12" cy="12" r="6" />
+                    <circle cx="12" cy="12" r="2" />
+                </svg>
+                <span>target</span>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            Navigation</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="menu">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+                <span>menu</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="arrow-right">
+                <svg viewBox="0 0 24 24">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                </svg>
+                <span>arrow-right</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="chevron-down">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="6 9 12 15 18 9" />
+                </svg>
+                <span>chevron-down</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="external-link">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                <span>external-link</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="home">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>home</span>
+            </div>
+        </div>
+
+        <!-- Action -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            Action</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="plus">
+                <svg viewBox="0 0 24 24">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                <span>plus</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="edit">
+                <svg viewBox="0 0 24 24">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                <span>edit</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="trash">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+                <span>trash</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="download">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>download</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="copy">
+                <svg viewBox="0 0 24 24">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                <span>copy</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>search</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="filter">
+                <svg viewBox="0 0 24 24">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                </svg>
+                <span>filter</span>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            Status</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="check-circle">
+                <svg viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+                <span>check-circle</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="alert-circle">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>alert-circle</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="info">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+                <span>info</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="x-circle">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="15" y1="9" x2="9" y2="15" />
+                    <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+                <span>x-circle</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="alert-triangle">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>alert-triangle</span>
+            </div>
+        </div>
+
+        <!-- UI -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            UI Elements</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="settings">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                </svg>
+                <span>settings</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="user">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>user</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="users">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>users</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="calendar">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                <span>calendar</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="clock">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>clock</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="star">
+                <svg viewBox="0 0 24 24">
+                    <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                <span>star</span>
+            </div>
+        </div>
+
+        <!-- Business -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:30px;margin-bottom:16px;">
+            Business</h3>
+        <div class="icon-grid">
+            <div class="icon-cell" onclick="copyIcon(this)" title="briefcase">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+                <span>briefcase</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="dollar-sign">
+                <svg viewBox="0 0 24 24">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <span>dollar-sign</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="map-pin">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>map-pin</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="phone">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span>phone</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="mail">
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <span>mail</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="globe">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                <span>globe</span>
+            </div>
+            <div class="icon-cell" onclick="copyIcon(this)" title="layers">
+                <svg viewBox="0 0 24 24">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                    <polyline points="2 17 12 22 22 17" />
+                    <polyline points="2 12 12 17 22 12" />
+                </svg>
+                <span>layers</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider" style="max-width: 1100px; margin: 0 auto;"></div>
+
+    <!-- ═══ TEXT DECORATION PATTERNS ═══ -->
+    <section class="section" id="decoration">
+        <p class="section-label">Text Decoration</p>
+        <h2>テキスト装飾パターン</h2>
+        <p class="section-desc">
+            文字そのものにスタイリッシュな表現を加える。タイトル・見出し・キーフレーズに適用し、視覚的インパクトを与える。
+        </p>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:40px;">
+            <!-- Gradient Text -->
+            <div class="card" style="text-align:center;padding:40px 24px;">
+                <div class="deco-label">GRADIENT TEXT</div>
+                <div
+                    style="font-size:36px;font-weight:200;background:linear-gradient(135deg,var(--gold),var(--gold-warm),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.5px;">
+                    Silent Gold</div>
+                <div class="deco-code">background: linear-gradient(135deg, gold, warm)</div>
+            </div>
+            <!-- Outline Text -->
+            <div class="card" style="text-align:center;padding:40px 24px;">
+                <div class="deco-label">OUTLINE TEXT</div>
+                <div
+                    style="font-size:36px;font-weight:200;color:transparent;-webkit-text-stroke:1px var(--gold);letter-spacing:-0.5px;">
+                    MOMENTUM</div>
+                <div class="deco-code">-webkit-text-stroke: 1px gold</div>
+            </div>
+            <!-- Engrave Text -->
+            <div class="card" style="text-align:center;padding:40px 24px;background:var(--navy);">
+                <div class="deco-label" style="color:rgba(255,255,255,0.4);">ENGRAVE / DARK BG</div>
+                <div
+                    style="font-size:36px;font-weight:300;color:var(--gold);text-shadow:0 1px 2px rgba(0,0,0,0.5),0 0 40px rgba(184,134,11,0.2);letter-spacing:2px;">
+                    PEAKS</div>
+                <div class="deco-code" style="color:rgba(255,255,255,0.3);">text-shadow: 0 1px 2px shadow + glow</div>
+            </div>
+            <!-- Underline Accent -->
+            <div class="card" style="text-align:center;padding:40px 24px;">
+                <div class="deco-label">UNDERLINE ACCENT</div>
+                <div
+                    style="font-size:28px;font-weight:300;color:var(--navy);display:inline-block;border-bottom:2px solid var(--gold);padding-bottom:4px;">
+                    Intelligence Age</div>
+                <div class="deco-code">border-bottom: 2px solid gold</div>
+            </div>
+            <!-- Neon Glow -->
+            <div class="card" style="text-align:center;padding:40px 24px;background:#0a0a0a;border-color:#1a1a1a;">
+                <div class="deco-label" style="color:rgba(255,255,255,0.3);">NEON GLOW</div>
+                <div
+                    style="font-size:32px;font-weight:200;color:var(--gold);text-shadow:0 0 10px var(--gold),0 0 40px rgba(184,134,11,0.3),0 0 80px rgba(184,134,11,0.1);letter-spacing:4px;">
+                    WEAREMS</div>
+                <div class="deco-code" style="color:rgba(255,255,255,0.3);">text-shadow: multi-layer glow</div>
+            </div>
+            <!-- Letter Spacing Extreme -->
+            <div class="card" style="text-align:center;padding:40px 24px;">
+                <div class="deco-label">SPACED UPPERCASE</div>
+                <div
+                    style="font-size:14px;font-weight:500;color:var(--gold);letter-spacing:12px;text-transform:uppercase;">
+                    enter</div>
+                <div class="deco-code">letter-spacing: 12px + uppercase</div>
+            </div>
+        </div>
+
+        <!-- Decorative Marks -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:50px;margin-bottom:16px;">
+            Decorative Marks & Dividers</h3>
+
+        <div style="display:grid;gap:32px;margin-bottom:40px;">
+            <!-- Divider: Gold Line -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">GOLD LINE DIVIDER</div>
+                <div style="margin:20px auto;width:60px;height:1px;background:var(--gold);"></div>
+                <div class="deco-code">width:60px; height:1px; bg:gold</div>
+            </div>
+            <!-- Divider: Gradient Fade -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">GRADIENT FADE DIVIDER</div>
+                <div
+                    style="margin:20px auto;width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);">
+                </div>
+                <div class="deco-code">linear-gradient(90deg, transparent, gold, transparent)</div>
+            </div>
+            <!-- Divider: Diamond -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">DIAMOND SEPARATOR</div>
+                <div style="margin:20px auto;display:flex;align-items:center;justify-content:center;gap:12px;">
+                    <div style="width:40px;height:1px;background:var(--gold);"></div>
+                    <div style="width:6px;height:6px;background:var(--gold);transform:rotate(45deg);"></div>
+                    <div style="width:40px;height:1px;background:var(--gold);"></div>
+                </div>
+                <div class="deco-code">line — ◆ — line</div>
+            </div>
+            <!-- Divider: Triple Dot -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">TRIPLE DOT</div>
+                <div style="margin:20px auto;display:flex;align-items:center;justify-content:center;gap:8px;">
+                    <div style="width:4px;height:4px;border-radius:50%;background:var(--gold);"></div>
+                    <div style="width:5px;height:5px;border-radius:50%;background:var(--gold);"></div>
+                    <div style="width:4px;height:4px;border-radius:50%;background:var(--gold);"></div>
+                </div>
+                <div class="deco-code">● ● ● (3 dots)</div>
+            </div>
+            <!-- Divider: Double Line -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">DOUBLE LINE</div>
+                <div style="margin:20px auto;width:80px;display:flex;flex-direction:column;gap:3px;">
+                    <div style="height:1px;background:var(--gold);"></div>
+                    <div style="height:1px;background:var(--gold);opacity:0.4;"></div>
+                </div>
+                <div class="deco-code">2 lines with opacity variation</div>
+            </div>
+        </div>
+
+        <!-- Section Decorations -->
+        <h3
+            style="font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-top:50px;margin-bottom:16px;">
+            Section Decorations</h3>
+
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-bottom:40px;">
+            <!-- Quote Block -->
+            <div class="card" style="padding:0;overflow:hidden;">
+                <div class="deco-label" style="padding:16px 24px 0;">QUOTE BLOCK</div>
+                <div style="padding:16px 24px 24px;border-left:3px solid var(--gold);margin:12px 24px 24px;">
+                    <div style="font-size:28px;color:var(--gold);opacity:0.3;font-family:Georgia,serif;line-height:1;">"
+                    </div>
+                    <div
+                        style="font-family:var(--font-body-ja);font-size:14px;font-weight:400;color:var(--text-2);line-height:1.8;margin-top:-8px;">
+                        ここだけの美味しさ。<br>ここだけのエンターテインメント。</div>
+                </div>
+            </div>
+            <!-- Numbered Section -->
+            <div class="card" style="padding:32px 24px;">
+                <div class="deco-label">NUMBERED SECTION</div>
+                <div style="display:flex;align-items:flex-start;gap:16px;margin-top:12px;">
+                    <div style="font-size:48px;font-weight:200;color:var(--gold);line-height:1;opacity:0.6;">01</div>
+                    <div>
+                        <div style="font-size:16px;font-weight:500;color:var(--navy);margin-bottom:4px;">Demand
+                            Quantization</div>
+                        <div
+                            style="font-family:var(--font-body-ja);font-size:13px;color:var(--text-3);line-height:1.7;">
+                            需要を数値化し、適正な見通しを構築する</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Accent Dot -->
+            <div class="card" style="padding:32px 24px;">
+                <div class="deco-label">ACCENT DOT HEADING</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+                    <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);"></div>
+                    <div style="font-size:18px;font-weight:300;color:var(--navy);">Supply Engine</div>
+                </div>
+            </div>
+            <!-- Status Badges -->
+            <div class="card" style="padding:32px 24px;">
+                <div class="deco-label">STATUS BADGES</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+                    <span
+                        style="padding:4px 12px;border-radius:100px;background:rgba(34,197,94,0.1);color:#22c55e;font-size:11px;font-weight:500;">✅
+                        ACHIEVED</span>
+                    <span
+                        style="padding:4px 12px;border-radius:100px;background:var(--gold-soft);color:var(--gold);font-size:11px;font-weight:500;">🔜
+                        IN PROGRESS</span>
+                    <span
+                        style="padding:4px 12px;border-radius:100px;background:rgba(107,114,128,0.08);color:#6b7280;font-size:11px;font-weight:500;">📋
+                        PLANNED</span>
+                    <span
+                        style="padding:4px 12px;border-radius:100px;background:rgba(239,68,68,0.08);color:#ef4444;font-size:11px;font-weight:500;">⚠️
+                        BLOCKED</span>
+                </div>
+            </div>
+            <!-- Corner Bracket -->
+            <div class="card" style="padding:32px 24px;text-align:center;">
+                <div class="deco-label">CORNER BRACKET</div>
+                <div style="position:relative;display:inline-block;padding:20px 32px;margin-top:12px;">
+                    <div
+                        style="position:absolute;top:0;left:0;width:16px;height:16px;border-top:2px solid var(--gold);border-left:2px solid var(--gold);">
+                    </div>
+                    <div
+                        style="position:absolute;bottom:0;right:0;width:16px;height:16px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold);">
+                    </div>
+                    <span style="font-size:16px;font-weight:300;color:var(--navy);letter-spacing:2px;">PREMIUM</span>
+                </div>
+            </div>
+            <!-- Vertical Label -->
+            <div class="card" style="padding:32px 24px;">
+                <div class="deco-label">VERTICAL ACCENT LABEL</div>
+                <div style="display:flex;gap:16px;margin-top:12px;">
+                    <div
+                        style="writing-mode:vertical-rl;font-size:9px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gold);border-right:1px solid var(--gold);padding-right:8px;">
+                        WEAREMS</div>
+                    <div style="font-family:var(--font-body-ja);font-size:14px;color:var(--text-2);line-height:1.9;">
+                        コンテンツの横に配置する垂直ラベル。セクションの文脈を静かに伝える。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ═══ FOOTER ═══ -->
     <footer>
-        <p><span class="footer-brand">SVD Design System</span> — Silent Gold v1.0</p>
+        <p><span class="footer-brand">WEAREMS Design System</span> — v2.0</p>
         <p>Crafted with precision by SAT × G</p>
-        <p style="margin-top: 12px; font-size: 10px;">© 2026 SAPPORO VIEWTIFUL DINING. Powered by WEAREMS.</p>
+        <p style="margin-top: 12px; font-size: 10px;">© 2026 WEAREMS Inc. — Design is strategy.</p>
     </footer>
 
     <!-- ═══ SWITCHER PANEL ═══ -->
@@ -1569,8 +2336,26 @@
                     title="Sakura"></span>
                 <span class="theme-dot" data-theme="tss" style="background:linear-gradient(135deg,#D4AF37,#FFD700)"
                     title="TSS Gold"></span>
+                <span class="theme-dot" data-theme="ocean" style="background:linear-gradient(135deg,#1e6091,#4da3d4)"
+                    title="Ocean Blue"></span>
+                <span class="theme-dot" data-theme="obsidian" style="background:linear-gradient(135deg,#2d2d2d,#555)"
+                    title="Obsidian"></span>
+                <span class="theme-dot" data-theme="champagne"
+                    style="background:linear-gradient(135deg,#d4b896,#f0dfc8)" title="Champagne"></span>
+                <span class="theme-dot" data-theme="sunset" style="background:linear-gradient(135deg,#d4622a,#f0a050)"
+                    title="Sunset"></span>
+                <span class="theme-dot" data-theme="lavender" style="background:linear-gradient(135deg,#7c5cbf,#b39ddb)"
+                    title="Lavender"></span>
+                <span class="theme-dot" data-theme="emerald" style="background:linear-gradient(135deg,#2d8a6e,#5cc9a7)"
+                    title="Emerald"></span>
+                <span class="theme-dot" data-theme="coral" style="background:linear-gradient(135deg,#e07b6a,#f4a996)"
+                    title="Coral"></span>
+                <span class="theme-dot" data-theme="copper" style="background:linear-gradient(135deg,#b87333,#d4975a)"
+                    title="Copper"></span>
+                <span class="theme-dot" data-theme="ice" style="background:linear-gradient(135deg,#5ba3c9,#a3d5e8)"
+                    title="Ice Blue"></span>
             </div>
-            <div class="switcher-section-title">English Font</div>
+            <div class="switcher-section-title">Sans-Serif</div>
             <div class="switcher-options" id="fontOptions">
                 <button class="switcher-chip active" data-font="'Inter'">Inter</button>
                 <button class="switcher-chip" data-font="'Outfit'">Outfit</button>
@@ -1578,6 +2363,34 @@
                 <button class="switcher-chip" data-font="'Plus Jakarta Sans'">Jakarta</button>
                 <button class="switcher-chip" data-font="'Space Grotesk'">Grotesk</button>
                 <button class="switcher-chip" data-font="'Urbanist'">Urbanist</button>
+                <button class="switcher-chip" data-font="'Montserrat'">Montserrat</button>
+                <button class="switcher-chip" data-font="'Jost'" title="Futura代替">Jost ✨</button>
+                <button class="switcher-chip" data-font="'Raleway'">Raleway</button>
+                <button class="switcher-chip" data-font="'Poppins'">Poppins</button>
+                <button class="switcher-chip" data-font="'Rubik'">Rubik</button>
+                <button class="switcher-chip" data-font="'Manrope'">Manrope</button>
+                <button class="switcher-chip" data-font="'DM Sans'">DM Sans</button>
+                <button class="switcher-chip" data-font="'Figtree'">Figtree</button>
+            </div>
+            <div class="switcher-section-title">Serif / Elegant</div>
+            <div class="switcher-options" id="fontOptionsSerif">
+                <button class="switcher-chip" data-font="'Cormorant Garamond'">Cormorant</button>
+                <button class="switcher-chip" data-font="'DM Serif Display'">DM Serif</button>
+                <button class="switcher-chip" data-font="'Playfair Display'">Playfair</button>
+                <button class="switcher-chip" data-font="'Crimson Pro'">Crimson</button>
+                <button class="switcher-chip" data-font="'Libre Baskerville'">Baskerville</button>
+                <button class="switcher-chip" data-font="'Lora'">Lora</button>
+            </div>
+            <div class="switcher-section-title">日本語フォント</div>
+            <div class="switcher-options" id="fontOptionsJa">
+                <button class="switcher-chip" data-font="'Noto Sans JP'" data-ja="true">Noto Sans</button>
+                <button class="switcher-chip" data-font="'Noto Serif JP'" data-ja="true">Noto Serif</button>
+                <button class="switcher-chip" data-font="'Zen Maru Gothic'" data-ja="true">丸ゴシック</button>
+                <button class="switcher-chip" data-font="'Zen Kaku Gothic New'" data-ja="true">角ゴシック</button>
+                <button class="switcher-chip" data-font="'Shippori Mincho'" data-ja="true">明朝体</button>
+                <button class="switcher-chip" data-font="'BIZ UDGothic'" data-ja="true">UDゴシック</button>
+                <button class="switcher-chip" data-font="'M PLUS Rounded 1c'" data-ja="true">丸ゴ太</button>
+                <button class="switcher-chip" data-font="'Sawarabi Mincho'" data-ja="true">さわらび明朝</button>
             </div>
             <button class="btn-export" id="exportBtn">✦ これで！ — CSS出力</button>
         </div>
@@ -1598,7 +2411,16 @@
             silver: { accent: '#6b7280', warm: '#9ca3af', soft: 'rgba(107,114,128,0.08)', glow: 'rgba(107,114,128,0.15)', hover: 'rgba(107,114,128,0.3)', shadow: '0 8px 30px rgba(107,114,128,0.1)' },
             forest: { accent: '#5a7247', warm: '#8ba67a', soft: 'rgba(90,114,71,0.08)', glow: 'rgba(90,114,71,0.15)', hover: 'rgba(90,114,71,0.3)', shadow: '0 8px 30px rgba(90,114,71,0.1)' },
             sakura: { accent: '#c97b84', warm: '#e8b4b8', soft: 'rgba(201,123,132,0.08)', glow: 'rgba(201,123,132,0.15)', hover: 'rgba(201,123,132,0.3)', shadow: '0 8px 30px rgba(201,123,132,0.1)' },
-            tss: { accent: '#D4AF37', warm: '#FFD700', soft: 'rgba(212,175,55,0.08)', glow: 'rgba(212,175,55,0.15)', hover: 'rgba(212,175,55,0.3)', shadow: '0 8px 30px rgba(212,175,55,0.1)' }
+            tss: { accent: '#D4AF37', warm: '#FFD700', soft: 'rgba(212,175,55,0.08)', glow: 'rgba(212,175,55,0.15)', hover: 'rgba(212,175,55,0.3)', shadow: '0 8px 30px rgba(212,175,55,0.1)' },
+            ocean: { accent: '#1e6091', warm: '#4da3d4', soft: 'rgba(30,96,145,0.08)', glow: 'rgba(30,96,145,0.15)', hover: 'rgba(30,96,145,0.3)', shadow: '0 8px 30px rgba(30,96,145,0.1)' },
+            obsidian: { accent: '#6b6b6b', warm: '#8a8a8a', soft: 'rgba(107,107,107,0.08)', glow: 'rgba(107,107,107,0.15)', hover: 'rgba(107,107,107,0.3)', shadow: '0 8px 30px rgba(107,107,107,0.1)' },
+            champagne: { accent: '#c4a265', warm: '#e0c99a', soft: 'rgba(196,162,101,0.08)', glow: 'rgba(196,162,101,0.15)', hover: 'rgba(196,162,101,0.3)', shadow: '0 8px 30px rgba(196,162,101,0.1)' },
+            sunset: { accent: '#d4622a', warm: '#f0a050', soft: 'rgba(212,98,42,0.08)', glow: 'rgba(212,98,42,0.15)', hover: 'rgba(212,98,42,0.3)', shadow: '0 8px 30px rgba(212,98,42,0.1)' },
+            lavender: { accent: '#7c5cbf', warm: '#b39ddb', soft: 'rgba(124,92,191,0.08)', glow: 'rgba(124,92,191,0.15)', hover: 'rgba(124,92,191,0.3)', shadow: '0 8px 30px rgba(124,92,191,0.1)' },
+            emerald: { accent: '#2d8a6e', warm: '#5cc9a7', soft: 'rgba(45,138,110,0.08)', glow: 'rgba(45,138,110,0.15)', hover: 'rgba(45,138,110,0.3)', shadow: '0 8px 30px rgba(45,138,110,0.1)' },
+            coral: { accent: '#e07b6a', warm: '#f4a996', soft: 'rgba(224,123,106,0.08)', glow: 'rgba(224,123,106,0.15)', hover: 'rgba(224,123,106,0.3)', shadow: '0 8px 30px rgba(224,123,106,0.1)' },
+            copper: { accent: '#b87333', warm: '#d4975a', soft: 'rgba(184,115,51,0.08)', glow: 'rgba(184,115,51,0.15)', hover: 'rgba(184,115,51,0.3)', shadow: '0 8px 30px rgba(184,115,51,0.1)' },
+            ice: { accent: '#5ba3c9', warm: '#a3d5e8', soft: 'rgba(91,163,201,0.08)', glow: 'rgba(91,163,201,0.15)', hover: 'rgba(91,163,201,0.3)', shadow: '0 8px 30px rgba(91,163,201,0.1)' }
         };
 
         // Theme switcher
@@ -1617,14 +2439,55 @@
             dot.classList.add('active');
         });
 
-        // Font switcher
-        document.getElementById('fontOptions').addEventListener('click', e => {
+        // Font switcher (sans-serif + serif + ja)
+        function handleFontClick(e) {
             const chip = e.target.closest('.switcher-chip');
             if (!chip) return;
-            document.documentElement.style.setProperty('--font-display', chip.dataset.font + ', -apple-system, sans-serif');
-            document.querySelectorAll('#fontOptions .switcher-chip').forEach(c => c.classList.remove('active'));
+            const isJa = chip.dataset.ja === 'true';
+            if (isJa) {
+                document.documentElement.style.setProperty('--font-body-ja', chip.dataset.font + ', sans-serif');
+                document.querySelectorAll('#fontOptionsJa .switcher-chip').forEach(c => c.classList.remove('active'));
+            } else {
+                document.documentElement.style.setProperty('--font-display', chip.dataset.font + ', -apple-system, sans-serif');
+                document.querySelectorAll('#fontOptions .switcher-chip, #fontOptionsSerif .switcher-chip').forEach(c => c.classList.remove('active'));
+            }
             chip.classList.add('active');
-        });
+        }
+        document.getElementById('fontOptions').addEventListener('click', handleFontClick);
+        document.getElementById('fontOptionsSerif').addEventListener('click', handleFontClick);
+        document.getElementById('fontOptionsJa').addEventListener('click', handleFontClick);
+
+        // Tab switcher
+        function switchTab(btn, idx) {
+            const tabs = btn.parentElement.querySelectorAll('button');
+            const contents = ['Overview: タブでコンテンツを切り替え。店舗別、期間別、セグメント別の表示に最適。', 'Details: 各セグメントの詳細データを表示。毎日のPax、売上、MPスコアなど。', 'History: 過去の変更履歴をタイムライン表示。'];
+            tabs.forEach(t => {
+                t.style.color = 'var(--text-3)';
+                t.style.fontWeight = '400';
+                t.style.borderBottom = '2px solid transparent';
+            });
+            btn.style.color = 'var(--gold)';
+            btn.style.fontWeight = '500';
+            btn.style.borderBottom = '2px solid var(--gold)';
+            const content = btn.closest('.section, [style]').querySelector('.demo-tab-content');
+            if (content) content.textContent = contents[idx];
+        }
+
+        // Icon copy
+        function copyIcon(cell) {
+            const svg = cell.querySelector('svg');
+            const svgCode = svg.outerHTML;
+            navigator.clipboard.writeText(svgCode).then(() => {
+                cell.classList.add('copied');
+                const label = cell.querySelector('span');
+                const orig = label.textContent;
+                label.textContent = 'copied!';
+                setTimeout(() => {
+                    cell.classList.remove('copied');
+                    label.textContent = orig;
+                }, 1500);
+            });
+        }
 
         // Toggle drawer
         document.getElementById('switcherBtn').addEventListener('click', () => {
@@ -1632,14 +2495,14 @@
         });
 
         // Export CSS
-        const themeNames = { gold: 'Silent Gold', rose: 'Midnight Rose', silver: 'Arctic Silver', forest: 'Deep Forest', sakura: 'Sakura', tss: 'TSS Gold' };
+        const themeNames = { gold: 'Silent Gold', rose: 'Midnight Rose', silver: 'Arctic Silver', forest: 'Deep Forest', sakura: 'Sakura', tss: 'TSS Gold', ocean: 'Ocean Blue', obsidian: 'Obsidian', champagne: 'Champagne', sunset: 'Sunset', lavender: 'Lavender', emerald: 'Emerald', coral: 'Coral', copper: 'Copper', ice: 'Ice Blue' };
         document.getElementById('exportBtn').addEventListener('click', () => {
             const activeDot = document.querySelector('.theme-dot.active');
-            const activeFont = document.querySelector('#fontOptions .switcher-chip.active');
+            const activeFont = document.querySelector('#fontOptions .switcher-chip.active') || document.querySelector('#fontOptionsSerif .switcher-chip.active');
             const themeName = themeNames[activeDot.dataset.theme] || 'Custom';
             const fontName = activeFont.textContent;
             const t = themes[activeDot.dataset.theme];
-            const css = `/* ═══ SVD Design Tokens ═══\n * Theme: ${themeName}\n * Font:  ${fontName}\n * Generated: ${new Date().toLocaleDateString('ja-JP')}\n */\n:root {\n  --font-display: ${activeFont.dataset.font}, -apple-system, sans-serif;\n  --gold: ${t.accent};\n  --gold-warm: ${t.warm};\n  --gold-soft: ${t.soft};\n  --gold-glow: ${t.glow};\n  --border-hover: ${t.hover};\n  --shadow-hover: ${t.shadow};\n}`;
+            const css = `/* ═══ WEAREMS Design Tokens ═══\n * Theme: ${themeName}\n * Font:  ${fontName}\n * Generated: ${new Date().toLocaleDateString('ja-JP')}\n */\n:root {\n  --font-display: ${activeFont.dataset.font}, -apple-system, sans-serif;\n  --gold: ${t.accent};\n  --gold-warm: ${t.warm};\n  --gold-soft: ${t.soft};\n  --gold-glow: ${t.glow};\n  --border-hover: ${t.hover};\n  --shadow-hover: ${t.shadow};\n}`;
             navigator.clipboard.writeText(css).then(() => {
                 const toast = document.getElementById('exportToast');
                 toast.textContent = `✓ ${themeName} × ${fontName} — CSSコピー完了！`;
