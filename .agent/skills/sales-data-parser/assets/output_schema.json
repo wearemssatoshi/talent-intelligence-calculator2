@@ -1,0 +1,204 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "SVD Sales Data Parser Output",
+    "type": "object",
+    "required": [
+        "metadata",
+        "monthly_summary",
+        "daily_data",
+        "validation"
+    ],
+    "properties": {
+        "metadata": {
+            "type": "object",
+            "required": [
+                "store_id",
+                "base",
+                "source_file",
+                "parsed_at"
+            ],
+            "properties": {
+                "store_id": {
+                    "type": "string",
+                    "description": "店舗ID (GA, JW, NP, BQ, RYB等)"
+                },
+                "store_name": {
+                    "type": "string"
+                },
+                "base": {
+                    "type": "string",
+                    "enum": [
+                        "TV_TOWER",
+                        "MOIWAYAMA",
+                        "OKURAYAMA",
+                        "AKARENGA"
+                    ]
+                },
+                "fiscal_year": {
+                    "type": "string"
+                },
+                "quarter": {
+                    "type": "string"
+                },
+                "source_file": {
+                    "type": "string"
+                },
+                "parsed_at": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "monthly_summary": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "month",
+                    "channels"
+                ],
+                "properties": {
+                    "month": {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}$"
+                    },
+                    "channels": {
+                        "type": "object",
+                        "properties": {
+                            "lunch": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "dinner": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "ld_total": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "takeout": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "banquet": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "beer_garden": {
+                                "$ref": "#/definitions/channel_data"
+                            },
+                            "all_channels": {
+                                "type": "object",
+                                "properties": {
+                                    "sales": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "daily_data": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "date",
+                    "weekday",
+                    "channels"
+                ],
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "weekday": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 6
+                    },
+                    "channels": {
+                        "type": "object",
+                        "properties": {
+                            "lunch": {
+                                "$ref": "#/definitions/daily_channel"
+                            },
+                            "dinner": {
+                                "$ref": "#/definitions/daily_channel"
+                            },
+                            "takeout": {
+                                "$ref": "#/definitions/daily_channel"
+                            },
+                            "banquet": {
+                                "$ref": "#/definitions/daily_channel"
+                            },
+                            "beer_garden": {
+                                "$ref": "#/definitions/daily_channel"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "validation": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "PASS",
+                        "WARN",
+                        "FAIL"
+                    ]
+                },
+                "checks": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "check": {
+                                "type": "string"
+                            },
+                            "result": {
+                                "type": "string",
+                                "enum": [
+                                    "PASS",
+                                    "WARN",
+                                    "FAIL"
+                                ]
+                            },
+                            "detail": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "channel_data": {
+            "type": "object",
+            "properties": {
+                "pax": {
+                    "type": "integer"
+                },
+                "sales": {
+                    "type": "integer"
+                },
+                "avg_spend": {
+                    "type": "number"
+                }
+            }
+        },
+        "daily_channel": {
+            "type": "object",
+            "properties": {
+                "pax": {
+                    "type": "integer"
+                },
+                "sales": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

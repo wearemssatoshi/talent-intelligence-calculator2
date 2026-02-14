@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R7 料飲部予算 × Momentum Peaks</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Shippori+Mincho:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --white: #FFFFFF;
+            --off-white: #FAFAFA;
+            --light-gray: #F5F5F5;
+            --navy: #1E3A5F;
+            --navy-dark: #0F2A4A;
+            --gold: #C9A962;
+            --gold-light: rgba(201, 169, 98, 0.15);
+            --gold-glow: rgba(201, 169, 98, 0.3);
+            --text-dark: #1E3A5F;
+            --text-gray: #6B7B8C;
+            --border: rgba(30, 58, 95, 0.1);
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Shippori Mincho', serif;
+            background: var(--off-white);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* === HEADER === */
+        .header {
+            background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+            color: var(--white);
+            padding: 24px 20px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .header-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .header-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .back-link {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            color: var(--gold);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* === MAIN === */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* === SECTION === */
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 10px;
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin: 28px 0 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+
+        /* === KPI CARDS === */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .kpi-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), rgba(201, 169, 98, 0.3));
+        }
+
+        .kpi-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            color: var(--text-gray);
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .kpi-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .kpi-unit {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .kpi-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .kpi-card.highlight {
+            border-color: var(--gold);
+            background: linear-gradient(145deg, rgba(201, 169, 98, 0.05), var(--white));
+        }
+
+        .kpi-card.danger .kpi-value {
+            color: var(--danger);
+        }
+
+        /* === CHART CONTAINER === */
+        .chart-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .chart-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+            letter-spacing: 0.03em;
+        }
+
+        .chart-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            margin-bottom: 14px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-height: 320px;
+        }
+
+        /* === TABLE === */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+        }
+
+        .data-table th {
+            background: var(--navy);
+            color: var(--white);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tr:nth-child(even) {
+            background: var(--light-gray);
+        }
+
+        .data-table tr:hover {
+            background: var(--gold-light);
+        }
+
+        .data-table .num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .data-table .total-row {
+            font-weight: 700;
+            background: linear-gradient(90deg, rgba(201, 169, 98, 0.1), transparent) !important;
+            border-top: 2px solid var(--gold);
+        }
+
+        .data-table .negative {
+            color: var(--danger);
+        }
+
+        /* === AREA SELECTOR === */
+        .area-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .area-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .area-tab:hover {
+            border-color: var(--gold);
+            color: var(--navy);
+        }
+
+        .area-tab.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--navy-dark);
+            font-weight: 600;
+        }
+
+        /* === MP STATUS === */
+        .mp-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .mp-status.ready {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .mp-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .mp-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 24px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--text-gray);
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        .footer .confidential {
+            color: var(--danger);
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 600px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi-value {
+                font-size: 18px;
+            }
+
+            .header h1 {
+                font-size: 17px;
+            }
+
+            .chart-wrapper {
+                max-height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-link">← MINDFUL</a>
+        <div class="header-label">SAPPORO VIEWTIFUL DINING — CONFIDENTIAL</div>
+        <h1>R7 料飲部予算</h1>
+        <div class="header-sub">令和7年度（第69期）× Momentum Peaks</div>
+    </div>
+
+    <div class="container">
+
+        <!-- KPI OVERVIEW -->
+        <div class="section-title">Overview</div>
+        <div class="kpi-grid">
+            <div class="kpi-card highlight">
+                <div class="kpi-label">TOTAL REVENUE</div>
+                <div class="kpi-value">7.08<span class="kpi-unit">億円</span></div>
+                <div class="kpi-sub">708,235千円</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">GROSS PROFIT</div>
+                <div class="kpi-value">69.6<span class="kpi-unit">%</span></div>
+                <div class="kpi-sub">493,044千円</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">FL RATIO</div>
+                <div class="kpi-value">70.1<span class="kpi-unit">%</span></div>
+                <div class="kpi-sub">F 30.4% + L 39.7%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">OP. INCOME</div>
+                <div class="kpi-value">228<span class="kpi-unit">万円</span></div>
+                <div class="kpi-sub">営業利益率 0.3%</div>
+            </div>
+        </div>
+
+        <!-- AREA COMPOSITION -->
+        <div class="section-title">Area Composition</div>
+        <div class="chart-card">
+            <div class="chart-title">拠点別売上構成</div>
+            <div class="chart-subtitle">R7予算 — 4エリア・9拠点</div>
+            <div class="chart-wrapper" style="max-height:300px;">
+                <canvas id="areaChart"></canvas>
+            </div>
+        </div>
+
+        <!-- MONTHLY TREND -->
+        <div class="section-title">Monthly Trend × MP</div>
+
+        <div class="area-tabs">
+            <button class="area-tab active" onclick="switchStore('all')">全体</button>
+            <button class="area-tab" onclick="switchStore('jw')" style="border-color:#E88535">JW <span
+                    class="mp-status ready"><span class="dot"></span>MP</span></button>
+            <button class="area-tab" onclick="switchStore('ga')" style="border-color:#2D5A2E">GA <span
+                    class="mp-status ready"><span class="dot"></span>MP</span></button>
+            <button class="area-tab" onclick="switchStore('bg')" style="border-color:#4ADE80">BG</button>
+            <button class="area-tab" onclick="switchStore('np')" style="border-color:#2D6B3F">NP <span
+                    class="mp-status pending"><span class="dot"></span>MP未</span></button>
+            <button class="area-tab" onclick="switchStore('bq')" style="border-color:#0D1B2A">BQ <span
+                    class="mp-status ready"><span class="dot"></span>MP</span></button>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-title" id="trendTitle">全店舗 月別売上予算</div>
+            <div class="chart-subtitle" id="trendSubtitle">R7予算（千円）</div>
+            <div class="chart-wrapper">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- PL SUMMARY TABLE -->
+        <div class="section-title">Profit & Loss by Area</div>
+        <div class="chart-card" style="overflow-x:auto;">
+            <div class="chart-title">拠点別損益サマリー</div>
+            <div class="chart-subtitle">R7予算（千円）— 4エリア集約</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>拠点</th>
+                        <th class="num">売上</th>
+                        <th class="num">原価率</th>
+                        <th class="num">粗利率</th>
+                        <th class="num">人件費率</th>
+                        <th class="num">FL比率</th>
+                        <th class="num">物件費率</th>
+                        <th class="num">営業利益</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🏔 大倉山<div style="font-size:9px;color:var(--text-gray)">NP+カフェ+CL</div>
+                        </td>
+                        <td class="num">127,078</td>
+                        <td class="num">29.5%</td>
+                        <td class="num">70.5%</td>
+                        <td class="num">46.8%</td>
+                        <td class="num" style="color:var(--danger);font-weight:600">76.3%</td>
+                        <td class="num">23.0%</td>
+                        <td class="num negative">-6,047</td>
+                    </tr>
+                    <tr>
+                        <td>⛰ 藻岩山<div style="font-size:9px;color:var(--text-gray)">ジュエルズ</div>
+                        </td>
+                        <td class="num">164,318</td>
+                        <td class="num">28.8%</td>
+                        <td class="num">71.2%</td>
+                        <td class="num">40.6%</td>
+                        <td class="num" style="color:var(--success);font-weight:600">69.4%</td>
+                        <td class="num">13.8%</td>
+                        <td class="num">23,986</td>
+                    </tr>
+                    <tr>
+                        <td>🗼 TV塔<div style="font-size:9px;color:var(--text-gray)">ガーデン+BG</div>
+                        </td>
+                        <td class="num">291,172</td>
+                        <td class="num">31.4%</td>
+                        <td class="num">68.6%</td>
+                        <td class="num">28.5%</td>
+                        <td class="num" style="color:var(--success);font-weight:600">59.9%</td>
+                        <td class="num">33.8%</td>
+                        <td class="num">7,179</td>
+                    </tr>
+                    <tr>
+                        <td>🧱 赤れんが<div style="font-size:9px;color:var(--text-gray)">BQ+RYB（新規）</div>
+                        </td>
+                        <td class="num">125,668</td>
+                        <td class="num">31.1%</td>
+                        <td class="num">68.9%</td>
+                        <td class="num">36.9%</td>
+                        <td class="num" style="font-weight:600">68.0%</td>
+                        <td class="num">25.5%</td>
+                        <td class="num">5,191</td>
+                    </tr>
+                    <tr>
+                        <td>📋 料飲共通<div style="font-size:9px;color:var(--text-gray)">間接費</div>
+                        </td>
+                        <td class="num">—</td>
+                        <td class="num">—</td>
+                        <td class="num">—</td>
+                        <td class="num">—</td>
+                        <td class="num">—</td>
+                        <td class="num">—</td>
+                        <td class="num negative">-28,024</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>料飲部合計</td>
+                        <td class="num">708,235</td>
+                        <td class="num">30.4%</td>
+                        <td class="num">69.6%</td>
+                        <td class="num">39.7%</td>
+                        <td class="num" style="font-weight:700">70.1%</td>
+                        <td class="num">26.1%</td>
+                        <td class="num">2,284</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MP INTEGRATION STATUS -->
+        <div class="section-title">MP Integration Status</div>
+        <div class="chart-card">
+            <div class="chart-title">Momentum Peaks 実績データ連携状況</div>
+            <div class="chart-subtitle">予算 × 実績の照合マトリクス</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>MP拠点</th>
+                        <th>店舗</th>
+                        <th>R7予算</th>
+                        <th>MP実績</th>
+                        <th>データ期間</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TV_TOWER</td>
+                        <td>ガーデン</td>
+                        <td>✅ 取得済</td>
+                        <td><span class="mp-status ready"><span class="dot"></span>READY</span></td>
+                        <td>3年分</td>
+                    </tr>
+                    <tr>
+                        <td>TV_TOWER</td>
+                        <td>ビアガーデン</td>
+                        <td>✅ 取得済</td>
+                        <td><span class="mp-status ready"><span class="dot"></span>READY</span></td>
+                        <td>3年分</td>
+                    </tr>
+                    <tr>
+                        <td>MOIWAYAMA</td>
+                        <td>ジュエルズ</td>
+                        <td>✅ 取得済</td>
+                        <td><span class="mp-status ready"><span class="dot"></span>READY</span></td>
+                        <td>3年分 1,065日</td>
+                    </tr>
+                    <tr>
+                        <td>AKARENGA</td>
+                        <td>ブリック+RYB</td>
+                        <td>✅ 取得済</td>
+                        <td><span class="mp-status ready"><span class="dot"></span>READY</span></td>
+                        <td>2025年度 304日</td>
+                    </tr>
+                    <tr>
+                        <td>OKURAYAMA</td>
+                        <td>NP+カフェ+CL</td>
+                        <td>✅ 取得済</td>
+                        <td><span class="mp-status pending"><span class="dot"></span>PENDING</span></td>
+                        <td>未読み込み</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- BG SEASONAL -->
+        <div class="section-title">Beer Garden Seasonality</div>
+        <div class="chart-card">
+            <div class="chart-title">ビアガーデン 季節波動</div>
+            <div class="chart-subtitle">7-8月の2ヶ月で年間売上の69%を稼ぐ</div>
+            <div class="chart-wrapper">
+                <canvas id="bgChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <div class="confidential">🔒 CONFIDENTIAL — DO NOT DISTRIBUTE</div>
+        <div>R7 料飲部事業予算 × Momentum Peaks Dashboard</div>
+        <div>Source: R7_FB_budget(TRUE).xlsx | Generated: 2026-02-12</div>
+    </div>
+
+    <script>
+        // === DATA ===
+        const MONTHS = ['4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月', '1月', '2月', '3月'];
+
+        const BUDGET = {
+            np: [4894, 8210, 9617, 9017, 10238, 10015, 9529, 8475, 11092, 5400, 6160, 5570],
+            cafe: [694, 780, 653, 728, 1181, 689, 1025, 414, 537, 1104, 739, 668],
+            cl: [950, 2012, 2400, 2550, 2705, 2500, 1780, 1085, 1335, 537, 765, 1030],
+            jw: [3863, 13878, 16105, 16936, 16842, 16259, 16988, 13023, 17541, 12334, 12374, 8176],
+            ga: [8503, 9748, 12107, 12767, 10991, 10146, 11115, 11789, 18604, 9253, 10632, 11108],
+            bg: [544, 2848, 22680, 49815, 56840, 20842, 840, 0, 0, 0, 0, 0],
+            bq: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // 赤れんが - 月別未入力のためゼロ
+        };
+
+        // MP 実績データ（千円換算）— JW 2024年度, GA 2023年度
+        const MP_ACTUAL = {
+            jw: [3325, 11655, 13994, 14554, 14303, 13608, 13969, 10674, 14896, 11790, 9932, 8391],
+            ga: [1333, 10287, 10767, 10369, 10100, 10398, 10410, 8950, 15904, 8724, 9455, 9893],
+        };
+
+        // === AREA CHART ===
+        const areaCtx = document.getElementById('areaChart').getContext('2d');
+        new Chart(areaCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['NP ヌーベルプース', 'RP カフェルポ', 'Ce セレステ', 'JW ジュエルズ', 'GA ガーデン', 'BG ビアガーデン'],
+                datasets: [{
+                    data: [98217, 9212, 19649, 164318, 136763, 154408],
+                    backgroundColor: [
+                        '#2D6B3F', '#A8C8E8', '#F5E6B8',
+                        '#1B2A4A', '#5C3A1E',
+                        '#4ADE80'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#FAFAFA'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Inter', size: 11 },
+                            padding: 12,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                const v = ctx.parsed;
+                                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                const pct = ((v / total) * 100).toFixed(1);
+                                return `${ctx.label}: ${v.toLocaleString()}千円 (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // === TREND CHART ===
+        let trendChart;
+        function createTrendChart(store) {
+            if (trendChart) trendChart.destroy();
+
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const datasets = [];
+
+            if (store === 'all') {
+                // 全店舗合計
+                const totals = MONTHS.map((_, i) =>
+                    BUDGET.np[i] + BUDGET.cafe[i] + BUDGET.cl[i] +
+                    BUDGET.jw[i] + BUDGET.ga[i] + BUDGET.bg[i]
+                );
+                datasets.push({
+                    label: 'R7予算（全店合計）',
+                    data: totals,
+                    borderColor: '#C9A962',
+                    backgroundColor: 'rgba(201,169,98,0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#C9A962'
+                });
+            } else {
+                const storeColors = {
+                    jw: '#1B2A4A', ga: '#5C3A1E', bg: '#4ADE80',
+                    np: '#2D6B3F', bq: '#0D1B2A', cafe: '#A8C8E8', cl: '#F5E6B8'
+                };
+                const sc = storeColors[store] || '#C9A962';
+                datasets.push({
+                    label: 'R7予算',
+                    data: BUDGET[store],
+                    borderColor: sc,
+                    backgroundColor: sc + '18',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2.5,
+                    pointRadius: 4,
+                    pointBackgroundColor: sc
+                });
+
+                if (MP_ACTUAL[store]) {
+                    const yearLabel = store === 'jw' ? 'R6実績' : 'R5実績';
+                    datasets.push({
+                        label: yearLabel + '（MP）',
+                        data: MP_ACTUAL[store],
+                        borderColor: '#1E3A5F',
+                        backgroundColor: 'rgba(30,58,95,0.08)',
+                        fill: true,
+                        tension: 0.3,
+                        borderWidth: 2,
+                        borderDash: [6, 3],
+                        pointRadius: 3,
+                        pointBackgroundColor: '#1E3A5F'
+                    });
+                }
+            }
+
+            const titles = {
+                all: '全店舗 月別売上予算',
+                jw: 'ジュエルズ — R7予算 vs R6実績',
+                ga: 'ガーデン — R7予算 vs R5実績',
+                bg: 'ビアガーデン — R7月別予算',
+                np: 'ヌーベルプース — R7月別予算',
+                bq: '赤れんが — R7予算（月別データ準備中）',
+                cafe: '大倉山カフェ — R7月別予算',
+                cl: '大倉山ラウンジ — R7月別予算'
+            };
+            document.getElementById('trendTitle').textContent = titles[store] || '月別売上推移';
+            document.getElementById('trendSubtitle').textContent =
+                MP_ACTUAL[store] ? 'R7予算 vs MP実績（千円）— 予算と実績を重ねて表示' : 'R7予算（千円）';
+
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: MONTHS, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            labels: { font: { family: 'Inter', size: 11 }, usePointStyle: true }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}千円`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                font: { family: 'Inter', size: 10 },
+                                callback: v => v.toLocaleString() + '千円'
+                            },
+                            grid: { color: 'rgba(0,0,0,0.04)' }
+                        },
+                        x: {
+                            ticks: { font: { family: 'Inter', size: 10 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function switchStore(store) {
+            document.querySelectorAll('.area-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            createTrendChart(store);
+        }
+
+        createTrendChart('all');
+
+        // === BG SEASONAL CHART ===
+        const bgCtx = document.getElementById('bgChart').getContext('2d');
+        new Chart(bgCtx, {
+            type: 'bar',
+            data: {
+                labels: MONTHS,
+                datasets: [{
+                    label: 'ビアガーデン R7予算',
+                    data: BUDGET.bg,
+                    backgroundColor: BUDGET.bg.map(v =>
+                        v > 40000 ? '#22C55E' :
+                            v > 15000 ? '#4ADE80' :
+                                v > 1000 ? '#BBF7D0' :
+                                    v > 0 ? '#DCFCE7' : 'rgba(0,0,0,0.04)'
+                    ),
+                    borderColor: BUDGET.bg.map(v =>
+                        v > 40000 ? '#16A34A' :
+                            v > 15000 ? '#22C55E' :
+                                v > 0 ? '#86EFAC' : 'rgba(0,0,0,0.06)'
+                    ),
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const v = ctx.parsed.y;
+                                if (v === 0) return '冬季休業';
+                                const total = BUDGET.bg.reduce((a, b) => a + b, 0);
+                                const pct = ((v / total) * 100).toFixed(1);
+                                return `${v.toLocaleString()}千円 (年間${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: { family: 'Inter', size: 10 },
+                            callback: v => (v / 1000).toFixed(0) + '万'
+                        },
+                        grid: { color: 'rgba(0,0,0,0.04)' }
+                    },
+                    x: {
+                        ticks: { font: { family: 'Inter', size: 10 } },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

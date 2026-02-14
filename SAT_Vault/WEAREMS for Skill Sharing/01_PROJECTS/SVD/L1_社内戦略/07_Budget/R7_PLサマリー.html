@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R7 料飲部 PLサマリー — SVD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&display=swap');
+
+        :root {
+            --gold: #C8A96E;
+            --dark: #1a1a2e;
+            --darker: #0f0f1e;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(200, 169, 110, 0.2);
+            --red: #e74c3c;
+            --green: #2ecc71;
+            --yellow: #f39c12;
+            --blue: #3498db;
+            --text: #e0e0e0;
+            --muted: #8a8a9a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .header .date {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 12px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .icon {
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 300;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric .label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .metric .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .metric .sub {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .metric.green .value {
+            color: var(--green);
+        }
+
+        .metric.red .value {
+            color: var(--red);
+        }
+
+        .metric.blue .value {
+            color: var(--blue);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin: 16px 0;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--gold);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: 300;
+        }
+
+        tr:hover {
+            background: rgba(200, 169, 110, 0.05);
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .bold {
+            font-weight: 600;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        .red {
+            color: var(--red);
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        .yellow {
+            color: var(--yellow);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .tag-red {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--red);
+        }
+
+        .tag-yellow {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--yellow);
+        }
+
+        .tag-green {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--green);
+        }
+
+        .highlight-box {
+            background: rgba(200, 169, 110, 0.08);
+            border-left: 3px solid var(--gold);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+
+            .two-col,
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>R7 料飲部 PLサマリー</h1>
+            <div class="subtitle">アウトプット ・ 課題 ・ 評価ポイント</div>
+            <div class="date">2026-02-13 ｜ SAPPORO VIEWTIFUL DINING</div>
+        </div>
+
+        <!-- ===== エグゼクティブサマリー ===== -->
+        <div class="highlight-box" style="margin-bottom:40px;font-size:0.9rem;">
+            <strong style="color:var(--gold);">📌 3行サマリー</strong><br>
+            ① R7売上 <strong>7.27億（予算比103%）</strong>。既存店GOPベースで<strong>2,591万円の黒字</strong>。<br>
+            ② 最優先課題は <strong>FL比率75.9%→70%</strong>。達成で約<strong>4,300万円の利益改善</strong>。<br>
+            ③ 年間<strong>16.0万人の顧客接点</strong>（10ヶ月実績、年換算19.2万人）。レストランは観光施設の高付加価値エンジン。
+        </div>
+
+        <!-- ===== サマリー ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">📊</span> R7 サマリー</div>
+            <div class="metric-grid">
+                <div class="metric green">
+                    <div class="label">総売上高</div>
+                    <div class="value">7.27億</div>
+                    <div class="sub">予算比 103% ✅</div>
+                </div>
+                <div class="metric">
+                    <div class="label">既存店 GOP</div>
+                    <div class="value" style="color:var(--gold)">2,591万</div>
+                    <div class="sub">BQ除外・共通費按分後 GOP率3.9%</div>
+                </div>
+                <div class="metric red">
+                    <div class="label">FL比率</div>
+                    <div class="value">75.9%</div>
+                    <div class="sub">目標70%以下 ⚠️</div>
+                </div>
+                <div class="metric blue">
+                    <div class="label">BQ初年度投資</div>
+                    <div class="value">▲3,580万</div>
+                    <div class="sub">GOP ▲35,804千円</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 評価される点 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">✅</span> 評価される点（アウトプット）</div>
+
+            <div class="card">
+                <h3>1. 売上は予算超過 — 103%達成</h3>
+                <p>料飲部全体で726,857千円。予算708,235千円を2.6%上回った。特にGA（113%）・BG（116%）が牽引。コロナ後の回復基調を確実に捉えている。</p>
+            </div>
+
+            <div class="card">
+                <h3>2. JW + BG の二大エンジン</h3>
+                <p>JW GOP 36,177千円（21.6%）＋ BG GOP 38,519千円（21.6%）＝ <strong
+                        class="gold">74,696千円</strong>。この2店舗が料飲部のGOPの74%を創出。収益基盤は盤石。</p>
+            </div>
+
+            <div class="card">
+                <h3>3. GAの売上成長 — 113%</h3>
+                <p>テレビ塔エリアでGA154,985千円（予算136,763千円の113%）。売上の伸びは明確。物件費・減償が重い構造だが、売上成長で吸収する道筋が見えている。</p>
+            </div>
+
+            <div class="card">
+                <h3>4. BGの圧倒的効率</h3>
+                <p>人件費率4.3%・FL比率38.4%。スポットワーカー活用と派遣圧縮により、業界でも突出した効率性を実現。この運営ノウハウは他店舗への横展開も可能。</p>
+            </div>
+
+            <div class="card">
+                <h3>5. ラウンジのGOP率61.5%</h3>
+                <p>NPとの人件費共有により、GOP率61.5%で全店舗最高効率。小規模ながら安定した利益貢献。大倉山エリアの運営モデルとして有効。</p>
+            </div>
+
+            <div class="card">
+                <h3>6. BQ出店の戦略的意義</h3>
+                <p>初年度▲35,804千円は「投資」。赤れんがテラスへの出店はSVDの Urban Side展開の第一歩であり、ブランド認知拡大とCategory 2.5ゾーンの開拓。黒字化はR8-R9で達成する計画。
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== 課題点 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">⚠️</span> 課題点</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>店舗</th>
+                        <th>優先度</th>
+                        <th>課題</th>
+                        <th class="text-right">数値</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">NP</td>
+                        <td><span class="tag tag-red">最優先</span></td>
+                        <td>人件費率が全店舗で突出して高い</td>
+                        <td class="text-right red bold">63.0%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">カフェ</td>
+                        <td><span class="tag tag-red">最優先</span></td>
+                        <td>原価率が異常値。メニュー・仕入れ構造の全面見直し</td>
+                        <td class="text-right red bold">93.7%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">GA</td>
+                        <td><span class="tag tag-red">要改善</span></td>
+                        <td>物件費＋減償で30.5%。売上成長の利益を食っている</td>
+                        <td class="text-right yellow bold">30.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">BQ</td>
+                        <td><span class="tag tag-yellow">計画的</span></td>
+                        <td>初年度。原価率39.4%、人件費率69.8%はR8で改善目標</td>
+                        <td class="text-right yellow bold">FL 109%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">RYB</td>
+                        <td><span class="tag tag-yellow">要観察</span></td>
+                        <td>売上予算未達69%。認知度と集客力の向上が必要</td>
+                        <td class="text-right yellow bold">69%達成</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">料飲共通</td>
+                        <td><span class="tag tag-yellow">構造</span></td>
+                        <td>共通経費34,824千円の按分。受益者負担の合理的配分を</td>
+                        <td class="text-right">34,824千円</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">全体</td>
+                        <td><span class="tag tag-red">最優先</span></td>
+                        <td>FL比率75.9%（目標70%以下）。原価と人件費の同時圧縮</td>
+                        <td class="text-right red bold">75.9%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== 店舗別コスト比率 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">📋</span> 店舗別コスト比率（R7決見）</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>店舗</th>
+                        <th class="text-right">売上</th>
+                        <th class="text-right">原価率</th>
+                        <th class="text-right">人件費率</th>
+                        <th class="text-right">物件費率</th>
+                        <th class="text-right">減償率</th>
+                        <th class="text-right">FL比率</th>
+                        <th class="text-right">営利率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold gold">JW</td>
+                        <td class="text-right">167,136</td>
+                        <td class="text-right">30.3%</td>
+                        <td class="text-right">35.9%</td>
+                        <td class="text-right">12.1%</td>
+                        <td class="text-right">2.2%</td>
+                        <td class="text-right green bold">66.3%</td>
+                        <td class="text-right green bold">19.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">BG</td>
+                        <td class="text-right">178,616</td>
+                        <td class="text-right">34.1%</td>
+                        <td class="text-right">4.3%</td>
+                        <td class="text-right">40.0%</td>
+                        <td class="text-right">0.6%</td>
+                        <td class="text-right green bold">38.4%</td>
+                        <td class="text-right green bold">20.9%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">ラウンジ</td>
+                        <td class="text-right">20,166</td>
+                        <td class="text-right">30.5%</td>
+                        <td class="text-right">0.0%</td>
+                        <td class="text-right">8.0%</td>
+                        <td class="text-right">2.5%</td>
+                        <td class="text-right">30.5%</td>
+                        <td class="text-right green bold">58.9%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">RYB</td>
+                        <td class="text-right">34,511</td>
+                        <td class="text-right">37.2%</td>
+                        <td class="text-right">23.5%</td>
+                        <td class="text-right">36.4%</td>
+                        <td class="text-right">1.6%</td>
+                        <td class="text-right">60.7%</td>
+                        <td class="text-right">1.2%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">GA</td>
+                        <td class="text-right">154,985</td>
+                        <td class="text-right">34.3%</td>
+                        <td class="text-right yellow">46.7%</td>
+                        <td class="text-right yellow">22.2%</td>
+                        <td class="text-right yellow">8.3%</td>
+                        <td class="text-right red">81.0%</td>
+                        <td class="text-right red">▲11.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">NP</td>
+                        <td class="text-right">101,507</td>
+                        <td class="text-right">29.0%</td>
+                        <td class="text-right red bold">63.0%</td>
+                        <td class="text-right">21.7%</td>
+                        <td class="text-right">4.4%</td>
+                        <td class="text-right red bold">92.0%</td>
+                        <td class="text-right red">▲18.2%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">カフェ</td>
+                        <td class="text-right">8,566</td>
+                        <td class="text-right red bold">93.7%</td>
+                        <td class="text-right red">72.6%</td>
+                        <td class="text-right">31.4%</td>
+                        <td class="text-right">8.0%</td>
+                        <td class="text-right">—</td>
+                        <td class="text-right red">▲105.7%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">BQ</td>
+                        <td class="text-right">61,371</td>
+                        <td class="text-right yellow">39.4%</td>
+                        <td class="text-right red bold">69.8%</td>
+                        <td class="text-right red">49.1%</td>
+                        <td class="text-right">6.2%</td>
+                        <td class="text-right">—</td>
+                        <td class="text-right red">▲64.6%</td>
+                    </tr>
+                    <tr style="border-top:2px solid var(--gold);font-weight:600;">
+                        <td class="gold">料飲部合計</td>
+                        <td class="text-right gold">726,857</td>
+                        <td class="text-right">33.7%</td>
+                        <td class="text-right">42.1%</td>
+                        <td class="text-right">27.5%</td>
+                        <td class="text-right">3.8%</td>
+                        <td class="text-right red">75.9%</td>
+                        <td class="text-right red">▲7.2%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== GOP分析 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">💰</span> GOP分析 — 現場の稼ぐ力</div>
+
+            <div class="highlight-box">
+                <strong>GOP = 営業利益 + 減価償却費</strong><br>
+                管理不能固定費を除いた「現場がコントロールできる範囲の利益」
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--blue);">
+                <h3>📚 理論的根拠</h3>
+                <p>GOPは<strong>USALI（Uniform System of Accounts for the Lodging
+                        Industry）</strong>に基づくホテル・飲食業界の国際会計基準指標。マリオット、ヒルトン、星野リゾート等がレストラン事業の評価に使用。「営業利益」では減価償却費やオーナー負担費用がノイズとなり、現場の実力を正しく評価できないため、GOPが世界標準として採用されている。
+                </p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>店舗</th>
+                        <th class="text-right">売上</th>
+                        <th class="text-right">営利</th>
+                        <th class="text-right">減償</th>
+                        <th class="text-right">GOP</th>
+                        <th class="text-right">GOP率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold gold">JW</td>
+                        <td class="text-right">167,136</td>
+                        <td class="text-right">32,576</td>
+                        <td class="text-right">3,601</td>
+                        <td class="text-right green bold">36,177</td>
+                        <td class="text-right green">21.6%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">BG</td>
+                        <td class="text-right">178,616</td>
+                        <td class="text-right">37,384</td>
+                        <td class="text-right">1,135</td>
+                        <td class="text-right green bold">38,519</td>
+                        <td class="text-right green">21.6%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">ラウンジ</td>
+                        <td class="text-right">20,166</td>
+                        <td class="text-right">11,883</td>
+                        <td class="text-right">513</td>
+                        <td class="text-right green bold">12,396</td>
+                        <td class="text-right green">61.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">RYB</td>
+                        <td class="text-right">34,511</td>
+                        <td class="text-right">414</td>
+                        <td class="text-right">566</td>
+                        <td class="text-right">980</td>
+                        <td class="text-right">2.8%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">GA</td>
+                        <td class="text-right">154,985</td>
+                        <td class="text-right red">▲17,807</td>
+                        <td class="text-right">12,815</td>
+                        <td class="text-right red">▲4,992</td>
+                        <td class="text-right red">▲3.2%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">NP</td>
+                        <td class="text-right">101,507</td>
+                        <td class="text-right red">▲18,436</td>
+                        <td class="text-right">4,460</td>
+                        <td class="text-right red">▲13,976</td>
+                        <td class="text-right red">▲13.8%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">カフェ</td>
+                        <td class="text-right">8,566</td>
+                        <td class="text-right red">▲9,055</td>
+                        <td class="text-right">685</td>
+                        <td class="text-right red">▲8,370</td>
+                        <td class="text-right red">▲97.7%</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">BQ</td>
+                        <td class="text-right">61,371</td>
+                        <td class="text-right red">▲39,629</td>
+                        <td class="text-right">3,824</td>
+                        <td class="text-right red">▲35,804</td>
+                        <td class="text-right red">初年度</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="metric-grid" style="margin-top:20px;">
+                <div class="metric">
+                    <div class="label">既存店GOP（共通費なし）</div>
+                    <div class="value" style="color:var(--green)">60,733</div>
+                    <div class="sub">千円</div>
+                </div>
+                <div class="metric">
+                    <div class="label">共通費按分後</div>
+                    <div class="value" style="color:var(--gold)">25,909</div>
+                    <div class="sub">千円 | GOP率 3.9%</div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                💡 BQを除けば、既存店はGOPベースで<strong class="gold">約2,600万円の黒字</strong>。<br>
+                レストランは観光施設への高付加価値貢献エンジンである。
+            </div>
+        </div>
+
+
+        <!-- ===== R8に向けて ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🎯</span> R8 改善アクション</div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3>原価率 33.7% → 31%以下</h3>
+                    <p>メニューエンジニアリング・仕入れ最適化。カフェの原価構造は全面見直し。</p>
+                </div>
+                <div class="card">
+                    <h3>人件費率 42.1% → 38%以下</h3>
+                    <p>MP × TI によるシフト最適化。NP 63%の圧縮が最大の改善余地。</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <strong>FL比率 75.9% → 70%以下</strong> を達成すれば、<br>
+                約 <strong class="gold">4,300万円</strong> の利益改善効果（726,857 × 5.9%）
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>店舗</th>
+                        <th>優先度</th>
+                        <th>R8アクション</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">NP</td>
+                        <td><span class="tag tag-red">🔴</span></td>
+                        <td>人件費率63%→50%以下。MP×TIシフト最適化</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">カフェ</td>
+                        <td><span class="tag tag-red">🔴</span></td>
+                        <td>原価率93.7%→50%以下。メニュー全面刷新</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">GA</td>
+                        <td><span class="tag tag-red">🔴</span></td>
+                        <td>物件費+減償30.5%。売上成長で吸収＋交渉</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">BQ</td>
+                        <td><span class="tag tag-yellow">🟡</span></td>
+                        <td>原価率35%・人件費率50%で安定稼働</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">RYB</td>
+                        <td><span class="tag tag-yellow">🟡</span></td>
+                        <td>売上69%→100%達成。認知度・メニュー強化</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">JW</td>
+                        <td><span class="tag tag-green">🟢</span></td>
+                        <td>FL66.3%維持。客単価UP余地追求</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">BG</td>
+                        <td><span class="tag tag-green">🟢</span></td>
+                        <td>GOP21.6%維持。派遣→スポット転換継続</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">ラウンジ</td>
+                        <td><span class="tag tag-green">🟢</span></td>
+                        <td>GOP61.5%維持。NP共有モデル継続</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== LTC × BP ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🎁</span> LTC × BP — 3年収益化ロードマップ</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>LTC（生涯顧客）</th>
+                        <th>BP（バックエンド商品）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold gold">Y1 R8</td>
+                        <td>VIEWTIFUL COLLECT 基盤構築<br><span style="color:var(--muted)">会員500名</span></td>
+                        <td>VIEWTIFUL GIFT 設計<br><span style="color:var(--muted)">50品目 / 2,000千円</span></td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">Y2 R9</td>
+                        <td>体験型プログラム拡充<br><span style="color:var(--muted)">2,000名 / リピート率40%</span></td>
+                        <td>EC・法人ギフト展開<br><span style="color:var(--muted)">150品目 / 10,000千円</span></td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">Y3 R10</td>
+                        <td>自走するコミュニティ<br><span style="color:var(--muted)">5,000名 / LTV最大化</span></td>
+                        <td>サブスク・定期便<br><span style="color:var(--muted)">300品目 / <strong
+                                    class="gold">30,000千円</strong></span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                🎁 3年後に BP事業で<strong class="gold">年間3,000万円の新規収益源</strong>を確立。<br>
+                レストランを「体験を贈るプラットフォーム」に進化させる。
+            </div>
+        </div>
+
+        <!-- ===== 結論 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🔑</span> 結論 — 3つのメッセージ</div>
+
+            <div class="card" style="border-left:3px solid var(--green);">
+                <h3 style="color:var(--green);">1. 既存店はGOPベースで2,600万円の黒字</h3>
+                <p>レストランは観光施設への高付加価値貢献エンジン。営利ではなくGOPで評価すべき。</p>
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--yellow);">
+                <h3 style="color:var(--yellow);">2. R8最優先はFL比率改善 75.9% → 70%</h3>
+                <p>MP×TIのシフト最適化と原価管理の精度向上で約4,300万円の利益改善効果。</p>
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--gold);">
+                <h3>3. LTC×BPで3年後に3,000万の新規収益源</h3>
+                <p>VIEWTIFUL COLLECT / GIFTで「体験を贈るプラットフォーム」へ進化。</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            A Beautiful story becomes your story ✨<br>
+            SAPPORO VIEWTIFUL DINING
+        </div>
+
+    </div>
+</body>
+
+</html>

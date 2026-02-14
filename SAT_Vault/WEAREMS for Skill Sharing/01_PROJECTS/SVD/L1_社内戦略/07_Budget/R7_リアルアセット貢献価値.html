@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD 料飲部 リアルアセット貢献価値 — SVD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&display=swap');
+
+        :root {
+            --gold: #C8A96E;
+            --dark: #1a1a2e;
+            --darker: #0f0f1e;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(200, 169, 110, 0.2);
+            --red: #e74c3c;
+            --green: #2ecc71;
+            --yellow: #f39c12;
+            --blue: #3498db;
+            --text: #e0e0e0;
+            --muted: #8a8a9a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        .header .date {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 12px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .icon {
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 300;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric .label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .metric .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .metric .sub {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .metric.green .value {
+            color: var(--green);
+        }
+
+        .metric.red .value {
+            color: var(--red);
+        }
+
+        .metric.blue .value {
+            color: var(--blue);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin: 16px 0;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 2px solid var(--gold);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-weight: 300;
+        }
+
+        tr:hover {
+            background: rgba(200, 169, 110, 0.05);
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: 600;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        .highlight-box {
+            background: rgba(200, 169, 110, 0.08);
+            border-left: 3px solid var(--gold);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85rem;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+
+            .two-col,
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>SVD 料飲部 リアルアセット貢献価値</h1>
+            <div class="subtitle">観光施設にとってのレストランの資産価値</div>
+            <div class="date">2026-02-13 ｜ SAPPORO VIEWTIFUL DINING</div>
+        </div>
+
+        <!-- ===== エグゼクティブサマリー ===== -->
+        <div class="highlight-box" style="margin-bottom:40px;font-size:0.9rem;">
+            <strong style="color:var(--gold);">📌 3行サマリー</strong><br>
+            ① 料飲部の年間来客数は <strong>16.0万人</strong>（10ヶ月実績）。年換算で<strong>約19.2万人</strong>。<br>
+            ② 年間 <strong>7.27億円の送客</strong>と<strong>3.06億円の人的資本投資</strong>が施設全体の価値を支えている。<br>
+            ③ 営業利益▲5,200万の裏に「6つのリアルアセット」。PLだけでは本質を見誤る。
+        </div>
+
+        <!-- ===== 前提 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">💡</span> 前提 — なぜリアルアセットで見るのか</div>
+
+            <div class="highlight-box">
+                PLの営業利益だけでレストランの価値を測ると、本質を見誤る。<br>
+                レストランは<strong>「フロー（利益）」だけでなく「ストック（資産）」</strong>として施設全体の価値を底上げしている。
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3>📊 フロー（PL）で見ると</h3>
+                    <p>営業利益 ▲51,998千円<br>→ 赤字に見える</p>
+                </div>
+                <div class="card">
+                    <h3>🏛 ストック（資産）で見ると</h3>
+                    <p>年間7.27億の送客・15万人の顧客接点・3億の人的資本<br>→ 施設の価値を支えている</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== KPIサマリー ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">📊</span> リアルアセット KPI</div>
+            <div class="metric-grid">
+                <div class="metric green">
+                    <div class="label">年間送客額</div>
+                    <div class="value">7.27億</div>
+                    <div class="sub">売上高 = 施設への直接貢献</div>
+                </div>
+                <div class="metric">
+                    <div class="label">人的資本投資</div>
+                    <div class="value">3.06億</div>
+                    <div class="sub">専門人材 = ホスピタリティの源泉</div>
+                </div>
+                <div class="metric blue">
+                    <div class="label">年間来客数（実績確定）</div>
+                    <div class="value">16.0万人</div>
+                    <div class="sub">10ヶ月分。年換算で約19.2万人</div>
+                </div>
+                <div class="metric green">
+                    <div class="label">既存店 GOP</div>
+                    <div class="value">2,591万</div>
+                    <div class="sub">BQ除外・共通費按分後</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 6つの資産 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🏛</span> 6つのリアルアセット</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>資産カテゴリ</th>
+                        <th>内容</th>
+                        <th class="text-right">推定貢献価値</th>
+                        <th>算出根拠</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold gold">① 設備・内装資産</td>
+                        <td>厨房設備・客席・内装・空間演出</td>
+                        <td class="text-right bold">推定2-3億円</td>
+                        <td>BQ新規出店投資額から逆算<br>全8拠点で累計投資は数十億規模</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">② ブランド資産</td>
+                        <td>「食の目的地」としての認知<br>メディア露出・口コミ評価</td>
+                        <td class="text-right bold">定性（高）</td>
+                        <td>JW/NP/GAの知名度<br>「札幌×レストラン」の検索で上位</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">③ 人的資本</td>
+                        <td>料理人・ソムリエ・サービススタッフ<br>ホスピタリティ文化の蓄積</td>
+                        <td class="text-right bold">約3.06億円/年</td>
+                        <td>人件費 = 専門人材への投資<br>この人材がいなければ売上もない</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">④ 顧客基盤</td>
+                        <td>年間16.0万人の来客（10ヶ月分）<br>リピーター・法人・ウェディング</td>
+                        <td class="text-right bold">年間7.27億円</td>
+                        <td>GA 6.6万 / BQ 2.7万 / JW 2.5万<br>Ce 2.5万 / NP 0.9万 / RP 0.9万</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">⑤ 滞在延長効果</td>
+                        <td>施設来場者の滞在時間が+90-120分<br>消費機会・満足度の向上</td>
+                        <td class="text-right bold">年間7.27億円</td>
+                        <td>料飲売上がそのまま<br>「滞在延長による追加消費」</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">⑥ 地域PR効果</td>
+                        <td>「札幌の食」のブランディング<br>観光誘致・MICEへの間接貢献</td>
+                        <td class="text-right bold">定性（高）</td>
+                        <td>アジアベストレストランTOP100<br>を目指すことが最大のPR</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="card" style="border-left:3px solid var(--blue);margin-top:24px;">
+                <h3>📚 各資産カテゴリの理論的裏付け</h3>
+                <p>
+                    <strong>① 設備・内装:</strong> BS上の有形固定資産として計上済み。簿価と時価の乖離は不動産鑑定で補正可能。<br>
+                    <strong>② ブランド:</strong> Keller（顧客ベースのブランドエクイティ）/ Aaker（ブランド資産論）に基づく。上場企業では「のれん」として数百億規模の評価対象。<br>
+                    <strong>③ 人的資本:</strong> ISO 30414（人的資本情報開示ガイドライン）準拠。2023年3月期より日本の有価証券報告書で開示義務化。<br>
+                    <strong>④ 顧客基盤:</strong> SaaS経営で標準的なLTV（Life Time Value）概念をレストランに応用。M&Aでは「顧客リスト」として資産評価される。<br>
+                    <strong>⑤ 滞在延長:</strong> テーマパーク（ディズニー/USJ）・リゾート施設（星野リゾート）で確立された「F&B＝滞在装置」の考え方。<br>
+                    <strong>⑥ 地域PR:</strong> DMO（観光地域づくり法人）評価指標で「地域の食ブランド」は観光誘致の核心的要素。
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== 比較 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">⚖️</span> 見方を変えると — PL vs リアルアセット</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>視点</th>
+                        <th>指標</th>
+                        <th class="text-right">数値</th>
+                        <th>評価</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="bold">PL（フロー）</td>
+                        <td>営業利益</td>
+                        <td class="text-right" style="color:var(--red)">▲5,200万</td>
+                        <td style="color:var(--red)">✗ 赤字</td>
+                    </tr>
+                    <tr>
+                        <td class="bold">GOP</td>
+                        <td>既存店GOP（共通費按分後）</td>
+                        <td class="text-right" style="color:var(--green)">+2,591万</td>
+                        <td style="color:var(--green)">○ 黒字</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">リアルアセット</td>
+                        <td>年間送客額</td>
+                        <td class="text-right bold gold">7.27億</td>
+                        <td class="gold">◎ 高付加価値貢献</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">リアルアセット</td>
+                        <td>人的資本投資</td>
+                        <td class="text-right bold gold">3.06億</td>
+                        <td class="gold">◎ 専門性の蓄積</td>
+                    </tr>
+                    <tr>
+                        <td class="bold gold">リアルアセット</td>
+                        <td>顧客接点（実績確定）</td>
+                        <td class="text-right bold gold">16.0万人/年</td>
+                        <td class="gold">◎ 施設のファン育成</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                🏛 <strong>レストランは「赤字事業」ではなく「高付加価値エンジン」。</strong><br>
+                営業利益だけで評価することは、<strong class="gold">7億円の送客機能と年間16万人の顧客接点を見落とす</strong>ことになる。
+            </div>
+        </div>
+
+        <!-- ===== 提案 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🎯</span> 提案 — 評価指標の追加</div>
+
+            <div class="card" style="border-left:3px solid var(--gold);">
+                <h3>1. 「施設貢献GOP」を経営指標に追加</h3>
+                <p>営業利益だけでなく、GOPベース（+減価償却費）での利益評価を導入。既存店GOP 2,591万円が「現場の稼ぐ力」。</p>
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--green);">
+                <h3>2. 「送客貢献額」を可視化</h3>
+                <p>料飲部の売上7.27億円は、そのまま観光施設への「送客額」。レストランがなければ、この金額分の顧客体験は存在しない。</p>
+            </div>
+
+            <div class="card" style="border-left:3px solid var(--blue);">
+                <h3>3. 「顧客接点数」をKPIに</h3>
+                <p>年間15万人の顧客と直接接するレストランは、施設のCRM・ファン育成の最前線。TableCheckデータと連携し数値化。</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            A Beautiful story becomes your story ✨<br>
+            SAPPORO VIEWTIFUL DINING
+        </div>
+
+    </div>
+</body>
+
+</html>

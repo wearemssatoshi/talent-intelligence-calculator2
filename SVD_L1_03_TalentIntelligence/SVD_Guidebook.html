@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD 18属性 詳細定義書 & ペアリングガイド</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Teko:wght@500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1A237E;
+            /* Deep Navy */
+            --secondary-color: #303F9F;
+            /* Indigo */
+            --accent-color: #FF6F00;
+            /* Amber */
+            --text-color: #333;
+            --bg-color: #f4f6fa;
+            --card-bg: #fff;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 2rem;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 4rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Teko', sans-serif;
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            border-left: 8px solid var(--accent-color);
+            padding-left: 1rem;
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .logic-box {
+            background: #E8EAF6;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+        }
+
+        .logic-box h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        /* Attribute Cards */
+        .attribute-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            page-break-inside: avoid;
+            background: #fff;
+        }
+
+        .attribute-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .attribute-number {
+            font-family: 'Teko', sans-serif;
+            font-size: 3rem;
+            color: #e0e0e0;
+            margin-right: 1rem;
+            line-height: 1;
+        }
+
+        .attribute-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .attribute-catch {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .attribute-desc {
+            margin-bottom: 1.5rem;
+        }
+
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pros-box,
+        .cons-box {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        .pros-box h4 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+
+        .cons-box h4 {
+            color: #C62828;
+            margin-top: 0;
+        }
+
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .match-box {
+            border: 1px dashed #ccc;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+
+        .match-box.best {
+            background-color: #E8F5E9;
+            border-color: #A5D6A7;
+        }
+
+        .match-box.caution {
+            background-color: #FFEBEE;
+            border-color: #EF9A9A;
+        }
+
+        .match-box h4 {
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .match-box.best h4 {
+            color: #2E7D32;
+        }
+
+        .match-box.caution h4 {
+            color: #C62828;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.3rem;
+        }
+
+        /* Team Composition */
+        .composition-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .role-card {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .role-card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .role-members {
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .section-title {
+                margin-top: 2rem;
+                page-break-before: always;
+            }
+
+            .attribute-card {
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>SVD Talent Intelligence</h1>
+            <h2>18属性 詳細定義書 & ペアリングガイド</h2>
+            <p>v7.0 - The Coaching Model</p>
+        </header>
+
+        <div class="logic-box">
+            <h3>決定ロジック：Self-Perception × Other-Perception</h3>
+            <p>スタッフの役割と個性を「自認」と「他認」の2つの視点から定義するフレームワークです。</p>
+            <ul>
+                <li><strong>本属性 (Core Attribute)</strong>: 自認と他認が一致する場合。その人の核となる強み。</li>
+                <li><strong>隠れ属性 (Shadow Attribute)</strong>: 不一致の場合、他認（上司視点）を「隠れ属性」として扱う。</li>
+                <li><strong>ハイブリッド (Hybrid)</strong>: 自認と他認の組み合わせが、その人のユニークなキャラクターを作る。</li>
+            </ul>
+        </div>
+
+        <h2 class="section-title">18属性詳細 (SVD Elements)</h2>
+
+        <!-- 1. Balance -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">01</span>
+                <span class="attribute-name">Balance (バランス)</span>
+            </div>
+            <div class="attribute-catch">「安心と信頼の万能バランサー」</div>
+            <div class="attribute-desc">
+                誰とでも合わせられる適応力の持ち主。突出した個性がないように見えるが、実は最も重要な「潤滑油」。どこに配置しても平均点以上の結果を出す。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>どんなタイプのスタッフとも衝突せず、チームを安定させる。</li>
+                        <li>マルチタスクが得意で、ホールの穴を自然と埋めることができる。</li>
+                        <li>お客様に安心感を与え、クレームが少ない。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>「自分がない」と悩むことがある。</li>
+                        <li>強烈なリーダーシップを発揮するのは苦手。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 暴走しがちな情熱を、優しくサポートできる。</li>
+                        <li><strong>Emperor (龍)</strong>: 強いリーダーの下で、実務を完璧にこなす右腕になる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li>特になし（誰とでも組めるのが最大の武器）。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Flare -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">02</span>
+                <span class="attribute-name">Flare (フレア)</span>
+            </div>
+            <div class="attribute-catch">「逆境を燃やす情熱の点火剤」</div>
+            <div class="attribute-desc">
+                プレッシャーがかかるほど燃え上がる、チームのエンジン。感情表現が豊かで、メンバーを鼓舞する力がある。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>忙しいピークタイムに圧倒的なエネルギーを発揮する。</li>
+                        <li>チームの士気が下がっている時、ポジティブな空気を作れる。</li>
+                        <li>目標達成への執着心が強い。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>熱くなりすぎて、周りが見えなくなることがある。</li>
+                        <li>冷静なタイプ（Crystalなど）と温度差で対立しやすい。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flow (水)</strong>: 「冷静と情熱」の最強コンビ。暴走を止め、エネルギーを正しい方向へ導く。</li>
+                        <li><strong>Ground (地)</strong>: 揺るがない土台があるからこそ、安心して暴れられる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: お互いに主張が強すぎて、炎上するリスクがある。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Flow -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">03</span>
+                <span class="attribute-name">Flow (フロー)</span>
+            </div>
+            <div class="attribute-catch">「変幻自在の適応スペシャリスト」</div>
+            <div class="attribute-desc">
+                水のように形を変え、どんな客層や状況にも入り込む。マニュアルに縛られない柔軟なサービスが持ち味。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>予期せぬトラブルにも、慌てず涼しい顔で対応できる。</li>
+                        <li>お客様の懐に入るのがうまく、リピーターを作りやすい。</li>
+                        <li>チームの摩擦を流し、衝突を防ぐ。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>優柔不断に見られることがある。</li>
+                        <li>強い意志でグイグイ引っ張ることは少ない。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 熱い情熱をコントロールし、形にする。</li>
+                        <li><strong>Spark (電)</strong>: 柔軟な対応に「驚き」が加わり、化学反応が起きる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Solid (岩)</strong>: 頑固なルール重視タイプとは、ペースが合わずストレスを感じる。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Bloom -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">04</span>
+                <span class="attribute-name">Bloom (ブルーム)</span>
+            </div>
+            <div class="attribute-catch">「才能を咲かせる育成の庭師」</div>
+            <div class="attribute-desc">
+                自分が目立つより、人の成長を見るのが好き。長期的な視点でチームに根を張り、信頼関係を育てる。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>新人教育やメンター役として最高の適性を持つ。</li>
+                        <li>チームの雰囲気を穏やかにし、離職率を下げる。</li>
+                        <li>コツコツとした努力を継続できる。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>競争や成果主義のプレッシャーに弱いことがある。</li>
+                        <li>決断に時間がかかる。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 太陽（情熱）と水（育成）の関係。お互いに成長できる。</li>
+                        <li><strong>Ground (地)</strong>: 肥沃な大地があってこそ、草木は育つ。安定した環境で力を発揮。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Rogue (毒)</strong>: 毒（批判）によって枯れてしまう（やる気を失う）リスクがある。</li>
+                        <li><strong>Night Shift (悪)</strong>: 利益至上主義とは価値観が合わない。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Spark -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">05</span>
+                <span class="attribute-name">Spark (スパーク)</span>
+            </div>
+            <div class="attribute-catch">「常識を撃ち抜く閃きのトリックスター」</div>
+            <div class="attribute-desc">
+                スピードとアイデアの塊。マンネリ化した現場に「刺激」を与え、新しい風を吹かせる。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>誰も思いつかないようなサプライズや企画を提案できる。</li>
+                        <li>行動が早く、変化を恐れない。</li>
+                        <li>ムードメーカーとして、場を一瞬で明るくする。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>飽きっぽく、ルーチンワークが苦手。</li>
+                        <li>突飛すぎて周りがついていけないことがある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flow (水)</strong>: 柔軟な水に電気が伝わるように、アイデアがチーム全体に広がる。</li>
+                        <li><strong>Wing (飛)</strong>: スピード感のある2人が揃うと、オペレーションが劇的に速くなる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Ground (地)</strong>: 電気が地面に逃げるように、アイデアが吸収されて無効化される（響かない）。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Crystal -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">06</span>
+                <span class="attribute-name">Crystal (クリスタル)</span>
+            </div>
+            <div class="attribute-catch">「一点の曇りなき氷の職人」</div>
+            <div class="attribute-desc">
+                感情に流されず、淡々と完璧な仕事をする。その美学は「精度」。1ミリのズレも許さない。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>カトラリーの並び、料理の盛り付けなど、細部のクオリティが圧倒的に高い。</li>
+                        <li>どんなに忙しくても冷静沈着。</li>
+                        <li>分析力が高く、問題点を的確に指摘する。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>冷たい、近寄りがたいと思われることがある。</li>
+                        <li>融通が利かない場面がある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 「氷と炎」。正反対だが、お互いの欠点を完璧に補完し合える最強のペア候補。</li>
+                        <li><strong>Striker (闘)</strong>: 技術へのこだわりという点で共鳴し、高め合える。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Spark (電)</strong>: 予測不能な動きを嫌うため、ストレスを感じる。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Striker -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">07</span>
+                <span class="attribute-name">Striker (ストライカー)</span>
+            </div>
+            <div class="attribute-catch">「背中で語る現場の闘神」</div>
+            <div class="attribute-desc">
+                口数は少ないが、圧倒的な「実力」で信頼を勝ち取る。現場の最前線で体を張るエースプレイヤー。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>サービス技術、調理技術など、個人のスキルが非常に高い。</li>
+                        <li>困難な状況を、個の力で打開できる。</li>
+                        <li>ストイックで、自分に厳しい。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>言葉で説明するのが苦手で、教育には向かないことがある。</li>
+                        <li>他人のミスに厳しい。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Seraph (超)</strong>: 言葉にしなくても意図を汲み取ってくれる相手と組むと、最強の動きができる。</li>
+                        <li><strong>Bloom (草)</strong>: 自分の技術を言語化し、後輩に伝えてくれる通訳役。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Wing (飛)</strong>: 地に足をつけて戦いたいタイプなので、ふわふわした動きをする相手とは合わない。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Rogue -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">08</span>
+                <span class="attribute-name">Rogue (ローグ)</span>
+            </div>
+            <div class="attribute-catch">「組織の解毒剤となる劇薬」</div>
+            <div class="attribute-desc">
+                批判を恐れず、本質を突く。「なあなあ」な空気を壊し、組織の膿を出す改革者。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>誰も言えないような問題点を指摘できる。</li>
+                        <li>危機管理能力が高く、最悪の事態を想定して動ける。</li>
+                        <li>戦略的で、裏表のない本音の議論ができる。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>誤解されやすく、敵を作りやすい。</li>
+                        <li>表現がきつく、周りを萎縮させることがある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Seraph (超)</strong>: 毒（批判）の裏にある真意（組織への愛）を見抜いてくれる唯一の理解者。</li>
+                        <li><strong>Ground (地)</strong>: 毒を受け止めて中和してくれる、懐の深い相手。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Bloom (草)</strong>: 繊細な育成タイプを潰してしまう危険性がある。</li>
+                        <li><strong>Bliss (妖)</strong>: 理想論（フェアリー）と現実論（毒）で対立する。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Ground -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">09</span>
+                <span class="attribute-name">Ground (グラウンド)</span>
+            </div>
+            <div class="attribute-catch">「揺るぎなきチームの大地」</div>
+            <div class="attribute-desc">
+                決して目立とうとはしないが、チーム全員が安心して立てる「土台」を作る。安定感No.1。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>精神的にタフで、どんなトラブルにも動じない。</li>
+                        <li>地味な作業や裏方の仕事を、文句を言わずに完璧にこなす。</li>
+                        <li>長期的な信頼関係を築くのが得意。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>変化を嫌い、腰が重いことがある。</li>
+                        <li>スピード感に欠ける場合がある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Spark (電)</strong>: 相手の突飛なアイデアを現実的な形に落とし込む。</li>
+                        <li><strong>Flare (火)</strong>: 情熱を受け止め、燃え尽きないように支える。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Flow (水)</strong>: 地面がぬかるむ（ペースを乱される）ため、相性が悪いことがある。</li>
+                        <li><strong>Wing (飛)</strong>: 地に足がついていない相手を理解できない。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. Wing -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">10</span>
+                <span class="attribute-name">Wing (ウィング)</span>
+            </div>
+            <div class="attribute-catch">「俯瞰で戦場を支配する司令塔」</div>
+            <div class="attribute-desc">
+                常に一歩引いた高い視点から、フロア全体を見渡す。フットワークが軽く、情報の伝達速度が速い。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>全体最適を考えた指示出しができる（デシャップやマネージャー向き）。</li>
+                        <li>情報収集能力が高く、各テーブルの状況を把握している。</li>
+                        <li>自由な発想で、新しいオペレーションを組める。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>現場の泥臭い作業を嫌うことがある。</li>
+                        <li>「口だけで動かない」と思われないよう注意が必要。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Spark (電)</strong>: スピード×スピード。電光石火の連携が可能。</li>
+                        <li><strong>Ground (地)</strong>: 空（指示）と地（実行）で役割分担が明確になる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Striker (闘)</strong>: 現場主義のストライカーとは、視点の高さの違いで対立しやすい。</li>
+                        <li><strong>Iron (鋼)</strong>: 自由を制限されると力を発揮できない。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. Seraph -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">11</span>
+                <span class="attribute-name">Seraph (セラフ)</span>
+            </div>
+            <div class="attribute-catch">「心を読む予言者」</div>
+            <div class="attribute-desc">
+                論理を超えた直感力を持つ。お客様が手を挙げる前に水を持っていくような、神がかったサービスをする。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>非言語コミュニケーション（表情、空気）を読み取る天才。</li>
+                        <li>お客様の潜在的なニーズを掘り起こし、感動を生む。</li>
+                        <li>チームメンバーのメンタル不調にいち早く気づく。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>考えすぎて疲れてしまうことがある。</li>
+                        <li>論理的な説明を求められると弱い。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Striker (闘)</strong>: 言葉足らずな職人の意図を汲み取り、サポートする。</li>
+                        <li><strong>Rogue (毒)</strong>: 批判の裏にある真意を理解し、通訳する。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Night Shift (悪)</strong>: 心理戦や計算高いタイプには、心を読もうとして逆に翻弄される。</li>
+                        <li><strong>Craft (虫)</strong>: 細かい理屈や手順にこだわられると、直感が鈍る。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. Craft -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">12</span>
+                <span class="attribute-name">Craft (クラフト)</span>
+            </div>
+            <div class="attribute-catch">「無限の改善を繰り返す適応者」</div>
+            <div class="attribute-desc">
+                小さな変化や改善（カイゼン）を愛する。派手さはないが、環境に合わせて自分自身を進化させ続ける。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>マニュアルの不備やオペレーションの無駄を見つけるのが得意。</li>
+                        <li>粘り強く、少しずつでも確実に前進する。</li>
+                        <li>サポート役として、痒い所に手が届く動きをする。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>大局的な視点（戦略）を持つのが苦手な場合がある。</li>
+                        <li>細かすぎて「うるさい」と思われることがある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Bloom (草)</strong>: 共に成長・育成を楽しむことができる平和なペア。</li>
+                        <li><strong>Iron (鋼)</strong>: 規律の中で、より良い方法を模索する実務部隊として機能する。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 勢いで押し切ろうとするタイプとは、ペースが合わない。</li>
+                        <li><strong>Wing (飛)</strong>: 視点が高すぎる相手には、細かい改善の価値が伝わりにくい。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. Solid -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">13</span>
+                <span class="attribute-name">Solid (ソリッド)</span>
+            </div>
+            <div class="attribute-catch">「伝統を護る不動の番人」</div>
+            <div class="attribute-desc">
+                SVDのブランド、格式、ルールを絶対的に守る。その頑固さは信頼の証。「SVDらしさ」の基準点。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>サービスの質やブランドイメージを一定に保つための最後の砦。</li>
+                        <li>迷った時の判断基準（コンパス）になる。</li>
+                        <li>決して裏切らない忠誠心を持つ。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>融通が利かず、新しい変化に抵抗することがある。</li>
+                        <li>頭が固いと思われがち。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Striker (闘)</strong>: 実力と信念が噛み合った時、最強の突破力が生まれる。</li>
+                        <li><strong>Ground (地)</strong>: 岩と大地。盤石の安定感で店を支える。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Flow (水)</strong>: 流れを変えようとする柔軟なタイプとは、水と油（岩）の関係。</li>
+                        <li><strong>Spark (電)</strong>: 伝統を壊そうとする革新者とは対立する。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 14. Shade -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">14</span>
+                <span class="attribute-name">Shade (シェード)</span>
+            </div>
+            <div class="attribute-catch">「気配を消す究極の黒子」</div>
+            <div class="attribute-desc">
+                自分が主役になることを嫌い、影からのサポートに徹する。気づけば洗い物が終わっている、そんな存在。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>誰もやりたがらない雑務を、淡々と完璧にこなす。</li>
+                        <li>チームの「穴」を察知し、誰にも言わずに埋めておく。</li>
+                        <li>承認欲求に左右されず、チームの勝利だけを考えている。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>評価されにくく、モチベーション維持が難しい。</li>
+                        <li>存在感が薄くなりすぎる。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Emperor (龍)</strong>: 王の光が強いほど、影（黒子）は濃くなり、良い仕事をする。</li>
+                        <li><strong>Seraph (超)</strong>: 影の努力に唯一気づいてくれる理解者。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Night Shift (悪)</strong>: 影の努力を利用しようとするタイプには注意。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15. Emperor -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">15</span>
+                <span class="attribute-name">Emperor (エンペラー)</span>
+            </div>
+            <div class="attribute-catch">「王の風格を持つカリスマ」</div>
+            <div class="attribute-desc">
+                生まれながらのリーダー気質。理屈ではなく「存在感」で人を従わせる。SVDの顔となるスタープレイヤー。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>圧倒的な華があり、お客様をファンにする力が強い。</li>
+                        <li>決断力があり、チームの進むべき道を示す。</li>
+                        <li>高い目標を掲げ、それに見合う結果を出す。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>プライドが高く、批判を受け入れないことがある。</li>
+                        <li>ワンマンになりやすい。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Bliss (妖)</strong>: 唯一、王に対して対等に（無邪気に）接することができ、王の心を癒やす。</li>
+                        <li><strong>Shade (霊)</strong>: 王を支える影として、最高の相性。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Bliss (妖)</strong>: ゲームバランス上、ドラゴンはフェアリーに勝てない（調子を狂わされる）。</li>
+                        <li><strong>Crystal (氷)</strong>: 冷静な正論（氷）は、ドラゴンの逆鱗に触れることがある（弱点）。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 16. Night Shift -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">16</span>
+                <span class="attribute-name">Night Shift (ナイトシフト)</span>
+            </div>
+            <div class="attribute-catch">「結果にコミットする冷徹な策士」</div>
+            <div class="attribute-desc">
+                綺麗事だけでは店は回らないことを知っている。利益、効率、数字にシビアで、泥を被ることも厭わない。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>危機的状況で、感情を捨てて最善の判断ができる。</li>
+                        <li>数字に強く、店舗の利益を確実に残す。</li>
+                        <li>交渉事やクレーム処理に強い。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>「冷酷だ」と誤解され、人望を失うリスクがある。</li>
+                        <li>チームの和を乱すことがある。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Rogue (毒)</strong>: 毒と悪。組織の裏側を知る者同士、阿吽の呼吸で動ける。</li>
+                        <li><strong>Striker (闘)</strong>: 実力主義のストライカーとは、利害が一致すれば強力なタッグになる。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Bloom (草)</strong>: 育成や調和を重視するタイプとは、根本的に価値観が合わない。</li>
+                        <li><strong>Bliss (妖)</strong>: 純粋無垢なタイプを見ると、イライラするか、調子が狂う。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 17. Iron -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">17</span>
+                <span class="attribute-name">Iron (アイアン)</span>
+            </div>
+            <div class="attribute-catch">「規律を重んじる鉄の管理者」</div>
+            <div class="attribute-desc">
+                感情よりもルールとシステムを信じる。防御力が高く、ミスや事故を未然に防ぐ鉄壁の守護神。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>在庫管理、衛生管理、金銭管理などが完璧。</li>
+                        <li>感情の起伏がなく、常に一定のパフォーマンスを出せる。</li>
+                        <li>組織のガバナンスを強化する。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>融通が利かず、機械的になりがち。</li>
+                        <li>新しい挑戦に対して保守的。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Crystal (氷)</strong>: 緻密さと堅実さが合わさり、ミスゼロの完璧なオペレーションを実現する。</li>
+                        <li><strong>Striker (闘)</strong>: 現場の攻撃力（闘）と管理の守備力（鋼）で、攻守最強の布陣。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Flare (火)</strong>: 熱い情熱で鉄を溶かそうとする（ペースを乱される）相手は苦手。</li>
+                        <li><strong>Rogue (毒)</strong>: ルールを壊そうとする改革者とは対立する。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 18. Bliss -->
+        <div class="attribute-card">
+            <div class="attribute-header">
+                <span class="attribute-number">18</span>
+                <span class="attribute-name">Bliss (ブリス)</span>
+            </div>
+            <div class="attribute-catch">「愛嬌で世界を救うアイドル」</div>
+            <div class="attribute-desc">
+                計算のない純粋な愛嬌で、全てを許させてしまう不思議な力を持つ。チームの殺伐とした空気を一瞬で浄化する。
+            </div>
+            <div class="pros-cons-grid">
+                <div class="pros-box">
+                    <h4>強み (Pros)</h4>
+                    <ul>
+                        <li>お客様から愛され、チップやプレゼントをもらうことが多い。</li>
+                        <li>ミスをしても「〇〇ちゃんだから仕方ない」で済ませてしまう（ある意味最強）。</li>
+                        <li>チームのストレスを軽減するヒーラー役。</li>
+                    </ul>
+                </div>
+                <div class="cons-box">
+                    <h4>弱み (Cons)</h4>
+                    <ul>
+                        <li>実務能力や責任感に欠ける場合がある。</li>
+                        <li>厳しい指導を受けると潰れてしまう。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="match-grid">
+                <div class="match-box best">
+                    <h4>Best Match (Synergy)</h4>
+                    <ul>
+                        <li><strong>Emperor (龍)</strong>: 唯一、王（ドラゴン）を無力化できる存在。王のストレスを消し去る。</li>
+                        <li><strong>Iron (鋼)</strong>: 自由奔放なフェアリーを、鉄壁の管理者が守り、コントロールする。</li>
+                    </ul>
+                </div>
+                <div class="match-box caution">
+                    <h4>Caution Match (Conflict)</h4>
+                    <ul>
+                        <li><strong>Rogue (毒)</strong>: 純粋さを毒（皮肉）で汚されると、輝きを失う（弱点）。</li>
+                        <li><strong>Night Shift (悪)</strong>: 計算高いタイプとは相容れない。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">チーム編成の黄金比 (Team Composition Logic)</h2>
+        <div class="composition-grid">
+            <div class="role-card">
+                <h3>攻撃の軸 (Offense)</h3>
+                <div class="role-members">Flare, Striker, Emperor, Spark</div>
+                <p>売上を作り、お客様を感動させる突破力。</p>
+            </div>
+            <div class="role-card">
+                <h3>守りの軸 (Defense)</h3>
+                <div class="role-members">Ground, Iron, Solid, Crystal</div>
+                <p>クオリティを担保し、ミスを防ぐ安定力。</p>
+            </div>
+            <div class="role-card">
+                <h3>潤滑油 (Support)</h3>
+                <div class="role-members">Balance, Flow, Bloom, Bliss</div>
+                <p>チームを回し、雰囲気を良くする調整力。</p>
+            </div>
+            <div class="role-card">
+                <h3>変革・特殊 (Special)</h3>
+                <div class="role-members">Rogue, Seraph, Wing, Night Shift, Craft, Shade</div>
+                <p>停滞を打破し、痒い所に手が届く特殊能力。</p>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 2rem; font-weight: bold; font-size: 1.2rem;">
+            理想的な比率（10人チーム）<br>
+            攻撃 3 : 守り 3 : 潤滑油 3 : 特殊 1
+        </div>
+
+    </div>
+
+</body>
+
+</html>
