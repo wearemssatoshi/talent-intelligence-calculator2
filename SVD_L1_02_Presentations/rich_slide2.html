@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logical Tasting Rich Slides 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&family=Shippori+Mincho:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #722F37;
+            --secondary-color: #556B2F;
+            --accent-color: #FFD700;
+            --bg-color: #FFFDF5;
+            --text-color: #2C2C2C;
+            --bubble-bg: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Zen Maru Gothic', sans-serif;
+            background-color: #333;
+            margin: 0;
+            padding: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+        }
+
+        .slide {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+            background-image: radial-gradient(#E0E0E0 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        h1 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 48px;
+            color: var(--primary-color);
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+            background: white;
+            padding: 10px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            border: 3px solid var(--primary-color);
+            box-shadow: 5px 5px 0px var(--secondary-color);
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .main-content {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            border: 2px solid #eee;
+        }
+
+        .side-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .character-img {
+            width: 100%;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            transform: scale(1.1);
+            transform-origin: bottom center;
+        }
+
+        .speech-bubble {
+            background: var(--bubble-bg);
+            border-radius: 30px;
+            padding: 25px;
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-color);
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        .speech-bubble.teacher {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .speech-bubble.teacher::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            right: 50px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: var(--primary-color) transparent;
+            display: block;
+            width: 0;
+        }
+
+        .speech-bubble.student {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+            align-self: flex-start;
+        }
+
+        .speech-bubble.student::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50px;
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: var(--secondary-color) transparent;
+            display: block;
+            width: 0;
+        }
+
+        h2 {
+            font-family: 'Shippori Mincho', serif;
+            font-size: 32px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 5px;
+            margin: 0 0 15px 0;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+
+        .diagram-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 4px;
+            background: #ddd;
+            margin: 0 -10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bg-decoration {
+            position: absolute;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .three-acts {
+            display: flex;
+            gap: 15px;
+        }
+
+        .act-box {
+            flex: 1;
+            background: #FFF3E0;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .act-title {
+            font-weight: bold;
+            color: #E65100;
+            margin-bottom: 5px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+        <img src="grape_vine.png" class="bg-decoration"
+            style="bottom: -50px; left: -50px; width: 800px; transform: rotate(-10deg) scaleX(-1);" alt="">
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Logical Tasting Methodology <span style="font-size: 24px; color: #666;">Vol.2</span></h1>
+            <div style="font-size: 20px; font-weight: bold; color: var(--primary-color);">Master of WINE G Presents
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="main-content">
+                <!-- Section 3 -->
+                <div class="card">
+                    <h2>3. 香りの分析 (Nose)</h2>
+                    <p style="font-size: 18px;">香りを因数分解し、順番に探していきます。</p>
+                    <div class="diagram-row">
+                        <div class="step-circle">果実</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">花</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">草<br>ハーブ</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">土<br>スパイス</div>
+                        <div class="step-line"></div>
+                        <div class="step-circle">根</div>
+                    </div>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="card">
+                    <h2>4. 味わいの分析 (Palate)</h2>
+                    <div class="three-acts">
+                        <div class="act-box">
+                            <span class="act-title">第1幕 (アタック)</span>
+                            第一印象<br>ボリューム感
+                        </div>
+                        <div class="act-box">
+                            <span class="act-title">第2幕 (ミドル)</span>
+                            味わいの<br>中心展開
+                        </div>
+                        <div class="act-box">
+                            <span class="act-title">第3幕 (アフター)</span>
+                            余韻よりも<br><strong>強度(パワー)</strong>
+                        </div>
+                    </div>
+                    <div
+                        style="margin-top: 10px; background: #E8F5E9; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; color: #2E7D32;">
+                        重要：量より質！ (酸の鋭さ、タンニンの緻密さ)
+                    </div>
+                </div>
+
+                <!-- Section 5 -->
+                <div class="card" style="border: 2px solid var(--primary-color); background: #FFF8F8;">
+                    <h2>5. 結論 (Conclusion)</h2>
+                    <div style="display: flex; justify-content: space-around; font-size: 18px; font-weight: bold;">
+                        <div>推論：気候 → 産地</div>
+                        <div>評価：品質・飲み頃</div>
+                        <div>提案：グラス・料理</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-panel">
+                <div class="speech-bubble student">
+                    香りの順番...<br>
+                    果実から根っこへ...<br>
+                    まるで植物の成長みたい！
+                </div>
+                <div class="speech-bubble teacher">
+                    その通り！<br>
+                    そして味わいは「3幕構成」の<br>
+                    ドラマなんじゃ。<br>
+                    最後の余韻まで気を抜くなよ！
+                </div>
+                <img src="characters.png" class="character-img" alt="Teacher and Student">
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

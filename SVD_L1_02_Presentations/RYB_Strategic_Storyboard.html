@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RYB BISTRO REVOLUTION - STRATEGIC STORYBOARD</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Serif+JP:wght@700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --navy: #0F172A;
+            --navy-deep: #020617;
+            --accent: #EF4444;
+            --bg-texture: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--navy-deep);
+            background-image: var(--bg-texture);
+            color: #F1F5F9;
+            font-family: 'Noto Sans JP', sans-serif;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .board {
+            width: 1200px;
+            background: var(--navy);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+            padding: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative Background Elements (The "Illustrations") */
+        .circle-blur {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 1;
+        }
+
+        .cb-1 {
+            width: 600px;
+            height: 600px;
+            background: rgba(212, 175, 55, 0.05);
+            top: -200px;
+            left: -200px;
+        }
+
+        .cb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(239, 68, 68, 0.03);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Magazine Header */
+        .mag-header {
+            border-bottom: 2px solid var(--gold);
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .mag-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.8em;
+            color: var(--gold);
+        }
+
+        .mag-issue {
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        /* Main Headline */
+        .headline {
+            margin-bottom: 80px;
+            text-align: center;
+        }
+
+        .headline h1 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 90px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .headline .sub {
+            font-size: 32px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+        }
+
+        /* Story Grid */
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 60px;
+        }
+
+        /* The "挿絵" (Visual Blocks) */
+        .visual-block {
+            background: #1E293B;
+            border-radius: 4px;
+            position: relative;
+            height: 400px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Failure Visual (Immersive Fort) */
+        .vb-failure {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+        }
+
+        .vb-failure::before {
+            content: '⚽';
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 100px;
+            opacity: 0.1;
+        }
+
+        .vb-failure h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        /* Success Visual (The Bistro) */
+        .vb-success {
+            background: linear-gradient(135deg, #2D1B1B, #1A0F0F);
+            height: 500px;
+        }
+
+        .vb-success::before {
+            content: '🍷';
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 120px;
+            color: var(--gold);
+            opacity: 0.2;
+        }
+
+        .vb-success h3 {
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        /* Typography & Copy */
+        .copy-block h2 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 48px;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .copy-block p {
+            font-size: 18px;
+            line-height: 2;
+            margin-bottom: 30px;
+            color: #CBD5E1;
+            text-align: justify;
+        }
+
+        .highlight-box {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .highlight-box h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Sidebar Elements */
+        .sidebar {
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding-left: 40px;
+        }
+
+        .tactical-node {
+            margin-bottom: 40px;
+        }
+
+        .tactical-node .num {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 40px;
+            font-weight: 900;
+            color: rgba(212, 175, 55, 0.2);
+            line-height: 1;
+        }
+
+        .tactical-node h5 {
+            font-size: 18px;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+
+        .tactical-node p {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        /* Footnote */
+        .footnote {
+            margin-top: 100px;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 0.3em;
+            opacity: 0.3;
+        }
+
+        /* Custom Icon Marks */
+        .mark {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board">
+        <div class="circle-blur cb-1"></div>
+        <div class="circle-blur cb-2"></div>
+
+        <div class="content">
+            <header class="mag-header">
+                <div class="mag-title">SVD GLOBAL INTELLIGENCE REPORT</div>
+                <div class="mag-issue">VOL. 01 | Q1 2026</div>
+            </header>
+
+            <section class="headline">
+                <h1>ビストロ・レボリューション</h1>
+                <div class="sub">THE RYB MANIFESTO</div>
+            </section>
+
+            <div class="story-grid">
+                <!-- Left Column -->
+                <div class="copy-block">
+                    <h2>「全員優勝」を<br>フードコートで<br>証明する。</h2>
+                    <p>
+                        イマーシブ・フォートの挫折は、我々に「箱の呪縛」を教えた。巨大な固定費に縛られれば、いかに優れたコンテンツも窒息する。赤れんがテラスにおける真の勝機は、自ら壁を作るのではなく、既存の熱狂——「布袋」という磁石を自らの物語へ取り込むことにある。
+                    </p>
+
+                    <div class="visual-block vb-failure">
+                        <h3>LESSON: THE VOID</h3>
+                        <p style="font-size: 14px; opacity: 0.7;">
+                            巨大施設 × スケールしない体験。<br>
+                            日本人の「恥」を読み違えた設計の限界。
+                        </p>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>Market-In Logic</h4>
+                        <p style="font-size: 16px; color: #FFF; margin-bottom: 0;">
+                            「作れるもの」を売るのではない。顧客が「まだ気づいていない渇望」——フードコートでの本格的なビストロ体験を、圧倒的な正当性とネタ（ペアリング）で提供する。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="sidebar">
+                    <div class="visual-block vb-success">
+                        <h3>THE AWAKENING</h3>
+                        <p style="font-size: 14px; opacity: 0.7;">
+                            ソムリエが導く、新しい没入。<br>
+                            カツレツの歴史を皿の上で再現する。
+                        </p>
+                    </div>
+
+                    <div style="margin-top: 60px;">
+                        <div class="tactical-node">
+                            <div class="num">01</div>
+                            <h5>歴史的継承</h5>
+                            <p>カツレツはフレンチ。この正当性がLA BRIQUEの誇りをフードコートへ繋ぐ。B級の皮を被ったA級の証明。</p>
+                        </div>
+
+                        <div class="tactical-node">
+                            <div class="num">02</div>
+                            <h5>極上の違和感</h5>
+                            <p>布袋のザンギにワインを合わせるという「遊び心」。ソムリエの専門性が、フードコートをエンターテインメントへと昇華させる。</p>
+                        </div>
+
+                        <div class="tactical-node">
+                            <div class="num">03</div>
+                            <h5>共生の円卓</h5>
+                            <p>ワインブッフェを核に、他店のおつまみを受け入れる。赤れんが全体を「札幌で最も贅沢な昼のみ場」へと変貌させるエコシステム。</p>
+                        </div>
+
+                        <div class="tactical-node">
+                            <div class="num">04</div>
+                            <h5>持続する意志</h5>
+                            <p>我々には持久力がある。一過性のバズではなく、深く愛される「街のメインダイニング」の一部として根を張る。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footnote">
+                SAPPORO VIEWTIFUL DINING — ORIGIN | DESIGNED FOR SAT BY G
+            </footer>
+        </div>
+    </div>
+
+</body>
+
+</html>

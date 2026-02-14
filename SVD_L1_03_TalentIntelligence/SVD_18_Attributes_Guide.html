@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD 18属性ガイド | SAPPORO VIEWTIFUL DINING</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-color: #0f172a;
+            --secondary-color: #B8995C;
+            --accent-color: #D4AF37;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --light-text-color: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1e293b 100%);
+            color: white;
+        }
+
+        .header-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: brightness(0) invert(1);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 4rem 0 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--light-text-color);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Attribute Cards Grid */
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .attribute-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+
+        .attribute-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .attribute-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .attribute-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        .attribute-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .attribute-name-jp {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            font-weight: 500;
+        }
+
+        .attribute-keyword {
+            display: inline-block;
+            background: var(--background-color);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .attribute-description {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+        }
+
+        .synergy-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .synergy-item {
+            font-size: 0.85rem;
+        }
+
+        .synergy-best {
+            color: #16a34a;
+        }
+
+        .synergy-caution {
+            color: #dc2626;
+        }
+
+        .synergy-label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Synergy Matrix */
+        .matrix-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .synergy-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            background: white;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .synergy-matrix th,
+        .synergy-matrix td {
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .synergy-matrix th {
+            background: var(--primary-color);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .synergy-matrix .row-header {
+            background: var(--primary-color);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .cell-best {
+            background: #dcfce7;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .cell-caution {
+            background: #fef2f2;
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .cell-same {
+            background: var(--background-color);
+            color: var(--light-text-color);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: var(--primary-color);
+            color: white;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .attribute-card {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid var(--border-color);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .attributes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .synergy-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="../logo/SVD_logo_Black.png" alt="SVD Logo" class="header-logo">
+        <h1>SVD 18属性ガイド</h1>
+        <p>Talent Intelligence System</p>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title">SVD 18 ATTRIBUTES</h2>
+        <p class="section-subtitle">
+            SVDスタッフの個性を18の属性で表現。自認（Self）と他認（Others）の両面から決定し、チームの相性を最適化します。
+        </p>
+
+        <div class="attributes-grid">
+            <!-- Balance -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon">B</div>
+                    <div>
+                        <div class="attribute-name">Balance</div>
+                        <div class="attribute-name-jp">バランス（調和・均衡）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">汎用・適応</span>
+                <p class="attribute-description">
+                    あらゆる状況に適応できるオールラウンダー。チームの潤滑油として機能し、異なる属性間の橋渡し役を担う。どんなポジションでも一定以上のパフォーマンスを発揮する安定感が強み。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flare, Emperor
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        —
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flare -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #E53935;">F</div>
+                    <div>
+                        <div class="attribute-name">Flare</div>
+                        <div class="attribute-name-jp">フレア（閃光・情熱）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">情熱・突破</span>
+                <p class="attribute-description">
+                    エネルギッシュで情熱的。プレッシャーの中で最も輝き、困難な状況を突破する力を持つ。周囲のモチベーションを高め、チームに勢いをもたらす存在。ただし同属性との組み合わせは暴走リスクあり。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flow, Ground
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Flare（同属性）
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flow -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #FB8C00;">Fl</div>
+                    <div>
+                        <div class="attribute-name">Flow</div>
+                        <div class="attribute-name-jp">フロー（流れ・柔軟）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">柔軟・浸透</span>
+                <p class="attribute-description">
+                    水のように柔軟で適応力が高い。状況の変化を読み取り、スムーズに対応できる。チームの空気を察知してなじみ、自然と周囲に溶け込む。Flareの勢いを受け止めるクッション役。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flare, Spark
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Solid
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloom -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #FB8C00;">Bl</div>
+                    <div>
+                        <div class="attribute-name">Bloom</div>
+                        <div class="attribute-name-jp">ブルーム（開花・育成）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">育成・調和</span>
+                <p class="attribute-description">
+                    人を育て、花開かせる才能を持つ。温かい雰囲気でチームの調和を維持し、新人の成長をサポートする。教育係やメンター役に最適。ただしRogueやNight Shiftのドライさとは相性が悪い。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flare, Ground
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Rogue, Night Shift
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spark -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #E53935;">S</div>
+                    <div>
+                        <div class="attribute-name">Spark</div>
+                        <div class="attribute-name-jp">スパーク（火花・閃き）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">閃き・革新</span>
+                <p class="attribute-description">
+                    直感的なひらめきと創造性に富む革新者。新しいアイデアやサービス改善の提案が得意。FlowやWingと組むことで、アイデアを柔軟に展開できる。Groundとの組み合わせは動きを封じ込めてしまう傾向。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flow, Wing
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Ground
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crystal -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #039BE5;">C</div>
+                    <div>
+                        <div class="attribute-name">Crystal</div>
+                        <div class="attribute-name-jp">クリスタル（結晶・透明）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">緻密・冷静</span>
+                <p class="attribute-description">
+                    透明感のある冷静な判断力を持つ分析家。ミスが少なく、細部まで精密に作業できる。Flareの熱さをクールダウンしながら質を保つ役割。Sparkとは速度感の違いから衝突しやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Flare, Striker
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Spark
+                    </div>
+                </div>
+            </div>
+
+            <!-- Striker -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #8E24AA;">St</div>
+                    <div>
+                        <div class="attribute-name">Striker</div>
+                        <div class="attribute-name-jp">ストライカー（打者・実行者）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">実直・技術</span>
+                <p class="attribute-description">
+                    技術力と実直さで結果を出すスペシャリスト。言葉より行動で示すタイプ。SeraphやBloomのサポートで能力が最大化される。Wingとの自由なスタイルの差が摩擦を生むことも。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Seraph, Bloom
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Wing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rogue -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #8E24AA;">R</div>
+                    <div>
+                        <div class="attribute-name">Rogue</div>
+                        <div class="attribute-name-jp">ローグ（異端者・改革者）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">改革・本質</span>
+                <p class="attribute-description">
+                    本質を見抜き、既存のやり方を改革する力を持つ。忖度せず問題の核心を突く。SeraphやGroundと組むと改革が安定して進む。感情的なBloomやBlissとは価値観の衝突が起きやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Seraph, Ground
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Bloom, Bliss
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ground -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #43A047;">G</div>
+                    <div>
+                        <div class="attribute-name">Ground</div>
+                        <div class="attribute-name-jp">グラウンド（大地・土台）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">安定・土台</span>
+                <p class="attribute-description">
+                    チームの土台となる安定感。どんな時も動じない姿勢でチームに安心感を与える。SparkやFlareの爆発力を支える役割。FlowやWingとは動きのスタイルが合わず、互いにストレスを感じやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Spark, Flare
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Flow, Wing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wing -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #039BE5;">W</div>
+                    <div>
+                        <div class="attribute-name">Wing</div>
+                        <div class="attribute-name-jp">ウィング（翼・自由）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">自由・俯瞰</span>
+                <p class="attribute-description">
+                    高い視点から全体を俯瞰し、自由な発想で動ける。縛られることを嫌い、独自の方法で成果を出す。SparkやGroundと組むとバランス良く機能する。StrikerやIronの規律的なスタイルとは衝突リスク。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Spark, Ground
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Striker, Iron
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seraph -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #039BE5;">Se</div>
+                    <div>
+                        <div class="attribute-name">Seraph</div>
+                        <div class="attribute-name-jp">セラフ（熾天使・洞察）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">洞察・予知</span>
+                <p class="attribute-description">
+                    状況を読み取る洞察力に優れ、問題を事前に察知できる。空気を読む力が異常に高く、トラブルを未然に防ぐ。StrikerやRogueの行動を的確にサポート。Night
+                    ShiftやCraftとはタイプが違いすぎて連携しづらい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Striker, Rogue
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Night Shift, Craft
+                    </div>
+                </div>
+            </div>
+
+            <!-- Craft -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #43A047;">Cr</div>
+                    <div>
+                        <div class="attribute-name">Craft</div>
+                        <div class="attribute-name-jp">クラフト（技巧・職人）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">改善・適応</span>
+                <p class="attribute-description">
+                    地道に改善を積み重ねる職人気質。既存のシステムを最適化し、効率化を図る。BloomやIronと組むと着実に成果が積み上がる。FlareやWingとはスピード感の違いでストレスを感じやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Bloom, Iron
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Flare, Wing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solid -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #43A047;">So</div>
+                    <div>
+                        <div class="attribute-name">Solid</div>
+                        <div class="attribute-name-jp">ソリッド（堅固・伝統）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">信念・伝統</span>
+                <p class="attribute-description">
+                    揺るがない信念と伝統を重んじる姿勢が特徴。正しいことを正しく行うことにこだわる。StrikerやGroundと組むと堅固な体制を築ける。FlowやSparkとは価値観が合わず、変化への対応で摩擦が生じる。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Striker, Ground
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Flow, Spark
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shade -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #455A64;">Sh</div>
+                    <div>
+                        <div class="attribute-name">Shade</div>
+                        <div class="attribute-name-jp">シェード（影・献身）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">献身・黒子</span>
+                <p class="attribute-description">
+                    裏方で黒子として活躍する献身タイプ。目立つことを求めず、チームの成功のために尽くす。EmperorやSeraphを支える最高のサポーター。Night
+                    Shiftとは役割が被り、どちらが裏方かで曖昧になりやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Emperor, Seraph
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Night Shift
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emperor -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #E53935;">E</div>
+                    <div>
+                        <div class="attribute-name">Emperor</div>
+                        <div class="attribute-name-jp">エンペラー（皇帝・統率）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">統率・圧倒</span>
+                <p class="attribute-description">
+                    圧倒的なカリスマ性でチームを統率するリーダー。存在感で空気を支配し、方向性を示す。BlissやShadeが補佐すると最高のチーム体制に。同じく存在感のあるBlissやCrystalとは役割で衝突しやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Bliss, Shade
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Bliss, Crystal
+                    </div>
+                </div>
+            </div>
+
+            <!-- Night Shift -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #8E24AA;">N</div>
+                    <div>
+                        <div class="attribute-name">Night Shift</div>
+                        <div class="attribute-name-jp">ナイトシフト（夜勤・危機対応）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">危機・実利</span>
+                <p class="attribute-description">
+                    危機的状況で真価を発揮するクライシスマネージャー。混乱時に冷静に判断し、実利を優先して動く。RogueやStrikerと組むと最強の問題解決チームに。感情を重視するBloomやBlissとは価値観が合わない。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Rogue, Striker
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Bloom, Bliss
+                    </div>
+                </div>
+            </div>
+
+            <!-- Iron -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #43A047;">I</div>
+                    <div>
+                        <div class="attribute-name">Iron</div>
+                        <div class="attribute-name-jp">アイアン（鉄・規律）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">鉄壁・規律</span>
+                <p class="attribute-description">
+                    鉄壁の規律と安定感で守りを固める。ルールを徹底し、品質管理に優れる。CrystalやStrikerと組むと完璧なオペレーションを実現。FlareやRogueとは自由度と規律のバランスで衝突しやすい。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Crystal, Striker
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Flare, Rogue
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bliss -->
+            <div class="attribute-card">
+                <div class="attribute-header">
+                    <div class="attribute-icon" style="background: #FB8C00;">Bs</div>
+                    <div>
+                        <div class="attribute-name">Bliss</div>
+                        <div class="attribute-name-jp">ブリス（至福・愛嬌）</div>
+                    </div>
+                </div>
+                <span class="attribute-keyword">愛嬌・浄化</span>
+                <p class="attribute-description">
+                    愛嬌と明るさでチームの雰囲気を浄化するムードメーカー。重い空気を一変させる力を持つ。EmperorやIronの堅さを和らげる最高のパートナー。RogueやNight
+                    Shiftのドライさとは相性が悪い。
+                </p>
+                <div class="synergy-section">
+                    <div class="synergy-item synergy-best">
+                        <span class="synergy-label">★ ベストマッチ</span>
+                        Emperor, Iron
+                    </div>
+                    <div class="synergy-item synergy-caution">
+                        <span class="synergy-label">⚠ 注意</span>
+                        Rogue, Night Shift
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">SYNERGY MATRIX</h2>
+        <p class="section-subtitle">
+            ベストマッチ（緑）と注意（赤）の組み合わせを一覧で確認できます。
+        </p>
+
+        <div class="matrix-container">
+            <table class="synergy-matrix">
+                <tr>
+                    <th></th>
+                    <th>Bal</th>
+                    <th>Fla</th>
+                    <th>Flo</th>
+                    <th>Blo</th>
+                    <th>Spa</th>
+                    <th>Cry</th>
+                    <th>Str</th>
+                    <th>Rog</th>
+                    <th>Gro</th>
+                    <th>Win</th>
+                    <th>Ser</th>
+                    <th>Cra</th>
+                    <th>Sol</th>
+                    <th>Sha</th>
+                    <th>Emp</th>
+                    <th>Nig</th>
+                    <th>Iro</th>
+                    <th>Bli</th>
+                </tr>
+                <tr>
+                    <td class="row-header">Balance</td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Flare</td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Flow</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Bloom</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Spark</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Crystal</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Striker</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Rogue</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Ground</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Wing</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Seraph</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Craft</td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Solid</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Shade</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Emperor</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Night Shift</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                </tr>
+                <tr>
+                    <td class="row-header">Iron</td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-same">—</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="row-header">Bliss</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-caution">⚠</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-caution">⚠</td>
+                    <td class="cell-best">★</td>
+                    <td class="cell-same">—</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2 class="section-title">SYNERGY LOGIC</h2>
+        <p class="section-subtitle">
+            なぜその組み合わせが良いのか・注意が必要なのか、その論理を解説します。
+        </p>
+
+        <div class="attributes-grid">
+            <div class="attribute-card">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">★ ベストマッチの原則</h3>
+                <ul style="padding-left: 1.5rem; font-size: 0.95rem;">
+                    <li><strong>補完関係：</strong>弱点を補い合う（例：Flare × Ground）</li>
+                    <li><strong>増幅関係：</strong>強みを増幅する（例：Striker × Seraph）</li>
+                    <li><strong>緩和関係：</strong>極端さを緩和（例：Emperor × Bliss）</li>
+                    <li><strong>支援関係：</strong>サポートで開花（例：Shade × Emperor）</li>
+                </ul>
+            </div>
+
+            <div class="attribute-card">
+                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">⚠ 注意が必要な原則</h3>
+                <ul style="padding-left: 1.5rem; font-size: 0.95rem;">
+                    <li><strong>同属性衝突：</strong>似すぎて競合（例：Flare × Flare）</li>
+                    <li><strong>価値観対立：</strong>根本的な考え方が違う（例：Bloom × Rogue）</li>
+                    <li><strong>スピード差：</strong>動きのペースが合わない（例：Spark × Ground）</li>
+                    <li><strong>役割重複：</strong>どちらが主役か曖昧（例：Shade × Night Shift）</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>SAPPORO VIEWTIFUL DINING — ORIGIN</p>
+        <p style="margin-top: 0.5rem; font-size: 0.7rem;">© 2024-2025 SVD. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,2585 @@
+{
+  "metadata": {
+    "store_id": "GA",
+    "store_name": "GA",
+    "base": "TV_TOWER",
+    "fiscal_year": "",
+    "quarter": "1Q",
+    "source_file": "TV2023_1Q.xlsx",
+    "parsed_at": "2026-02-11T20:22:03.756837",
+    "sheets": [
+      "2023.04",
+      "2023.05",
+      "2023.06"
+    ],
+    "total_days": 91,
+    "total_months": 3
+  },
+  "monthly_summary": [
+    {
+      "month": "2023-04",
+      "channels": {
+        "lunch": {
+          "pax": 136,
+          "sales": 537675,
+          "avg_spend": 3953.49
+        },
+        "dinner": {
+          "pax": 92,
+          "sales": 795640,
+          "avg_spend": 8648.26
+        },
+        "ld_total": {
+          "pax": 228,
+          "sales": 1333315
+        },
+        "takeout": {
+          "pax": 24,
+          "sales": 12150
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "sales": 1333315
+        }
+      }
+    },
+    {
+      "month": "2023-05",
+      "channels": {
+        "lunch": {
+          "pax": 970,
+          "sales": 4378530,
+          "avg_spend": 4513.95
+        },
+        "dinner": {
+          "pax": 456,
+          "sales": 5908787,
+          "avg_spend": 12957.87
+        },
+        "ld_total": {
+          "pax": 1426,
+          "sales": 10287317
+        },
+        "takeout": {
+          "pax": 208,
+          "sales": 135250
+        },
+        "banquet": {
+          "pax": 185,
+          "sales": 919068
+        },
+        "beer_garden": {
+          "pax": 506,
+          "sales": 1974750
+        },
+        "all_channels": {
+          "sales": 29050
+        }
+      }
+    },
+    {
+      "month": "2023-06",
+      "channels": {
+        "lunch": {
+          "pax": 954,
+          "sales": 4201500,
+          "avg_spend": 4404.09
+        },
+        "dinner": {
+          "pax": 488,
+          "sales": 6565755,
+          "avg_spend": 13454.42
+        },
+        "ld_total": {
+          "pax": 1442,
+          "sales": 10767255
+        },
+        "takeout": {
+          "pax": 330,
+          "sales": 187800
+        },
+        "banquet": {
+          "pax": 356,
+          "sales": 1841138
+        },
+        "beer_garden": {
+          "pax": 5309,
+          "sales": 20954700
+        },
+        "all_channels": {
+          "sales": 33603493
+        }
+      }
+    }
+  ],
+  "daily_data": [
+    {
+      "date": "2023-04-01",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-02",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-03",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-04",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-05",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-06",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-07",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-08",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-09",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-10",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-11",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-12",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-13",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-14",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-15",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-16",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-17",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-18",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-19",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-20",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-21",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-22",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-23",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-24",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 10,
+          "sales": 18080
+        },
+        "dinner": {
+          "pax": 10,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-25",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 13,
+          "sales": 46525
+        },
+        "dinner": {
+          "pax": 8,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-26",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 24,
+          "sales": 68740
+        },
+        "dinner": {
+          "pax": 14,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-27",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-28",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 100760
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 336070
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 2500
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-29",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 156940
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 297660
+        },
+        "takeout": {
+          "pax": 16,
+          "sales": 7700
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-04-30",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 146630
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 161910
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 1950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-01",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 124820
+        },
+        "dinner": {
+          "pax": 4,
+          "sales": 44160
+        },
+        "takeout": {
+          "pax": 1,
+          "sales": 450
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-02",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 114180
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 288240
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 1850
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-03",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 115120
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 424030
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 2800
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-04",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 162940
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 351130
+        },
+        "takeout": {
+          "pax": 7,
+          "sales": 3500
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-05",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 172410
+        },
+        "dinner": {
+          "pax": 19,
+          "sales": 259170
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-06",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 148750
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 329910
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 8050
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-07",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 36,
+          "sales": 209550
+        },
+        "dinner": {
+          "pax": 2,
+          "sales": 33770
+        },
+        "takeout": {
+          "pax": 7,
+          "sales": 3850
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-08",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 134180
+        },
+        "dinner": {
+          "pax": 4,
+          "sales": 55800
+        },
+        "takeout": {
+          "pax": 1,
+          "sales": 500
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-09",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 146880
+        },
+        "dinner": {
+          "pax": 2,
+          "sales": 14350
+        },
+        "takeout": {
+          "pax": 4,
+          "sales": 2350
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-10",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 165700
+        },
+        "dinner": {
+          "pax": 7,
+          "sales": 112160
+        },
+        "takeout": {
+          "pax": 4,
+          "sales": 3700
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-11",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 38,
+          "sales": 173130
+        },
+        "dinner": {
+          "pax": 20,
+          "sales": 236410
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 2450
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-12",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 24,
+          "sales": 105730
+        },
+        "dinner": {
+          "pax": 23,
+          "sales": 308120
+        },
+        "takeout": {
+          "pax": 7,
+          "sales": 4600
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-13",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 27,
+          "sales": 138710
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 476550
+        },
+        "takeout": {
+          "pax": 6,
+          "sales": 4300
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-14",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 28,
+          "sales": 142080
+        },
+        "dinner": {
+          "pax": 11,
+          "sales": 162470
+        },
+        "takeout": {
+          "pax": 7,
+          "sales": 5100
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-15",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 164100
+        },
+        "dinner": {
+          "pax": 2,
+          "sales": 21700
+        },
+        "takeout": {
+          "pax": 6,
+          "sales": 4850
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-16",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 132250
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 162580
+        },
+        "takeout": {
+          "pax": 4,
+          "sales": 3200
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-17",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 40,
+          "sales": 175320
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 185680
+        },
+        "takeout": {
+          "pax": 2,
+          "sales": 950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-18",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 148490
+        },
+        "dinner": {
+          "pax": 5,
+          "sales": 66210
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "banquet": {
+          "pax": 71,
+          "sales": 379233
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-19",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 36,
+          "sales": 135170
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 176630
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 6300
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-20",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 160120
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 173020
+        },
+        "takeout": {
+          "pax": 13,
+          "sales": 9550
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-21",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 176500
+        },
+        "dinner": {
+          "pax": 18,
+          "sales": 257220
+        },
+        "takeout": {
+          "pax": 26,
+          "sales": 13500
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-22",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 44,
+          "sales": 130090
+        },
+        "dinner": {
+          "pax": 3,
+          "sales": 71050
+        },
+        "takeout": {
+          "pax": 4,
+          "sales": 3250
+        },
+        "banquet": {
+          "pax": 12,
+          "sales": 62640
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-23",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 167830
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 118617
+        },
+        "takeout": {
+          "pax": 13,
+          "sales": 11650
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-24",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 141240
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 149690
+        },
+        "takeout": {
+          "pax": 4,
+          "sales": 3200
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-25",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 124570
+        },
+        "dinner": {
+          "pax": 17,
+          "sales": 267730
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 3000
+        },
+        "banquet": {
+          "pax": 27,
+          "sales": 187920
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-26",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 27,
+          "sales": 93150
+        },
+        "dinner": {
+          "pax": 16,
+          "sales": 205690
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 4300
+        },
+        "banquet": {
+          "pax": 65,
+          "sales": 237075
+        },
+        "beer_garden": {
+          "pax": 0,
+          "sales": 0
+        }
+      }
+    },
+    {
+      "date": "2023-05-27",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 151780
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 326610
+        },
+        "takeout": {
+          "pax": 23,
+          "sales": 11300
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 247,
+          "sales": 884000
+        }
+      }
+    },
+    {
+      "date": "2023-05-28",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 23,
+          "sales": 113920
+        },
+        "dinner": {
+          "pax": 9,
+          "sales": 122080
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 6750
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 130,
+          "sales": 576200
+        }
+      }
+    },
+    {
+      "date": "2023-05-29",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 17,
+          "sales": 56700
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 256820
+        },
+        "takeout": {
+          "pax": 12,
+          "sales": 5800
+        },
+        "banquet": {
+          "pax": 10,
+          "sales": 52200
+        },
+        "beer_garden": {
+          "pax": 40,
+          "sales": 197800
+        }
+      }
+    },
+    {
+      "date": "2023-05-30",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 118070
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 145580
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 2100
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 19,
+          "sales": 74900
+        }
+      }
+    },
+    {
+      "date": "2023-05-31",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 35,
+          "sales": 135050
+        },
+        "dinner": {
+          "pax": 17,
+          "sales": 76560
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 2050
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 70,
+          "sales": 241850
+        }
+      }
+    },
+    {
+      "date": "2023-06-01",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 108990
+        },
+        "dinner": {
+          "pax": 10,
+          "sales": 171500
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 6350
+        },
+        "banquet": {
+          "pax": 66,
+          "sales": 287100
+        },
+        "beer_garden": {
+          "pax": 122,
+          "sales": 433200
+        }
+      }
+    },
+    {
+      "date": "2023-06-02",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 115440
+        },
+        "dinner": {
+          "pax": 20,
+          "sales": 294830
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 5900
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 86,
+          "sales": 393050
+        }
+      }
+    },
+    {
+      "date": "2023-06-03",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 130820
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 255300
+        },
+        "takeout": {
+          "pax": 20,
+          "sales": 15950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 89,
+          "sales": 342450
+        }
+      }
+    },
+    {
+      "date": "2023-06-04",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 175790
+        },
+        "dinner": {
+          "pax": 11,
+          "sales": 138230
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 7150
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 65,
+          "sales": 234700
+        }
+      }
+    },
+    {
+      "date": "2023-06-05",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 133090
+        },
+        "dinner": {
+          "pax": 6,
+          "sales": 100430
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 3250
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 29,
+          "sales": 105450
+        }
+      }
+    },
+    {
+      "date": "2023-06-06",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 153770
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 216580
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 5600
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 63,
+          "sales": 254350
+        }
+      }
+    },
+    {
+      "date": "2023-06-07",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 99790
+        },
+        "dinner": {
+          "pax": 7,
+          "sales": 111980
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 2250
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 43,
+          "sales": 180750
+        }
+      }
+    },
+    {
+      "date": "2023-06-08",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 134820
+        },
+        "dinner": {
+          "pax": 18,
+          "sales": 199820
+        },
+        "takeout": {
+          "pax": 7,
+          "sales": 3150
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 132,
+          "sales": 508050
+        }
+      }
+    },
+    {
+      "date": "2023-06-09",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 123010
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 362300
+        },
+        "takeout": {
+          "pax": 14,
+          "sales": 8200
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 44,
+          "sales": 171600
+        }
+      }
+    },
+    {
+      "date": "2023-06-10",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 151350
+        },
+        "dinner": {
+          "pax": 24,
+          "sales": 293670
+        },
+        "takeout": {
+          "pax": 19,
+          "sales": 9450
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 251,
+          "sales": 775950
+        }
+      }
+    },
+    {
+      "date": "2023-06-11",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 26,
+          "sales": 138500
+        },
+        "dinner": {
+          "pax": 16,
+          "sales": 169700
+        },
+        "takeout": {
+          "pax": 18,
+          "sales": 7950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 357,
+          "sales": 1369250
+        }
+      }
+    },
+    {
+      "date": "2023-06-12",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 38,
+          "sales": 157410
+        },
+        "dinner": {
+          "pax": 10,
+          "sales": 120160
+        },
+        "takeout": {
+          "pax": 8,
+          "sales": 3600
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 133,
+          "sales": 534700
+        }
+      }
+    },
+    {
+      "date": "2023-06-13",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 99440
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 145690
+        },
+        "takeout": {
+          "pax": 8,
+          "sales": 5150
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 82,
+          "sales": 306850
+        }
+      }
+    },
+    {
+      "date": "2023-06-14",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 39,
+          "sales": 204970
+        },
+        "dinner": {
+          "pax": 9,
+          "sales": 74730
+        },
+        "takeout": {
+          "pax": 16,
+          "sales": 7000
+        },
+        "banquet": {
+          "pax": 22,
+          "sales": 153120
+        },
+        "beer_garden": {
+          "pax": 140,
+          "sales": 414950
+        }
+      }
+    },
+    {
+      "date": "2023-06-15",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 146470
+        },
+        "dinner": {
+          "pax": 3,
+          "sales": 27610
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 3000
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 302,
+          "sales": 1371750
+        }
+      }
+    },
+    {
+      "date": "2023-06-16",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 119010
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 379650
+        },
+        "takeout": {
+          "pax": 15,
+          "sales": 7800
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 219,
+          "sales": 874850
+        }
+      }
+    },
+    {
+      "date": "2023-06-17",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 183340
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 386290
+        },
+        "takeout": {
+          "pax": 18,
+          "sales": 8700
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 443,
+          "sales": 1770950
+        }
+      }
+    },
+    {
+      "date": "2023-06-18",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 156720
+        },
+        "dinner": {
+          "pax": 12,
+          "sales": 174410
+        },
+        "takeout": {
+          "pax": 8,
+          "sales": 4650
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 137,
+          "sales": 590300
+        }
+      }
+    },
+    {
+      "date": "2023-06-19",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 36,
+          "sales": 143680
+        },
+        "dinner": {
+          "pax": 4,
+          "sales": 51970
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 5500
+        },
+        "banquet": {
+          "pax": 31,
+          "sales": 215760
+        },
+        "beer_garden": {
+          "pax": 132,
+          "sales": 560900
+        }
+      }
+    },
+    {
+      "date": "2023-06-20",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 40,
+          "sales": 154530
+        },
+        "dinner": {
+          "pax": 16,
+          "sales": 181660
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 3150
+        },
+        "banquet": {
+          "pax": 6,
+          "sales": 5481
+        },
+        "beer_garden": {
+          "pax": 169,
+          "sales": 712500
+        }
+      }
+    },
+    {
+      "date": "2023-06-21",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 163010
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 255680
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 4700
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 200,
+          "sales": 839550
+        }
+      }
+    },
+    {
+      "date": "2023-06-22",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 136600
+        },
+        "dinner": {
+          "pax": 16,
+          "sales": 205800
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 5150
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 149,
+          "sales": 534550
+        }
+      }
+    },
+    {
+      "date": "2023-06-23",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 17,
+          "sales": 62470
+        },
+        "dinner": {
+          "pax": 16,
+          "sales": 202100
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 10100
+        },
+        "banquet": {
+          "pax": 120,
+          "sales": 555017
+        },
+        "beer_garden": {
+          "pax": 160,
+          "sales": 672000
+        }
+      }
+    },
+    {
+      "date": "2023-06-24",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 38,
+          "sales": 196620
+        },
+        "dinner": {
+          "pax": 14,
+          "sales": 180720
+        },
+        "takeout": {
+          "pax": 23,
+          "sales": 11600
+        },
+        "banquet": {
+          "pax": 51,
+          "sales": 268830
+        },
+        "beer_garden": {
+          "pax": 413,
+          "sales": 1678200
+        }
+      }
+    },
+    {
+      "date": "2023-06-25",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 36,
+          "sales": 173650
+        },
+        "dinner": {
+          "pax": 20,
+          "sales": 241160
+        },
+        "takeout": {
+          "pax": 12,
+          "sales": 11200
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 435,
+          "sales": 1793100
+        }
+      }
+    },
+    {
+      "date": "2023-06-26",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 163280
+        },
+        "dinner": {
+          "pax": 13,
+          "sales": 168170
+        },
+        "takeout": {
+          "pax": 5,
+          "sales": 1950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 210,
+          "sales": 736300
+        }
+      }
+    },
+    {
+      "date": "2023-06-27",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 120660
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 294360
+        },
+        "takeout": {
+          "pax": 3,
+          "sales": 1350
+        },
+        "banquet": {
+          "pax": 15,
+          "sales": 107010
+        },
+        "beer_garden": {
+          "pax": 259,
+          "sales": 1102500
+        }
+      }
+    },
+    {
+      "date": "2023-06-28",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 126810
+        },
+        "dinner": {
+          "pax": 18,
+          "sales": 214925
+        },
+        "takeout": {
+          "pax": 8,
+          "sales": 4600
+        },
+        "banquet": {
+          "pax": 27,
+          "sales": 147030
+        },
+        "beer_garden": {
+          "pax": 240,
+          "sales": 897000
+        }
+      }
+    },
+    {
+      "date": "2023-06-29",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 145850
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 660000
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 4950
+        },
+        "banquet": {
+          "pax": 0,
+          "sales": 0
+        },
+        "beer_garden": {
+          "pax": 87,
+          "sales": 340900
+        }
+      }
+    },
+    {
+      "date": "2023-06-30",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 22,
+          "sales": 81610
+        },
+        "dinner": {
+          "pax": 10,
+          "sales": 138930
+        },
+        "takeout": {
+          "pax": 15,
+          "sales": 8450
+        },
+        "banquet": {
+          "pax": 18,
+          "sales": 101790
+        },
+        "beer_garden": {
+          "pax": 118,
+          "sales": 454050
+        }
+      }
+    }
+  ],
+  "validation": {
+    "status": "PASS",
+    "checks": [
+      {
+        "check": "2023-04_lunch_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥537,675"
+      },
+      {
+        "check": "2023-04_dinner_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥795,640"
+      },
+      {
+        "check": "2023-04_takeout_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥12,150"
+      },
+      {
+        "check": "2023-04_banquet_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥0"
+      },
+      {
+        "check": "2023-04_beer_garden_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥0"
+      },
+      {
+        "check": "2023-04_ld_consistency",
+        "result": "PASS",
+        "detail": "L(537,675)+D(795,640)=1,333,315 = L+D合計(1,333,315)"
+      },
+      {
+        "check": "2023-05_lunch_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥4,378,530"
+      },
+      {
+        "check": "2023-05_dinner_sales_match",
+        "result": "PASS",
+        "detail": "差異29,050円(0.5%) 日別=5,879,737 合計行=5,908,787"
+      },
+      {
+        "check": "2023-05_takeout_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥135,250"
+      },
+      {
+        "check": "2023-05_banquet_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥919,068"
+      },
+      {
+        "check": "2023-05_beer_garden_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥1,974,750"
+      },
+      {
+        "check": "2023-05_ld_consistency",
+        "result": "PASS",
+        "detail": "L(4,378,530)+D(5,908,787)=10,287,317 = L+D合計(10,287,317)"
+      },
+      {
+        "check": "2023-06_lunch_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥4,201,500"
+      },
+      {
+        "check": "2023-06_dinner_sales_match",
+        "result": "PASS",
+        "detail": "差異147,400円(2.2%) 日別=6,418,355 合計行=6,565,755"
+      },
+      {
+        "check": "2023-06_takeout_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥187,800"
+      },
+      {
+        "check": "2023-06_banquet_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥1,841,138"
+      },
+      {
+        "check": "2023-06_beer_garden_sales_match",
+        "result": "PASS",
+        "detail": "完全一致 ¥20,954,700"
+      },
+      {
+        "check": "2023-06_ld_consistency",
+        "result": "PASS",
+        "detail": "L(4,201,500)+D(6,565,755)=10,767,255 = L+D合計(10,767,255)"
+      }
+    ]
+  }
+}

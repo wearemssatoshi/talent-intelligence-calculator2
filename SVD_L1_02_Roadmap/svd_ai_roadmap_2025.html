@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD AI活用 × 大倉山Q4 ロードマップ 2024-2025</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #D4AF37, #E5C558, #D4AF37);
+            border-radius: 2px;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #D4AF37 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            letter-spacing: 0.3em;
+        }
+
+        .header .period {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 24px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #D4AF37;
+            font-weight: 500;
+        }
+
+        /* Central Concept */
+        .central-concept {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .concept-diamond {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 0 60px rgba(139, 92, 246, 0.3);
+        }
+
+        .concept-diamond::before,
+        .concept-diamond::after {
+            content: '◆';
+            position: absolute;
+            font-size: 1.5rem;
+            color: #D4AF37;
+        }
+
+        .concept-diamond::before {
+            left: 15px;
+        }
+
+        .concept-diamond::after {
+            right: 15px;
+        }
+
+        .concept-diamond h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3B82F6, #8B5CF6, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Two Tracks */
+        .tracks {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .track {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .track-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .track-icon {
+            font-size: 2rem;
+        }
+
+        .track-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .track-subtitle {
+            font-size: 0.75rem;
+            color: #64748b;
+            letter-spacing: 0.2em;
+        }
+
+        /* Track 1 - AI */
+        .track.ai {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .track.ai .track-title {
+            color: #60A5FA;
+        }
+
+        /* Track 2 - Okurayama */
+        .track.okurayama {
+            border-top: 4px solid #D4AF37;
+        }
+
+        .track.okurayama .track-title {
+            color: #D4AF37;
+        }
+
+        /* Items */
+        .items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .item:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .track.ai .item-num {
+            background: linear-gradient(135deg, #3B82F6, #6366F1);
+            color: white;
+        }
+
+        .track.okurayama .item-num {
+            background: linear-gradient(135deg, #D4AF37, #E5C558);
+            color: #1e1b4b;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-emoji {
+            font-size: 1.2rem;
+        }
+
+        .item-desc {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .item-goal {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            color: #10B981;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-message {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand {
+            font-size: 0.9rem;
+            color: #64748b;
+            letter-spacing: 0.3em;
+        }
+
+        /* Timeline indicator */
+        .timeline {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .timeline-item {
+            text-align: center;
+        }
+
+        .timeline-month {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        .timeline-dot.active {
+            background: #10B981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+        }
+
+        .timeline-dot.future {
+            background: #3B82F6;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .tracks {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: #0f172a;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>SVD AI × 大倉山 戦略ロードマップ</h1>
+            <p class="subtitle">現場起点で "勝手に整っていく" 経営基盤づくり</p>
+            <span class="period">📅 2024年12月 → 2025年3月 【今年度完遂】</span>
+        </header>
+
+        <!-- Central Concept -->
+        <div class="central-concept">
+            <div class="concept-diamond">
+                <h2>都市 × 食 × テクノロジー × 物語</h2>
+            </div>
+        </div>
+
+        <!-- Two Tracks -->
+        <div class="tracks">
+            <!-- Track 1: AI活用 -->
+            <div class="track ai">
+                <div class="track-header">
+                    <span class="track-icon">🤖</span>
+                    <div>
+                        <div class="track-title">① AI活用の流れ</div>
+                        <div class="track-subtitle">DIGITAL TRANSFORMATION</div>
+                    </div>
+                </div>
+                <div class="items">
+                    <div class="item">
+                        <div class="item-num">1</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">💳</span> 費用計上 → PL自動生成</div>
+                            <div class="item-desc">ビジネスカード明細・領収書をAIで自動分類、月次簡易PL生成</div>
+                            <span class="item-goal">経理＝経営ダッシュボードへ</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">2</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">🍷</span> ワイン棚卸 自動化</div>
+                            <div class="item-desc">納品書フォーマット統一 → 在庫・原価率・デジタルリスト自動更新</div>
+                            <span class="item-goal">棚卸＝リアルタイム化</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">3</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">👥</span> 業務改革チーム設計</div>
+                            <div class="item-desc">現場代表 × AI/IT × 経営視点の最小構成でボトルネック抽出</div>
+                            <span class="item-goal">改善が習慣になる</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">4</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">📊</span> AI日報アップデート</div>
+                            <div class="item-desc">数字羅列 → ハイライト要約＋課題仮説＋明日の一手</div>
+                            <span class="item-goal">報告→思考の補助輪へ</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">5</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">💻</span> GitHub ナレッジ基盤</div>
+                            <div class="item-desc">業務フロー・マニュアル・KPI定義をすべてRepository化</div>
+                            <span class="item-goal">属人化排除・拠点展開可能</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">6</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">🎤</span> 現場の声 可視化</div>
+                            <div class="item-desc">テキスト・音声をAI集約、頻出ワード・感情分析</div>
+                            <span class="item-goal">経営課題を構造で把握</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">7</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">📱</span> Instagram & YouTube 公式</div>
+                            <div class="item-desc">IG＝今の熱量 / YT＝思想・物語 → 採用・共感・ファン化の母艦</div>
+                            <span class="item-goal">メディアが人を呼ぶ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track 2: 大倉山Q4 -->
+            <div class="track okurayama">
+                <div class="track-header">
+                    <span class="track-icon">⛷️</span>
+                    <div>
+                        <div class="track-title">② 大倉山 第4Q 売上向上</div>
+                        <div class="track-subtitle">"場所" を "物語の舞台" へ</div>
+                    </div>
+                </div>
+                <div class="items">
+                    <div class="item">
+                        <div class="item-num">1</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">💛</span> ハッピーイエロー協賛</div>
+                            <div class="item-desc">「幸せ」「応援」「前向き」を色で統一、店内装飾・限定メニュー・SNS</div>
+                            <span class="item-goal">協賛＝参加型ストーリー</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">2</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">🎬</span> 映画プペル × サロンクーポン</div>
+                            <div class="item-desc">親子・カップル動線、映画鑑賞 → 大倉山で余韻体験</div>
+                            <span class="item-goal">物語の続きをリアルで</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">3</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">🍦</span> プペルソフトクリーム 聖地化</div>
+                            <div class="item-desc">期間限定→定番化検討、「ここでしか食べられない」明確化</div>
+                            <span class="item-goal">食＝メディア</span>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="item-num">4</div>
+                        <div class="item-content">
+                            <div class="item-title"><span class="item-emoji">🏆</span> オリンピックイヤー活用</div>
+                            <div class="item-desc">大倉山＝挑戦と飛躍の象徴 × SVD「憧れの職業」ミッション接続</div>
+                            <span class="item-goal">夢が集まる場所へ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-month">12月</div>
+                        <div class="timeline-dot active"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-month">1月</div>
+                        <div class="timeline-dot future"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-month">2月</div>
+                        <div class="timeline-dot future"></div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-month">3月</div>
+                        <div class="timeline-dot future"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-message">"AI導入" でも "販促" でもなく、街と食と未来を同時に前に進める設計図</p>
+            <p class="footer-brand">SAPPORO VIEWTIFUL DINING</p>
+        </footer>
+    </div>
+</body>
+
+</html>
