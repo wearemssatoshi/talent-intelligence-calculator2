@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENTER — THE INTELLIGENCE AGE. DINE HUMAN.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700;900&display=swap');
+
+        :root {
+            --gold: #C8A96E;
+            --dark: #1a1a2e;
+            --darker: #0f0f1e;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(200, 169, 110, 0.2);
+            --border-strong: rgba(200, 169, 110, 0.4);
+            --red: #e74c3c;
+            --green: #2ecc71;
+            --yellow: #f39c12;
+            --blue: #3498db;
+            --text: #e0e0e0;
+            --muted: #8a8a9a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* === HERO === */
+        .hero {
+            text-align: center;
+            padding: 100px 20px 60px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 600px;
+            height: 600px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(200, 169, 110, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+            animation: hero-pulse 5s ease-in-out infinite;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 4px 16px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 28px;
+        }
+
+        @keyframes hero-pulse {
+
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.15);
+            }
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #C8A96E 20%, #e8d8b0 50%, #C8A96E 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h2 {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge,
+        .hero-desc {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-desc {
+            font-size: 0.85rem;
+            font-weight: 300;
+            color: var(--muted);
+            line-height: 1.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-desc strong {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* === SECTION === */
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .icon {
+            font-size: 1.2rem;
+        }
+
+        /* === CARD === */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(200, 169, 110, 0.08);
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: var(--text);
+            font-weight: 300;
+        }
+
+        /* === FORMULA === */
+        .formula-box {
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.06), rgba(200, 169, 110, 0.02));
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 40px 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 24px rgba(200, 169, 110, 0.08);
+        }
+
+        .formula {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .formula .demand {
+            color: var(--blue);
+        }
+
+        .formula .supply {
+            color: var(--green);
+        }
+
+        .formula .output {
+            color: var(--gold);
+        }
+
+        .formula .op {
+            color: var(--muted);
+            margin: 0 6px;
+        }
+
+        .formula-note {
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        /* === THREE COLUMNS === */
+        .three-col {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .col-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .col-card:hover {
+            border-color: var(--border-strong);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(200, 169, 110, 0.08);
+        }
+
+        .col-card h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 4px;
+        }
+
+        .col-card .sub {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .col-card p {
+            font-size: 0.8rem;
+            color: var(--text);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        /* === TWO COLUMNS === */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* === STEP LIST === */
+        .step-list {
+            list-style: none;
+        }
+
+        .step-list li {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.82rem;
+        }
+
+        .step-list li:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: rgba(200, 169, 110, 0.1);
+            color: var(--gold);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .step-num.blue {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--blue);
+            border-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .step-num.green {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--green);
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .step-label {
+            font-weight: 500;
+        }
+
+        .step-desc {
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        /* === HIGHLIGHT BOX === */
+        .highlight-box {
+            background: rgba(200, 169, 110, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 0.82rem;
+            color: var(--text);
+            margin-bottom: 16px;
+            font-weight: 300;
+        }
+
+        /* === TABLE === */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        th {
+            background: rgba(200, 169, 110, 0.08);
+            color: var(--gold);
+            font-weight: 600;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-weight: 300;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: 600;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        .blue {
+            color: var(--blue);
+        }
+
+        .green {
+            color: var(--green);
+        }
+
+        /* === BASE GRID === */
+        .base-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .base-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 16px;
+        }
+
+        .base-card h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+
+        .base-card .base-jp {
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .store-list {
+            list-style: none;
+        }
+
+        .store-list li {
+            font-size: 0.75rem;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .store-list li:last-child {
+            border-bottom: none;
+        }
+
+        .pax-badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: rgba(200, 169, 110, 0.1);
+            color: var(--gold);
+            border: 1px solid var(--border);
+        }
+
+        /* === MATURITY === */
+        .maturity-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .maturity-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .maturity-lv {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .maturity-lv.dim {
+            color: var(--muted);
+        }
+
+        .maturity-lv.active {
+            color: var(--blue);
+        }
+
+        .maturity-lv.ultimate {
+            color: var(--gold);
+        }
+
+        .maturity-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .maturity-desc {
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-weight: 300;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 100px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .status-done {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--green);
+            border: 1px solid rgba(46, 204, 113, 0.2);
+        }
+
+        .status-wip {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--yellow);
+            border: 1px solid rgba(243, 156, 18, 0.2);
+        }
+
+        .status-future {
+            background: rgba(200, 169, 110, 0.06);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        /* === OS STACK === */
+        .os-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .os-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 12px;
+            text-align: center;
+        }
+
+        .os-code {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+
+        .os-name {
+            font-size: 0.65rem;
+            color: var(--muted);
+            font-weight: 300;
+        }
+
+        /* === TRIO === */
+        .trio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .trio-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .trio-avatar {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .trio-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 2px;
+        }
+
+        .trio-role {
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .trio-desc {
+            font-size: 0.78rem;
+            color: var(--text);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        /* === CONVERGENCE === */
+        .convergence {
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.08), rgba(200, 169, 110, 0.03));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 48px 32px;
+            text-align: center;
+            margin-bottom: 48px;
+            box-shadow: 0 0 40px rgba(200, 169, 110, 0.1);
+            position: relative;
+        }
+
+        .convergence::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(200, 169, 110, 0.3), transparent 50%, rgba(200, 169, 110, 0.3));
+            z-index: -1;
+            filter: blur(20px);
+        }
+
+        .convergence h3 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #C8A96E 20%, #e8d8b0 50%, #C8A96E 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .convergence p {
+            font-size: 0.88rem;
+            color: var(--text);
+            font-weight: 300;
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.9;
+        }
+
+        .convergence .vision {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-top: 24px;
+            letter-spacing: 1px;
+        }
+
+        /* === FADE IN ANIMATION === */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer p {
+            font-size: 0.7rem;
+            color: var(--muted);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+
+            .three-col,
+            .two-col,
+            .maturity-row,
+            .trio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .base-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== HERO ===== -->
+    <div class="hero">
+        <div class="hero-badge">SVD Operating System — Blueprint v1.0</div>
+        <h1>ENTER</h1>
+        <h2>The Intelligence Age. Dine Human.</h2>
+        <p class="hero-desc">
+            需要予測（Momentum Peaks）と人材評価（Talent Intelligence）を統合し、<br>
+            <strong>最適なシフト編成を自動提案する「業務革命」</strong>を実現する。
+        </p>
+    </div>
+
+    <div class="container">
+
+        <!-- ===== THE FORMULA ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">📐</span> The Core Equation</div>
+
+            <div class="formula-box">
+                <div class="formula">
+                    <span class="demand">DEMAND</span>
+                    <span class="op">×</span>
+                    <span class="supply">SUPPLY</span>
+                    <span class="op">=</span>
+                    <span class="output">OPTIMAL SHIFT</span>
+                </div>
+                <div class="formula-note">Momentum Peaks Point × Talent Intelligence Capability Score = Automated
+                    Optimal Shift Proposal</div>
+            </div>
+
+            <div class="three-col">
+                <div class="col-card">
+                    <h4>📊 MOMENTUM — 時</h4>
+                    <div class="sub">需要の定量化</div>
+                    <p>季節・曜日・来場者の3定数から営業インテンシティを算出。「業界のなんとなく」を排し、科学的な適正フォーキャストを実現。</p>
+                </div>
+                <div class="col-card">
+                    <h4>👤 TALENT — 人</h4>
+                    <div class="sub">供給の定量化</div>
+                    <p>18属性のスキル評価で各スタッフの総合力を数値化。経験・役割・スキル・成長過程をダッシュボード化し、戦略的人材配置を設計。</p>
+                </div>
+                <div class="col-card">
+                    <h4>⚡ ALLIANCE — つながり</h4>
+                    <div class="sub">統合と実行</div>
+                    <p>需要と供給が統合されたとき、レストランは最高の舞台になる。スタッフがサービスに集中できる環境を、システムが自律的に創造する。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== DEMAND: MP ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">📊</span> Demand Engine — Momentum Peaks</div>
+
+            <div class="highlight-box">
+                💡 <strong>Why Based Approach</strong>：定数を読む → Whyを問う → 最適解へ。<br>
+                「業界のなんとなく」から「適正フォーキャスト」へ。環境要因を追い風に変える。
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3>Layer 1 — 拠点レベル / 定数</h3>
+                    <ul class="step-list">
+                        <li><span class="step-num blue">①</span>
+                            <div>
+                                <div class="step-label">月別季節指数</div>
+                                <div class="step-desc">マクロ観光流入（0.01–5.00）</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num blue">②</span>
+                            <div>
+                                <div class="step-label">月別曜日指数</div>
+                                <div class="step-desc">曜日別の重み付け平均</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num blue">③</span>
+                            <div>
+                                <div class="step-label">月別来場者指数</div>
+                                <div class="step-desc">施設全体のフットトラフィック</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num">④</span>
+                            <div>
+                                <div class="step-label gold bold">KF① = (①+②+③) / 3</div>
+                                <div class="step-desc">拠点の「大気の熱量」</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Layer 2 — 店舗レベル / 実績</h3>
+                    <ul class="step-list">
+                        <li><span class="step-num blue">⑤</span>
+                            <div>
+                                <div class="step-label">KF② 月別売上実績平均</div>
+                                <div class="step-desc">過去の売上データから算出</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num blue">⑥</span>
+                            <div>
+                                <div class="step-label">KF③ 月別来客数平均</div>
+                                <div class="step-desc">過去の来客データから算出</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num">⑦</span>
+                            <div>
+                                <div class="step-label gold bold">Momentum Peaks Point</div>
+                                <div class="step-desc">(KF① + KF② + KF③) / 3</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Calculation Example -->
+            <div class="card">
+                <h3>計算例 — 12月 藻岩山（Peak）vs 4月（Low）</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Factor</th>
+                            <th style="text-align:right">12月 Peak 🔥</th>
+                            <th style="text-align:right">4月 Low 🧊</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>①</td>
+                            <td>季節指数</td>
+                            <td class="text-right bold">5.00</td>
+                            <td class="text-right">1.00</td>
+                        </tr>
+                        <tr>
+                            <td>②</td>
+                            <td>曜日指数</td>
+                            <td class="text-right bold">4.00</td>
+                            <td class="text-right">2.50</td>
+                        </tr>
+                        <tr>
+                            <td>③</td>
+                            <td>来場者指数</td>
+                            <td class="text-right bold">4.50</td>
+                            <td class="text-right">2.00</td>
+                        </tr>
+                        <tr>
+                            <td class="bold gold">④</td>
+                            <td class="bold gold">KF①</td>
+                            <td class="text-right bold gold">4.50</td>
+                            <td class="text-right gold">1.83</td>
+                        </tr>
+                        <tr>
+                            <td>⑤</td>
+                            <td>KF② 売上</td>
+                            <td class="text-right bold">5.00</td>
+                            <td class="text-right">2.00</td>
+                        </tr>
+                        <tr>
+                            <td>⑥</td>
+                            <td>KF③ 客数</td>
+                            <td class="text-right bold">5.00</td>
+                            <td class="text-right">2.00</td>
+                        </tr>
+                        <tr style="background:rgba(200,169,110,0.06)">
+                            <td class="bold gold">⑦</td>
+                            <td class="bold gold">MP Point</td>
+                            <td class="text-right bold gold" style="font-size:1rem;">4.83</td>
+                            <td class="text-right gold">1.94</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== SUPPLY: TI ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">👤</span> Supply Engine — Talent Intelligence</div>
+
+            <div class="highlight-box">
+                🎯 サービス人材の属性を10段階で評価。最高評価（Lv.10）は組織の仕組みそのものを設計・進化させる人材。
+            </div>
+
+            <div class="two-col">
+                <div class="card">
+                    <h3>🍽️ Service Power — 技術力</h3>
+                    <ul class="step-list">
+                        <li><span class="step-num green">1</span>
+                            <div>
+                                <div class="step-label">Service Skills</div>
+                                <div class="step-desc">基本バッシング → フロア全体運営</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">2</span>
+                            <div>
+                                <div class="step-label">Wine Knowledge</div>
+                                <div class="step-desc">品種知識 → 国際ソムリエ</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">3</span>
+                            <div>
+                                <div class="step-label">Customer Response</div>
+                                <div class="step-desc">基本応対 → ブランドアンバサダー</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">4</span>
+                            <div>
+                                <div class="step-label">Technical / POS</div>
+                                <div class="step-desc">基本入力 → システム要件定義</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>🧭 Management & Personal — 人間力</h3>
+                    <ul class="step-list">
+                        <li><span class="step-num green">6</span>
+                            <div>
+                                <div class="step-label">Numerical Management</div>
+                                <div class="step-desc">売上認識 → 多拠点PL最適化</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">7</span>
+                            <div>
+                                <div class="step-label">Team Building</div>
+                                <div class="step-desc">協調 → 組織文化設計</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">8</span>
+                            <div>
+                                <div class="step-label">Operational Mgmt</div>
+                                <div class="step-desc">Apprenti → Directeur</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">9</span>
+                            <div>
+                                <div class="step-label">Growth Mindset</div>
+                                <div class="step-desc">集中力 → 学習文化の体現</div>
+                            </div>
+                        </li>
+                        <li><span class="step-num green">10</span>
+                            <div>
+                                <div class="step-label">Empathy & Alignment</div>
+                                <div class="step-desc">傾聴 → ミッション自体の進化</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Brigade Hierarchy -->
+            <div class="card">
+                <h3>👑 Brigade Hierarchy — シフト制約条件</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>FR (Brigade)</th>
+                            <th>JP</th>
+                            <th>制約</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="bold gold">①</td>
+                            <td>Directeur</td>
+                            <td>拠点責任者</td>
+                            <td class="bold">🔒 シフト必須</td>
+                        </tr>
+                        <tr>
+                            <td class="bold gold">②</td>
+                            <td>Maître d'hôtel</td>
+                            <td>店舗責任者</td>
+                            <td class="bold">🔒 シフト必須</td>
+                        </tr>
+                        <tr>
+                            <td>③</td>
+                            <td>Chef de Rang 1</td>
+                            <td>時間帯責任者</td>
+                            <td>高需要時は優先配置</td>
+                        </tr>
+                        <tr>
+                            <td>④</td>
+                            <td>Chef de Rang 2</td>
+                            <td>エリア担当</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>⑤</td>
+                            <td>Commis de Rang</td>
+                            <td>担当</td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td>⑥</td>
+                            <td>—</td>
+                            <td>パート・スポット</td>
+                            <td>Timee連携</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== BASE MAP ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🗺️</span> The Four Bases — R7 Data Foundation</div>
+            <p style="font-size:0.82rem;color:var(--muted);margin-bottom:20px;font-weight:300;">4拠点 × 11店舗 /
+                年間16.0万人の来客（10ヶ月実績確定）</p>
+
+            <div class="base-grid">
+                <div class="base-card">
+                    <h4>🏔️ Mt.MOIWA</h4>
+                    <div class="base-jp">藻岩山</div>
+                    <ul class="store-list">
+                        <li><span>THE JEWELS</span><span style="color:var(--muted)">L / D</span></li>
+                        <li><span>JW TakeOut</span><span style="color:var(--muted)">T/O</span></li>
+                    </ul>
+                    <span class="pax-badge">24,901人</span>
+                </div>
+                <div class="base-card">
+                    <h4>⛷️ OKURAYAMA</h4>
+                    <div class="base-jp">大倉山</div>
+                    <ul class="store-list">
+                        <li><span>Nouvelle Pousse</span><span style="color:var(--muted)">L / D</span></li>
+                        <li><span>CELESTÉ</span><span style="color:var(--muted)">Cafe</span></li>
+                        <li><span>Repos</span><span style="color:var(--muted)">Lounge</span></li>
+                    </ul>
+                    <span class="pax-badge">42,266人</span>
+                </div>
+                <div class="base-card">
+                    <h4>🗼 TV TOWER</h4>
+                    <div class="base-jp">テレビ塔</div>
+                    <ul class="store-list">
+                        <li><span>THE GARDEN</span><span style="color:var(--muted)">L / D</span></li>
+                        <li><span>WINE BAR</span><span style="color:var(--muted)">Night</span></li>
+                        <li><span>Banquet</span><span style="color:var(--muted)">Event</span></li>
+                        <li><span>BEER GARDEN</span><span style="color:var(--muted)">Summer</span></li>
+                    </ul>
+                    <span class="pax-badge">65,596人</span>
+                </div>
+                <div class="base-card">
+                    <h4>🧱 AKARENGA</h4>
+                    <div class="base-jp">赤れんがテラス</div>
+                    <ul class="store-list">
+                        <li><span>LA BRIQUE</span><span style="color:var(--muted)">L / AT / D</span></li>
+                        <li><span>ルスツ羊蹄ぶた</span><span style="color:var(--muted)">L / D</span></li>
+                    </ul>
+                    <span class="pax-badge">27,128人</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MATURITY MODEL ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🚀</span> Progressive Maturity — 3段階の導入ロードマップ</div>
+
+            <div class="maturity-row">
+                <div class="maturity-card">
+                    <div class="maturity-lv dim">Phase 1</div>
+                    <div class="maturity-name">Template Mode</div>
+                    <div class="maturity-desc">構造化テンプレート。曜日別基本パターン。拠点別営業時間マッピング。</div>
+                    <span class="status-badge status-done">✅ ACHIEVED</span>
+                </div>
+                <div class="maturity-card">
+                    <div class="maturity-lv active">Phase 2</div>
+                    <div class="maturity-name">Recommendation</div>
+                    <div class="maturity-desc">MP季節指数に基づく推奨人数。TI評価を考慮したスタッフ選定。</div>
+                    <span class="status-badge status-wip">🔜 IN PROGRESS</span>
+                </div>
+                <div class="maturity-card">
+                    <div class="maturity-lv ultimate">Phase 3</div>
+                    <div class="maturity-name">One-Button</div>
+                    <div class="maturity-desc">最適シフト自動生成。カレンダー直接登録。外部人材サービス連携。</div>
+                    <span class="status-badge status-future">📋 ULTIMATE GOAL</span>
+                </div>
+            </div>
+
+            <!-- Model Shift: 拠点別基準配置 -->
+            <div class="card">
+                <h3>📋 拠点別モデルシフト — 24期 基準配置人数（サービス）</h3>
+                <p style="font-size:0.78rem;color:var(--muted);font-weight:300;margin-bottom:16px;">
+                    各拠点・セグメント別の標準営業時のサービス人員配置。MP Pointの倍率はこの基準人数に対して適用される。
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>拠点</th>
+                            <th>店舗</th>
+                            <th>セグメント</th>
+                            <th class="text-right bold gold">基準人数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3" class="bold">藻岩山</td>
+                            <td rowspan="2">THE JEWELS</td>
+                            <td>LUNCH</td>
+                            <td class="text-right bold">3</td>
+                        </tr>
+                        <tr>
+                            <td>DINNER</td>
+                            <td class="text-right bold">4</td>
+                        </tr>
+                        <tr>
+                            <td>JW TakeOut</td>
+                            <td>ALL DAY</td>
+                            <td class="text-right bold">1</td>
+                        </tr>
+                        <tr style="border-top:1px solid var(--border)">
+                            <td rowspan="3" class="bold">大倉山</td>
+                            <td rowspan="2">Nouvelle Pousse</td>
+                            <td>LUNCH</td>
+                            <td class="text-right bold">3</td>
+                        </tr>
+                        <tr>
+                            <td>DINNER</td>
+                            <td class="text-right bold">4</td>
+                        </tr>
+                        <tr>
+                            <td>CELESTÉ / Repos</td>
+                            <td>ALL DAY</td>
+                            <td class="text-right bold">2</td>
+                        </tr>
+                        <tr style="border-top:1px solid var(--border)">
+                            <td rowspan="4" class="bold">TV塔</td>
+                            <td rowspan="2">THE GARDEN</td>
+                            <td>LUNCH</td>
+                            <td class="text-right bold">4</td>
+                        </tr>
+                        <tr>
+                            <td>DINNER</td>
+                            <td class="text-right bold">5</td>
+                        </tr>
+                        <tr>
+                            <td>WINE BAR</td>
+                            <td>NIGHT</td>
+                            <td class="text-right bold">2</td>
+                        </tr>
+                        <tr>
+                            <td>BEER GARDEN</td>
+                            <td>SUMMER</td>
+                            <td class="text-right bold">8</td>
+                        </tr>
+                        <tr style="border-top:1px solid var(--border)">
+                            <td rowspan="2" class="bold">赤れんが</td>
+                            <td>LA BRIQUE</td>
+                            <td>L / AT / D</td>
+                            <td class="text-right bold">4</td>
+                        </tr>
+                        <tr>
+                            <td>ルスツ羊蹄ぶた</td>
+                            <td>L / D</td>
+                            <td class="text-right bold">3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 適正配置人数の算出 -->
+            <div class="formula-box" style="margin-top:16px;">
+                <div class="formula" style="font-size:1.2rem;">
+                    <span class="supply">基準配置人数</span>
+                    <span class="op">×</span>
+                    <span class="demand">MP倍率</span>
+                    <span class="op">=</span>
+                    <span class="output">適正配置人数</span>
+                </div>
+                <div class="formula-note">例: THE JEWELS DINNER 基準4名 × Peak倍率1.6 = 適正配置 <strong
+                        style="color:var(--gold)">7名</strong></div>
+            </div>
+
+            <div class="card">
+                <h3>📐 MP Point → 配置倍率テーブル</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>MP Point</th>
+                            <th>Intensity</th>
+                            <th class="text-right">倍率</th>
+                            <th>方針</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.0 – 2.0</td>
+                            <td style="color:var(--muted)">Low</td>
+                            <td class="text-right">×0.7</td>
+                            <td>最少配置。研修・コーチング重点</td>
+                        </tr>
+                        <tr>
+                            <td>2.0 – 3.0</td>
+                            <td>Normal</td>
+                            <td class="text-right">×1.0</td>
+                            <td>標準配置。通常オペレーション</td>
+                        </tr>
+                        <tr>
+                            <td>3.0 – 4.0</td>
+                            <td class="blue bold">High</td>
+                            <td class="text-right bold">×1.3</td>
+                            <td>増員。Chef de Rang以上を優先</td>
+                        </tr>
+                        <tr>
+                            <td class="gold bold">4.0 – 5.0</td>
+                            <td class="gold bold">Peak 🔥</td>
+                            <td class="text-right bold gold">×1.6</td>
+                            <td>最大配置 + スポットワーカー補充</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== SVD-OS STACK ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🧬</span> SVD-OS Project Stack</div>
+
+            <div class="os-grid">
+                <div class="os-item">
+                    <div class="os-code">MF</div>
+                    <div class="os-name">MINDFUL</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code" style="color:var(--green)">TI</div>
+                    <div class="os-name">Talent Intelligence</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code" style="color:var(--blue)">MP</div>
+                    <div class="os-name">Momentum Peaks</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code">TSS</div>
+                    <div class="os-name">Team Synergy Stage</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code">WINE</div>
+                    <div class="os-name">WINE OS</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code">PL</div>
+                    <div class="os-name">PL Auto</div>
+                </div>
+                <div class="os-item">
+                    <div class="os-code" style="color:#e74c3c">OC</div>
+                    <div class="os-name">OpenClaw</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 推進体制 ===== -->
+        <div class="section">
+            <div class="section-title"><span class="icon">🌐</span> 推進体制 — Core Team</div>
+
+            <div class="trio-grid">
+                <div class="trio-card">
+                    <div class="trio-avatar">🎯</div>
+                    <div class="trio-name">総支配人</div>
+                    <div class="trio-role">GENERAL MANAGER / PRODUCER</div>
+                    <div class="trio-desc">全体ビジョンと最終意思決定。経営戦略と現場知見を統合し、プロジェクト全体を統括。</div>
+                </div>
+                <div class="trio-card">
+                    <div class="trio-avatar">🧠</div>
+                    <div class="trio-name">戦略AI</div>
+                    <div class="trio-role">STRATEGIC AI PARTNER</div>
+                    <div class="trio-desc">データ分析・システム設計。定量的な根拠に基づく戦略立案と業務設計を支援。</div>
+                </div>
+                <div class="trio-card">
+                    <div class="trio-avatar">⚡</div>
+                    <div class="trio-name">運用AI</div>
+                    <div class="trio-role">OPERATIONAL AI ASSISTANT</div>
+                    <div class="trio-desc">日常業務の実行支援。チームへの情報配信とリアルタイムオペレーション補助。</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CONVERGENCE ===== -->
+        <div class="convergence">
+            <h3>The Golden Goal</h3>
+            <p>
+                適切なスキルを持つスタッフが、適切な日に、適切な人数で配置される。<br>
+                業務の全自動化ではなく、人間のホスピタリティが最大限に輝く環境を設計する。
+            </p>
+            <div class="vision">最適なシフト編成の自動提案 —— 業務革命</div>
+        </div>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer">
+        <p style="font-size:0.85rem;font-weight:600;color:var(--gold);letter-spacing:3px;">ENTER THE INTELLIGENCE AGE.
+            DINE HUMAN.</p>
+        <p style="margin-top:8px;">SVD-OS Blueprint v1.0 — February 2026</p>
+    </div>
+
+    <script>
+        // Scroll fade-in animation
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.section, .convergence').forEach(el => el.classList.add('fade-in'));
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        });
+    </script>
+
+</body>
+
+</html>

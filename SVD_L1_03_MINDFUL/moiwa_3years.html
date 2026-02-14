@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mt.MOIWA — 3年間の軌跡</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --gold: #C5A55A;
+            --gold-light: #D4B96E;
+            --moiwa-blue: #4A90D9;
+            --moiwa-purple: #7C6FD9;
+            --moiwa-glow: rgba(74, 144, 217, 0.15);
+            --dark: #1E2030;
+            --darker: #171928;
+            --card: #242740;
+            --card-border: rgba(197, 165, 90, 0.18);
+            --text: #EDEAE4;
+            --text-muted: #A0A0B0;
+            --accent-green: #4ADE80;
+            --accent-blue: #60A5FA;
+            --accent-pink: #F472B6;
+            --accent-orange: #FB923C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background: var(--darker);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, var(--moiwa-glow) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(197, 165, 90, 0.06) 0%, transparent 40%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 48px 0 32px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--moiwa-glow) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--moiwa-blue), var(--gold), var(--moiwa-blue), transparent);
+            margin: 24px auto 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .hero-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* ===== BIG NUMBER ===== */
+        .big-number-section {
+            text-align: center;
+            padding: 32px 0 24px;
+        }
+
+        .big-number-label {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .big-number-row {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .big-number-item {
+            text-align: center;
+        }
+
+        .big-number-year {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .big-number {
+            font-family: 'Inter', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1.1;
+        }
+
+        .big-number-unit {
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--gold-light);
+        }
+
+        .big-number-note {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .big-number-arrow {
+            font-size: 24px;
+            color: var(--text-muted);
+            align-self: center;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(74, 144, 217, 0.3);
+            box-shadow: 0 4px 24px rgba(74, 144, 217, 0.06);
+        }
+
+        .card-title {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 18px;
+        }
+
+        /* ===== DATA TABLE ===== */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+            text-align: right;
+            padding: 4px 8px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .data-table th:first-child {
+            text-align: left;
+        }
+
+        .data-table td {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 8px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .data-table td:first-child {
+            text-align: left;
+            font-family: 'Noto Sans JP', sans-serif;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .data-table .growth-positive {
+            color: var(--accent-green);
+            font-size: 12px;
+        }
+
+        .data-table .growth-negative {
+            color: var(--accent-pink);
+            font-size: 12px;
+        }
+
+        /* ===== BAR CHART ===== */
+        .bar-chart {
+            margin-top: 12px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .bar-label {
+            width: 48px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: rgba(0, 0, 0, 0.7);
+            min-width: 40px;
+        }
+
+        .bar-value {
+            font-size: 12px;
+            color: var(--text-muted);
+            width: 64px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* ===== SEASON CHART ===== */
+        .season-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .season-cell {
+            text-align: center;
+            padding: 8px 2px;
+            border-radius: 6px;
+            font-size: 10px;
+        }
+
+        .season-cell .month-name {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .season-cell .month-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .season-peak {
+            background: rgba(251, 146, 60, 0.25);
+            color: var(--accent-orange);
+        }
+
+        .season-high {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--accent-green);
+        }
+
+        .season-mid {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .season-low {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        /* ===== BEST ===== */
+        .best-list {
+            list-style: none;
+        }
+
+        .best-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .best-rank {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold);
+            width: 28px;
+            text-align: center;
+        }
+
+        .best-info {
+            flex: 1;
+        }
+
+        .best-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .best-detail {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .best-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        /* ===== GRID ===== */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 32px 0 16px;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--card-border);
+            margin-top: 24px;
+        }
+
+        .footer .brand {
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 12px 60px;
+            }
+
+            .hero h1 {
+                font-size: 22px;
+            }
+
+            .big-number {
+                font-size: 28px;
+            }
+
+            .big-number-row {
+                gap: 12px;
+            }
+
+            .big-number-arrow {
+                font-size: 18px;
+            }
+
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+
+            .season-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 3px;
+            }
+
+            .season-cell {
+                padding: 6px 1px;
+                font-size: 9px;
+            }
+
+            .season-cell .month-value {
+                font-size: 10px;
+            }
+
+            .data-table td {
+                font-size: 12px;
+                padding: 6px 4px;
+            }
+
+            .data-table th {
+                font-size: 10px;
+                padding: 3px 4px;
+            }
+
+            .card {
+                padding: 16px 14px;
+            }
+
+            .card-title {
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+
+            .bar-fill {
+                font-size: 10px;
+            }
+
+            .bar-label {
+                width: 40px;
+                font-size: 11px;
+            }
+
+            .bar-value {
+                width: 56px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="hero-label">SAPPORO VIEWTIFUL DINING</div>
+            <h1>Mt.MOIWA <span>3年間の軌跡</span></h1>
+            <div class="hero-sub">The Jewels — 2023年4月 〜 2026年2月（税抜表記）</div>
+        </div>
+
+        <!-- BIG NUMBER: 全CH売上 -->
+        <div class="big-number-section">
+            <div class="big-number-label">全売上（席料・T.O含む / 税抜）</div>
+            <div class="big-number-row">
+                <div class="big-number-item">
+                    <div class="big-number-year">2023年度</div>
+                    <div class="big-number"><span class="big-number-unit">¥</span>1.36<span
+                            class="big-number-unit">億</span></div>
+                </div>
+                <div class="big-number-arrow">→</div>
+                <div class="big-number-item">
+                    <div class="big-number-year">2024年度</div>
+                    <div class="big-number"><span class="big-number-unit">¥</span>1.62<span
+                            class="big-number-unit">億</span></div>
+                    <div class="big-number-note">+19.2%</div>
+                </div>
+                <div class="big-number-arrow">→</div>
+                <div class="big-number-item">
+                    <div class="big-number-year">2025年度</div>
+                    <div class="big-number"><span class="big-number-unit">¥</span>1.50<span
+                            class="big-number-unit">億</span></div>
+                    <div class="big-number-note">11ヶ月時点</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JWの特徴 -->
+        <div class="card" style="border-color: rgba(74,144,217,0.3); border-left: 3px solid var(--moiwa-blue);">
+            <div class="card-title"><span class="icon">🏔️</span> JWの特徴 — ディナー特化型レストラン</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+                藻岩山の夜景を最大の武器に、ディナーが売上の大半を占める「眺望×ディナー特化型」
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                <!-- ディナー -->
+                <div style="background:rgba(74,144,217,0.08); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🌙 ディナー</div>
+                    <div style="font-size:10px; color:var(--moiwa-blue); margin-bottom:6px;">圧倒的主力</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--gold);">
+                        ~75<span style="font-size:11px;">%</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div style="height:100%; width:75%; background:var(--moiwa-blue); border-radius:2px;"></div>
+                    </div>
+                    <div style="font-size:10px; color:var(--text-muted);">売上構成比</div>
+                </div>
+                <!-- ランチ -->
+                <div style="background:rgba(74,144,217,0.08); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">☀️ ランチ</div>
+                    <div style="font-size:10px; color:var(--accent-blue); margin-bottom:6px;">サブチャネル</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                        ~8<span style="font-size:11px;">%</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div style="height:100%; width:8%; background:var(--accent-blue); border-radius:2px;"></div>
+                    </div>
+                    <div style="font-size:10px; color:var(--text-muted);">売上構成比</div>
+                </div>
+                <!-- T.O -->
+                <div style="background:rgba(74,144,217,0.08); border-radius:8px; padding:12px 10px; text-align:center;">
+                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🔐 席料+T.O</div>
+                    <div style="font-size:10px; color:var(--accent-green); margin-bottom:6px;">体験価値収益</div>
+                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--accent-green);">
+                        ¥1,248<span style="font-size:11px;">万</span></div>
+                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                        <div style="height:100%; width:100%; background:var(--accent-green); border-radius:2px;"></div>
+                    </div>
+                    <div style="font-size:10px; color:var(--accent-green);">+51% 🔥 インフィニティテーブル</div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:12px; font-size:11px; color:var(--text-muted);">
+                GAはBGが夏季エース。JWはディナーが通年エース — 安定した売上構造
+            </div>
+        </div>
+
+        <!-- ディナー（メインエンジン） -->
+        <div class="card">
+            <div class="card-title"><span class="icon">🌙</span> ディナー — JWのエンジン</div>
+            <div class="bar-chart">
+                <div class="bar-row">
+                    <div class="bar-label">2023</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:78%; background:linear-gradient(90deg, var(--moiwa-blue), #7CB3E8);">
+                            9,628人</div>
+                    </div>
+                    <div class="bar-value" style="color:var(--text-muted)">¥1.06億</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">2024</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:100%; background:linear-gradient(90deg, var(--moiwa-blue), var(--accent-blue));">
+                            11,503人</div>
+                    </div>
+                    <div class="bar-value" style="color:var(--accent-green)">+19.5%</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">2025</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:79%; background:linear-gradient(90deg, var(--accent-orange), #FBBF24);">
+                            9,118人</div>
+                    </div>
+                    <div class="bar-value" style="color:var(--text-muted)">11M</div>
+                </div>
+            </div>
+            <div style="margin-top:12px; font-size:12px; color:var(--text-muted); text-align:center;">
+                2024年度はディナー客数が<span style="color:var(--accent-green); font-weight:600;">全月で前年超え</span> — 1月は+49%の劇的改善
+            </div>
+        </div>
+
+        <!-- ランチ & T.O -->
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title"><span class="icon">☀️</span> ランチ</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>客数</th>
+                            <th>売上</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>23</td>
+                            <td>2,911</td>
+                            <td>¥601万</td>
+                        </tr>
+                        <tr>
+                            <td>24</td>
+                            <td>2,764</td>
+                            <td>¥576万</td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+                            <td>2,178</td>
+                            <td>¥470万</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="font-size:10px; color:var(--text-muted); margin-top:8px;">4月はシーズンオフ（RW運休）</div>
+            </div>
+            <div class="card">
+                <div class="card-title"><span class="icon">🎁</span> T.O</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>売上</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>23</td>
+                            <td>¥2,104万</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>24</td>
+                            <td>¥2,665万</td>
+                            <td><span class="growth-positive">+26.7%</span></td>
+                        </tr>
+                        <tr>
+                            <td>25</td>
+                            <td>¥2,197万</td>
+                            <td style="font-size:10px; color:var(--text-muted)">11M</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="font-size:10px; color:var(--text-muted); margin-top:8px;">GW月がピーク</div>
+            </div>
+        </div>
+
+        <!-- 席料+南京錠+花（インフィニティテーブル） -->
+        <div class="card" style="border-color: rgba(74,222,128,0.3); border-left: 3px solid var(--accent-green);">
+            <div class="card-title"><span class="icon">🔐</span> 席料 + 南京錠 + 花 — インフィニティテーブルで爆伸び</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+                2025年度、インフィニティテーブル稼働により席+錠+花が前年比<span
+                    style="color:var(--accent-green); font-weight:600;">+51%</span>の急成長
+            </div>
+            <div class="bar-chart">
+                <div class="bar-row">
+                    <div class="bar-label">2023</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:65%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
+                            ¥817万</div>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">2024</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:66%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
+                            ¥827万</div>
+                    </div>
+                    <div class="bar-value" style="color:var(--text-muted)">+1.2%</div>
+                </div>
+                <div class="bar-row">
+                    <div class="bar-label">2025</div>
+                    <div class="bar-track">
+                        <div class="bar-fill"
+                            style="width:100%; background:linear-gradient(90deg, var(--accent-green), #86EFAC);">
+                            ¥1,248万</div>
+                    </div>
+                    <div class="bar-value" style="color:var(--accent-green)">+51% 🔥</div>
+                </div>
+            </div>
+            <div style="margin-top:16px; font-size:12px; color:var(--text-muted);">内訳（※預り金の花束は含まない）</div>
+            <table class="data-table" style="margin-top:8px;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>🪑 席料</th>
+                        <th>🔐 南京錠</th>
+                        <th>💐 花束(売上)</th>
+                        <th>合計</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <tr>
+                        <td>2023</td>
+                        <td>¥565万</td>
+                        <td>¥249万</td>
+                        <td>¥3万</td>
+                        <td>¥817万</td>
+                    </tr>
+                    <tr>
+                        <td>2024</td>
+                        <td>¥649万</td>
+                        <td>¥174万</td>
+                        <td>¥5万</td>
+                        <td>¥827万</td>
+                    </tr>
+                    <tr>
+                        <td>2025<span style="font-size:10px;color:var(--text-muted)"> 11M</span></td>
+                        <td style="color:var(--accent-green);font-weight:600;">¥1,002万</td>
+                        <td>¥251万</td>
+                        <td>—</td>
+                        <td style="color:var(--accent-green);font-weight:600;">¥1,248万</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align:center; margin-top:8px; font-size:11px; color:var(--accent-green); font-weight:600;">
+                席料が+54%（¥353万増）で最大の成長ドライバー</div>
+        </div>
+
+        <!-- T.O + 席料 合計 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📊</span> T.O + 席料等 合計</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>年度</th>
+                        <th>T.O</th>
+                        <th>席料+南京錠+花</th>
+                        <th>合計</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2023</td>
+                        <td>¥2,104万</td>
+                        <td>¥817万</td>
+                        <td>¥2,921万</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>2024</td>
+                        <td>¥2,665万</td>
+                        <td>¥827万</td>
+                        <td>¥3,492万</td>
+                        <td><span class="growth-positive">+19.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2025<span style="font-size:10px;color:var(--text-muted)"> 11M</span></td>
+                        <td>¥2,197万</td>
+                        <td>¥1,248万</td>
+                        <td>¥3,445万</td>
+                        <td><span class="growth-positive">+11.2%*</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align:center; margin-top:8px; font-size:11px; color:var(--text-muted);">
+                T.Oは年間¥2,100万〜¥2,700万規模のJWの重要収益源
+            </div>
+        </div>
+
+        <!-- 季節パターン -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📅</span> 月別パターン（2024-25平均）</div>
+            <div class="season-grid">
+                <div class="season-cell season-low"><span class="month-name">4月</span><span
+                        class="month-value">¥296万</span></div>
+                <div class="season-cell season-peak"><span class="month-name">5月</span><span
+                        class="month-value">¥1,398万</span></div>
+                <div class="season-cell season-high"><span class="month-name">6月</span><span
+                        class="month-value">¥1,469万</span></div>
+                <div class="season-cell season-peak"><span class="month-name">7月</span><span
+                        class="month-value">¥1,610万</span></div>
+                <div class="season-cell season-peak"><span class="month-name">8月</span><span
+                        class="month-value">¥1,610万</span></div>
+                <div class="season-cell season-high"><span class="month-name">9月</span><span
+                        class="month-value">¥1,412万</span></div>
+                <div class="season-cell season-high"><span class="month-name">10月</span><span
+                        class="month-value">¥1,599万</span></div>
+                <div class="season-cell season-mid"><span class="month-name">11月</span><span
+                        class="month-value">¥1,177万</span></div>
+                <div class="season-cell season-peak"><span class="month-name">12月</span><span
+                        class="month-value">¥1,711万</span></div>
+                <div class="season-cell season-mid"><span class="month-name">1月</span><span
+                        class="month-value">¥1,099万</span></div>
+                <div class="season-cell season-mid"><span class="month-name">2月</span><span
+                        class="month-value">¥867万</span></div>
+                <div class="season-cell season-low"><span class="month-name">3月</span><span
+                        class="month-value">¥864万</span></div>
+            </div>
+            <div style="margin-top:12px; display:flex; gap:12px; justify-content:center; font-size:10px;">
+                <span style="color:var(--accent-orange)">● ピーク</span>
+                <span style="color:var(--accent-green)">● 好調期</span>
+                <span style="color:var(--accent-blue)">● 安定期</span>
+                <span style="color:var(--text-muted)">● シーズンオフ</span>
+            </div>
+        </div>
+
+        <!-- 月間売上ベスト5 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">🏆</span> 月間売上ベスト5（税抜）</div>
+            <ul class="best-list">
+                <li class="best-item">
+                    <div class="best-rank">1</div>
+                    <div class="best-info">
+                        <div class="best-title">2024年度 12月</div>
+                        <div class="best-detail">忘年会+クリスマス 980人</div>
+                    </div>
+                    <div class="best-value">¥1,719万</div>
+                </li>
+                <li class="best-item">
+                    <div class="best-rank">2</div>
+                    <div class="best-info">
+                        <div class="best-title">2025年度 12月</div>
+                        <div class="best-detail">忘年会+クリスマス 952人</div>
+                    </div>
+                    <div class="best-value">¥1,703万</div>
+                </li>
+                <li class="best-item">
+                    <div class="best-rank">3</div>
+                    <div class="best-info">
+                        <div class="best-title">2024年度 8月</div>
+                        <div class="best-detail">D1,203人</div>
+                    </div>
+                    <div class="best-value">¥1,626万</div>
+                </li>
+                <li class="best-item">
+                    <div class="best-rank">4</div>
+                    <div class="best-info">
+                        <div class="best-title">2024年度 7月</div>
+                        <div class="best-detail">夏の夜景シーズン D1,217人</div>
+                    </div>
+                    <div class="best-value">¥1,626万</div>
+                </li>
+                <li class="best-item">
+                    <div class="best-rank">5</div>
+                    <div class="best-info">
+                        <div class="best-title">2024年度 6月</div>
+                        <div class="best-detail">D1,203人</div>
+                    </div>
+                    <div class="best-value">¥1,606万</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- YoY成長 -->
+        <div class="card">
+            <div class="card-title"><span class="icon">📈</span> 年度別成長（全CH売上 YoY）</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>月</th>
+                        <th>2023</th>
+                        <th>2024</th>
+                        <th>2025</th>
+                        <th>24vs23</th>
+                        <th>25vs24</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>4月</td>
+                        <td>¥178万</td>
+                        <td>¥381万</td>
+                        <td>¥414万</td>
+                        <td><span class="growth-positive">+114%</span></td>
+                        <td><span class="growth-positive">+8.7%</span></td>
+                    </tr>
+                    <tr>
+                        <td>5月</td>
+                        <td>¥1,463万</td>
+                        <td>¥1,332万</td>
+                        <td>¥1,588万</td>
+                        <td><span class="growth-negative">-9.0%</span></td>
+                        <td><span class="growth-positive">+19.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td>6月</td>
+                        <td>¥1,305万</td>
+                        <td>¥1,607万</td>
+                        <td>¥1,632万</td>
+                        <td><span class="growth-positive">+23%</span></td>
+                        <td><span class="growth-positive">+1.6%</span></td>
+                    </tr>
+                    <tr>
+                        <td>7月</td>
+                        <td>¥1,366万</td>
+                        <td>¥1,626万</td>
+                        <td>¥1,593万</td>
+                        <td><span class="growth-positive">+19%</span></td>
+                        <td><span class="growth-negative">-2.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>8月</td>
+                        <td>¥1,310万</td>
+                        <td>¥1,606万</td>
+                        <td>¥1,614万</td>
+                        <td><span class="growth-positive">+23%</span></td>
+                        <td><span class="growth-positive">+0.5%</span></td>
+                    </tr>
+                    <tr>
+                        <td>9月</td>
+                        <td>¥1,270万</td>
+                        <td>¥1,554万</td>
+                        <td>¥1,576万</td>
+                        <td><span class="growth-positive">+22%</span></td>
+                        <td><span class="growth-positive">+1.4%</span></td>
+                    </tr>
+                    <tr>
+                        <td>10月</td>
+                        <td>¥1,384万</td>
+                        <td>¥1,626万</td>
+                        <td>¥1,572万</td>
+                        <td><span class="growth-positive">+17%</span></td>
+                        <td><span class="growth-negative">-3.3%</span></td>
+                    </tr>
+                    <tr>
+                        <td>11月</td>
+                        <td>¥1,113万</td>
+                        <td>¥1,242万</td>
+                        <td>¥1,292万</td>
+                        <td><span class="growth-positive">+12%</span></td>
+                        <td><span class="growth-positive">+4.0%</span></td>
+                    </tr>
+                    <tr>
+                        <td>12月</td>
+                        <td>¥1,514万</td>
+                        <td>¥1,719万</td>
+                        <td>¥1,703万</td>
+                        <td><span class="growth-positive">+14%</span></td>
+                        <td><span class="growth-negative">-0.9%</span></td>
+                    </tr>
+                    <tr>
+                        <td>1月</td>
+                        <td>¥810万</td>
+                        <td>¥1,387万</td>
+                        <td>¥1,404万</td>
+                        <td><span class="growth-positive">+71%</span></td>
+                        <td><span class="growth-positive">+1.2%</span></td>
+                    </tr>
+                    <tr>
+                        <td>2月</td>
+                        <td>¥1,169万</td>
+                        <td>¥1,166万</td>
+                        <td>¥563万</td>
+                        <td><span class="growth-negative">-0.3%</span></td>
+                        <td style="font-size:10px; color:var(--text-muted)">途中</td>
+                    </tr>
+                    <tr>
+                        <td>3月</td>
+                        <td>¥734万</td>
+                        <td>¥993万</td>
+                        <td>—</td>
+                        <td><span class="growth-positive">+35%</span></td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align:center; margin-top:8px; font-size:11px; color:var(--accent-green); font-weight:600;">
+                2024年度: 12ヶ月中11ヶ月がYoYプラス — 全面的な成長
+            </div>
+        </div>
+
+        <!-- 3年間の物語 -->
+        <div class="card" style="border-color: rgba(74,144,217,0.25); border-top: 3px solid var(--moiwa-blue);">
+            <div class="card-title"><span class="icon">📖</span> 3年間の物語 — 藻岩山の夜景とともに</div>
+            <div style="font-size:13px; line-height:1.8;">
+                <div style="margin-bottom:16px;">
+                    <div
+                        style="color:var(--gold); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                        YEAR 1 — 夜景の街の灯りをともす</div>
+                    <div>
+                        2023年4月、藻岩山の長い冬が明けた。ロープウェイが動き出すまでの静かな4月を経て、5月からジュエルズの灯りが本格的にともった。ディナー客数は月間900人超が当たり前になり、年間9,628人を記録。札幌の夜景レストランとしてのポジションを確立し、全売上¥1.36億を達成した。
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div
+                        style="color:var(--accent-blue); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                        YEAR 2 — 全月で前年を超える</div>
+                    <div>
+                        2024年度は12ヶ月中11ヶ月でYoYプラス。特に1月の+71%（¥810万→¥1,387万）は、冬季の集客構造が根本的に変わったことを示した。ディナー客数は全月で前年超え、年間11,503人（前年9,628人比+19.5%）に成長。チーム全員で夜景の価値を最大化した1年間だった。全売上¥1.62億、前年比+19.2%。
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div
+                        style="color:var(--accent-green); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                        YEAR 3 — インフィニティテーブルの衝撃</div>
+                    <div>
+                        2025年度は全売上¥1.50億（11ヶ月時点）。インフィニティテーブル稼働で席+錠+花が¥827万→¥1,248万（+51%）に爆伸び。ディナー客数は11ヶ月で10,118人、月間1,000人超が5月〜10月で6ヶ月連続定着。12月は¥1,703万で3年連続の年間最高月に。「もーりすカレー」という新チャネルも生まれた。
+                    </div>
+                </div>
+                <div>
+                    <div
+                        style="color:var(--moiwa-blue); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                        次のステージへ</div>
+                    <div>藻岩山の夜景は変わらない。でもジュエルズは進化し続ける。Momentum Peaks × Talent Intelligence
+                        が実戦投入される2026年、データが夜景の価値をさらに引き出す。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- データが示す行動 -->
+        <div class="card" style="border-color: rgba(74,222,128,0.3);">
+            <div class="card-title"><span class="icon">🎯</span> データが示す、次の具体的行動</div>
+            <div style="font-size:13px; line-height:1.8;">
+
+                <div
+                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(74,144,217,0.08); border-radius:8px;">
+                    <div style="font-size:20px; flex-shrink:0;">🌙</div>
+                    <div>
+                        <div style="color:var(--moiwa-blue); font-weight:600; margin-bottom:4px;">ディナー1,000人超を通年で維持する
+                        </div>
+                        <div style="color:var(--text);">
+                            2025年度は5-10月の6ヶ月連続で1,000人超。11月・12月と冬季の客数を底上げし、「通年で月間1,000人」を次のマイルストーンに。記念日プラン・コース提案の強化で客単価も同時に引き上げる。
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(197,165,90,0.08); border-radius:8px;">
+                    <div style="font-size:20px; flex-shrink:0;">❄️</div>
+                    <div>
+                        <div style="color:var(--gold); font-weight:600; margin-bottom:4px;">冬季（1-3月）の底上げを継続する</div>
+                        <div style="color:var(--text);">
+                            2024年度の1月+68%は大きな成功。雪まつり期間のプロモーション、冬季限定メニュー、イルミネーションとの連携で、閑散期を「冬の特別体験シーズン」へ転換する。
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(74,222,128,0.08); border-radius:8px;">
+                    <div style="font-size:20px; flex-shrink:0;">🔐</div>
+                    <div>
+                        <div style="color:var(--accent-green); font-weight:600; margin-bottom:4px;">「体験価値」収益を拡大する</div>
+                        <div style="color:var(--text);">
+                            南京錠・花束・席料はJW独自の「体験価値」収益源。お客さまの「特別な夜」をデータで理解し、プロポーズ演出・アニバーサリーパッケージなど、体験価値のメニュー化を進める。
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:12px; padding:12px; background:rgba(251,146,60,0.08); border-radius:8px;">
+                    <div style="font-size:20px; flex-shrink:0;">🍛</div>
+                    <div>
+                        <div style="color:var(--accent-orange); font-weight:600; margin-bottom:4px;">もーりすカレーの可能性を探る
+                        </div>
+                        <div style="color:var(--text);">
+                            2025年10月に誕生した新チャネル。ランチ帯の新たな集客エンジンとなり得るか、データをもとに育てていく。
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="text-align:center; padding:32px 16px; margin-top:8px;">
+            <div style="font-size:15px; color:var(--text); font-weight:300; line-height:2;">
+                藻岩山の夜景は、365日、街を照らし続ける。<br>
+                その光のひとつひとつが、お客さまの特別な夜を彩ってきた。<br><br>
+                3年で1,065日。31,249人のディナーのお客さま。<br>
+                <span style="color:var(--gold); font-weight:600;">この夜景の価値を、データで、もっと。</span>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="brand">SAPPORO VIEWTIFUL DINING</div>
+            <div style="margin-top:4px;">ここだけの美味しさ。ここだけのエンターテインメント。</div>
+            <div style="margin-top:8px;">税抜表記 / 35ヶ月・1,065日のデータ / 2026-02-12</div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

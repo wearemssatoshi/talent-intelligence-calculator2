@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RYB BISTRO REVOLUTION - DESIGN ONE-SHEET</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Noto+Sans+JP:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --navy: #0F172A;
+            --accent: #EF4444;
+            --white: #F8FAFC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--navy);
+            color: var(--white);
+            font-family: 'Noto+Sans+JP', sans-serif;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .canvas {
+            width: 1920px;
+            height: 1080px;
+            padding: 60px;
+            position: relative;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+            border: 20px solid rgba(255, 255, 255, 0.02);
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .title-block h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 80px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #FFF, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-block p {
+            font-size: 24px;
+            color: var(--gold);
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            margin-top: 10px;
+        }
+
+        .brand-logo {
+            text-align: right;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.2em;
+        }
+
+        /* Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            height: calc(100% - 250px);
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .panel h2::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        /* Lesson Comparison */
+        .vs-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .vs-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+            opacity: 0.6;
+        }
+
+        .vs-content {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .vs-content.bad {
+            color: var(--accent);
+        }
+
+        .vs-content.good {
+            color: #10B981;
+        }
+
+        /* Pillar Icons */
+        .pillar {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .pillar-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .pillar h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .pillar p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Action Steps */
+        .action-list {
+            list-style: none;
+        }
+
+        .action-list li {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-list li span {
+            color: var(--gold);
+            font-weight: 900;
+        }
+
+        /* Footer Tagline */
+        .footer-tagline {
+            position: absolute;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            letter-spacing: 0.5em;
+            opacity: 0.4;
+        }
+
+        .status-badge {
+            background: var(--gold);
+            color: var(--navy);
+            padding: 5px 15px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 700;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="canvas">
+        <header>
+            <div class="title-block">
+                <h1>THE BISTRO REVOLUTION</h1>
+                <p>RYB STRATEGIC DESIGN MANUAL v1.0</p>
+            </div>
+            <div class="brand-logo">
+                SAPPORO VIEWTIFUL DINING<br>
+                赤れんがテラス<span class="status-badge">NANO BANANA PRO</span>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Section 1: Analysis -->
+            <div class="panel">
+                <h2>STRATEGIC ANALYSIS</h2>
+                <div class="vs-card">
+                    <div class="vs-label">Immersive Fort Failure</div>
+                    <div class="vs-content bad">箱とモデルのミスマッチ<br>（固定費の怪物）</div>
+                </div>
+                <div class="vs-card" style="border-left: 4px solid var(--gold); background: rgba(212, 175, 55, 0.05);">
+                    <div class="vs-label">RYB Solution</div>
+                    <div class="vs-content good">共有資源の最大活用<br>（全店Win-Win構造）</div>
+                </div>
+                <div class="vs-card" style="margin-top: auto;">
+                    <div style="font-size: 14px; line-height: 1.8;">
+                        日本人の「恥」を「心地よい没入」へ。<br>
+                        布袋の集客力を「磁石」とし、<br>
+                        マーケットイン（欲される物語）を完遂する。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Three Pillars -->
+            <div class="panel" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), transparent);">
+                <h2>THE THREE PILLARS</h2>
+                <div class="pillar">
+                    <span class="pillar-icon">🇫🇷</span>
+                    <h3>カツレツの正当性</h3>
+                    <p>LA BRIQUEの血統を証明する歴史的背景</p>
+                </div>
+                <div class="pillar" style="background: rgba(255, 255, 255, 0.03); border-radius: 20px;">
+                    <span class="pillar-icon">🍷</span>
+                    <h3>極上の違和感</h3>
+                    <p>布袋メニュー × ソムリエのペアリング（SNSフック）</p>
+                </div>
+                <div class="pillar">
+                    <span class="pillar-icon">🥂</span>
+                    <h3>全員優勝の物語</h3>
+                    <p>ワインブッフェによる「昼のみの聖地」化</p>
+                </div>
+            </div>
+
+            <!-- Section 3: Roadmap -->
+            <div class="panel">
+                <h2>CRITICAL ACTIONS</h2>
+                <ul class="action-list">
+                    <li><span>01</span> 「とんかつテラス」への改名とSEO強化</li>
+                    <li><span>02</span> 佐藤ソムリエによる「布袋ペアリング」発表</li>
+                    <li><span>03</span> 他店持ち込み可・超得ワインブッフェの始動</li>
+                    <li><span>04</span> アイドルタイムを「ビストロ」へ完全転換</li>
+                </ul>
+                <div style="margin-top: auto; padding-top: 20px; font-size: 14px; color: var(--gold);">
+                    <strong>Executive Result:</strong><br>
+                    赤れんがテラス全体のLTVを最大化し、<br>
+                    「ここだけの美味しさ」をフードコートで体現する。
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-tagline">
+            SAPPORO VIEWTIFUL DINING — ORIGIN | SVD GLOBAL INTELLIGENCE | CONFIDENTIAL
+        </div>
+    </div>
+
+</body>
+
+</html>

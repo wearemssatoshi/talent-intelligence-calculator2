@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テレビ塔 Q4 ロードマップ 2025-2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #EC4899, #F472B6);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #EC4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .header .focus {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 24px;
+            background: rgba(236, 72, 153, 0.1);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #F472B6;
+        }
+
+        /* Month Navigation */
+        .month-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .month-btn {
+            padding: 10px 24px;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .month-btn:hover,
+        .month-btn.active {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(168, 85, 247, 0.3));
+            border-color: #EC4899;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .month-btn.active {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Instruction */
+        .instruction {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .instruction span {
+            background: rgba(236, 72, 153, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: #F472B6;
+        }
+
+        /* Two Column Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 1000px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section */
+        .section {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 0.7rem;
+            color: #64748b;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* Left Section - テレビ塔施策 */
+        .section.tvtower {
+            border-top: 4px solid #EC4899;
+        }
+
+        .section.tvtower .section-title {
+            color: #F472B6;
+        }
+
+        /* Right Section - AI活用 */
+        .section.ai {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .section.ai .section-title {
+            color: #60A5FA;
+        }
+
+        /* Icon Cards */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .icon-grid.single-col {
+            grid-template-columns: 1fr;
+        }
+
+        .icon-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .icon-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--card-color, #EC4899);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon-card.active {
+            border-color: var(--card-color, #EC4899);
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .icon-card.wine {
+            --card-color: #A855F7;
+        }
+
+        .icon-card.snow {
+            --card-color: #60A5FA;
+        }
+
+        .icon-card.sbt {
+            --card-color: #B8995C;
+        }
+
+        .icon-card.yellow {
+            --card-color: #EAB308;
+        }
+
+        .icon-card.ai-item {
+            --card-color: #3B82F6;
+        }
+
+        .icon-emoji {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .icon-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .icon-period {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 20px;
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            margin-top: 20px;
+            border: 1px solid transparent;
+        }
+
+        .detail-panel.active {
+            padding: 25px;
+            max-height: 700px;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-emoji {
+            font-size: 2rem;
+        }
+
+        .detail-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .detail-period {
+            font-size: 0.75rem;
+            color: #F472B6;
+            background: rgba(236, 72, 153, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: auto;
+        }
+
+        .detail-content h4 {
+            color: #EC4899;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-content p {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .action-items {
+            list-style: none;
+        }
+
+        .action-items li {
+            padding: 10px 12px;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            border-left: 3px solid #EC4899;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-items li::before {
+            content: '→';
+            color: #EC4899;
+            font-weight: 700;
+        }
+
+        .action-items.ai li {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3B82F6;
+        }
+
+        .action-items.ai li::before {
+            color: #3B82F6;
+        }
+
+        .goal-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            color: #10B981;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .deadline-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            color: #EF4444;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 12px;
+            margin-left: 8px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-concept {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #3B82F6, #EC4899, #EAB308);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand {
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <span class="header-badge">🗼 TV TOWER Q4 STRATEGY</span>
+            <h1>テレビ塔 2025-2026 ロードマップ</h1>
+            <p class="subtitle">閑散期に備えた企画展開</p>
+            <span class="focus">🎯 正月明け・雪まつり明けの売上対策</span>
+        </header>
+
+        <!-- Month Navigation -->
+        <div class="month-nav">
+            <button class="month-btn active" onclick="filterMonth('all')">ALL</button>
+            <button class="month-btn" onclick="filterMonth('1')">1月</button>
+            <button class="month-btn" onclick="filterMonth('2')">2月</button>
+            <button class="month-btn" onclick="filterMonth('3')">3月</button>
+        </div>
+
+        <p class="instruction"><span class="pulse">👆 アイコンをタップして詳細を見る</span></p>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left: テレビ塔施策 -->
+            <div class="section tvtower">
+                <div class="section-header">
+                    <span class="section-icon">🗼</span>
+                    <div>
+                        <div class="section-title">テレビ塔 Q4 売上施策</div>
+                        <div class="section-subtitle">REVENUE INITIATIVES</div>
+                    </div>
+                </div>
+
+                <div class="icon-grid single-col">
+                    <div class="icon-card sbt" data-months="1,2" onclick="showDetail('sbt', this)">
+                        <span class="icon-emoji">🍽️</span>
+                        <div class="icon-title">SAPPORO BEGINNING TABLE</div>
+                        <div class="icon-period">1月13日〜2月28日</div>
+                    </div>
+                    <div class="icon-card wine" data-months="1,2,3" onclick="showDetail('wine', this)">
+                        <span class="icon-emoji">🍷</span>
+                        <div class="icon-title">ワインBAR ローンチ</div>
+                        <div class="icon-period">1月13日スタート</div>
+                    </div>
+                    <div class="icon-card snow" data-months="1,2" onclick="showDetail('snow', this)">
+                        <span class="icon-emoji">❄️</span>
+                        <div class="icon-title">雪まつりイベント</div>
+                        <div class="icon-period">1月後半〜2月</div>
+                    </div>
+                    <div class="icon-card yellow" data-months="3" onclick="showDetail('yellow', this)">
+                        <span class="icon-emoji">💛</span>
+                        <div class="icon-title">HAPPY YELLOW</div>
+                        <div class="icon-period">3月</div>
+                    </div>
+                </div>
+
+                <div id="detailPanel1" class="detail-panel">
+                    <div class="detail-header">
+                        <span id="detailEmoji1" class="detail-emoji"></span>
+                        <span id="detailTitle1" class="detail-title"></span>
+                        <span id="detailPeriod1" class="detail-period"></span>
+                    </div>
+                    <div id="detailContent1" class="detail-content"></div>
+                </div>
+            </div>
+
+            <!-- Right: AI活用 -->
+            <div class="section ai">
+                <div class="section-header">
+                    <span class="section-icon">🤖</span>
+                    <div>
+                        <div class="section-title">SVD AI活用の取り組み</div>
+                        <div class="section-subtitle">DIGITAL TRANSFORMATION - 6軸体制</div>
+                    </div>
+                </div>
+
+                <div class="icon-grid">
+                    <div class="icon-card ai-item" onclick="showDetail('office', this)">
+                        <span class="icon-emoji">💳</span>
+                        <div class="icon-title">事務仕事AIX</div>
+                        <div class="icon-period">経理DX</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('inventory', this)">
+                        <span class="icon-emoji">📦</span>
+                        <div class="icon-title">棚卸しAIX</div>
+                        <div class="icon-period">在庫管理</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('digitalmenu', this)">
+                        <span class="icon-emoji">📜</span>
+                        <div class="icon-title">デジタルメニューAIX</div>
+                        <div class="icon-period">NFT化準備</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('momentum', this)">
+                        <span class="icon-emoji">📊</span>
+                        <div class="icon-title">AI日報+MP</div>
+                        <div class="icon-period">Momentum Peaks</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('sns', this)">
+                        <span class="icon-emoji">📱</span>
+                        <div class="icon-title">SNS公式発信</div>
+                        <div class="icon-period">マーク取得</div>
+                    </div>
+                    <div class="icon-card ai-item" onclick="showDetail('talent', this)">
+                        <span class="icon-emoji">👥</span>
+                        <div class="icon-title">Talent Intelligence</div>
+                        <div class="icon-period">HR資産化</div>
+                    </div>
+                </div>
+
+                <div id="detailPanel2" class="detail-panel">
+                    <div class="detail-header">
+                        <span id="detailEmoji2" class="detail-emoji"></span>
+                        <span id="detailTitle2" class="detail-title"></span>
+                    </div>
+                    <div id="detailContent2" class="detail-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-concept">都市 × 食 × テクノロジー × 物語</p>
+            <p class="footer-brand">SAPPORO VIEWTIFUL DINING - テレビ塔</p>
+        </footer>
+    </div>
+
+    <script>
+        const details = {
+            // テレビ塔施策
+            sbt: {
+                emoji: '🍽️',
+                title: 'SAPPORO BEGINNING TABLE',
+                period: '1月13日〜2月28日',
+                panel: 1,
+                content: `
+                    <h4>🍽️ SVD関散期対策イベント</h4>
+                    <ul class="action-items">
+                        <li>SBT COURSE（Casual Dining）の提供</li>
+                        <li>Dinner ¥9,900 / Lunch ¥5,500（税込）</li>
+                        <li>ヒンナ＋前菜＋魚＋肉＋デザート＋コーヒー</li>
+                        <li>Dinner:ペアリング3杯付 / Lunch:ドリンク2杯付</li>
+                        <li>ソフトドリンクへの変更可</li>
+                    </ul>
+                    <p>新しい年の始まりに、初めての時間と体験を。SVD4店舗合同の閑散期対策イベント。</p>
+                    <span class="goal-badge">🍽️ Casual Dining</span>
+                    <span class="deadline-badge">⏰ 1月13日スタート</span>
+                `
+            },
+            wine: {
+                emoji: '🍷',
+                title: 'ワインBAR ローンチ',
+                period: '1月13日〜',
+                panel: 1,
+                content: `
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items">
+                        <li>原価管理の仕組み構築</li>
+                        <li>イベント開催の企画・実施</li>
+                        <li>おつまみメニューの考案</li>
+                        <li>料理人の手を煩わせないメニュー設計</li>
+                        <li>ワインセレクションの決定</li>
+                        <li>グラスワイン価格設定</li>
+                    </ul>
+                    <p>閑散期の集客の柱として、気軽に立ち寄れるワインBARをローンチ。原価管理を徹底しながら、料理人の負担を最小限に。</p>
+                    <span class="goal-badge">🎯 閑散期の売上柱に</span>
+                    <span class="deadline-badge">⏰ 1月13日スタート</span>
+                `
+            },
+            snow: {
+                emoji: '❄️',
+                title: 'さっぽろ雪まつりイベント',
+                period: '1月後半〜2月',
+                panel: 1,
+                content: `
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items">
+                        <li>雪まつり限定メニュー開発</li>
+                        <li>観光客向けプロモーション</li>
+                        <li>雪まつり会場との連携</li>
+                        <li>多言語対応の強化</li>
+                        <li>SNSでの雪まつり発信</li>
+                    </ul>
+                    <p>札幌最大のイベント「さっぽろ雪まつり」期間中、テレビ塔の立地を最大限活用して観光客を取り込む。</p>
+                    <span class="goal-badge">🎯 観光客の取り込み最大化</span>
+                `
+            },
+            yellow: {
+                emoji: '💛',
+                title: 'HAPPY YELLOW PROJECT 協賛',
+                period: '3月',
+                panel: 1,
+                content: `
+                    <h4>🎯 やるべきこと</h4>
+                    <ul class="action-items">
+                        <li>ミモザカクテル販売</li>
+                        <li>ミモザサラダの提供</li>
+                        <li>黄色いデザートの開発</li>
+                        <li>店内イエロー装飾</li>
+                        <li>SNSでのイエローキャンペーン</li>
+                    </ul>
+                    <p>3月の国際女性デー・ミモザの日に合わせ、「幸せの黄色」で店舗を彩る。</p>
+                    <span class="goal-badge">🎯 幸せと応援のシンボルに</span>
+                `
+            },
+            // AI活用 - 6軸体制
+            office: {
+                emoji: '💳',
+                title: '事務仕事AIX',
+                panel: 2,
+                content: `
+                    <h4>💳 経理業務のAI化</h4>
+                    <ul class="action-items ai">
+                        <li>ビジネスカード明細の自動取得</li>
+                        <li>AIによる勘定科目自動分類</li>
+                        <li>店舗別・部門別タグ付け</li>
+                        <li>月次簡易PL自動生成</li>
+                    </ul>
+                    <p>経理＝入力作業 から 経営ダッシュボード へ進化させる。</p>
+                    <span class="goal-badge">🎯 数字で語る現場へ</span>
+                `
+            },
+            inventory: {
+                emoji: '📦',
+                title: '棚卸しAIX',
+                panel: 2,
+                content: `
+                    <h4>📦 在庫管理のAI化</h4>
+                    <ul class="action-items ai">
+                        <li>納品書フォーマット統一</li>
+                        <li>AI読込 → 在庫自動反映</li>
+                        <li>原価率計算の自動化</li>
+                        <li>デジタルワインリスト連携</li>
+                    </ul>
+                    <p>棚卸＝月末作業 から リアルタイム管理 へ。ワインBARの原価管理にも直結。</p>
+                    <span class="goal-badge">🎯 リアルタイム在庫管理</span>
+                `
+            },
+            digitalmenu: {
+                emoji: '📜',
+                title: 'デジタルメニューAIX + NFT化準備',
+                panel: 2,
+                content: `
+                    <h4>📜 Web3への布石</h4>
+                    <ul class="action-items ai">
+                        <li>デジタルメニューのAI自動生成</li>
+                        <li>写真・テキストの自動レイアウト</li>
+                        <li>NFT化への下準備（メタデータ整備）</li>
+                        <li>SBT (Soul Bound Token) との連携構想</li>
+                    </ul>
+                    <p>メニューをデジタル資産へ。Web3時代に先手を打つ。</p>
+                    <span class="goal-badge">🚀 Web3への布石</span>
+                `
+            },
+            momentum: {
+                emoji: '📊',
+                title: 'AI日報 + Momentum Peaks',
+                panel: 2,
+                content: `
+                    <h4>📊 日報から戦略へ</h4>
+                    <ul class="action-items ai">
+                        <li>売上・客数・客単価の自動集計</li>
+                        <li>今日のハイライト（AI要約）</li>
+                        <li>課題仮説と明日の一手（AI提案）</li>
+                        <li>Momentum Peaksダッシュボード連携</li>
+                        <li>月次モメンタムスコアの可視化</li>
+                    </ul>
+                    <p>「報告」ではなく「思考の補助輪」へ。閑散期の対策もAIが提案。</p>
+                    <span class="goal-badge">🎯 報告→思考支援へ</span>
+                `
+            },
+            sns: {
+                emoji: '📱',
+                title: 'SNS公式発信',
+                panel: 2,
+                content: `
+                    <h4>📱 マーク取得で信頼性UP</h4>
+                    <ul class="action-items ai">
+                        <li>Instagram公式マーク取得</li>
+                        <li>YouTube公式チャンネル開設</li>
+                        <li>今の熱量・ストーリー発信</li>
+                        <li>思想・背景・物語の発信</li>
+                        <li>採用・共感・ファン化の母艦構築</li>
+                    </ul>
+                    <p>ワインBARの魅力、雪まつりの様子をSNSで発信し、集客につなげる。</p>
+                    <span class="goal-badge">🎯 メディアが人を呼ぶ</span>
+                `
+            },
+            talent: {
+                emoji: '👥',
+                title: 'Talent Intelligence',
+                panel: 2,
+                content: `
+                    <h4>👥 ヒューマンリソースの資産化</h4>
+                    <ul class="action-items ai">
+                        <li>個人の強み・成長曲線の客観視</li>
+                        <li>スキルマップによるキャリアパス設計</li>
+                        <li>チームのバランス可視化</li>
+                        <li>1on1・コミュニケーション支援</li>
+                        <li>採用時のマッチング活用</li>
+                    </ul>
+                    <p>「人」を資産として可視化。成長を支援し、チームを最適化。</p>
+                    <span class="goal-badge">🎯 HR資産化で組織強化</span>
+                `
+            }
+        };
+
+        function showDetail(key, element) {
+            const data = details[key];
+            const panelId = data.panel;
+            const panel = document.getElementById('detailPanel' + panelId);
+            const emoji = document.getElementById('detailEmoji' + panelId);
+            const title = document.getElementById('detailTitle' + panelId);
+            const period = document.getElementById('detailPeriod' + panelId);
+            const content = document.getElementById('detailContent' + panelId);
+
+            // Update content
+            emoji.textContent = data.emoji;
+            title.textContent = data.title;
+            if (period && data.period) period.textContent = data.period;
+            content.innerHTML = data.content;
+
+            // Show panel
+            panel.classList.add('active');
+
+            // Highlight active card
+            const section = element.closest('.section');
+            section.querySelectorAll('.icon-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+
+            // Smooth scroll
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function filterMonth(month) {
+            // Update button states
+            document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // Filter cards
+            document.querySelectorAll('.icon-card[data-months]').forEach(card => {
+                const months = card.dataset.months.split(',');
+                if (month === 'all' || months.includes(month)) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    card.style.opacity = '0.3';
+                    card.style.transform = 'scale(0.95)';
+                    card.style.pointerEvents = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,5261 @@
+{
+  "metadata": {
+    "store_id": "JW",
+    "store_name": "The Jewels",
+    "base": "Mt.MOIWA",
+    "fiscal_year": "2023",
+    "quarters": [
+      "1Q",
+      "2Q"
+    ],
+    "parsed_at": "2026-02-12T10:00:04.348976"
+  },
+  "monthly_summary": [
+    {
+      "month": "2023-04",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 51,
+          "sales": 144400
+        },
+        "dinner": {
+          "pax": 121,
+          "sales": 1361760
+        },
+        "takeout": {
+          "sales": 375500
+        },
+        "all_channels": {
+          "sales": 1881660
+        }
+      },
+      "quarter": "1Q"
+    },
+    {
+      "month": "2023-05",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 373,
+          "sales": 1662240
+        },
+        "dinner": {
+          "pax": 966,
+          "sales": 10348740
+        },
+        "takeout": {
+          "sales": 3147200
+        },
+        "all_channels": {
+          "sales": 15158180
+        }
+      },
+      "quarter": "1Q"
+    },
+    {
+      "month": "2023-06",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 256,
+          "sales": 1046330
+        },
+        "dinner": {
+          "pax": 964,
+          "sales": 10531650
+        },
+        "takeout": {
+          "sales": 1925550
+        },
+        "all_channels": {
+          "sales": 13503530
+        }
+      },
+      "quarter": "1Q"
+    },
+    {
+      "month": "2023-07",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 327,
+          "sales": 1243565
+        },
+        "dinner": {
+          "pax": 964,
+          "sales": 10559840
+        },
+        "takeout": {
+          "sales": 2250900
+        },
+        "all_channels": {
+          "sales": 14054305
+        }
+      },
+      "quarter": "2Q"
+    },
+    {
+      "month": "2023-08",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 250,
+          "sales": 904570
+        },
+        "dinner": {
+          "pax": 996,
+          "sales": 10499250
+        },
+        "takeout": {
+          "sales": 2147250
+        },
+        "all_channels": {
+          "sales": 13551070
+        }
+      },
+      "quarter": "2Q"
+    },
+    {
+      "month": "2023-09",
+      "monthly_summary": {
+        "lunch": {
+          "pax": 354,
+          "sales": 1286520
+        },
+        "dinner": {
+          "pax": 910,
+          "sales": 10247640
+        },
+        "takeout": {
+          "sales": 1739750
+        },
+        "all_channels": {
+          "sales": 13273910
+        }
+      },
+      "quarter": "2Q"
+    }
+  ],
+  "daily_data": [
+    {
+      "date": "2023-04-01",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-02",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-03",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-04",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-05",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-06",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-07",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-08",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-09",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-10",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-11",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-12",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-13",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-14",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-15",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-16",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-17",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-18",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-19",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-20",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-21",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-22",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-23",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-24",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-25",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-26",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 0,
+          "sales": 0
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 0
+    },
+    {
+      "date": "2023-04-27",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 18,
+          "sales": 196090,
+          "avg_spend": 10893.888888888889
+        },
+        "takeout": {
+          "pax": 51,
+          "sales": 37850
+        },
+        "all_channels": {
+          "pax": 18,
+          "sales": 233940
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17050
+      },
+      "grand_total": 213140
+    },
+    {
+      "date": "2023-04-28",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 334640,
+          "avg_spend": 11539.310344827587
+        },
+        "takeout": {
+          "pax": 103,
+          "sales": 92500
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 427140
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 352240
+    },
+    {
+      "date": "2023-04-29",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 22,
+          "sales": 52450,
+          "avg_spend": 2384.090909090909
+        },
+        "dinner": {
+          "pax": 42,
+          "sales": 489300,
+          "avg_spend": 11650.0
+        },
+        "takeout": {
+          "pax": 122,
+          "sales": 114750
+        },
+        "all_channels": {
+          "pax": 64,
+          "sales": 656500
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17050
+      },
+      "grand_total": 558800
+    },
+    {
+      "date": "2023-04-30",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 91950,
+          "avg_spend": 3170.689655172414
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 341730,
+          "avg_spend": 10679.0625
+        },
+        "takeout": {
+          "pax": 147,
+          "sales": 130400
+        },
+        "all_channels": {
+          "pax": 61,
+          "sales": 564080
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21450
+      },
+      "grand_total": 455130
+    },
+    {
+      "date": "2023-05-01",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 69450,
+          "avg_spend": 2778.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 293460,
+          "avg_spend": 10119.310344827587
+        },
+        "takeout": {
+          "pax": 110,
+          "sales": 89500
+        },
+        "all_channels": {
+          "pax": 54,
+          "sales": 452410
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 56700
+      },
+      "grand_total": 419610
+    },
+    {
+      "date": "2023-05-02",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 23,
+          "sales": 73250,
+          "avg_spend": 3184.782608695652
+        },
+        "dinner": {
+          "pax": 41,
+          "sales": 428860,
+          "avg_spend": 10460.0
+        },
+        "takeout": {
+          "pax": 159,
+          "sales": 134900
+        },
+        "all_channels": {
+          "pax": 64,
+          "sales": 637010
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21670
+      },
+      "grand_total": 523780
+    },
+    {
+      "date": "2023-05-03",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 40,
+          "sales": 162340,
+          "avg_spend": 4058.5
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 353290,
+          "avg_spend": 10094.0
+        },
+        "takeout": {
+          "pax": 250,
+          "sales": 237550
+        },
+        "all_channels": {
+          "pax": 75,
+          "sales": 753180
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17050
+      },
+      "grand_total": 532680
+    },
+    {
+      "date": "2023-05-04",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 113420,
+          "avg_spend": 3780.6666666666665
+        },
+        "dinner": {
+          "pax": 39,
+          "sales": 428300,
+          "avg_spend": 10982.051282051281
+        },
+        "takeout": {
+          "pax": 277,
+          "sales": 277950
+        },
+        "all_channels": {
+          "pax": 69,
+          "sales": 819670
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20900
+      },
+      "grand_total": 562620
+    },
+    {
+      "date": "2023-05-05",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 24,
+          "sales": 112500,
+          "avg_spend": 4687.5
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 368440,
+          "avg_spend": 9211.0
+        },
+        "takeout": {
+          "pax": 244,
+          "sales": 231700
+        },
+        "all_channels": {
+          "pax": 64,
+          "sales": 712640
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24310
+      },
+      "grand_total": 505250
+    },
+    {
+      "date": "2023-05-06",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 12,
+          "sales": 57130,
+          "avg_spend": 4760.833333333333
+        },
+        "dinner": {
+          "pax": 20,
+          "sales": 265370,
+          "avg_spend": 13268.5
+        },
+        "takeout": {
+          "pax": 76,
+          "sales": 68700
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 391200
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18700
+      },
+      "grand_total": 341200
+    },
+    {
+      "date": "2023-05-07",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 17,
+          "sales": 49890,
+          "avg_spend": 2934.705882352941
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 344820,
+          "avg_spend": 12771.111111111111
+        },
+        "takeout": {
+          "pax": 182,
+          "sales": 155500
+        },
+        "all_channels": {
+          "pax": 44,
+          "sales": 550210
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 15950
+      },
+      "grand_total": 410660
+    },
+    {
+      "date": "2023-05-08",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 303840,
+          "avg_spend": 10128.0
+        },
+        "takeout": {
+          "pax": 71,
+          "sales": 56150
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 359990
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 121500
+      },
+      "grand_total": 425340
+    },
+    {
+      "date": "2023-05-09",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 260010,
+          "avg_spend": 10000.384615384615
+        },
+        "takeout": {
+          "pax": 66,
+          "sales": 58600
+        },
+        "all_channels": {
+          "pax": 26,
+          "sales": 318610
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20350
+      },
+      "grand_total": 280360
+    },
+    {
+      "date": "2023-05-10",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 17,
+          "sales": 263940,
+          "avg_spend": 15525.882352941177
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 357230,
+          "avg_spend": 11163.4375
+        },
+        "takeout": {
+          "pax": 86,
+          "sales": 69900
+        },
+        "all_channels": {
+          "pax": 49,
+          "sales": 691070
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23100
+      },
+      "grand_total": 644270
+    },
+    {
+      "date": "2023-05-11",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 243950,
+          "avg_spend": 11616.666666666666
+        },
+        "takeout": {
+          "pax": 83,
+          "sales": 72050
+        },
+        "all_channels": {
+          "pax": 21,
+          "sales": 316000
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 261550
+    },
+    {
+      "date": "2023-05-12",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 42,
+          "sales": 460640,
+          "avg_spend": 10967.619047619048
+        },
+        "takeout": {
+          "pax": 73,
+          "sales": 58650
+        },
+        "all_channels": {
+          "pax": 42,
+          "sales": 519290
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 478240
+    },
+    {
+      "date": "2023-05-13",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 26,
+          "sales": 111140,
+          "avg_spend": 4274.615384615385
+        },
+        "dinner": {
+          "pax": 43,
+          "sales": 444230,
+          "avg_spend": 10330.93023255814
+        },
+        "takeout": {
+          "pax": 142,
+          "sales": 109800
+        },
+        "all_channels": {
+          "pax": 69,
+          "sales": 665170
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23760
+      },
+      "grand_total": 579130
+    },
+    {
+      "date": "2023-05-14",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 22,
+          "sales": 89300,
+          "avg_spend": 4059.090909090909
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 237200,
+          "avg_spend": 9123.076923076924
+        },
+        "takeout": {
+          "pax": 174,
+          "sales": 158750
+        },
+        "all_channels": {
+          "pax": 48,
+          "sales": 485250
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 15730
+      },
+      "grand_total": 342230
+    },
+    {
+      "date": "2023-05-15",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 22,
+          "sales": 241900,
+          "avg_spend": 10995.454545454546
+        },
+        "takeout": {
+          "pax": 15,
+          "sales": 13500
+        },
+        "all_channels": {
+          "pax": 22,
+          "sales": 255400
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21010
+      },
+      "grand_total": 262910
+    },
+    {
+      "date": "2023-05-16",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 399180,
+          "avg_spend": 10504.736842105263
+        },
+        "takeout": {
+          "pax": 82,
+          "sales": 69900
+        },
+        "all_channels": {
+          "pax": 38,
+          "sales": 469080
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 90600
+      },
+      "grand_total": 489780
+    },
+    {
+      "date": "2023-05-17",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 408850,
+          "avg_spend": 11050.0
+        },
+        "takeout": {
+          "pax": 60,
+          "sales": 54200
+        },
+        "all_channels": {
+          "pax": 37,
+          "sales": 463050
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26400
+      },
+      "grand_total": 435250
+    },
+    {
+      "date": "2023-05-18",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 22,
+          "sales": 273250,
+          "avg_spend": 12420.454545454546
+        },
+        "takeout": {
+          "pax": 63,
+          "sales": 53400
+        },
+        "all_channels": {
+          "pax": 22,
+          "sales": 326650
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18700
+      },
+      "grand_total": 291950
+    },
+    {
+      "date": "2023-05-19",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 434910,
+          "avg_spend": 10872.75
+        },
+        "takeout": {
+          "pax": 81,
+          "sales": 77000
+        },
+        "all_channels": {
+          "pax": 40,
+          "sales": 511910
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20130
+      },
+      "grand_total": 455040
+    },
+    {
+      "date": "2023-05-20",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 22,
+          "sales": 100670,
+          "avg_spend": 4575.909090909091
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 351750,
+          "avg_spend": 9506.756756756757
+        },
+        "takeout": {
+          "pax": 169,
+          "sales": 137300
+        },
+        "all_channels": {
+          "pax": 59,
+          "sales": 589720
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24200
+      },
+      "grand_total": 476620
+    },
+    {
+      "date": "2023-05-21",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 7,
+          "sales": 29200,
+          "avg_spend": 4171.428571428572
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 307900,
+          "avg_spend": 10996.42857142857
+        },
+        "takeout": {
+          "pax": 47,
+          "sales": 36000
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 373100
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16500
+      },
+      "grand_total": 353600
+    },
+    {
+      "date": "2023-05-22",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 21,
+          "sales": 238120,
+          "avg_spend": 11339.047619047618
+        },
+        "takeout": {
+          "pax": 43,
+          "sales": 35950
+        },
+        "all_channels": {
+          "pax": 21,
+          "sales": 274070
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 71700
+      },
+      "grand_total": 309820
+    },
+    {
+      "date": "2023-05-23",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 28,
+          "sales": 109540,
+          "avg_spend": 3912.1428571428573
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 411180,
+          "avg_spend": 10279.5
+        },
+        "takeout": {
+          "pax": 89,
+          "sales": 74350
+        },
+        "all_channels": {
+          "pax": 68,
+          "sales": 595070
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25850
+      },
+      "grand_total": 546570
+    },
+    {
+      "date": "2023-05-24",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 202510,
+          "avg_spend": 6750.333333333333
+        },
+        "takeout": {
+          "pax": 75,
+          "sales": 73200
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 275710
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 202510
+    },
+    {
+      "date": "2023-05-25",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 296080,
+          "avg_spend": 11843.2
+        },
+        "takeout": {
+          "pax": 102,
+          "sales": 99450
+        },
+        "all_channels": {
+          "pax": 25,
+          "sales": 395530
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18700
+      },
+      "grand_total": 314780
+    },
+    {
+      "date": "2023-05-26",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 28,
+          "sales": 113540,
+          "avg_spend": 4055.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 290350,
+          "avg_spend": 10753.703703703704
+        },
+        "takeout": {
+          "pax": 72,
+          "sales": 66250
+        },
+        "all_channels": {
+          "pax": 55,
+          "sales": 470140
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 13750
+      },
+      "grand_total": 417640
+    },
+    {
+      "date": "2023-05-27",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 22,
+          "sales": 90410,
+          "avg_spend": 4109.545454545455
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 314150,
+          "avg_spend": 9817.1875
+        },
+        "takeout": {
+          "pax": 209,
+          "sales": 204300
+        },
+        "all_channels": {
+          "pax": 54,
+          "sales": 608860
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 34430
+      },
+      "grand_total": 438990
+    },
+    {
+      "date": "2023-05-28",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 116520,
+          "avg_spend": 3884.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 266870,
+          "avg_spend": 10674.8
+        },
+        "takeout": {
+          "pax": 85,
+          "sales": 127300
+        },
+        "all_channels": {
+          "pax": 55,
+          "sales": 510690
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26950
+      },
+      "grand_total": 410340
+    },
+    {
+      "date": "2023-05-29",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 384900,
+          "avg_spend": 11663.636363636364
+        },
+        "takeout": {
+          "pax": 69,
+          "sales": 70750
+        },
+        "all_channels": {
+          "pax": 33,
+          "sales": 455650
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 77880
+      },
+      "grand_total": 462780
+    },
+    {
+      "date": "2023-05-30",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 343200,
+          "avg_spend": 12257.142857142857
+        },
+        "takeout": {
+          "pax": 65,
+          "sales": 49750
+        },
+        "all_channels": {
+          "pax": 28,
+          "sales": 392950
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19360
+      },
+      "grand_total": 362560
+    },
+    {
+      "date": "2023-05-31",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 394000,
+          "avg_spend": 13133.333333333334
+        },
+        "takeout": {
+          "pax": 124,
+          "sales": 124900
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 518900
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 12650
+      },
+      "grand_total": 406650
+    },
+    {
+      "date": "2023-06-01",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 355380,
+          "avg_spend": 9604.864864864865
+        },
+        "takeout": {
+          "pax": 92,
+          "sales": 96750
+        },
+        "all_channels": {
+          "pax": 37,
+          "sales": 452130
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20900
+      },
+      "grand_total": 376280
+    },
+    {
+      "date": "2023-06-02",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 328780,
+          "avg_spend": 11337.241379310344
+        },
+        "takeout": {
+          "pax": 42,
+          "sales": 40250
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 369030
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23650
+      },
+      "grand_total": 352430
+    },
+    {
+      "date": "2023-06-03",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 20,
+          "sales": 103160,
+          "avg_spend": 5158.0
+        },
+        "dinner": {
+          "pax": 39,
+          "sales": 397710,
+          "avg_spend": 10197.692307692309
+        },
+        "takeout": {
+          "pax": 35,
+          "sales": 34500
+        },
+        "all_channels": {
+          "pax": 59,
+          "sales": 535370
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26400
+      },
+      "grand_total": 527270
+    },
+    {
+      "date": "2023-06-04",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 23,
+          "sales": 75730,
+          "avg_spend": 3292.608695652174
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 345440,
+          "avg_spend": 9090.526315789473
+        },
+        "takeout": {
+          "pax": 78,
+          "sales": 71050
+        },
+        "all_channels": {
+          "pax": 61,
+          "sales": 492220
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 421170
+    },
+    {
+      "date": "2023-06-05",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 294900,
+          "avg_spend": 10168.965517241379
+        },
+        "takeout": {
+          "pax": 71,
+          "sales": 65400
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 360300
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 80500
+      },
+      "grand_total": 375400
+    },
+    {
+      "date": "2023-06-06",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 12,
+          "sales": 60340,
+          "avg_spend": 5028.333333333333
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 287410,
+          "avg_spend": 11496.4
+        },
+        "takeout": {
+          "pax": 67,
+          "sales": 56500
+        },
+        "all_channels": {
+          "pax": 37,
+          "sales": 404250
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 10450
+      },
+      "grand_total": 358200
+    },
+    {
+      "date": "2023-06-07",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 23,
+          "sales": 250270,
+          "avg_spend": 10881.304347826086
+        },
+        "takeout": {
+          "pax": 22,
+          "sales": 15350
+        },
+        "all_channels": {
+          "pax": 23,
+          "sales": 265620
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 7700
+      },
+      "grand_total": 257970
+    },
+    {
+      "date": "2023-06-08",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 313510,
+          "avg_spend": 11196.785714285714
+        },
+        "takeout": {
+          "pax": 98,
+          "sales": 85550
+        },
+        "all_channels": {
+          "pax": 28,
+          "sales": 399060
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23650
+      },
+      "grand_total": 337160
+    },
+    {
+      "date": "2023-06-09",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 22,
+          "sales": 241190,
+          "avg_spend": 10963.181818181818
+        },
+        "takeout": {
+          "pax": 1,
+          "sales": 550
+        },
+        "all_channels": {
+          "pax": 22,
+          "sales": 241740
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 11000
+      },
+      "grand_total": 252190
+    },
+    {
+      "date": "2023-06-10",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 24,
+          "sales": 87980,
+          "avg_spend": 3665.8333333333335
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 349130,
+          "avg_spend": 9975.142857142857
+        },
+        "takeout": {
+          "pax": 92,
+          "sales": 78250
+        },
+        "all_channels": {
+          "pax": 59,
+          "sales": 515360
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 32450
+      },
+      "grand_total": 469560
+    },
+    {
+      "date": "2023-06-11",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 27,
+          "sales": 107170,
+          "avg_spend": 3969.259259259259
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 344720,
+          "avg_spend": 9575.555555555555
+        },
+        "takeout": {
+          "pax": 165,
+          "sales": 143700
+        },
+        "all_channels": {
+          "pax": 63,
+          "sales": 595590
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 30470
+      },
+      "grand_total": 482360
+    },
+    {
+      "date": "2023-06-12",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 279930,
+          "avg_spend": 11197.2
+        },
+        "takeout": {
+          "pax": 107,
+          "sales": 88350
+        },
+        "all_channels": {
+          "pax": 25,
+          "sales": 368280
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 116900
+      },
+      "grand_total": 396830
+    },
+    {
+      "date": "2023-06-13",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 378620,
+          "avg_spend": 12620.666666666666
+        },
+        "takeout": {
+          "pax": 17,
+          "sales": 16500
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 395120
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19910
+      },
+      "grand_total": 398530
+    },
+    {
+      "date": "2023-06-14",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 435310,
+          "avg_spend": 12091.944444444445
+        },
+        "takeout": {
+          "pax": 42,
+          "sales": 34600
+        },
+        "all_channels": {
+          "pax": 36,
+          "sales": 469910
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25850
+      },
+      "grand_total": 461160
+    },
+    {
+      "date": "2023-06-15",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 34,
+          "sales": 400610,
+          "avg_spend": 11782.64705882353
+        },
+        "takeout": {
+          "pax": 31,
+          "sales": 38000
+        },
+        "all_channels": {
+          "pax": 34,
+          "sales": 438610
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 3850
+      },
+      "grand_total": 404460
+    },
+    {
+      "date": "2023-06-16",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 320020,
+          "avg_spend": 11035.172413793103
+        },
+        "takeout": {
+          "pax": 112,
+          "sales": 89550
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 409570
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 320020
+    },
+    {
+      "date": "2023-06-17",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 105750,
+          "avg_spend": 3646.551724137931
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 394490,
+          "avg_spend": 10661.891891891892
+        },
+        "takeout": {
+          "pax": 121,
+          "sales": 104550
+        },
+        "all_channels": {
+          "pax": 66,
+          "sales": 604790
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26950
+      },
+      "grand_total": 527190
+    },
+    {
+      "date": "2023-06-18",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 128410,
+          "avg_spend": 4427.931034482759
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 274600,
+          "avg_spend": 10984.0
+        },
+        "takeout": {
+          "pax": 79,
+          "sales": 69450
+        },
+        "all_channels": {
+          "pax": 54,
+          "sales": 472460
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 34100
+      },
+      "grand_total": 437110
+    },
+    {
+      "date": "2023-06-19",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 265240,
+          "avg_spend": 9146.206896551725
+        },
+        "takeout": {
+          "pax": 66,
+          "sales": 58550
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 323790
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 53750
+      },
+      "grand_total": 318990
+    },
+    {
+      "date": "2023-06-20",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 132000,
+          "avg_spend": 4000.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 296650,
+          "avg_spend": 10594.642857142857
+        },
+        "takeout": {
+          "pax": 92,
+          "sales": 74700
+        },
+        "all_channels": {
+          "pax": 61,
+          "sales": 503350
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20900
+      },
+      "grand_total": 449550
+    },
+    {
+      "date": "2023-06-21",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 438240,
+          "avg_spend": 12521.142857142857
+        },
+        "takeout": {
+          "pax": 82,
+          "sales": 73000
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 511240
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19250
+      },
+      "grand_total": 457490
+    },
+    {
+      "date": "2023-06-22",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 354930,
+          "avg_spend": 10140.857142857143
+        },
+        "takeout": {
+          "pax": 61,
+          "sales": 48600
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 403530
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 28380
+      },
+      "grand_total": 383310
+    },
+    {
+      "date": "2023-06-23",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 372030,
+          "avg_spend": 12828.620689655172
+        },
+        "takeout": {
+          "pax": 52,
+          "sales": 44200
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 416230
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17490
+      },
+      "grand_total": 389520
+    },
+    {
+      "date": "2023-06-24",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 30,
+          "sales": 108750,
+          "avg_spend": 3625.0
+        },
+        "dinner": {
+          "pax": 45,
+          "sales": 567860,
+          "avg_spend": 12619.111111111111
+        },
+        "takeout": {
+          "pax": 126,
+          "sales": 100450
+        },
+        "all_channels": {
+          "pax": 75,
+          "sales": 777060
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25850
+      },
+      "grand_total": 702460
+    },
+    {
+      "date": "2023-06-25",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 137040,
+          "avg_spend": 4725.517241379311
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 421910,
+          "avg_spend": 11102.894736842105
+        },
+        "takeout": {
+          "pax": 166,
+          "sales": 151050
+        },
+        "all_channels": {
+          "pax": 67,
+          "sales": 710000
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 32120
+      },
+      "grand_total": 591070
+    },
+    {
+      "date": "2023-06-26",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 34,
+          "sales": 382890,
+          "avg_spend": 11261.470588235294
+        },
+        "takeout": {
+          "pax": 84,
+          "sales": 74500
+        },
+        "all_channels": {
+          "pax": 34,
+          "sales": 457390
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23100
+      },
+      "grand_total": 405990
+    },
+    {
+      "date": "2023-06-27",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 332940,
+          "avg_spend": 10740.0
+        },
+        "takeout": {
+          "pax": 76,
+          "sales": 76850
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 409790
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 88410
+      },
+      "grand_total": 421350
+    },
+    {
+      "date": "2023-06-28",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 377820,
+          "avg_spend": 9445.5
+        },
+        "takeout": {
+          "pax": 51,
+          "sales": 52750
+        },
+        "all_channels": {
+          "pax": 40,
+          "sales": 430570
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24310
+      },
+      "grand_total": 402130
+    },
+    {
+      "date": "2023-06-29",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 23,
+          "sales": 278810,
+          "avg_spend": 12122.173913043478
+        },
+        "takeout": {
+          "pax": 17,
+          "sales": 19200
+        },
+        "all_channels": {
+          "pax": 23,
+          "sales": 298010
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 278810
+    },
+    {
+      "date": "2023-06-30",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 450310,
+          "avg_spend": 11257.75
+        },
+        "takeout": {
+          "pax": 26,
+          "sales": 22850
+        },
+        "all_channels": {
+          "pax": 40,
+          "sales": 473160
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22000
+      },
+      "grand_total": 472310
+    },
+    {
+      "date": "2023-07-01",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 168295,
+          "avg_spend": 4548.513513513513
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 306020,
+          "avg_spend": 10552.413793103447
+        },
+        "takeout": {
+          "pax": 36,
+          "sales": 35500
+        },
+        "all_channels": {
+          "pax": 66,
+          "sales": 509815
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23650
+      },
+      "grand_total": 497965
+    },
+    {
+      "date": "2023-07-02",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 105430,
+          "avg_spend": 3635.5172413793102
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 317020,
+          "avg_spend": 9906.875
+        },
+        "takeout": {
+          "pax": 99,
+          "sales": 93550
+        },
+        "all_channels": {
+          "pax": 61,
+          "sales": 516000
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 33000
+      },
+      "grand_total": 455450
+    },
+    {
+      "date": "2023-07-03",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 313670,
+          "avg_spend": 10118.387096774193
+        },
+        "takeout": {
+          "pax": 60,
+          "sales": 50700
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 364370
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 88160
+      },
+      "grand_total": 401830
+    },
+    {
+      "date": "2023-07-04",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 325840,
+          "avg_spend": 10510.967741935483
+        },
+        "takeout": {
+          "pax": 99,
+          "sales": 84750
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 410590
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24310
+      },
+      "grand_total": 350150
+    },
+    {
+      "date": "2023-07-05",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 260110,
+          "avg_spend": 10404.4
+        },
+        "takeout": {
+          "pax": 68,
+          "sales": 63740
+        },
+        "all_channels": {
+          "pax": 25,
+          "sales": 323850
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22000
+      },
+      "grand_total": 282110
+    },
+    {
+      "date": "2023-07-06",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 24,
+          "sales": 256580,
+          "avg_spend": 10690.833333333334
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 4850
+        },
+        "all_channels": {
+          "pax": 24,
+          "sales": 261430
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25410
+      },
+      "grand_total": 281990
+    },
+    {
+      "date": "2023-07-07",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 42,
+          "sales": 455040,
+          "avg_spend": 10834.285714285714
+        },
+        "takeout": {
+          "pax": 90,
+          "sales": 74240
+        },
+        "all_channels": {
+          "pax": 42,
+          "sales": 529280
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 15620
+      },
+      "grand_total": 470660
+    },
+    {
+      "date": "2023-07-08",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 45,
+          "sales": 117970,
+          "avg_spend": 2621.5555555555557
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 443490,
+          "avg_spend": 11670.78947368421
+        },
+        "takeout": {
+          "pax": 115,
+          "sales": 116030
+        },
+        "all_channels": {
+          "pax": 83,
+          "sales": 677490
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17710
+      },
+      "grand_total": 579170
+    },
+    {
+      "date": "2023-07-09",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 24,
+          "sales": 87270,
+          "avg_spend": 3636.25
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 319210,
+          "avg_spend": 10297.09677419355
+        },
+        "takeout": {
+          "pax": 123,
+          "sales": 113760
+        },
+        "all_channels": {
+          "pax": 55,
+          "sales": 520240
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25410
+      },
+      "grand_total": 431890
+    },
+    {
+      "date": "2023-07-10",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 354640,
+          "avg_spend": 11082.5
+        },
+        "takeout": {
+          "pax": 77,
+          "sales": 74300
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 428940
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 85050
+      },
+      "grand_total": 439690
+    },
+    {
+      "date": "2023-07-11",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 273300,
+          "avg_spend": 10932.0
+        },
+        "takeout": {
+          "pax": 30,
+          "sales": 26450
+        },
+        "all_channels": {
+          "pax": 25,
+          "sales": 299750
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23100
+      },
+      "grand_total": 296400
+    },
+    {
+      "date": "2023-07-12",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 344050,
+          "avg_spend": 11863.793103448275
+        },
+        "takeout": {
+          "pax": 42,
+          "sales": 32650
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 376700
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19250
+      },
+      "grand_total": 363300
+    },
+    {
+      "date": "2023-07-13",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 348420,
+          "avg_spend": 12443.57142857143
+        },
+        "takeout": {
+          "pax": 59,
+          "sales": 57350
+        },
+        "all_channels": {
+          "pax": 28,
+          "sales": 405770
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21450
+      },
+      "grand_total": 369870
+    },
+    {
+      "date": "2023-07-14",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 423230,
+          "avg_spend": 11137.631578947368
+        },
+        "takeout": {
+          "pax": 67,
+          "sales": 55150
+        },
+        "all_channels": {
+          "pax": 38,
+          "sales": 478380
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17050
+      },
+      "grand_total": 440280
+    },
+    {
+      "date": "2023-07-15",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 19,
+          "sales": 83680,
+          "avg_spend": 4404.210526315789
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 376330,
+          "avg_spend": 10453.611111111111
+        },
+        "takeout": {
+          "pax": 16,
+          "sales": 12930
+        },
+        "all_channels": {
+          "pax": 55,
+          "sales": 472940
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 31900
+      },
+      "grand_total": 491910
+    },
+    {
+      "date": "2023-07-16",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 39,
+          "sales": 141710,
+          "avg_spend": 3633.5897435897436
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 455260,
+          "avg_spend": 13795.757575757576
+        },
+        "takeout": {
+          "pax": 135,
+          "sales": 120800
+        },
+        "all_channels": {
+          "pax": 72,
+          "sales": 717770
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 31240
+      },
+      "grand_total": 628210
+    },
+    {
+      "date": "2023-07-17",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 17,
+          "sales": 96770,
+          "avg_spend": 5692.35294117647
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 296230,
+          "avg_spend": 8228.611111111111
+        },
+        "takeout": {
+          "pax": 68,
+          "sales": 60300
+        },
+        "all_channels": {
+          "pax": 53,
+          "sales": 453300
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 10420
+      },
+      "grand_total": 403420
+    },
+    {
+      "date": "2023-07-18",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 271370,
+          "avg_spend": 10050.74074074074
+        },
+        "takeout": {
+          "pax": 51,
+          "sales": 54600
+        },
+        "all_channels": {
+          "pax": 27,
+          "sales": 325970
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 54550
+      },
+      "grand_total": 325920
+    },
+    {
+      "date": "2023-07-19",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 313310,
+          "avg_spend": 10106.774193548386
+        },
+        "takeout": {
+          "pax": 76,
+          "sales": 64400
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 377710
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18700
+      },
+      "grand_total": 332010
+    },
+    {
+      "date": "2023-07-20",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 353520,
+          "avg_spend": 11784.0
+        },
+        "takeout": {
+          "pax": 78,
+          "sales": 71800
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 425320
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 12650
+      },
+      "grand_total": 366170
+    },
+    {
+      "date": "2023-07-21",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 311850,
+          "avg_spend": 10395.0
+        },
+        "takeout": {
+          "pax": 85,
+          "sales": 94850
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 406700
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 30470
+      },
+      "grand_total": 342320
+    },
+    {
+      "date": "2023-07-22",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 121780,
+          "avg_spend": 3690.3030303030305
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 342150,
+          "avg_spend": 10368.181818181818
+        },
+        "takeout": {
+          "pax": 130,
+          "sales": 117350
+        },
+        "all_channels": {
+          "pax": 66,
+          "sales": 581280
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 28490
+      },
+      "grand_total": 492420
+    },
+    {
+      "date": "2023-07-23",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 152580,
+          "avg_spend": 4768.125
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 324430,
+          "avg_spend": 12015.925925925925
+        },
+        "takeout": {
+          "pax": 159,
+          "sales": 137550
+        },
+        "all_channels": {
+          "pax": 59,
+          "sales": 614560
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 28050
+      },
+      "grand_total": 505060
+    },
+    {
+      "date": "2023-07-24",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 307260,
+          "avg_spend": 9601.875
+        },
+        "takeout": {
+          "pax": 64,
+          "sales": 58250
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 365510
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 103200
+      },
+      "grand_total": 410460
+    },
+    {
+      "date": "2023-07-25",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 309900,
+          "avg_spend": 10330.0
+        },
+        "takeout": {
+          "pax": 37,
+          "sales": 32150
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 342050
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18260
+      },
+      "grand_total": 328160
+    },
+    {
+      "date": "2023-07-26",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 322090,
+          "avg_spend": 12388.076923076924
+        },
+        "takeout": {
+          "pax": 119,
+          "sales": 120300
+        },
+        "all_channels": {
+          "pax": 26,
+          "sales": 442390
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 339690
+    },
+    {
+      "date": "2023-07-27",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 281460,
+          "avg_spend": 10424.444444444445
+        },
+        "takeout": {
+          "pax": 61,
+          "sales": 72700
+        },
+        "all_channels": {
+          "pax": 27,
+          "sales": 354160
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 12650
+      },
+      "grand_total": 294110
+    },
+    {
+      "date": "2023-07-28",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 427670,
+          "avg_spend": 12219.142857142857
+        },
+        "takeout": {
+          "pax": 120,
+          "sales": 128000
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 555670
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18150
+      },
+      "grand_total": 445820
+    },
+    {
+      "date": "2023-07-29",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 32,
+          "sales": 107840,
+          "avg_spend": 3370.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 333010,
+          "avg_spend": 11100.333333333334
+        },
+        "takeout": {
+          "pax": 124,
+          "sales": 110700
+        },
+        "all_channels": {
+          "pax": 62,
+          "sales": 551550
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24530
+      },
+      "grand_total": 465380
+    },
+    {
+      "date": "2023-07-30",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 20,
+          "sales": 60240,
+          "avg_spend": 3012.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 401100,
+          "avg_spend": 12938.709677419354
+        },
+        "takeout": {
+          "pax": 69,
+          "sales": 69150
+        },
+        "all_channels": {
+          "pax": 51,
+          "sales": 530490
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22880
+      },
+      "grand_total": 484220
+    },
+    {
+      "date": "2023-07-31",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 392280,
+          "avg_spend": 11208.0
+        },
+        "takeout": {
+          "pax": 42,
+          "sales": 42050
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 434330
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 66150
+      },
+      "grand_total": 458430
+    },
+    {
+      "date": "2023-08-01",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 286090,
+          "avg_spend": 10595.925925925925
+        },
+        "takeout": {
+          "pax": 97,
+          "sales": 95500
+        },
+        "all_channels": {
+          "pax": 27,
+          "sales": 381590
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19800
+      },
+      "grand_total": 305890
+    },
+    {
+      "date": "2023-08-02",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 319120,
+          "avg_spend": 9972.5
+        },
+        "takeout": {
+          "pax": 76,
+          "sales": 78200
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 397320
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20350
+      },
+      "grand_total": 339470
+    },
+    {
+      "date": "2023-08-03",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 261450,
+          "avg_spend": 9015.51724137931
+        },
+        "takeout": {
+          "pax": 61,
+          "sales": 64700
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 326150
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 14850
+      },
+      "grand_total": 276300
+    },
+    {
+      "date": "2023-08-04",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 288710,
+          "avg_spend": 10692.962962962964
+        },
+        "takeout": {
+          "pax": 37,
+          "sales": 39800
+        },
+        "all_channels": {
+          "pax": 27,
+          "sales": 328510
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 14850
+      },
+      "grand_total": 303560
+    },
+    {
+      "date": "2023-08-05",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 19,
+          "sales": 81620,
+          "avg_spend": 4295.789473684211
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 336490,
+          "avg_spend": 11216.333333333334
+        },
+        "takeout": {
+          "pax": 42,
+          "sales": 40650
+        },
+        "all_channels": {
+          "pax": 49,
+          "sales": 458760
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 34980
+      },
+      "grand_total": 453090
+    },
+    {
+      "date": "2023-08-06",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 15,
+          "sales": 62220,
+          "avg_spend": 4148.0
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 353630,
+          "avg_spend": 10716.060606060606
+        },
+        "takeout": {
+          "pax": 17,
+          "sales": 15950
+        },
+        "all_channels": {
+          "pax": 48,
+          "sales": 431800
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22550
+      },
+      "grand_total": 438400
+    },
+    {
+      "date": "2023-08-07",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 40,
+          "sales": 393180,
+          "avg_spend": 9829.5
+        },
+        "takeout": {
+          "pax": 60,
+          "sales": 65400
+        },
+        "all_channels": {
+          "pax": 40,
+          "sales": 458580
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 79780
+      },
+      "grand_total": 472960
+    },
+    {
+      "date": "2023-08-08",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 34,
+          "sales": 392720,
+          "avg_spend": 11550.588235294117
+        },
+        "takeout": {
+          "pax": 62,
+          "sales": 75800
+        },
+        "all_channels": {
+          "pax": 34,
+          "sales": 468520
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23650
+      },
+      "grand_total": 416370
+    },
+    {
+      "date": "2023-08-09",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 335090,
+          "avg_spend": 10809.354838709678
+        },
+        "takeout": {
+          "pax": 101,
+          "sales": 95200
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 430290
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26840
+      },
+      "grand_total": 361930
+    },
+    {
+      "date": "2023-08-10",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 311210,
+          "avg_spend": 10373.666666666666
+        },
+        "takeout": {
+          "pax": 80,
+          "sales": 89900
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 401110
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 47900
+      },
+      "grand_total": 359110
+    },
+    {
+      "date": "2023-08-11",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 39,
+          "sales": 122630,
+          "avg_spend": 3144.358974358974
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 347470,
+          "avg_spend": 11208.709677419354
+        },
+        "takeout": {
+          "pax": 138,
+          "sales": 150050
+        },
+        "all_channels": {
+          "pax": 70,
+          "sales": 620150
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 31680
+      },
+      "grand_total": 501780
+    },
+    {
+      "date": "2023-08-12",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 38,
+          "sales": 128490,
+          "avg_spend": 3381.315789473684
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 333060,
+          "avg_spend": 10092.727272727272
+        },
+        "takeout": {
+          "pax": 125,
+          "sales": 111650
+        },
+        "all_channels": {
+          "pax": 71,
+          "sales": 573200
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 29150
+      },
+      "grand_total": 490700
+    },
+    {
+      "date": "2023-08-13",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 132660,
+          "avg_spend": 3585.4054054054054
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 379870,
+          "avg_spend": 9996.578947368422
+        },
+        "takeout": {
+          "pax": 135,
+          "sales": 136900
+        },
+        "all_channels": {
+          "pax": 75,
+          "sales": 649430
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 28710
+      },
+      "grand_total": 541240
+    },
+    {
+      "date": "2023-08-14",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 403590,
+          "avg_spend": 11531.142857142857
+        },
+        "takeout": {
+          "pax": 141,
+          "sales": 134900
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 538490
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16500
+      },
+      "grand_total": 420090
+    },
+    {
+      "date": "2023-08-15",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 318330,
+          "avg_spend": 10611.0
+        },
+        "takeout": {
+          "pax": 60,
+          "sales": 60250
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 378580
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 67250
+      },
+      "grand_total": 385580
+    },
+    {
+      "date": "2023-08-16",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 277940,
+          "avg_spend": 11117.6
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 15100
+        },
+        "all_channels": {
+          "pax": 25,
+          "sales": 293040
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 11550
+      },
+      "grand_total": 289490
+    },
+    {
+      "date": "2023-08-17",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 303740,
+          "avg_spend": 9798.064516129032
+        },
+        "takeout": {
+          "pax": 32,
+          "sales": 27450
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 331190
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21560
+      },
+      "grand_total": 325300
+    },
+    {
+      "date": "2023-08-18",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 345560,
+          "avg_spend": 9339.45945945946
+        },
+        "takeout": {
+          "pax": 104,
+          "sales": 113400
+        },
+        "all_channels": {
+          "pax": 37,
+          "sales": 458960
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 363160
+    },
+    {
+      "date": "2023-08-19",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 34,
+          "sales": 119310,
+          "avg_spend": 3509.1176470588234
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 396590,
+          "avg_spend": 11331.142857142857
+        },
+        "takeout": {
+          "pax": 67,
+          "sales": 75500
+        },
+        "all_channels": {
+          "pax": 69,
+          "sales": 591400
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18700
+      },
+      "grand_total": 534600
+    },
+    {
+      "date": "2023-08-20",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 31,
+          "sales": 100320,
+          "avg_spend": 3236.1290322580644
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 361870,
+          "avg_spend": 11673.225806451614
+        },
+        "takeout": {
+          "pax": 66,
+          "sales": 72400
+        },
+        "all_channels": {
+          "pax": 62,
+          "sales": 534590
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 14850
+      },
+      "grand_total": 477040
+    },
+    {
+      "date": "2023-08-21",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 355100,
+          "avg_spend": 9863.888888888889
+        },
+        "takeout": {
+          "pax": 102,
+          "sales": 93400
+        },
+        "all_channels": {
+          "pax": 36,
+          "sales": 448500
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 41600
+      },
+      "grand_total": 396700
+    },
+    {
+      "date": "2023-08-22",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 344310,
+          "avg_spend": 11477.0
+        },
+        "takeout": {
+          "pax": 91,
+          "sales": 97250
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 441560
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16610
+      },
+      "grand_total": 360920
+    },
+    {
+      "date": "2023-08-23",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 401390,
+          "avg_spend": 10562.894736842105
+        },
+        "takeout": {
+          "pax": 71,
+          "sales": 80750
+        },
+        "all_channels": {
+          "pax": 38,
+          "sales": 482140
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 28930
+      },
+      "grand_total": 430320
+    },
+    {
+      "date": "2023-08-24",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 42,
+          "sales": 391390,
+          "avg_spend": 9318.809523809523
+        },
+        "takeout": {
+          "pax": 32,
+          "sales": 36400
+        },
+        "all_channels": {
+          "pax": 42,
+          "sales": 427790
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25300
+      },
+      "grand_total": 416690
+    },
+    {
+      "date": "2023-08-25",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 314720,
+          "avg_spend": 9835.0
+        },
+        "takeout": {
+          "pax": 81,
+          "sales": 96400
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 411120
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 30030
+      },
+      "grand_total": 344750
+    },
+    {
+      "date": "2023-08-26",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 21,
+          "sales": 83800,
+          "avg_spend": 3990.4761904761904
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 348690,
+          "avg_spend": 11248.064516129032
+        },
+        "takeout": {
+          "pax": 11,
+          "sales": 10500
+        },
+        "all_channels": {
+          "pax": 52,
+          "sales": 442990
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 26840
+      },
+      "grand_total": 459330
+    },
+    {
+      "date": "2023-08-27",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 16,
+          "sales": 73520,
+          "avg_spend": 4595.0
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 295820,
+          "avg_spend": 11377.692307692309
+        },
+        "takeout": {
+          "pax": 2,
+          "sales": 800
+        },
+        "all_channels": {
+          "pax": 42,
+          "sales": 370140
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23100
+      },
+      "grand_total": 392440
+    },
+    {
+      "date": "2023-08-28",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 35,
+          "sales": 324050,
+          "avg_spend": 9258.57142857143
+        },
+        "takeout": {
+          "pax": 64,
+          "sales": 62300
+        },
+        "all_channels": {
+          "pax": 35,
+          "sales": 386350
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 48760
+      },
+      "grand_total": 372810
+    },
+    {
+      "date": "2023-08-29",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 328070,
+          "avg_spend": 11716.785714285714
+        },
+        "takeout": {
+          "pax": 94,
+          "sales": 80750
+        },
+        "all_channels": {
+          "pax": 28,
+          "sales": 408820
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20350
+      },
+      "grand_total": 348420
+    },
+    {
+      "date": "2023-08-30",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 312450,
+          "avg_spend": 10415.0
+        },
+        "takeout": {
+          "pax": 26,
+          "sales": 25400
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 337850
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19800
+      },
+      "grand_total": 332250
+    },
+    {
+      "date": "2023-08-31",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 337550,
+          "avg_spend": 11639.655172413793
+        },
+        "takeout": {
+          "pax": 10,
+          "sales": 4600
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 342150
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19910
+      },
+      "grand_total": 357460
+    },
+    {
+      "date": "2023-09-01",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 24,
+          "sales": 276680,
+          "avg_spend": 11528.333333333334
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 24,
+          "sales": 276680
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16500
+      },
+      "grand_total": 293180
+    },
+    {
+      "date": "2023-09-02",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 107450,
+          "avg_spend": 3256.060606060606
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 368520,
+          "avg_spend": 12707.586206896553
+        },
+        "takeout": {
+          "pax": 103,
+          "sales": 94400
+        },
+        "all_channels": {
+          "pax": 62,
+          "sales": 570370
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25630
+      },
+      "grand_total": 501600
+    },
+    {
+      "date": "2023-09-03",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 28,
+          "sales": 167180,
+          "avg_spend": 5970.714285714285
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 296070,
+          "avg_spend": 9869.0
+        },
+        "takeout": {
+          "pax": 160,
+          "sales": 144700
+        },
+        "all_channels": {
+          "pax": 58,
+          "sales": 607950
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20900
+      },
+      "grand_total": 484150
+    },
+    {
+      "date": "2023-09-04",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 410040,
+          "avg_spend": 15186.666666666666
+        },
+        "takeout": {
+          "pax": 54,
+          "sales": 44150
+        },
+        "all_channels": {
+          "pax": 27,
+          "sales": 454190
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 0
+      },
+      "grand_total": 410040
+    },
+    {
+      "date": "2023-09-05",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 39,
+          "sales": 419530,
+          "avg_spend": 10757.179487179486
+        },
+        "takeout": {
+          "pax": 55,
+          "sales": 44850
+        },
+        "all_channels": {
+          "pax": 39,
+          "sales": 464380
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22550
+      },
+      "grand_total": 442080
+    },
+    {
+      "date": "2023-09-06",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 28,
+          "sales": 323860,
+          "avg_spend": 11566.42857142857
+        },
+        "takeout": {
+          "pax": 41,
+          "sales": 31350
+        },
+        "all_channels": {
+          "pax": 28,
+          "sales": 355210
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 23100
+      },
+      "grand_total": 346960
+    },
+    {
+      "date": "2023-09-07",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 346480,
+          "avg_spend": 11176.774193548386
+        },
+        "takeout": {
+          "pax": 32,
+          "sales": 37600
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 384080
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18150
+      },
+      "grand_total": 364630
+    },
+    {
+      "date": "2023-09-08",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 370950,
+          "avg_spend": 10025.675675675675
+        },
+        "takeout": {
+          "pax": 63,
+          "sales": 51050
+        },
+        "all_channels": {
+          "pax": 37,
+          "sales": 422000
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22000
+      },
+      "grand_total": 392950
+    },
+    {
+      "date": "2023-09-09",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 26,
+          "sales": 89820,
+          "avg_spend": 3454.6153846153848
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 290100,
+          "avg_spend": 10744.444444444445
+        },
+        "takeout": {
+          "pax": 81,
+          "sales": 67950
+        },
+        "all_channels": {
+          "pax": 53,
+          "sales": 447870
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19800
+      },
+      "grand_total": 399720
+    },
+    {
+      "date": "2023-09-10",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 33,
+          "sales": 131860,
+          "avg_spend": 3995.757575757576
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 328900,
+          "avg_spend": 12181.481481481482
+        },
+        "takeout": {
+          "pax": 146,
+          "sales": 118800
+        },
+        "all_channels": {
+          "pax": 60,
+          "sales": 579560
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 4950
+      },
+      "grand_total": 465710
+    },
+    {
+      "date": "2023-09-11",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 275720,
+          "avg_spend": 9190.666666666666
+        },
+        "takeout": {
+          "pax": 47,
+          "sales": 54800
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 330520
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 22000
+      },
+      "grand_total": 297720
+    },
+    {
+      "date": "2023-09-12",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 18,
+          "sales": 209790,
+          "avg_spend": 11655.0
+        },
+        "takeout": {
+          "pax": 0,
+          "sales": 0
+        },
+        "all_channels": {
+          "pax": 18,
+          "sales": 209790
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16610
+      },
+      "grand_total": 226400
+    },
+    {
+      "date": "2023-09-13",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 325030,
+          "avg_spend": 10834.333333333334
+        },
+        "takeout": {
+          "pax": 52,
+          "sales": 45750
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 370780
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 14300
+      },
+      "grand_total": 339330
+    },
+    {
+      "date": "2023-09-14",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 37,
+          "sales": 61050,
+          "avg_spend": 1650.0
+        },
+        "dinner": {
+          "pax": 25,
+          "sales": 276070,
+          "avg_spend": 11042.8
+        },
+        "takeout": {
+          "pax": 9,
+          "sales": 9800
+        },
+        "all_channels": {
+          "pax": 62,
+          "sales": 346920
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 11440
+      },
+      "grand_total": 348560
+    },
+    {
+      "date": "2023-09-15",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 29,
+          "sales": 106240,
+          "avg_spend": 3663.448275862069
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 432360,
+          "avg_spend": 11685.405405405405
+        },
+        "takeout": {
+          "pax": 64,
+          "sales": 51250
+        },
+        "all_channels": {
+          "pax": 66,
+          "sales": 589850
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 25080
+      },
+      "grand_total": 563680
+    },
+    {
+      "date": "2023-09-16",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 101800,
+          "avg_spend": 4072.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 324050,
+          "avg_spend": 10453.225806451614
+        },
+        "takeout": {
+          "pax": 125,
+          "sales": 108550
+        },
+        "all_channels": {
+          "pax": 56,
+          "sales": 534400
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 19800
+      },
+      "grand_total": 445650
+    },
+    {
+      "date": "2023-09-17",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 44,
+          "sales": 127370,
+          "avg_spend": 2894.7727272727275
+        },
+        "dinner": {
+          "pax": 27,
+          "sales": 293060,
+          "avg_spend": 10854.074074074075
+        },
+        "takeout": {
+          "pax": 110,
+          "sales": 109550
+        },
+        "all_channels": {
+          "pax": 71,
+          "sales": 529980
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 3300
+      },
+      "grand_total": 423730
+    },
+    {
+      "date": "2023-09-18",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 25,
+          "sales": 119290,
+          "avg_spend": 4771.6
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 336740,
+          "avg_spend": 10862.58064516129
+        },
+        "takeout": {
+          "pax": 61,
+          "sales": 55250
+        },
+        "all_channels": {
+          "pax": 56,
+          "sales": 511280
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 67680
+      },
+      "grand_total": 523710
+    },
+    {
+      "date": "2023-09-19",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 386690,
+          "avg_spend": 12473.870967741936
+        },
+        "takeout": {
+          "pax": 26,
+          "sales": 20650
+        },
+        "all_channels": {
+          "pax": 31,
+          "sales": 407340
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 21340
+      },
+      "grand_total": 408030
+    },
+    {
+      "date": "2023-09-20",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 270780,
+          "avg_spend": 9337.241379310344
+        },
+        "takeout": {
+          "pax": 58,
+          "sales": 57050
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 327830
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24530
+      },
+      "grand_total": 295310
+    },
+    {
+      "date": "2023-09-21",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 32,
+          "sales": 391040,
+          "avg_spend": 12220.0
+        },
+        "takeout": {
+          "pax": 48,
+          "sales": 46500
+        },
+        "all_channels": {
+          "pax": 32,
+          "sales": 437540
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 18150
+      },
+      "grand_total": 409190
+    },
+    {
+      "date": "2023-09-22",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 36,
+          "sales": 427000,
+          "avg_spend": 11861.111111111111
+        },
+        "takeout": {
+          "pax": 85,
+          "sales": 56050
+        },
+        "all_channels": {
+          "pax": 36,
+          "sales": 483050
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20350
+      },
+      "grand_total": 447350
+    },
+    {
+      "date": "2023-09-23",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 20,
+          "sales": 84450,
+          "avg_spend": 4222.5
+        },
+        "dinner": {
+          "pax": 37,
+          "sales": 479900,
+          "avg_spend": 12970.27027027027
+        },
+        "takeout": {
+          "pax": 101,
+          "sales": 80500
+        },
+        "all_channels": {
+          "pax": 57,
+          "sales": 644850
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 27500
+      },
+      "grand_total": 591850
+    },
+    {
+      "date": "2023-09-24",
+      "weekday": 6,
+      "channels": {
+        "lunch": {
+          "pax": 35,
+          "sales": 133660,
+          "avg_spend": 3818.8571428571427
+        },
+        "dinner": {
+          "pax": 33,
+          "sales": 343680,
+          "avg_spend": 10414.545454545454
+        },
+        "takeout": {
+          "pax": 189,
+          "sales": 160050
+        },
+        "all_channels": {
+          "pax": 68,
+          "sales": 637390
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 33000
+      },
+      "grand_total": 510340
+    },
+    {
+      "date": "2023-09-25",
+      "weekday": 0,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 29,
+          "sales": 300600,
+          "avg_spend": 10365.51724137931
+        },
+        "takeout": {
+          "pax": 73,
+          "sales": 47600
+        },
+        "all_channels": {
+          "pax": 29,
+          "sales": 348200
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 99950
+      },
+      "grand_total": 400550
+    },
+    {
+      "date": "2023-09-26",
+      "weekday": 1,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 299230,
+          "avg_spend": 9974.333333333334
+        },
+        "takeout": {
+          "pax": 36,
+          "sales": 22250
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 321480
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17600
+      },
+      "grand_total": 316830
+    },
+    {
+      "date": "2023-09-27",
+      "weekday": 2,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 30,
+          "sales": 354140,
+          "avg_spend": 11804.666666666666
+        },
+        "takeout": {
+          "pax": 66,
+          "sales": 49550
+        },
+        "all_channels": {
+          "pax": 30,
+          "sales": 403690
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 17380
+      },
+      "grand_total": 371520
+    },
+    {
+      "date": "2023-09-28",
+      "weekday": 3,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 26,
+          "sales": 338450,
+          "avg_spend": 13017.307692307691
+        },
+        "takeout": {
+          "pax": 13,
+          "sales": 6300
+        },
+        "all_channels": {
+          "pax": 26,
+          "sales": 344750
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 16500
+      },
+      "grand_total": 354950
+    },
+    {
+      "date": "2023-09-29",
+      "weekday": 4,
+      "channels": {
+        "lunch": {
+          "pax": 0,
+          "sales": 0,
+          "avg_spend": 0.0
+        },
+        "dinner": {
+          "pax": 38,
+          "sales": 395400,
+          "avg_spend": 10405.263157894737
+        },
+        "takeout": {
+          "pax": 48,
+          "sales": 44150
+        },
+        "all_channels": {
+          "pax": 38,
+          "sales": 439550
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 20350
+      },
+      "grand_total": 415750
+    },
+    {
+      "date": "2023-09-30",
+      "weekday": 5,
+      "channels": {
+        "lunch": {
+          "pax": 19,
+          "sales": 56350,
+          "avg_spend": 2965.7894736842104
+        },
+        "dinner": {
+          "pax": 31,
+          "sales": 356780,
+          "avg_spend": 11509.032258064517
+        },
+        "takeout": {
+          "pax": 111,
+          "sales": 79300
+        },
+        "all_channels": {
+          "pax": 50,
+          "sales": 492430
+        }
+      },
+      "extras": {
+        "seat_lock_flower": 24310
+      },
+      "grand_total": 437440
+    }
+  ]
+}

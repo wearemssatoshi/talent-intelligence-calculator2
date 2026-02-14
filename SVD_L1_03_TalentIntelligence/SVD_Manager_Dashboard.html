@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD Manager Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <!-- Replaced html2pdf with specific libraries for better control -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --primary-color: #1E3A5F;
+            --primary-dark: #0F2A4A;
+            --secondary-color: #C9A962;
+            --accent-color: #D4AF37;
+            --background-color: #FAFAFA;
+            --text-color: #1e293b;
+            --light-text-color: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #FFFFFF;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --gold-glow: 0 0 40px rgba(201, 169, 98, 0.3);
+            --premium-gradient: linear-gradient(135deg, #1E3A5F 0%, #0F2A4A 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            background-attachment: fixed;
+            color: var(--text-color);
+            margin: 0;
+            padding: 2rem;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(184, 153, 92, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(15, 23, 42, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* --- SNAPSHOT CAPTURE STYLES --- */
+        /* These styles ensure the element looks good when captured by html2canvas */
+        #team-simulator {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+        }
+
+        /* PDF Optimization: Beautiful 2-Tier Layout */
+        #team-simulator.pdf-mode {
+            padding: 1.5rem !important;
+            background: #ffffff !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* PDF mode: Make gradient text solid color for better rendering */
+        #team-simulator.pdf-mode #team-momentum-score {
+            background: none !important;
+            -webkit-text-fill-color: #B8995C !important;
+            color: #B8995C !important;
+        }
+
+        #team-simulator.pdf-mode #total-power-score {
+            background: none !important;
+            -webkit-text-fill-color: #0f172a !important;
+            color: #0f172a !important;
+        }
+
+        /* Title area - centered and prominent */
+        #team-simulator.pdf-mode>div:first-child {
+            text-align: center;
+            margin-bottom: 1rem !important;
+        }
+
+        /* Main heading - compact */
+        #team-simulator.pdf-mode>h2 {
+            font-size: 2rem !important;
+            margin: 0.5rem 0 1rem 0 !important;
+        }
+
+        /* TIER 1: Metrics and Chart - horizontal layout */
+        #team-simulator.pdf-mode>div:last-child {
+            display: grid !important;
+            grid-template-columns: 2fr 1fr !important;
+            grid-template-rows: auto auto !important;
+            gap: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+
+        /* Member list - spans full width at bottom */
+        #team-simulator.pdf-mode>div:last-child>div:first-child {
+            grid-column: 1 / -1 !important;
+            grid-row: 2 !important;
+        }
+
+        /* Metrics - left side of top row */
+        #team-simulator.pdf-mode>div:last-child>div:nth-child(2) {
+            grid-column: 1 !important;
+            grid-row: 1 !important;
+        }
+
+        /* Chart - right side of top row */
+        #team-simulator.pdf-mode>div:last-child>div:nth-child(3) {
+            grid-column: 2 !important;
+            grid-row: 1 !important;
+        }
+
+        /* Member list - 3 column grid */
+        #team-simulator.pdf-mode #team-list {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 0.4rem !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        #team-simulator.pdf-mode #team-list li {
+            padding: 0.3rem 0.5rem !important;
+            margin: 0 !important;
+            font-size: 0.75rem !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Compact headings */
+        #team-simulator.pdf-mode h3 {
+            font-size: 1rem !important;
+            margin: 0 0 0.5rem 0 !important;
+        }
+
+        /* Compact metrics - larger and more readable */
+        #team-simulator.pdf-mode #team-momentum-score,
+        #team-simulator.pdf-mode #total-power-score {
+            font-size: 2.5rem !important;
+            line-height: 1.1 !important;
+        }
+
+        /* Compact advice section */
+        #team-simulator.pdf-mode #team-advice {
+            font-size: 0.7rem !important;
+            padding: 0.5rem !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Skill bars for PDF - more compact and readable */
+        #team-simulator.pdf-mode #skill-bars-container {
+            gap: 0.6rem !important;
+        }
+
+        #team-simulator.pdf-mode .skill-bar-row span {
+            font-size: 0.75rem !important;
+        }
+
+        #team-simulator.pdf-mode #skill-bars-container div[style*="height: 10px"] {
+            height: 8px !important;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 8px 32px rgba(15, 42, 74, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 30% 0%, rgba(201, 169, 98, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .header-logo {
+            width: 160px;
+            height: auto;
+            margin-bottom: 1rem;
+            filter: brightness(0) invert(1);
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        header p {
+            color: var(--secondary-color);
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-accent {
+            background: var(--secondary-color);
+            box-shadow: 0 4px 15px rgba(184, 153, 92, 0.4);
+        }
+
+        .btn-accent:hover {
+            background: var(--accent-color);
+            box-shadow: 0 6px 20px rgba(184, 153, 92, 0.5);
+        }
+
+        /* Member List Styles */
+        #member-selection-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .member-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-card:hover {
+            border-color: var(--secondary-color);
+            background: #f5f7fa;
+        }
+
+        .member-card.selected {
+            background: #E3F2FD;
+            border-color: #2196F3;
+        }
+
+        .member-info h4 {
+            margin: 0 0 0.2rem 0;
+            color: var(--primary-color);
+        }
+
+        .member-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+        }
+
+        /* Team Simulator Styles - Premium Glassmorphism */
+        #team-simulator {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(184, 153, 92, 0.3);
+            border-radius: 24px;
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.12),
+                0 8px 32px rgba(184, 153, 92, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #team-simulator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        }
+
+        #team-momentum-score {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            text-shadow: 0 4px 30px rgba(184, 153, 92, 0.3);
+            filter: drop-shadow(0 2px 4px rgba(184, 153, 92, 0.2));
+        }
+
+        #total-power-score {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.printing-mode>* {
+            display: none !important;
+        }
+
+        body.printing-mode>#team-simulator {
+            display: block !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            max-width: 1120px !important;
+            /* A4 Landscape width approx */
+            margin: 0 !important;
+            padding: 20px !important;
+            box-shadow: none !important;
+            border: none !important;
+            z-index: 99999 !important;
+            background: white !important;
+        }
+
+        /* --------------------------- */
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            input[type="text"],
+            select {
+                font-size: 16px;
+                /* Prevent zoom on iOS */
+                padding: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            #team-simulator h2 {
+                font-size: 1.8rem !important;
+            }
+
+            #team-simulator h3 {
+                font-size: 1rem !important;
+            }
+
+            .team-metrics-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            #team-list {
+                grid-template-columns: 1fr !important;
+            }
+
+            .metric-value {
+                font-size: 2.5rem !important;
+            }
+
+            #member-selection-area {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Animation keyframes for stacking chart */
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(184, 153, 92, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 5px rgba(184, 153, 92, 0.2);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        /* Skill Progress Bars Styles */
+        .skill-bar-row {
+            padding: 0.5rem 0;
+        }
+
+        .skill-bar-row:first-child {
+            padding-top: 0;
+        }
+
+        .skill-bar-row:last-child {
+            padding-bottom: 0;
+        }
+
+        /* ==========================================
+           PREMIUM STACKING CHART STYLES
+           ========================================== */
+
+        .stacking-chart-premium {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(184, 153, 92, 0.2);
+        }
+
+        .stacking-legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.03);
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Individual Member Card */
+        .member-stacking-card {
+            display: grid;
+            grid-template-columns: 50px 1fr auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInRight 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .member-stacking-card:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(184, 153, 92, 0.15);
+            border-color: var(--secondary-color);
+        }
+
+        /* Rank Badge */
+        .rank-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rank-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(135deg, #B8995C 0%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .rank-badge.gold .rank-number {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rank-badge.silver .rank-number {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rank-badge.bronze .rank-number {
+            background: linear-gradient(135deg, #CD7F32 0%, #8B4513 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Member Info Section */
+        .member-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .member-name-area h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .member-name-area .meta {
+            font-size: 0.75rem;
+            color: var(--light-text-color);
+        }
+
+        .meister-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .meister-badge.master {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a1a1a;
+        }
+
+        .meister-badge.expert {
+            background: linear-gradient(135deg, #E53935, #C62828);
+            color: white;
+        }
+
+        .meister-badge.specialist {
+            background: linear-gradient(135deg, #1E88E5, #1565C0);
+            color: white;
+        }
+
+        .meister-badge.junior {
+            background: linear-gradient(135deg, #43A047, #2E7D32);
+            color: white;
+        }
+
+        .meister-badge.rookie {
+            background: linear-gradient(135deg, #78909C, #546E7A);
+            color: white;
+        }
+
+        /* Skill Bar Container */
+        .skill-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-bar-wrapper {
+            flex: 1;
+            height: 24px;
+            background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            display: flex;
+        }
+
+        .skill-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-segment::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .skill-segment.perf {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .skill-segment.serv {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .skill-segment.expt {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+
+        .skill-segment.mgmt {
+            background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        }
+
+        /* Score Display */
+        .score-display {
+            text-align: right;
+            min-width: 70px;
+        }
+
+        .score-value {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #B8995C 0%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-label {
+            font-size: 0.65rem;
+            color: var(--light-text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Empty State */
+        .stacking-empty {
+            text-align: center;
+            padding: 3rem;
+            color: var(--light-text-color);
+        }
+
+        .stacking-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* PDF Mode Adjustments */
+        #team-simulator.pdf-mode .member-stacking-card {
+            padding: 0.6rem 0.8rem;
+            margin-bottom: 0.4rem;
+            animation: none;
+            opacity: 1;
+        }
+
+        #team-simulator.pdf-mode .rank-number {
+            font-size: 1.2rem;
+        }
+
+        #team-simulator.pdf-mode .member-name-area h4 {
+            font-size: 0.85rem;
+        }
+
+        #team-simulator.pdf-mode .skill-bar-wrapper {
+            height: 18px;
+        }
+
+        #team-simulator.pdf-mode .score-value {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .member-stacking-card {
+                grid-template-columns: 40px 1fr 60px;
+                padding: 0.8rem;
+            }
+
+            .rank-number {
+                font-size: 1.4rem;
+            }
+
+            .skill-bar-wrapper {
+                height: 20px;
+            }
+
+            .stacking-legend {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+        }
+
+        /* === STAFF DETAIL MODAL STYLES === */
+        .staff-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .staff-modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translate(-50%, -45%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .staff-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .staff-modal-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .staff-modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--light-text-color);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .staff-modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .staff-modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .staff-modal-section h4 {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Editable Role Chips */
+        .role-chips-edit {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .role-chip-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.4rem 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .role-chip-btn:hover {
+            border-color: var(--secondary-color);
+        }
+
+        .role-chip-btn.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .staff-modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-save {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .skill-score-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .skill-category-box {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .skill-category-box h5 {
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .skill-scores-row {
+            display: flex;
+            gap: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .skill-score-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <img src="../logo/SVD_logo_Black.png" alt="SVD Logo" class="header-logo">
+            <h1>Manager Dashboard</h1>
+            <p>Team Analysis & Momentum Simulator</p>
+        </header>
+
+        <!-- Data Loading Section -->
+        <div class="card" data-html2canvas-ignore="true">
+            <h2>1. Load Staff Data</h2>
+            <p>Google Sheetsから最新のスタッフデータを読み込みます。</p>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <input type="text" id="script-url" placeholder="GAS Web App URL"
+                    value="https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec"
+                    style="flex: 1; padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                <button id="load-data-btn" class="btn">Load Data</button>
+            </div>
+            <p id="loading-status" style="margin-top: 0.5rem; color: var(--light-text-color);"></p>
+        </div>
+
+        <!-- Member Selection Section -->
+        <div class="card" id="selection-card" style="display: none;" data-html2canvas-ignore="true">
+            <h2>2. Select Team Members</h2>
+            <p>分析したいメンバーをクリックして選択してください。</p>
+            <div id="member-selection-area">
+                <!-- Members will be populated here -->
+            </div>
+        </div>
+
+        <!-- Team Simulator Section -->
+        <div class="card" id="team-simulator" style="display:none;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                <!-- Print Title (Hidden by default, shown in print) -->
+                <div id="team-name-print-display" style="display:none;"></div>
+
+                <input type="text" id="team-name-input" placeholder="チーム名を入力（例: JEWELS Aチーム）"
+                    style="font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: #0f172a; border: none; background: transparent; border-bottom: 2px solid #B8995C; flex: 1; min-width: 200px;">
+                <button onclick="exportPDF()" class="btn btn-accent" data-html2canvas-ignore="true">PDF保存</button>
+            </div>
+
+            <h2
+                style="text-align: center; color: var(--secondary-color); font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 800; margin-top: 0; letter-spacing: 0.1em;">
+                TEAM MOMENTUM SIMULATOR
+            </h2>
+
+            <!-- NEW 2-TIER LAYOUT -->
+            <div class="team-metrics-grid"
+                style="display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 2rem; margin-bottom: 2rem;">
+                <!-- TIER 1 LEFT: Metrics -->
+                <div style="text-align: center;">
+                    <h3
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color); letter-spacing: 0.05em;">
+                        TEAM MOMENTUM METRICS</h3>
+                    <div
+                        style="display: flex; justify-content: space-around; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--light-text-color); font-weight: 500;">Quality
+                                (Avg)</div>
+                            <div id="team-momentum-score" class="metric-value"
+                                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--secondary-color); line-height: 1;">
+                                0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.85rem; color: var(--light-text-color); font-weight: 500;">Total
+                                Momentum</div>
+                            <div id="total-power-score" class="metric-value"
+                                style="font-family: 'Montserrat', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--primary-color); line-height: 1;">
+                                0</div>
+                        </div>
+                    </div>
+                    <p id="synergy-bonus" style="color: var(--secondary-color); font-weight: 600; font-size: 0.95rem;">
+                    </p>
+                    <div id="team-advice"
+                        style="background: var(--background-color); padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: left; border-left: 4px solid var(--secondary-color);">
+                        <strong style="color: var(--primary-color);">チーム分析:</strong><br>
+                        メンバーを追加して分析を開始してください。
+                    </div>
+                </div>
+
+                <!-- TIER 1 RIGHT: Skill Progress Bars -->
+                <div>
+                    <h3
+                        style="text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.9rem; color: var(--primary-color); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.5rem;">
+                        Team Skill Balance</h3>
+
+                    <div id="skill-bars-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Performance -->
+                        <div class="skill-bar-row">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+                                <span
+                                    style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color);">Performance
+                                    <span style="font-weight: 400; color: var(--light-text-color);">実行力</span></span>
+                                <span id="perf-score"
+                                    style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; color: #f59e0b;">0.0</span>
+                            </div>
+                            <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                <div id="perf-bar"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 5px; transition: width 0.8s ease;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service -->
+                        <div class="skill-bar-row">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+                                <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color);">Service
+                                    <span style="font-weight: 400; color: var(--light-text-color);">接客力</span></span>
+                                <span id="serv-score"
+                                    style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; color: #10b981;">0.0</span>
+                            </div>
+                            <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                <div id="serv-bar"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 5px; transition: width 0.8s ease;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expertise -->
+                        <div class="skill-bar-row">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+                                <span
+                                    style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color);">Expertise
+                                    <span style="font-weight: 400; color: var(--light-text-color);">専門性</span></span>
+                                <span id="expt-score"
+                                    style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; color: #3b82f6;">0.0</span>
+                            </div>
+                            <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                <div id="expt-bar"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 5px; transition: width 0.8s ease;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Management -->
+                        <div class="skill-bar-row">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem;">
+                                <span
+                                    style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color);">Management
+                                    <span style="font-weight: 400; color: var(--light-text-color);">管理力</span></span>
+                                <span id="mgmt-score"
+                                    style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 700; color: #8b5cf6;">0.0</span>
+                            </div>
+                            <div style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                                <div id="mgmt-bar"
+                                    style="height: 100%; width: 0%; background: linear-gradient(90deg, #8b5cf6, #a78bfa); border-radius: 5px; transition: width 0.8s ease;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIER 2: Member List (spans full width) -->
+                <div style="grid-column: 1 / -1;">
+                    <h3 style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color);">
+                        Selected Members</h3>
+                    <ul id="team-list"
+                        style="list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                        <!-- Team members will be added here -->
+                    </ul>
+                </div>
+
+                <!-- TIER 3: Individual Skill Stacking Chart (NEW) -->
+                <div style="grid-column: 1 / -1; margin-top: 1.5rem;">
+                    <h3
+                        style="font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem;">
+                        <span
+                            style="background: linear-gradient(135deg, #B8995C, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📊</span>
+                        Individual Skill Breakdown
+                    </h3>
+                    <div id="stacking-chart-container"
+                        style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #e2e8f0;">
+                        <p style="text-align:center; color:#94a3b8;">メンバーを選択してください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Detail Modal -->
+        <div id="staff-modal" class="staff-modal-overlay" onclick="if(event.target === this) closeStaffModal()">
+            <div class="staff-modal-content">
+                <div class="staff-modal-header">
+                    <h2 id="modal-staff-name">スタッフ詳細</h2>
+                    <button class="staff-modal-close" onclick="closeStaffModal()">&times;</button>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>基本情報</h4>
+                    <div id="modal-basic-info"
+                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>🏢 所属店舗（クリックで変更）</h4>
+                    <div id="modal-affiliation-chips" class="role-chips-edit">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>🏷️ ロール（クリックで選択）</h4>
+                    <div id="modal-role-chips" class="role-chips-edit">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>📊 スキルマトリクス</h4>
+                    <div id="modal-skill-matrix" class="skill-score-grid">
+                    </div>
+                </div>
+
+                <div class="staff-modal-section">
+                    <h4>📜 資格</h4>
+                    <textarea id="modal-qualifications" rows="2"
+                        style="width: 100%; padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; resize: vertical;"
+                        placeholder="資格を入力..."></textarea>
+                </div>
+
+                <div class="staff-modal-actions">
+                    <button class="btn-cancel" onclick="closeStaffModal()">キャンセル</button>
+                    <button class="btn-save" onclick="saveStaffUpdate()">💾 保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer
+            style="text-align: center; margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border-color);">
+            <p
+                style="font-family: 'Montserrat', sans-serif; font-size: 0.8rem; color: var(--light-text-color); letter-spacing: 0.15em; text-transform: uppercase; margin: 0;">
+                SAPPORO VIEWTIFUL DINING — ORIGIN
+            </p>
+            <p style="font-size: 0.75rem; color: var(--light-text-color); margin: 0.5rem 0 0 0;">
+                © 2025-2026 SVD. All rights reserved.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- SVD 18 TYPES DATA ---
+        const svdTypes = {
+            "Balance": { name: "Balance (バランス)", desc: "汎用・適応" },
+            "Flare": { name: "Flare (フレア)", desc: "情熱・突破" },
+            "Flow": { name: "Flow (フロー)", desc: "柔軟・浸透" },
+            "Bloom": { name: "Bloom (ブルーム)", desc: "育成・調和" },
+            "Spark": { name: "Spark (スパーク)", desc: "閃き・革新" },
+            "Crystal": { name: "Crystal (クリスタル)", desc: "緻密・冷静" },
+            "Striker": { name: "Striker (ストライカー)", desc: "実直・技術" },
+            "Rogue": { name: "Rogue (ローグ)", desc: "改革・本質" },
+            "Ground": { name: "Ground (グラウンド)", desc: "安定・土台" },
+            "Wing": { name: "Wing (ウィング)", desc: "自由・俯瞰" },
+            "Seraph": { name: "Seraph (セラフ)", desc: "洞察・予知" },
+            "Craft": { name: "Craft (クラフト)", desc: "改善・適応" },
+            "Solid": { name: "Solid (ソリッド)", desc: "信念・伝統" },
+            "Shade": { name: "Shade (シェード)", desc: "献身・黒子" },
+            "Emperor": { name: "Emperor (エンペラー)", desc: "統率・圧倒" },
+            "Night Shift": { name: "Night Shift (ナイトシフト)", desc: "危機・実利" },
+            "Iron": { name: "Iron (アイアン)", desc: "鉄壁・規律" },
+            "Bliss": { name: "Bliss (ブリス)", desc: "愛嬌・浄化" }
+        };
+
+        // Synergy Data (Best Match & Caution Match)
+        const synergyData = {
+            "Balance": { best: ["Flare", "Emperor"], caution: [] },
+            "Flare": { best: ["Flow", "Ground"], caution: ["Flare"] },
+            "Flow": { best: ["Flare", "Spark"], caution: ["Solid"] },
+            "Bloom": { best: ["Flare", "Ground"], caution: ["Rogue", "Night Shift"] },
+            "Spark": { best: ["Flow", "Wing"], caution: ["Ground"] },
+            "Crystal": { best: ["Flare", "Striker"], caution: ["Spark"] },
+            "Striker": { best: ["Seraph", "Bloom"], caution: ["Wing"] },
+            "Rogue": { best: ["Seraph", "Ground"], caution: ["Bloom", "Bliss"] },
+            "Ground": { best: ["Spark", "Flare"], caution: ["Flow", "Wing"] },
+            "Wing": { best: ["Spark", "Ground"], caution: ["Striker", "Iron"] },
+            "Seraph": { best: ["Striker", "Rogue"], caution: ["Night Shift", "Craft"] },
+            "Craft": { best: ["Bloom", "Iron"], caution: ["Flare", "Wing"] },
+            "Solid": { best: ["Striker", "Ground"], caution: ["Flow", "Spark"] },
+            "Shade": { best: ["Emperor", "Seraph"], caution: ["Night Shift"] },
+            "Emperor": { best: ["Bliss", "Shade"], caution: ["Bliss", "Crystal"] },
+            "Night Shift": { best: ["Rogue", "Striker"], caution: ["Bloom", "Bliss"] },
+            "Iron": { best: ["Crystal", "Striker"], caution: ["Flare", "Rogue"] },
+            "Bliss": { best: ["Emperor", "Iron"], caution: ["Rogue", "Night Shift"] }
+        };
+
+        // --- ROLE DISPLAY HELPERS (v2.1) ---
+        const ROLE_LABELS = {
+            'director': { emoji: '①', label: 'Directeur', color: '#1E3A5F' },
+            'maitre': { emoji: '②', label: "Maître d'hôtel", color: '#2E5A8F' },
+            'chef-de-rang-1': { emoji: '③', label: 'Chef de Rang 1', color: '#3E7ABF' },
+            'chef-de-rang-2': { emoji: '④', label: 'Chef de Rang 2', color: '#4E9AEF' },
+            'commis': { emoji: '⑤', label: 'Commis', color: '#6EBAFF' },
+            'sommelier': { emoji: '🍷', label: 'Sommelier', color: '#8B0000' },
+            'barman': { emoji: '🍸', label: 'Barman', color: '#4A0080' },
+            'cuisinier': { emoji: '👨‍🍳', label: 'Cuisinier', color: '#2E7D32' },
+            'patissier': { emoji: '🍰', label: 'Pâtissier', color: '#E91E63' },
+            'hotesse': { emoji: '👔', label: 'Hôtesse', color: '#795548' }
+        };
+
+        // 店舗（所属）定数
+        const AFFILIATION_LABELS = {
+            'JW': { emoji: '💎', label: 'JEWELS', color: '#1E3A5F' },
+            'NP': { emoji: '🏔️', label: 'ヌーベルプース', color: '#2E7D32' },
+            'BQ': { emoji: '🍖', label: 'BQ', color: '#8B4513' },
+            'GA': { emoji: '🌿', label: 'GARDEN', color: '#4CAF50' },
+            'BG': { emoji: '🍺', label: 'ビアガーデン', color: '#FF9800' },
+            'RYB': { emoji: '🐷', label: 'RYB', color: '#E91E63' },
+            'RP': { emoji: '🎪', label: 'RP', color: '#9C27B0' },
+            'CL': { emoji: '🦞', label: 'CL', color: '#F44336' },
+            'POP': { emoji: '🎉', label: 'POP UP', color: '#00BCD4' }
+        };
+
+        function formatRoleChips(rolesStr) {
+            if (!rolesStr || typeof rolesStr !== 'string') return '';
+            if (rolesStr.trim() === '') return '';
+            const roles = rolesStr.split(',').map(r => r.trim()).filter(r => r);
+            if (roles.length === 0) return '';
+
+            const chips = roles.map(role => {
+                const info = ROLE_LABELS[role] || { emoji: '🏷️', label: role, color: '#546E7A' };
+                return `<span style="
+                    display: inline-block;
+                    font-size: 0.7rem;
+                    background: ${info.color};
+                    color: white;
+                    padding: 2px 6px;
+                    border-radius: 10px;
+                    margin: 2px 2px 0 0;
+                ">${info.emoji} ${info.label}</span>`;
+            }).join('');
+
+            return `<div style="margin-top: 0.3rem;">${chips}</div>`;
+        }
+
+        function formatRoleChipsCompact(rolesStr) {
+            if (!rolesStr || typeof rolesStr !== 'string') return '';
+            if (rolesStr.trim() === '') return '';
+            const roles = rolesStr.split(',').map(r => r.trim()).filter(r => r);
+            if (roles.length === 0) return '';
+
+            const chips = roles.slice(0, 3).map(role => {
+                const info = ROLE_LABELS[role] || { emoji: '🏷️', label: role, color: '#546E7A' };
+                return `<span style="
+                    display: inline-block;
+                    font-size: 0.65rem;
+                    background: ${info.color};
+                    color: white;
+                    padding: 1px 5px;
+                    border-radius: 8px;
+                    margin-right: 2px;
+                ">${info.emoji}</span>`;
+            }).join('');
+
+            const extra = roles.length > 3 ? `<span style="font-size:0.65rem; color:#90A4AE;">+${roles.length - 3}</span>` : '';
+            return `<div style="margin-top: 0.2rem;">${chips}${extra}</div>`;
+        }
+
+        // --- STAFF DETAIL MODAL FUNCTIONS ---
+        let currentEditStaff = null;
+        let selectedRolesInModal = [];
+
+        function openStaffModal(staffIndex) {
+            const staff = allStaffData[staffIndex];
+            if (!staff) return;
+
+            currentEditStaff = staff;
+
+            // Header
+            document.getElementById('modal-staff-name').textContent = staff.name;
+
+            // Basic Info
+            const basicInfo = document.getElementById('modal-basic-info');
+            basicInfo.innerHTML = `
+                <div><strong>所属:</strong> ${staff.affiliation || '-'}</div>
+                <div><strong>役職:</strong> ${staff.jobTitle || '-'}</div>
+                <div><strong>タイプ:</strong> ${staff.type || '-'}</div>
+                <div><strong>ランク:</strong> ${staff.meisterRank || 'Rookie'}</div>
+                <div><strong>スコア:</strong> ${Number(staff.score).toFixed(2)}</div>
+                <div><strong>更新日:</strong> ${staff.timestamp ? new Date(staff.timestamp).toLocaleDateString('ja-JP') : '-'}</div>
+            `;
+
+            // Affiliation Chips (Editable - Single Select)
+            const affiliationContainer = document.getElementById('modal-affiliation-chips');
+            renderAffiliationChipsEditable(affiliationContainer, staff.affiliation || '');
+
+            // Role Chips (Editable)
+            const rolesContainer = document.getElementById('modal-role-chips');
+            selectedRolesInModal = (staff.roles && typeof staff.roles === 'string') ? staff.roles.split(',').map(r => r.trim()).filter(r => r) : [];
+            renderRoleChipsEditable(rolesContainer);
+
+            // Skill Matrix
+            const skillMatrix = document.getElementById('modal-skill-matrix');
+            const skillCategories = [
+                { name: 'Productive (P)', prefix: 'p', color: '#D50000' },
+                { name: 'Social (S)', prefix: 's', color: '#0D47A1' },
+                { name: 'Emotional (E)', prefix: 'e', color: '#00C853' },
+                { name: 'Logical (M)', prefix: 'm', color: '#FFAB00' }
+            ];
+            skillMatrix.innerHTML = skillCategories.map(cat => `
+                <div class="skill-category-box">
+                    <h5 style="color: ${cat.color}">${cat.name}</h5>
+                    <div class="skill-scores-row">
+                        ${[1, 2, 3, 4, 5, 6].map(i => `
+                            <span class="skill-score-badge" style="background: ${cat.color}">
+                                ${cat.prefix}${i}: ${staff[`${cat.prefix}${i}`] || 0}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Qualifications
+            document.getElementById('modal-qualifications').value = staff.qualifications || '';
+
+            // Show modal
+            document.getElementById('staff-modal').style.display = 'block';
+        }
+
+        // Selected affiliation in modal (single select)
+        let selectedAffiliationInModal = '';
+
+        function renderAffiliationChipsEditable(container, currentAffiliation) {
+            selectedAffiliationInModal = currentAffiliation;
+            const allAffiliations = Object.keys(AFFILIATION_LABELS);
+            container.innerHTML = allAffiliations.map(affKey => {
+                const info = AFFILIATION_LABELS[affKey];
+                const isSelected = selectedAffiliationInModal === affKey;
+                return `<button type="button" class="role-chip-btn ${isSelected ? 'selected' : ''}" 
+                    onclick="selectAffiliationInModal('${affKey}')"
+                    style="${isSelected ? `background: ${info.color}; color: white; border-color: ${info.color};` : ''}">
+                    ${info.emoji} ${info.label}
+                </button>`;
+            }).join('');
+        }
+
+        function selectAffiliationInModal(affKey) {
+            selectedAffiliationInModal = affKey;
+            const container = document.getElementById('modal-affiliation-chips');
+            renderAffiliationChipsEditable(container, affKey);
+        }
+
+        function renderRoleChipsEditable(container) {
+            const allRoles = Object.keys(ROLE_LABELS);
+            container.innerHTML = allRoles.map(roleKey => {
+                const info = ROLE_LABELS[roleKey];
+                const isSelected = selectedRolesInModal.includes(roleKey);
+                return `<button type="button" class="role-chip-btn ${isSelected ? 'selected' : ''}" 
+                    onclick="toggleRoleInModal('${roleKey}')">
+                    ${info.emoji} ${info.label}
+                </button>`;
+            }).join('');
+        }
+
+        function toggleRoleInModal(roleKey) {
+            const idx = selectedRolesInModal.indexOf(roleKey);
+            if (idx === -1) {
+                selectedRolesInModal.push(roleKey);
+            } else {
+                selectedRolesInModal.splice(idx, 1);
+            }
+            renderRoleChipsEditable(document.getElementById('modal-role-chips'));
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staff-modal').style.display = 'none';
+            currentEditStaff = null;
+            selectedRolesInModal = [];
+        }
+
+        async function saveStaffUpdate() {
+            if (!currentEditStaff) return;
+
+            const scriptUrl = document.getElementById('script-url').value;
+            if (!scriptUrl) {
+                alert('スクリプトURLが設定されていません');
+                return;
+            }
+
+            const saveBtn = document.querySelector('.btn-save');
+            saveBtn.textContent = '保存中...';
+            saveBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'update');
+                formData.append('targetName', currentEditStaff.name);
+                formData.append('targetAffiliation', currentEditStaff.affiliation || '');
+                formData.append('newAffiliation', selectedAffiliationInModal); // 新しい所属
+                formData.append('roles', selectedRolesInModal.join(','));
+                formData.append('qualifications', document.getElementById('modal-qualifications').value);
+
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    // Update local data
+                    currentEditStaff.affiliation = selectedAffiliationInModal; // 所属更新
+                    currentEditStaff.roles = selectedRolesInModal.join(',');
+                    currentEditStaff.qualifications = document.getElementById('modal-qualifications').value;
+
+                    // Re-render member selection
+                    renderMemberSelection();
+
+                    closeStaffModal();
+                    alert('✅ データを更新しました！');
+                } else {
+                    alert('❌ エラー: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                alert('❌ 保存に失敗しました: ' + error.message);
+            } finally {
+                saveBtn.textContent = '💾 保存';
+                saveBtn.disabled = false;
+            }
+        }
+
+        // --- APP LOGIC ---
+        let allStaffData = [];
+        let teamMembers = [];
+        let teamRadarChart = null;
+
+        document.getElementById('load-data-btn').addEventListener('click', loadData);
+
+        function loadData() {
+            const scriptUrl = document.getElementById('script-url').value;
+            const statusEl = document.getElementById('loading-status');
+
+            if (!scriptUrl) {
+                alert('Please enter the Script URL.');
+                return;
+            }
+
+            statusEl.textContent = 'Loading data...';
+
+            // Append ?action=getStaffData to the URL to trigger the doGet logic
+            fetch(`${scriptUrl}?action=getStaffData`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        allStaffData = data.data;
+                        statusEl.textContent = `Successfully loaded ${allStaffData.length} staff members.`;
+                        renderMemberSelection();
+                        document.getElementById('selection-card').style.display = 'block';
+                        document.getElementById('team-simulator').style.display = 'block';
+                    } else {
+                        throw new Error(data.message || 'Unknown error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusEl.textContent = 'Error loading data. Please check the URL and try again. (Make sure the script is deployed as "Anyone")';
+                    // For demo purposes, let's load some dummy data if fetch fails
+                    if (confirm("データの読み込みに失敗しました。ダミーデータでテストしますか？")) {
+                        loadDummyData();
+                    }
+                });
+        }
+
+        function loadDummyData() {
+            allStaffData = [
+                { name: "Sato (Demo)", affiliation: "JEWELS", jobTitle: "マネジャー", type: "Flare", score: 8.5, meisterRank: "Expert", qualifications: "J.S.A. ソムリエ", detailedScores: [5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
+                { name: "Suzuki (Demo)", affiliation: "GARDEN", jobTitle: "キャプテン", type: "Flow", score: 7.8, meisterRank: "Specialist", qualifications: "食品衛生責任者", detailedScores: [4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2] },
+                { name: "Tanaka (Demo)", affiliation: "BRIQUE", jobTitle: "一般", type: "Ground", score: 9.0, meisterRank: "Master", qualifications: "HRS 1級, ソムリエ・エクセレンス", detailedScores: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4] }
+            ];
+            renderMemberSelection();
+            document.getElementById('selection-card').style.display = 'block';
+            document.getElementById('team-simulator').style.display = 'block';
+        }
+
+        function renderMemberSelection() {
+            const container = document.getElementById('member-selection-area');
+            container.innerHTML = '';
+
+            allStaffData.forEach((staff, index) => {
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.onclick = () => toggleMember(index, card);
+
+                const typeName = svdTypes[staff.type] ? svdTypes[staff.type].name : staff.type;
+                const rank = staff.meisterRank || 'Rookie';
+                let rankColor = '#546E7A';
+                if (rank === 'Master') rankColor = '#FFD700';
+                else if (rank === 'Expert') rankColor = '#D84315';
+                else if (rank === 'Specialist') rankColor = '#1565C0';
+                else if (rank === 'Junior') rankColor = '#43A047';
+
+                card.innerHTML = `
+                    <div class="member-info">
+                        <h4>${staff.name} <span style="font-size:0.8rem; background:${rankColor}; color:${rank === 'Master' ? 'black' : 'white'}; padding:2px 6px; border-radius:4px;">${rank}</span></h4>
+                        <p>${staff.affiliation} / ${staff.jobTitle || '-'} | ${typeName}</p>
+                        <p>Score: ${Number(staff.score).toFixed(2)}</p>
+                        <p style="font-size:0.8rem; color:#78909C; margin-top:0.2rem;">${staff.qualifications || '-'}</p>
+                        ${formatRoleChips(staff.roles)}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <button class="detail-btn" data-index="${index}" style="
+                            background: #f1f5f9; 
+                            border: 1px solid #e2e8f0; 
+                            border-radius: 6px; 
+                            padding: 0.4rem 0.6rem; 
+                            font-size: 0.75rem; 
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        ">📝 詳細</button>
+                        <div class="add-icon" style="font-size: 1.5rem; color: var(--border-color);">+</div>
+                    </div>
+                `;
+
+                // Detail button click (stops propagation to prevent toggle)
+                card.querySelector('.detail-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openStaffModal(index);
+                });
+
+                container.appendChild(card);
+            });
+        }
+
+        function toggleMember(index, cardElement) {
+            const staff = allStaffData[index];
+            // Use unique identifier: name + affiliation + jobTitle
+            const staffId = `${staff.name}_${staff.affiliation}_${staff.jobTitle || ''}`;
+            const existingIndex = teamMembers.findIndex(m =>
+                `${m.name}_${m.affiliation}_${m.jobTitle || ''}` === staffId
+            );
+
+            if (existingIndex >= 0) {
+                // Remove
+                teamMembers.splice(existingIndex, 1);
+                cardElement.classList.remove('selected');
+                cardElement.querySelector('.add-icon').textContent = '+';
+                cardElement.querySelector('.add-icon').style.color = 'var(--border-color)';
+            } else {
+                // Add
+                teamMembers.push(staff);
+                cardElement.classList.add('selected');
+                cardElement.querySelector('.add-icon').textContent = '✓';
+                cardElement.querySelector('.add-icon').style.color = 'var(--secondary-color)';
+            }
+            updateTeamUI();
+        }
+
+        function updateTeamUI() {
+            const list = document.getElementById('team-list');
+            list.innerHTML = '';
+            teamMembers.forEach((member) => {
+                const typeName = svdTypes[member.type] ? svdTypes[member.type].name : member.type;
+                // Get just the type name without Japanese for the badge if possible, or just use the first letter
+                const typeShort = member.type.split(' ')[0];
+                const rank = member.meisterRank || 'Rookie';
+
+                const li = document.createElement('li');
+                li.style.background = 'white';
+                li.style.padding = '1rem';
+                li.style.borderRadius = '8px';
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
+                li.style.boxShadow = '0 2px 5px rgba(0,0,0,0.05)';
+
+                // Type Color mapping (simplified)
+                let typeColor = '#546E7A';
+                if (['Flare', 'Spark', 'Emperor'].includes(member.type)) typeColor = '#E53935'; // Red-ish
+                else if (['Flow', 'Bloom', 'Bliss'].includes(member.type)) typeColor = '#FB8C00'; // Orange-ish
+                else if (['Crystal', 'Seraph', 'Wing'].includes(member.type)) typeColor = '#039BE5'; // Blue-ish
+                else if (['Ground', 'Solid', 'Iron'].includes(member.type)) typeColor = '#43A047'; // Green-ish
+                else if (['Rogue', 'Striker', 'Night Shift'].includes(member.type)) typeColor = '#8E24AA'; // Purple-ish
+
+                li.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="
+                            width: 40px; 
+                            height: 40px; 
+                            background: ${typeColor}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-weight: bold; 
+                            font-family: 'Teko', sans-serif;
+                            font-size: 1.2rem;"
+                            title="${typeName}">
+                            ${typeShort.charAt(0)}
+                        </div>
+                        <div>
+                            <div style="font-weight:bold; font-size:1.1rem;">${member.name}</div>
+                            <div style="font-size:0.8rem; color:#90A4AE;">${rank}</div>
+                            ${formatRoleChipsCompact(member.roles)}
+                        </div>
+                    </div>
+                    <div style="font-family: 'Teko', sans-serif; font-size: 1.5rem; font-weight:bold; color:var(--primary-color);">
+                        ${Number(member.score).toFixed(1)} <span style="font-size:0.8rem; color:#90A4AE;">pts</span>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+
+            calculateTeamMomentum();
+            drawTeamRadarChart();
+        }
+
+        function calculateTeamMomentum() {
+            if (teamMembers.length === 0) {
+                document.getElementById('team-momentum-score').textContent = '0';
+                document.getElementById('total-power-score').textContent = '0';
+                document.getElementById('synergy-bonus').textContent = '';
+                document.getElementById('team-advice').innerHTML = 'メンバーを追加して分析を開始してください。';
+                return;
+            }
+
+            // Step 1: Base Power (Average Individual Score)
+            let totalScore = 0;
+            teamMembers.forEach(m => totalScore += Number(m.score));
+            const avgScore = totalScore / teamMembers.length;
+
+            // Step 2: Synergy Multiplier (Pairwise Analysis)
+            let totalMultiplier = 0;
+            let pairCount = 0;
+            let bestPairings = [];
+            let cautionPairings = [];
+
+            if (teamMembers.length < 2) {
+                totalMultiplier = 1.0;
+                pairCount = 1;
+            } else {
+                for (let i = 0; i < teamMembers.length; i++) {
+                    for (let j = i + 1; j < teamMembers.length; j++) {
+                        const m1 = teamMembers[i];
+                        const m2 = teamMembers[j];
+                        const type1 = m1.type;
+                        const type2 = m2.type;
+
+                        let multiplier = 1.0;
+
+                        // Check Synergy
+                        if (synergyData[type1] && (synergyData[type1].best.includes(type2) || (synergyData[type2] && synergyData[type2].best.includes(type1)))) {
+                            multiplier = 1.2;
+                            bestPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 1.2 });
+                        } else if (synergyData[type1] && (synergyData[type1].caution.includes(type2) || (synergyData[type2] && synergyData[type2].caution.includes(type1)))) {
+                            multiplier = 0.9;
+                            cautionPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 0.9 });
+                        } else if (type1 === type2) {
+                            multiplier = 1.1;
+                            bestPairings.push({ name1: m1.name, name2: m2.name, type1: type1, type2: type2, multiplier: 1.1 });
+                        }
+
+                        totalMultiplier += multiplier;
+                        pairCount++;
+                    }
+                }
+            }
+
+            const avgMultiplier = totalMultiplier / pairCount;
+            const teamMomentum = avgScore * avgMultiplier;
+            const totalMomentum = teamMomentum * teamMembers.length;
+
+            // Count-up animation for scores
+            animateCountUp('team-momentum-score', teamMomentum, 2);
+            animateCountUp('total-power-score', totalMomentum, 2);
+
+            let bonusText = `Avg Score: ${avgScore.toFixed(2)} × Synergy: ${avgMultiplier.toFixed(2)}`;
+            document.getElementById('synergy-bonus').innerHTML = bonusText;
+
+            // --- Build Advice with separated Best and Caution pairings ---
+            let scaleAdvice = "";
+            const size = teamMembers.length;
+
+            if (size <= 5) {
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E8F5E9; border-left:4px solid #4CAF50;">
+                    <strong>Phase: Small (少数精鋭)</strong><br>
+                    個々のスキルと相性が全てです。Synergy 1.1以上を目指しましょう。
+                </div>`;
+            } else if (size <= 12) {
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#FFF3E0; border-left:4px solid #FF9800;">
+                    <strong>Phase: Medium (組織化)</strong><br>
+                    バランスが重要です。Total Momentumを高めつつ、Warningペアのケアを行ってください。
+                </div>`;
+            } else {
+                scaleAdvice = `<div style="margin-bottom:0.5rem; padding:0.5rem; background:#E3F2FD; border-left:4px solid #2196F3;">
+                    <strong>Phase: Large (大組織)</strong><br>
+                    ハレーション防止が最優先です。Synergyが1.0を下回らないように注意してください。
+                </div>`;
+            }
+
+            let adviceHtml = scaleAdvice;
+
+            // Best Pairings (Top 3)
+            adviceHtml += `<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">`;
+
+            adviceHtml += `<div style="flex: 1; min-width: 250px; background: #E8F5E9; padding: 0.75rem; border-radius: 8px;">
+                <strong style="color: #2E7D32;">✨ Best Match (Top 3)</strong><br>`;
+            if (bestPairings.length > 0) {
+                bestPairings.slice(0, 3).forEach(p => {
+                    adviceHtml += `<div style="margin-top: 0.4rem; font-size: 0.85rem;">
+                        ★ <strong>${p.name1}</strong> <span style="color:#888;">(${p.type1})</span> × 
+                        <strong>${p.name2}</strong> <span style="color:#888;">(${p.type2})</span>
+                    </div>`;
+                });
+            } else {
+                adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem; color: #666;">該当なし</div>`;
+            }
+            adviceHtml += `</div>`;
+
+            // Caution Pairings (Top 3)
+            adviceHtml += `<div style="flex: 1; min-width: 250px; background: #FFEBEE; padding: 0.75rem; border-radius: 8px;">
+                <strong style="color: #C62828;">⚠️ Caution Match (Top 3)</strong><br>`;
+            if (cautionPairings.length > 0) {
+                cautionPairings.slice(0, 3).forEach(p => {
+                    adviceHtml += `<div style="margin-top: 0.4rem; font-size: 0.85rem;">
+                        ⚠ <strong>${p.name1}</strong> <span style="color:#888;">(${p.type1})</span> × 
+                        <strong>${p.name2}</strong> <span style="color:#888;">(${p.type2})</span>
+                    </div>`;
+                });
+            } else {
+                adviceHtml += `<div style="margin-top: 0.3rem; font-size: 0.9rem; color: #666;">該当なし</div>`;
+            }
+            adviceHtml += `</div>`;
+
+            adviceHtml += `</div>`;
+
+            document.getElementById('team-advice').innerHTML = adviceHtml;
+        }
+
+        function drawTeamRadarChart() {
+            // Now using progress bars instead of radar chart
+            const teamCategoryScores = [0, 0, 0, 0];
+            const individualData = []; // For stacking chart
+
+            teamMembers.forEach(m => {
+                let scores = m.detailedScores;
+                if (typeof scores === 'string') {
+                    scores = scores.split(',').map(Number);
+                }
+
+                let pAvg, sAvg, eAvg, mgAvg;
+
+                // detailedScoresが有効な場合は詳細計算
+                if (scores && scores.length >= 24) {
+                    let p = 0, s = 0, e = 0, mg = 0;
+                    for (let i = 0; i < 6; i++) p += Number(scores[i]) || 0;
+                    for (let i = 6; i < 12; i++) s += Number(scores[i]) || 0;
+                    for (let i = 12; i < 18; i++) e += Number(scores[i]) || 0;
+                    for (let i = 18; i < 24; i++) mg += Number(scores[i]) || 0;
+
+                    pAvg = p / 6;
+                    sAvg = s / 6;
+                    eAvg = e / 6;
+                    mgAvg = mg / 6;
+                } else {
+                    // detailedScoresがない場合は総合スコアから概算
+                    const totalScore = Number(m.score) || 0;
+                    const avgPerCategory = totalScore / 4;
+                    pAvg = avgPerCategory;
+                    sAvg = avgPerCategory;
+                    eAvg = avgPerCategory;
+                    mgAvg = avgPerCategory;
+                }
+
+                teamCategoryScores[0] += pAvg;
+                teamCategoryScores[1] += sAvg;
+                teamCategoryScores[2] += eAvg;
+                teamCategoryScores[3] += mgAvg;
+
+                individualData.push({
+                    name: m.name,
+                    type: m.type,
+                    affiliation: m.affiliation || '',
+                    meisterRank: m.meisterRank || 'Rookie',
+                    p: pAvg, s: sAvg, e: eAvg, m: mgAvg,
+                    total: Number(m.score)
+                });
+            });
+
+            const count = teamMembers.length || 1;
+            const avgData = teamCategoryScores.map(s => s / count);
+
+            // Update progress bars
+            updateProgressBar('perf', avgData[0]);
+            updateProgressBar('serv', avgData[1]);
+            updateProgressBar('expt', avgData[2]);
+            updateProgressBar('mgmt', avgData[3]);
+
+            // Draw individual stacking chart
+            drawStackingChart(individualData);
+        }
+
+        function updateProgressBar(id, value) {
+            const scoreEl = document.getElementById(`${id}-score`);
+            const barEl = document.getElementById(`${id}-bar`);
+
+            if (scoreEl) scoreEl.textContent = value.toFixed(1);
+            if (barEl) barEl.style.width = `${(value / 10) * 100}%`;
+        }
+
+        // PREMIUM: Individual Skill Stacking Chart with Card Layout
+        function drawStackingChart(data) {
+            const container = document.getElementById('stacking-chart-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            container.className = 'stacking-chart-premium';
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="stacking-empty" style="padding: 4rem; text-align: center;">
+                        <div style="
+                            width: 100px; 
+                            height: 100px; 
+                            margin: 0 auto 1.5rem; 
+                            background: linear-gradient(135deg, rgba(184, 153, 92, 0.15) 0%, rgba(212, 175, 55, 0.1) 100%);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border: 2px dashed rgba(184, 153, 92, 0.4);
+                            animation: pulse 2s ease-in-out infinite;
+                        ">
+                            <span style="font-size: 3rem; opacity: 0.7;">👥</span>
+                        </div>
+                        <h4 style="
+                            font-family: 'Montserrat', sans-serif;
+                            font-weight: 700;
+                            font-size: 1.2rem;
+                            color: var(--primary-color);
+                            margin: 0 0 0.5rem 0;
+                        ">メンバーを選択してください</h4>
+                        <p style="
+                            color: var(--light-text-color);
+                            font-size: 0.9rem;
+                            margin: 0;
+                        ">上のリストからチームメンバーをクリックして追加できます</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by total score descending
+            data.sort((a, b) => b.total - a.total);
+
+            // Type color mapping
+            const typeColors = {
+                'Flare': '#E53935', 'Spark': '#FF5722', 'Emperor': '#D32F2F',
+                'Flow': '#FB8C00', 'Bloom': '#FFA726', 'Bliss': '#FFB74D',
+                'Crystal': '#039BE5', 'Seraph': '#0288D1', 'Wing': '#03A9F4',
+                'Ground': '#43A047', 'Solid': '#388E3C', 'Iron': '#2E7D32',
+                'Rogue': '#8E24AA', 'Striker': '#7B1FA2', 'Night Shift': '#6A1B9A',
+                'Shade': '#455A64', 'Craft': '#546E7A', 'Balance': '#78909C'
+            };
+
+            // Premium Legend
+            const legend = document.createElement('div');
+            legend.className = 'stacking-legend';
+            legend.innerHTML = `
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: linear-gradient(90deg, #f59e0b, #fbbf24);"></span>
+                    <span>Performance</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: linear-gradient(90deg, #10b981, #34d399);"></span>
+                    <span>Service</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: linear-gradient(90deg, #3b82f6, #60a5fa);"></span>
+                    <span>Expertise</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></span>
+                    <span>Management</span>
+                </div>
+            `;
+            container.appendChild(legend);
+
+            // Render each member as premium card
+            data.forEach((member, index) => {
+                const rank = index + 1;
+                const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+                const typeColor = typeColors[member.type] || '#78909C';
+                const meisterRank = member.meisterRank || 'Rookie';
+                const meisterClass = meisterRank.toLowerCase().replace(' ', '-');
+
+                const card = document.createElement('div');
+                card.className = 'member-stacking-card';
+                card.style.animationDelay = `${index * 0.08}s`;
+
+                const totalWidth = member.p + member.s + member.e + member.m;
+                const pWidth = (member.p / (totalWidth || 1)) * 100;
+                const sWidth = (member.s / (totalWidth || 1)) * 100;
+                const eWidth = (member.e / (totalWidth || 1)) * 100;
+                const mWidth = (member.m / (totalWidth || 1)) * 100;
+
+                card.innerHTML = `
+                    <!-- Rank Badge -->
+                    <div class="rank-badge ${rankClass}">
+                        <span class="rank-number">${rank}</span>
+                    </div>
+
+                    <!-- Member Info Section -->
+                    <div class="member-info-section">
+                        <div class="member-header">
+                            <div class="member-avatar" style="background: ${typeColor};">
+                                ${member.type ? member.type.charAt(0) : '?'}
+                            </div>
+                            <div class="member-name-area">
+                                <h4>${member.name} <span class="meister-badge ${meisterClass}">${meisterRank}</span></h4>
+                                <div class="meta">${member.affiliation || '-'} / Type: ${member.type || '-'}</div>
+                            </div>
+                        </div>
+                        <div class="skill-bar-container">
+                            <div class="skill-bar-wrapper">
+                                <div class="skill-segment perf" style="width: ${pWidth}%;">${pWidth > 12 ? member.p.toFixed(1) : ''}</div>
+                                <div class="skill-segment serv" style="width: ${sWidth}%;">${sWidth > 12 ? member.s.toFixed(1) : ''}</div>
+                                <div class="skill-segment expt" style="width: ${eWidth}%;">${eWidth > 12 ? member.e.toFixed(1) : ''}</div>
+                                <div class="skill-segment mgmt" style="width: ${mWidth}%;">${mWidth > 12 ? member.m.toFixed(1) : ''}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Score Display -->
+                    <div class="score-display">
+                        <div class="score-value">${member.total.toFixed(1)}</div>
+                        <div class="score-label">pts</div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+
+        // PREMIUM PDF EXPORT with Header/Footer
+        async function exportPDF() {
+            const element = document.getElementById('team-simulator');
+            const btn = document.querySelector('#team-simulator button');
+            const originalBtnText = btn ? btn.textContent : '';
+
+            const teamNameInput = document.getElementById('team-name-input');
+            const teamName = teamNameInput.value || 'My Team';
+
+            // Create premium header for PDF
+            const headerDiv = document.createElement('div');
+            headerDiv.id = 'pdf-premium-header';
+            headerDiv.style.cssText = `
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 2rem;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                border-radius: 12px;
+                color: white;
+            `;
+            headerDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 2rem; font-weight: 800; letter-spacing: 0.05em;">${teamName}</div>
+                    <div style="font-size: 0.8rem; color: #B8995C; font-weight: 500;">TEAM MOMENTUM ANALYSIS</div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.75rem; color: #94a3b8;">Generated on</div>
+                    <div style="font-size: 1rem; font-weight: 600; color: #B8995C;">${new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                </div>
+            `;
+
+            // Create premium footer for PDF
+            const footerDiv = document.createElement('div');
+            footerDiv.id = 'pdf-premium-footer';
+            footerDiv.style.cssText = `
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 1rem;
+                margin-top: 1.5rem;
+                border-top: 2px solid #B8995C;
+            `;
+            footerDiv.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-family: 'Montserrat', sans-serif; font-size: 0.9rem; font-weight: 600; color: #0f172a; letter-spacing: 0.15em; text-transform: uppercase;">SAPPORO VIEWTIFUL DINING — ORIGIN</div>
+                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 0.3rem;">Powered by SVD Talent Intelligence System</div>
+                </div>
+            `;
+
+            // Temporarily hide input and button, add header/footer
+            const headerContainer = teamNameInput.parentNode;
+            headerContainer.style.display = 'none';
+            element.insertBefore(headerDiv, element.firstChild);
+            element.appendChild(footerDiv);
+
+            if (btn) {
+                btn.textContent = 'Generating PDF...';
+                btn.style.display = 'none';
+            }
+
+            // Apply PDF-optimized layout
+            element.classList.add('pdf-mode');
+
+            try {
+                // Wait for DOM updates and CSS transitions
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Get the full scrollable height of the element
+                const fullHeight = element.scrollHeight;
+                const fullWidth = element.scrollWidth;
+
+                // High-resolution capture with html2canvas
+                const canvas = await html2canvas(element, {
+                    scale: 3.0, // High resolution for premium quality
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    height: fullHeight,
+                    width: fullWidth,
+                    windowHeight: fullHeight,
+                    windowWidth: fullWidth,
+                    allowTaint: false,
+                    imageTimeout: 15000
+                });
+
+                const imgData = canvas.toDataURL('image/png', 1.0); // PNG for better quality
+
+                // Create PDF with jsPDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('l', 'mm', 'a4');
+
+                const pageWidth = 297;
+                const pageHeight = 210;
+                const margin = 5;
+
+                const imgProps = pdf.getImageProperties(imgData);
+
+                // Calculate dimensions to fit on one page with margins
+                const availableWidth = pageWidth - (margin * 2);
+                const availableHeight = pageHeight - (margin * 2);
+
+                let pdfWidth = availableWidth;
+                let pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                // If height exceeds available space, scale down to fit
+                if (pdfHeight > availableHeight) {
+                    pdfHeight = availableHeight;
+                    pdfWidth = (imgProps.width * pdfHeight) / imgProps.height;
+                }
+
+                // Center the image
+                const xOffset = (pageWidth - pdfWidth) / 2;
+                const yOffset = (pageHeight - pdfHeight) / 2;
+
+                // Add background subtle gradient effect
+                pdf.setFillColor(248, 250, 252);
+                pdf.rect(0, 0, pageWidth, pageHeight, 'F');
+
+                // Add gold accent lines
+                pdf.setDrawColor(184, 153, 92);
+                pdf.setLineWidth(0.5);
+                pdf.line(10, 5, pageWidth - 10, 5);
+                pdf.line(10, pageHeight - 5, pageWidth - 10, pageHeight - 5);
+
+                pdf.addImage(imgData, 'PNG', xOffset, yOffset, pdfWidth, pdfHeight);
+                pdf.save(`${teamName}_Analysis_${new Date().toISOString().slice(0, 10)}.pdf`);
+
+            } catch (err) {
+                console.error('PDF Export Error:', err);
+                alert('PDF生成に失敗しました: ' + err.message);
+            } finally {
+                // Restore UI
+                element.classList.remove('pdf-mode');
+                headerDiv.remove();
+                footerDiv.remove();
+                headerContainer.style.display = '';
+                teamNameInput.style.display = '';
+                if (btn) {
+                    btn.textContent = originalBtnText;
+                    btn.style.display = '';
+                }
+            }
+        }
+
+        // PREMIUM: Count-up animation for metrics
+        function animateCountUp(elementId, targetValue, decimals = 2) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const duration = 1500; // ms
+            const startTime = performance.now();
+            const startValue = parseFloat(element.textContent) || 0;
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function (ease-out cubic)
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+                const currentValue = startValue + (targetValue - startValue) * easeProgress;
+                element.textContent = currentValue.toFixed(decimals);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+    </script>
+</body>
+
+</html>
