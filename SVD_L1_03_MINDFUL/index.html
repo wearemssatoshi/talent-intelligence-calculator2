@@ -2264,6 +2264,7 @@
         <div class="screen" id="screen-history">
             <div class="section-title">My Mindful Log</div>
             <div id="historyList"></div>
+            <div id="kiraraCollectionContainer"></div>
             <button class="btn-secondary" onclick="showScreen('screen-morning')">BACK</button>
         </div>
 
@@ -2582,9 +2583,6 @@
                         拠点を変更する（データ引き継ぎ）
                     </button>
                 </div>
-
-                <!-- キラキラコレクション -->
-                <div id="kiraraCollectionContainer"></div>
 
                 <button class="btn-main" onclick="confirmEditProfile()">プロフィールを編集する</button>
                 <button class="btn-secondary" onclick="showScreen('screen-morning')">戻る</button>
@@ -3517,12 +3515,6 @@
 
             // 写真を読み込み
             loadProfilePhoto();
-
-            // キラキラコレクション描画
-            const kiraraContainer = document.getElementById('kiraraCollectionContainer');
-            if (kiraraContainer) {
-                kiraraContainer.innerHTML = renderKiraraCollection();
-            }
 
             showScreen('screen-profile');
         }
@@ -4542,7 +4534,7 @@
         `).join('');
         }
 
-        function showHistory() { loadHistory(); showScreen('screen-history'); }
+        function showHistory() { loadHistory(); const kc = document.getElementById('kiraraCollectionContainer'); if (kc) kc.innerHTML = renderKiraraCollection(); showScreen('screen-history'); }
 
         // ============ MY VISION Accordion ============
         let goalsAccordionOpen = false;
