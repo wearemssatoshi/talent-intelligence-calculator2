@@ -16,3 +16,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # SVD Agent Bus v2.0
 alias bus="$HOME/dotfiles/.agent/scripts/agent_bus.sh"
+
+# MP Dashboard (localhost:8765)
+alias mp="npx -y http-server $HOME/dotfiles/SVD_L1_08_Restaurant_Sales/mp_dashboard -p 8765 -c-1 --cors"
