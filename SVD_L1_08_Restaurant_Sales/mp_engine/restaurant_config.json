@@ -215,6 +215,24 @@
                     "exclude_channels_from_kf": [
                         "BEERGARDEN"
                     ]
+                },
+                {
+                    "id": "BG",
+                    "name": "ビアガーデン",
+                    "csv_file": "TV_TOWER_daily.csv",
+                    "channels": {
+                        "ALL": {
+                            "count_col": "bg_count",
+                            "sales_col": "bg_total",
+                            "detail_cols": [
+                                "bg_food",
+                                "bg_drink",
+                                "bg_tent",
+                                "bg_goods"
+                            ]
+                        }
+                    },
+                    "grand_total_col": "bg_total"
                 }
             ]
         },
