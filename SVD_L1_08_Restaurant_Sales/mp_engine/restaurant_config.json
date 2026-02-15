@@ -1,0 +1,281 @@
+{
+    "org_name": "SVD",
+    "org_full_name": "SAPPORO VIEWTIFUL DINING",
+    "fiscal_year_start_month": 4,
+    "data_years": [
+        "R5",
+        "R6",
+        "R7"
+    ],
+    "calendar_start": "2023-04-01",
+    "bases": [
+        {
+            "id": "MOIWAYAMA",
+            "name": "藻岩山",
+            "name_en": "Mt. Moiwa",
+            "stores": [
+                {
+                    "id": "JW",
+                    "name": "The Jewels",
+                    "csv_file": "JW_daily.csv",
+                    "channels": {
+                        "LUNCH": {
+                            "count_col": "l_count",
+                            "sales_col": "l_total",
+                            "detail_cols": [
+                                "l_food",
+                                "l_drink"
+                            ]
+                        },
+                        "DINNER": {
+                            "count_col": "d_count",
+                            "sales_col": "d_total",
+                            "detail_cols": [
+                                "d_food",
+                                "d_drink"
+                            ]
+                        },
+                        "TAKEOUT": {
+                            "sales_col": "to_total"
+                        },
+                        "席料": {
+                            "sales_col": "seat_fee"
+                        },
+                        "南京錠": {
+                            "sales_col": "lock_fee"
+                        },
+                        "花束": {
+                            "sales_col": "flower"
+                        },
+                        "カレー": {
+                            "sales_col": "curry"
+                        }
+                    },
+                    "grand_total_col": "grand_total"
+                }
+            ]
+        },
+        {
+            "id": "OKURAYAMA",
+            "name": "大倉山",
+            "name_en": "Okurayama",
+            "stores": [
+                {
+                    "id": "NP",
+                    "name": "ヌーベルプース大倉山",
+                    "csv_file": "OKURAYAMA_NP_daily.csv",
+                    "channels": {
+                        "LUNCH": {
+                            "count_col": "l_count",
+                            "sales_col": "l_total",
+                            "detail_cols": [
+                                "l_food",
+                                "l_drink"
+                            ]
+                        },
+                        "DINNER": {
+                            "count_col": "d_count",
+                            "sales_col": "d_total",
+                            "detail_cols": [
+                                "d_food",
+                                "d_drink"
+                            ]
+                        },
+                        "WEDDING": {
+                            "count_col": "w_count",
+                            "sales_col": "w_total",
+                            "detail_cols": [
+                                "w_food",
+                                "w_drink",
+                                "w_room",
+                                "w_flower"
+                            ]
+                        },
+                        "席料": {
+                            "sales_col": "seat_fee"
+                        },
+                        "花束": {
+                            "sales_col": "flower"
+                        },
+                        "物販": {
+                            "sales_col": "goods"
+                        },
+                        "その他": {
+                            "sales_col": "other"
+                        }
+                    },
+                    "grand_total_col": "grand_total"
+                },
+                {
+                    "id": "Ce",
+                    "name": "セレステ",
+                    "csv_file": "OKURAYAMA_Ce_daily.csv",
+                    "channels": {
+                        "ALL": {
+                            "count_col": "count",
+                            "sales_col": "total",
+                            "detail_cols": [
+                                "food",
+                                "drink",
+                                "goods"
+                            ]
+                        }
+                    },
+                    "grand_total_col": "total"
+                },
+                {
+                    "id": "RP",
+                    "name": "ルポ",
+                    "csv_file": "OKURAYAMA_RP_daily.csv",
+                    "channels": {
+                        "ALL": {
+                            "count_col": "count",
+                            "sales_col": "total",
+                            "detail_cols": [
+                                "food",
+                                "drink",
+                                "goods"
+                            ]
+                        }
+                    },
+                    "grand_total_col": "total"
+                }
+            ]
+        },
+        {
+            "id": "TV_TOWER",
+            "name": "テレビ塔",
+            "name_en": "TV Tower",
+            "stores": [
+                {
+                    "id": "GA",
+                    "name": "ザ ガーデン サッポロ",
+                    "csv_file": "TV_TOWER_daily.csv",
+                    "channels": {
+                        "LUNCH": {
+                            "count_col": "l_count",
+                            "sales_col": "l_total",
+                            "detail_cols": [
+                                "l_food",
+                                "l_drink"
+                            ]
+                        },
+                        "DINNER": {
+                            "count_col": "d_count",
+                            "sales_col": "d_total",
+                            "detail_cols": [
+                                "d_food",
+                                "d_drink"
+                            ]
+                        },
+                        "TAKEOUT": {
+                            "sales_col": "to_total"
+                        },
+                        "AT": {
+                            "sales_col": "at_sales"
+                        },
+                        "BANQUET": {
+                            "count_col": "bq_count",
+                            "sales_col": "bq_total",
+                            "detail_cols": [
+                                "bq_food",
+                                "bq_drink"
+                            ]
+                        },
+                        "BEERGARDEN": {
+                            "count_col": "bg_count",
+                            "sales_col": "bg_total",
+                            "detail_cols": [
+                                "bg_food",
+                                "bg_drink",
+                                "bg_tent",
+                                "bg_goods"
+                            ]
+                        },
+                        "室料": {
+                            "sales_col": "room_fee"
+                        },
+                        "席料": {
+                            "sales_col": "seat_fee"
+                        },
+                        "展望台": {
+                            "sales_col": "ticket"
+                        },
+                        "南京錠": {
+                            "sales_col": "lock_fee"
+                        },
+                        "花束": {
+                            "sales_col": "flower"
+                        },
+                        "その他": {
+                            "sales_col": "other"
+                        }
+                    },
+                    "grand_total_col": "grand_total"
+                }
+            ]
+        },
+        {
+            "id": "AKARENGA",
+            "name": "赤れんがテラス",
+            "name_en": "Akarenga Terrace",
+            "stores": [
+                {
+                    "id": "BQ",
+                    "name": "ラ・ブリック",
+                    "csv_file": "AKARENGA_daily.csv",
+                    "channels": {
+                        "LUNCH": {
+                            "count_col": "l_count",
+                            "sales_col": "l_total",
+                            "detail_cols": [
+                                "l_food",
+                                "l_drink"
+                            ]
+                        },
+                        "AT": {
+                            "count_col": "at_count",
+                            "sales_col": "at_total",
+                            "detail_cols": [
+                                "at_food",
+                                "at_drink"
+                            ]
+                        },
+                        "DINNER": {
+                            "count_col": "d_count",
+                            "sales_col": "d_total",
+                            "detail_cols": [
+                                "d_food",
+                                "d_drink"
+                            ]
+                        },
+                        "RYB": {
+                            "count_col": "ryb_count",
+                            "sales_col": "ryb_total",
+                            "detail_cols": [
+                                "ryb_food",
+                                "ryb_drink"
+                            ]
+                        },
+                        "wolt": {
+                            "sales_col": "wolt"
+                        },
+                        "uber": {
+                            "sales_col": "uber"
+                        },
+                        "席料": {
+                            "sales_col": "seat_fee"
+                        },
+                        "物販": {
+                            "sales_col": "goods"
+                        },
+                        "花束": {
+                            "sales_col": "flower"
+                        }
+                    },
+                    "grand_total_col": "grand_total"
+                }
+            ]
+        }
+    ]
+}
