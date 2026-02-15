@@ -402,7 +402,7 @@ function renderDive() {
                     <div class="label">MP POINT</div>
                     <div class="mono fw-900" style="font-size:56px;color:var(--gold);line-height:1;">${rec.mp_point.toFixed(2)}</div>
                     <div class="mt-16"><span class="season-badge ${seasonClass(rec.season)}">${rec.season}</span></div>
-                    <div style="margin-top:8px;font-size:12px;color:var(--text-dim);">${rec.sekki} #${rec.rank} | ${rec.weekday}曜日</div>
+                    <div style="margin-top:8px;font-size:12px;color:var(--text-dim);">${rec.sekki}（${rec.season.split(' ')[0]}） | ${rec.weekday}曜日</div>
                     <div style="font-size:11px;color:var(--text-muted);">${rec.date}</div>
                 </div>
                 <div style="flex:1;min-width:200px;">
@@ -421,8 +421,9 @@ function renderDive() {
 
     // KF Breakdown
     if (rec) {
+        const layerLabel = rec.layers_used === 5 ? '5層(特別日)' : '4層';
         document.getElementById('dive-kf').innerHTML = [
-            { name: 'KF① 拠点定指数', val: rec.kf1, sub: `季節=${rec.seasonal_idx} 曜日=${rec.weekday_idx} 来場=${rec.visitor_idx}` },
+            { name: 'KF① 拠点定指数', val: rec.kf1, sub: `月=${rec.monthly_idx} 曜=${rec.weekday_idx} 節=${rec.sekki_idx} 週=${rec.weekly_idx} 日=${rec.daily_idx || '—'} [${layerLabel}]` },
             { name: 'KF② 売上FACTOR', val: rec.kf2, sub: '過去実績 min-max正規化' },
             { name: 'KF③ 来客FACTOR', val: rec.kf3, sub: '過去実績 min-max正規化' },
         ].map(k => `
@@ -496,6 +497,21 @@ function renderDive() {
     renderDataTable(sid, storeData);
 }
 
+// 節気rank(1=TOP → 24=OFF)から天気配色を返す（暖色=忙しい, 寒色=閑散）
+function sekkiWeatherColor(rank) {
+    // 24段階: rank 1=最も暖色(赤) → rank 24=最も寒色(深青)
+    const palette = [
+        '#dc2626', '#e03a1e', '#e54e16', '#ea620e',  // 1-4:  赤→橙 (TOP)
+        '#ef7606', '#f08c14', '#f0a222', '#e8b830',  // 5-8:  橙→黄 (HIGH)
+        '#d4c73e', '#b8d44c', '#8ccc5a', '#60c468',  // 9-12: 黄→緑 (FLOW上)
+        '#45b87a', '#3aac8c', '#36a09e', '#3294b0',  // 13-16: 緑→青緑 (FLOW下)
+        '#2e88c2', '#2a7cd4', '#266de6', '#2255d4',  // 17-20: 青 (LOW)
+        '#2244b8', '#22339c', '#1e2280', '#1a1164',  // 21-24: 深青 (OFF)
+    ];
+    const idx = Math.max(0, Math.min(23, rank - 1));
+    return palette[idx];
+}
+
 function renderHeatmap(sid, storeData) {
     const container = document.getElementById('dive-heatmap');
     const yr = selectedDate.slice(0, 4);
@@ -514,15 +530,19 @@ function renderHeatmap(sid, storeData) {
         days.forEach(x => {
             const day = parseInt(x.date.slice(8));
             const active = x.actual_sales > 0;
-            const bg = active ? mpColor(x.mp_point) : '#1a1a2e';
-            html += `<div class="hm-cell" style="background:${bg}" title="${x.date} ${x.weekday} ${x.sekki}\nMP: ${x.mp_point.toFixed(2)}\n${active ? '¥' + x.actual_sales.toLocaleString() : '休業'}">${day}</div>`;
+            const bg = active ? sekkiWeatherColor(x.rank) : '#1a1a2e';
+            html += `<div class="hm-cell" style="background:${bg}" title="${x.date} ${x.weekday}\n${x.sekki}（${x.season.split(' ')[0]}）\nMP: ${x.mp_point.toFixed(2)}\n${active ? '¥' + x.actual_sales.toLocaleString() : '休業'}">${day}</div>`;
         });
         html += '</div></div>';
     });
     html += '</div>';
-    html += '<div style="display:flex;gap:6px;margin-top:12px;align-items:center;font-size:10px;color:var(--text-dim)"><span>LOW</span>';
-    ['#6b7280', '#a78bfa', '#60a5fa', '#4ade80', '#eab308', '#f97316', '#ef4444'].forEach(c => { html += `<div style="width:18px;height:12px;background:${c};border-radius:2px"></div>`; });
-    html += '<span>HIGH</span></div>';
+    // 凡例: 天気グラデーション（暖色→寒色で24段階を6サンプルで表現）
+    html += '<div style="display:flex;gap:4px;margin-top:12px;align-items:center;font-size:10px;color:var(--text-dim)">';
+    html += '<span>TOP</span>';
+    [1, 4, 8, 12, 16, 20, 24].forEach(r => {
+        html += `<div style="width:18px;height:12px;background:${sekkiWeatherColor(r)};border-radius:2px" title="Rank ${r}"></div>`;
+    });
+    html += '<span>OFF</span></div>';
     container.innerHTML = html;
 }
 
