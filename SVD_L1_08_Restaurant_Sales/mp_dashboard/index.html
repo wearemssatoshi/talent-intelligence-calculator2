@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOMENTUM PEAKS — Restaurant OS</title>
+    <meta name="description" content="SVD Demand Intelligence Dashboard — 7-store MP monitoring">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ═══ Header ═══ -->
+    <div class="header">
+        <div>
+            <h1>MOMENTUM PEAKS</h1>
+            <div class="subtitle">Restaurant OS — Demand Intelligence</div>
+        </div>
+        <div class="header-controls">
+            <div class="control-group">
+                <label>DATE</label>
+                <input type="date" id="selDate">
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Navigation ═══ -->
+    <nav class="nav" id="mainNav">
+        <button class="nav-btn active" data-tab="command">① COMMAND CENTER</button>
+        <button class="nav-btn" data-tab="dive">② STORE DEEP DIVE</button>
+        <button class="nav-btn" data-tab="forecast">③ FORECAST</button>
+        <button class="nav-btn" data-tab="compare">④ CROSS COMPARE</button>
+        <button class="nav-btn" data-tab="import">⑤ DATA IMPORT</button>
+        <button class="nav-btn" data-tab="staffing">⑥ STAFFING</button>
+    </nav>
+
+    <!-- ═══ ① COMMAND CENTER ═══ -->
+    <div class="panel active" id="p-command">
+
+        <!-- SVD Summary -->
+        <div class="svd-summary" id="svd-summary"></div>
+
+        <!-- Store Cards -->
+        <div class="store-grid" id="store-grid"></div>
+
+        <!-- Monthly Summary -->
+        <div class="card">
+            <h3>📊 月間サマリー</h3>
+            <div class="grid-2">
+                <div id="monthly-summary"></div>
+                <div class="chart-wrap"><canvas id="chart-monthly"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ② STORE DEEP DIVE ═══ -->
+    <div class="panel" id="p-dive">
+        <!-- Store Selector -->
+        <div class="controls">
+            <div class="control-group">
+                <label>STORE</label>
+                <select id="selStore"></select>
+            </div>
+        </div>
+
+        <!-- MP Hero -->
+        <div class="card" id="dive-hero"></div>
+
+        <!-- KF Breakdown -->
+        <div class="kf-grid" id="dive-kf"></div>
+
+        <!-- Channel Breakdown -->
+        <div class="card mt-16">
+            <h3>📊 チャネル別売上内訳</h3>
+            <div class="grid-2">
+                <div style="overflow-x:auto;">
+                    <table class="data-table" id="dive-ch-table">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="chart-wrap"><canvas id="chart-channels"></canvas></div>
+            </div>
+        </div>
+
+        <!-- MP Trend -->
+        <div class="card">
+            <h3>📈 MP POINT 推移 — 直近90日</h3>
+            <div class="chart-wrap"><canvas id="chart-mp-trend"></canvas></div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="card">
+            <h3>🗓 HEATMAP</h3>
+            <div id="dive-heatmap"></div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card">
+            <h3>📋 DATA TABLE</h3>
+            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+                <table class="data-table" id="dive-data-table">
+                    <thead>
+                        <tr id="dive-dt-th"></tr>
+                    </thead>
+                    <tbody id="dive-dt-tb"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ③ FORECAST ═══ -->
+    <div class="panel" id="p-forecast">
+        <div class="controls">
+            <div class="control-group">
+                <label>STORE</label>
+                <select id="fcStore"></select>
+            </div>
+            <div class="control-group">
+                <label>FROM</label>
+                <input type="date" id="fcFrom">
+            </div>
+            <div class="control-group">
+                <label>TO</label>
+                <input type="date" id="fcTo">
+            </div>
+            <button class="btn btn-gold" id="fcRun">GENERATE FORECAST</button>
+        </div>
+
+        <div class="card mt-16">
+            <h3>📊 FORECAST RESULTS</h3>
+            <div class="chart-wrap tall"><canvas id="chart-forecast"></canvas></div>
+        </div>
+
+        <div class="card">
+            <h3>📋 FORECAST TABLE</h3>
+            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
+                <table class="data-table" id="fc-table">
+                    <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>曜日</th>
+                            <th>節気</th>
+                            <th>SEASON</th>
+                            <th class="num">KF①</th>
+                            <th class="num">KF②</th>
+                            <th class="num">KF③</th>
+                            <th class="num">MP POINT</th>
+                            <th class="num">予測売上</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fc-tb"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ④ CROSS COMPARE ═══ -->
+    <div class="panel" id="p-compare">
+        <div class="card">
+            <h3>📈 全店舗 MP POINT 月別平均</h3>
+            <div class="chart-wrap tall"><canvas id="chart-compare-monthly"></canvas></div>
+        </div>
+
+        <div class="card">
+            <h3>📊 季節帯別パフォーマンス</h3>
+            <div class="chart-wrap tall"><canvas id="chart-season-perf"></canvas></div>
+        </div>
+
+        <div class="card">
+            <h3>📊 年度対比</h3>
+            <div class="year-cards" id="compare-year-cards"></div>
+        </div>
+
+        <div class="card">
+            <h3>📊 KF②③ ランキング</h3>
+            <div class="grid-2">
+                <div>
+                    <h3 style="font-size:11px;color:var(--blue);">KF② 売上FACTOR</h3>
+                    <div id="rank-kf2"></div>
+                </div>
+                <div>
+                    <h3 style="font-size:11px;color:var(--green);">KF③ 来客FACTOR</h3>
+                    <div id="rank-kf3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ⑤ DATA IMPORT ═══ -->
+    <div class="panel" id="p-import">
+        <div class="card">
+            <h3>📁 MP DATA (mp_data.json)</h3>
+            <div class="drop-zone" id="dz-main" data-type="main">
+                <div class="dz-icon">📊</div>
+                <div class="dz-text">ドラッグ＆ドロップ または クリックして選択</div>
+                <div class="dz-hint">mp_data.json — メインデータファイル</div>
+            </div>
+            <div class="import-status" id="is-main"></div>
+            <input type="file" id="fi-main" accept=".json" class="hidden">
+        </div>
+
+        <div class="card">
+            <h3>📁 予約データ (reservations.csv) — OPTIONAL</h3>
+            <div class="drop-zone" id="dz-reserve" data-type="reserve">
+                <div class="dz-icon">📅</div>
+                <div class="dz-text">ドラッグ＆ドロップ または クリックして選択</div>
+                <div class="dz-hint">date,store_id,reservation_count,reservation_sales_est,note</div>
+            </div>
+            <div class="import-status" id="is-reserve"></div>
+            <input type="file" id="fi-reserve" accept=".csv" class="hidden">
+        </div>
+
+        <div class="card">
+            <h3>📁 人員定義 (staffing_rules.csv) — OPTIONAL</h3>
+            <div class="drop-zone" id="dz-staff" data-type="staff">
+                <div class="dz-icon">👥</div>
+                <div class="dz-text">ドラッグ＆ドロップ または クリックして選択</div>
+                <div class="dz-hint">store_id,segment,mp_low,mp_high,hall_count,kitchen_count,note</div>
+            </div>
+            <div class="import-status" id="is-staff"></div>
+            <input type="file" id="fi-staff" accept=".csv" class="hidden">
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:16px;">
+            <button class="btn btn-gold" id="btn-save-local">💾 ローカルストレージに保存</button>
+            <button class="btn" id="btn-clear-local">🗑 キャッシュクリア</button>
+            <button class="btn" id="btn-load-default">📥 デフォルトJSON読込</button>
+        </div>
+    </div>
+
+    <!-- ═══ ⑥ STAFFING ═══ -->
+    <div class="panel" id="p-staffing">
+        <div class="controls">
+            <div class="control-group">
+                <label>DATE</label>
+                <input type="date" id="stDate">
+            </div>
+        </div>
+
+        <div class="card mt-16" id="staffing-content">
+            <h3>👥 必要人員算出</h3>
+            <div id="staffing-grid"></div>
+        </div>
+
+        <div class="card hidden" id="enter-placeholder">
+            <div style="text-align:center;padding:40px;">
+                <div style="font-size:48px;margin-bottom:16px;">🔴</div>
+                <div
+                    style="font-family:'JetBrains Mono';font-size:18px;font-weight:800;color:var(--red);letter-spacing:3px;">
+                    ENTER</div>
+                <div style="font-size:12px;color:var(--text-dim);margin-top:8px;">TI (Talent Intelligence) が接続された時、起動する。
+                </div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">MP (DEMAND) × TI (SUPPLY) =
+                    ONE-BUTTON SHIFT MAKER</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
