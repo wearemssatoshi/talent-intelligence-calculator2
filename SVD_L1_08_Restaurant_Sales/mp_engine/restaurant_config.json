@@ -211,7 +211,10 @@
                             "sales_col": "other"
                         }
                     },
-                    "grand_total_col": "grand_total"
+                    "grand_total_col": "grand_total",
+                    "exclude_channels_from_kf": [
+                        "BEERGARDEN"
+                    ]
                 }
             ]
         },
