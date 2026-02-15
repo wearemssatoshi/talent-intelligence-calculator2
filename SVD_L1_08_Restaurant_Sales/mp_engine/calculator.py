@@ -248,9 +248,12 @@ class MPCalculator:
             "rank": kf1_result["rank"],
             "season": kf1_result["season"],
             "season_pt": kf1_result["season_pt"],
-            "seasonal_idx": kf1_result["seasonal_idx"],
+            "monthly_idx": kf1_result["monthly_idx"],
             "weekday_idx": kf1_result["weekday_idx"],
-            "visitor_idx": kf1_result["visitor_idx"],
+            "sekki_idx": kf1_result["sekki_idx"],
+            "weekly_idx": kf1_result["weekly_idx"],
+            "daily_idx": kf1_result["daily_idx"],
+            "layers_used": kf1_result["layers_used"],
             "kf1": kf1,
             "kf2": kf2,
             "kf3": kf3,
@@ -320,7 +323,8 @@ class MPCalculator:
         
         fieldnames = [
             "date", "weekday", "sekki", "rank", "season", "season_pt",
-            "seasonal_idx", "weekday_idx", "visitor_idx",
+            "monthly_idx", "weekday_idx", "sekki_idx", "weekly_idx",
+            "daily_idx", "layers_used",
             "kf1", "kf2", "kf3", "mp_point",
             "predicted_sales", "predicted_count",
             "actual_sales", "actual_count",
@@ -383,14 +387,17 @@ def main():
         print(f"\n{'━' * 50}")
         print(f"📅 {result['date']} ({result['weekday']})")
         print(f"🌿 {result['sekki']} (Level {result['rank']}) — {result['season']}")
+        daily_label = '特別日' if result['layers_used'] == 5 else '通常日'
         print(f"{'─' * 50}")
-        print(f"① 季節IDX:    {result['seasonal_idx']:.2f}")
+        print(f"① 月別IDX:    {result['monthly_idx']:.2f}")
         print(f"② 曜日IDX:    {result['weekday_idx']:.2f}")
-        print(f"③ 来場者IDX:  {result['visitor_idx']:.2f}")
-        print(f"   KF① =      {result['kf1']:.2f}")
+        print(f"③ 節気IDX:    {result['sekki_idx']:.2f}")
+        print(f"④ 週別IDX:    {result['weekly_idx']:.2f}")
+        print(f"⑤ 日別IDX:    {result['daily_idx']:.2f} ({daily_label})")
+        print(f"   KF① =      {result['kf1']:.2f} ({result['layers_used']}層平均)")
         print(f"{'─' * 50}")
-        print(f"⑤ KF② (売上): {result['kf2']:.2f}")
-        print(f"⑥ KF③ (来客): {result['kf3']:.2f}")
+        print(f"⑥ KF② (売上): {result['kf2']:.2f}")
+        print(f"⑦ KF③ (来客): {result['kf3']:.2f}")
         print(f"{'━' * 50}")
         print(f"🔥 MP Point =  {result['mp_point']:.2f}")
         print(f"{'━' * 50}")
