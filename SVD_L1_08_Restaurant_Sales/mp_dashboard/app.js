@@ -10,6 +10,7 @@ let charts = {};        // Chart.js instances
 let currentTab = 'command';
 let selectedDate = '';
 let selectedStore = 'JW';
+let selectedBase = 'ALL';  // 拠点フィルタ: 'ALL' or base id
 
 // ── Sekki Engine (client-side for forecast) ──
 const SEKKI_BOUNDARIES = {
@@ -206,16 +207,41 @@ function renderCurrentTab() {
 }
 
 // ═══════════════════════════════════════
+// ── Base Filter helpers ──
+function getStoresForBase(baseId) {
+    if (!DATA || baseId === 'ALL') return DATA.meta.stores;
+    const base = DATA.config.bases.find(b => b.id === baseId);
+    return base ? base.stores.map(s => s.id) : DATA.meta.stores;
+}
+
+function renderBaseFilter() {
+    const bases = DATA.config.bases;
+    let html = `<button class="base-btn ${selectedBase === 'ALL' ? 'active' : ''}" onclick="setBase('ALL')">ALL — SVD統合</button>`;
+    bases.forEach(b => {
+        const storeCount = b.stores.length;
+        html += `<button class="base-btn ${selectedBase === b.id ? 'active' : ''}" onclick="setBase('${b.id}')">${b.name}（${storeCount}店）</button>`;
+    });
+    document.getElementById('base-filter').innerHTML = html;
+}
+
+function setBase(baseId) {
+    selectedBase = baseId;
+    renderCommand();
+}
+
 // ① COMMAND CENTER
 // ═══════════════════════════════════════
 function renderCommand() {
-    const stores = DATA.meta.stores;
+    // Base Filter buttons
+    renderBaseFilter();
+
+    const filteredStores = getStoresForBase(selectedBase);
     const dateStr = selectedDate;
 
     let totalSales = 0, totalCount = 0, mpSum = 0, activeStores = 0;
     const storeCards = [];
 
-    stores.forEach(sid => {
+    filteredStores.forEach(sid => {
         const d = (DATA.stores[sid] || []).find(r => r.date === dateStr);
         if (d) {
             const isActive = d.actual_sales > 0;
@@ -237,11 +263,13 @@ function renderCommand() {
     const season = sample ? sample.d.season : '—';
     const weekday = sample ? sample.d.weekday : '—';
 
-    // SVD Summary
+    const scopeLabel = selectedBase === 'ALL' ? 'SVD' : DATA.config.bases.find(b => b.id === selectedBase)?.name || selectedBase;
+
+    // Summary
     document.getElementById('svd-summary').innerHTML = `
         <div class="svd-stat">
             <div class="stat-value mono">${fmtK$(totalSales)}</div>
-            <div class="stat-label">SVD TOTAL SALES</div>
+            <div class="stat-label">${scopeLabel} TOTAL SALES</div>
         </div>
         <div class="svd-stat">
             <div class="stat-value mono">${avgMP.toFixed(2)}</div>
@@ -284,7 +312,8 @@ function renderMonthlySummary() {
     let currentMonth = { sales: 0, count: 0, days: 0 };
     let prevMonth = { sales: 0, count: 0, days: 0 };
 
-    DATA.meta.stores.forEach(sid => {
+    const filteredStores = getStoresForBase(selectedBase);
+    filteredStores.forEach(sid => {
         (DATA.stores[sid] || []).forEach(r => {
             const rm = r.date.slice(0, 7);
             if (rm === ym && r.actual_sales > 0) {
