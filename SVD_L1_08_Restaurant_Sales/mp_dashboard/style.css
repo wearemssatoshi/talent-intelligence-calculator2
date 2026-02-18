@@ -101,6 +101,38 @@ body {
     align-items: center;
 }
 
+/* ── Tax Display Toggle (Header) ── */
+.tax-display-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.tax-display-btn:hover {
+    border-color: var(--border-light);
+}
+
+.tax-display-btn.active {
+    background: var(--gold-dim);
+    color: var(--gold);
+    border-color: var(--gold);
+}
+
+.tax-display-btn.tax-inc {
+    background: var(--blue-dim);
+    color: var(--blue);
+    border-color: var(--blue);
+}
+
 /* ── Navigation ── */
 .nav {
     display: flex;
@@ -749,6 +781,49 @@ input[type="date"]:focus {
     animation: fadeIn 0.3s ease forwards;
 }
 
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ── Ropeway Toggle Buttons ── */
+.rw-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 16px;
+    border: 1px solid rgba(251, 146, 60, 0.25);
+    background: transparent;
+    color: rgba(251, 146, 60, 0.5);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.rw-btn:hover {
+    border-color: rgba(251, 146, 60, 0.6);
+    color: #fb923c;
+    background: rgba(251, 146, 60, 0.08);
+    box-shadow: 0 0 8px rgba(251, 146, 60, 0.15);
+}
+
+.rw-btn.rw-active {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(251, 146, 60, 0.1));
+    border-color: #fb923c;
+    color: #fb923c;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(251, 146, 60, 0.25), inset 0 0 8px rgba(251, 146, 60, 0.08);
+}
+
 /* ── Utility ── */
 .grid-2 {
     display: grid;
@@ -792,4 +867,456 @@ input[type="date"]:focus {
 
 .hidden {
     display: none !important;
+}
+
+/* ── Modal Overlay ── */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 1200px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* ── Channel Breakdown Table ── */
+.ch-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.ch-table th {
+    padding: 8px 10px;
+    text-align: right;
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+}
+
+.ch-table th:first-child {
+    text-align: left;
+}
+
+.ch-table td {
+    padding: 8px 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+}
+
+.ch-table td:first-child {
+    text-align: left;
+}
+
+.ch-table tr:hover {
+    background: var(--gold-dim);
+}
+
+/* ── Sales Form inputs ── */
+#sf-fields input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+}
+
+#sf-fields input:focus {
+    border-color: var(--gold);
+    outline: none;
+}
+
+#sf-fields label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+/* ── Nav Sub Labels ── */
+.nav-sub {
+    display: block;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* ── Sales Form Sections ── */
+.sf-section {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+}
+
+.sf-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.sf-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    align-items: end;
+}
+
+.sf-field label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+    display: block;
+}
+
+.sf-field input {
+    width: 100%;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 6px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+}
+
+.sf-field input:focus {
+    border-color: var(--gold);
+    outline: none;
+}
+
+.sf-calc .sf-subtotal,
+.sf-calc .sf-exctax,
+.sf-calc .sf-avg {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: var(--gold);
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.sf-calc .sf-exctax {
+    color: var(--blue);
+}
+
+.sf-calc .sf-avg {
+    color: var(--green);
+}
+
+/* ── Grand Total Bar ── */
+.sf-total-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--surface-3);
+    border: 1px solid var(--gold-dim);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.sf-total-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-right: 12px;
+}
+
+.sf-total-val {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* ── Tax Toggle ── */
+.tax-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text);
+}
+
+.tax-toggle input[type="checkbox"] {
+    appearance: none;
+    width: 36px;
+    height: 20px;
+    background: var(--surface-3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tax-toggle input[type="checkbox"]::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    top: 1px;
+    left: 1px;
+    transition: all 0.2s;
+}
+
+.tax-toggle input[type="checkbox"]:checked {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+}
+
+.tax-toggle input[type="checkbox"]:checked::after {
+    background: var(--gold);
+    left: 17px;
+}
+
+/* ── Store Block (Base-level Sales Form) ── */
+.sf-store-block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color var(--transition);
+}
+
+.sf-store-block:hover {
+    border-color: var(--border-light);
+}
+
+.sf-store-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    cursor: pointer;
+    user-select: none;
+    transition: background var(--transition);
+}
+
+.sf-store-header:hover {
+    background: var(--surface-3);
+}
+
+.sf-store-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--gold-dim);
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.sf-store-title {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.sf-store-total {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.sf-store-arrow {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+}
+
+.sf-store-block.collapsed .sf-store-arrow {
+    transform: rotate(-90deg);
+}
+
+.sf-store-body {
+    padding: 12px 14px;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.sf-store-block.collapsed .sf-store-body {
+    max-height: 0;
+    padding: 0 14px;
+    overflow: hidden;
+}
+
+/* ── Forecast Rationale Panel ── */
+.store-card-header {
+    cursor: pointer;
+}
+
+.rationale-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0 0;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.rationale-toggle:hover {
+    opacity: 0.8;
+}
+
+.rationale-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.rationale-badge.conf-high {
+    background: var(--green-dim);
+    color: var(--green);
+}
+
+.rationale-badge.conf-mid {
+    background: var(--blue-dim);
+    color: var(--blue);
+}
+
+.rationale-badge.conf-low {
+    background: var(--red-dim);
+    color: var(--red);
+}
+
+.rationale-arrow {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+}
+
+.rationale-panel.open+.rationale-toggle .rationale-arrow,
+.rationale-toggle:has(+ .rationale-panel.open) .rationale-arrow {
+    transform: rotate(180deg);
+}
+
+.rationale-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0;
+}
+
+.rationale-panel.open {
+    max-height: 500px;
+    padding: 10px 0 4px;
+}
+
+.rationale-header {
+    font-size: 11px;
+    color: var(--text-dim);
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+    margin-bottom: 6px;
+}
+
+.rationale-header strong {
+    color: var(--gold-light);
+}
+
+.rationale-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rationale-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto;
+    gap: 8px;
+    align-items: center;
+    font-size: 11px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    background: var(--surface-1);
+    border: 1px solid rgba(37, 37, 72, 0.3);
+}
+
+.rationale-row:hover {
+    border-color: var(--border-light);
+}
+
+.rationale-date {
+    color: var(--text-sub);
+    font-size: 11px;
+}
+
+.rationale-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--surface-3);
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.rationale-sales {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.rationale-count {
+    color: var(--text-muted);
+    font-size: 10px;
+}
+
+.rationale-avg {
+    font-size: 11px;
+    color: var(--text-sub);
+    padding-top: 8px;
+    margin-top: 6px;
+    border-top: 1px solid var(--border);
+}
+
+.rationale-empty {
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 6px 0 0;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
 }
