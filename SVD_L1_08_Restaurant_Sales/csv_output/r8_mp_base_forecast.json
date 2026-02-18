@@ -1,0 +1,844 @@
+{
+  "MOIWAYAMA": [
+    {
+      "month": 4,
+      "seasonal": 1.0,
+      "weekday": 3.1,
+      "visitor": 1.0,
+      "kf1": 1.7,
+      "avg_sales": 2125996,
+      "kf2": 1.0,
+      "avg_count": 709,
+      "kf3": 1.0,
+      "mp_point": 1.23,
+      "years_used": 3,
+      "year_months": [
+        "2023-04",
+        "2024-04",
+        "2025-04"
+      ]
+    },
+    {
+      "month": 5,
+      "seasonal": 3.0,
+      "weekday": 3.26,
+      "visitor": 3.5,
+      "kf1": 3.25,
+      "avg_sales": 10599071,
+      "kf2": 4.77,
+      "avg_count": 3795,
+      "kf3": 5.0,
+      "mp_point": 4.34,
+      "years_used": 3,
+      "year_months": [
+        "2023-05",
+        "2024-05",
+        "2025-05"
+      ]
+    },
+    {
+      "month": 6,
+      "seasonal": 4.0,
+      "weekday": 3.07,
+      "visitor": 4.0,
+      "kf1": 3.69,
+      "avg_sales": 11021879,
+      "kf2": 4.96,
+      "avg_count": 3573,
+      "kf3": 4.71,
+      "mp_point": 4.45,
+      "years_used": 3,
+      "year_months": [
+        "2023-06",
+        "2024-06",
+        "2025-06"
+      ]
+    },
+    {
+      "month": 7,
+      "seasonal": 5.0,
+      "weekday": 3.13,
+      "visitor": 4.5,
+      "kf1": 4.21,
+      "avg_sales": 11121097,
+      "kf2": 5.0,
+      "avg_count": 3344,
+      "kf3": 4.41,
+      "mp_point": 4.54,
+      "years_used": 3,
+      "year_months": [
+        "2023-07",
+        "2024-07",
+        "2025-07"
+      ]
+    },
+    {
+      "month": 8,
+      "seasonal": 5.0,
+      "weekday": 3.19,
+      "visitor": 4.5,
+      "kf1": 4.23,
+      "avg_sales": 10963012,
+      "kf2": 4.93,
+      "avg_count": 3355,
+      "kf3": 4.43,
+      "mp_point": 4.53,
+      "years_used": 3,
+      "year_months": [
+        "2023-08",
+        "2024-08",
+        "2025-08"
+      ]
+    },
+    {
+      "month": 9,
+      "seasonal": 5.0,
+      "weekday": 3.07,
+      "visitor": 5.0,
+      "kf1": 4.36,
+      "avg_sales": 10537003,
+      "kf2": 4.74,
+      "avg_count": 3368,
+      "kf3": 4.45,
+      "mp_point": 4.52,
+      "years_used": 3,
+      "year_months": [
+        "2023-09",
+        "2024-09",
+        "2025-09"
+      ]
+    },
+    {
+      "month": 10,
+      "seasonal": 5.0,
+      "weekday": 3.23,
+      "visitor": 5.0,
+      "kf1": 4.41,
+      "avg_sales": 6362058,
+      "kf2": 2.88,
+      "avg_count": 3197,
+      "kf3": 4.22,
+      "mp_point": 3.84,
+      "years_used": 3,
+      "year_months": [
+        "2023-10",
+        "2024-10",
+        "2025-10"
+      ]
+    },
+    {
+      "month": 11,
+      "seasonal": 3.0,
+      "weekday": 3.13,
+      "visitor": 3.0,
+      "kf1": 3.04,
+      "avg_sales": 5062970,
+      "kf2": 2.31,
+      "avg_count": 2252,
+      "kf3": 3.0,
+      "mp_point": 2.78,
+      "years_used": 3,
+      "year_months": [
+        "2023-11",
+        "2024-11",
+        "2025-11"
+      ]
+    },
+    {
+      "month": 12,
+      "seasonal": 5.0,
+      "weekday": 3.06,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 7564244,
+      "kf2": 3.42,
+      "avg_count": 3419,
+      "kf3": 4.51,
+      "mp_point": 4.04,
+      "years_used": 3,
+      "year_months": [
+        "2023-12",
+        "2024-12",
+        "2025-12"
+      ]
+    },
+    {
+      "month": 1,
+      "seasonal": 2.0,
+      "weekday": 3.26,
+      "visitor": 2.0,
+      "kf1": 2.42,
+      "avg_sales": 4982422,
+      "kf2": 2.27,
+      "avg_count": 3001,
+      "kf3": 3.97,
+      "mp_point": 2.89,
+      "years_used": 3,
+      "year_months": [
+        "2024-01",
+        "2025-01",
+        "2026-01"
+      ]
+    },
+    {
+      "month": 2,
+      "seasonal": 3.0,
+      "weekday": 3.14,
+      "visitor": 3.0,
+      "kf1": 3.05,
+      "avg_sales": 5542887,
+      "kf2": 2.52,
+      "avg_count": 2897,
+      "kf3": 3.84,
+      "mp_point": 3.14,
+      "years_used": 3,
+      "year_months": [
+        "2024-02",
+        "2025-02",
+        "2026-02"
+      ]
+    },
+    {
+      "month": 3,
+      "seasonal": 3.0,
+      "weekday": 3.03,
+      "visitor": 2.5,
+      "kf1": 2.84,
+      "avg_sales": 4630996,
+      "kf2": 2.11,
+      "avg_count": 2036,
+      "kf3": 2.72,
+      "mp_point": 2.56,
+      "years_used": 2,
+      "year_months": [
+        "2024-03",
+        "2025-03"
+      ]
+    }
+  ],
+  "OKURAYAMA": [
+    {
+      "month": 4,
+      "seasonal": 2.0,
+      "weekday": 3.1,
+      "visitor": 2.0,
+      "kf1": 2.37,
+      "avg_sales": 6414622,
+      "kf2": 1.0,
+      "avg_count": 1260,
+      "kf3": 1.0,
+      "mp_point": 1.46,
+      "years_used": 3,
+      "year_months": [
+        "2023-04",
+        "2024-04",
+        "2025-04"
+      ]
+    },
+    {
+      "month": 5,
+      "seasonal": 3.0,
+      "weekday": 3.26,
+      "visitor": 3.5,
+      "kf1": 3.25,
+      "avg_sales": 9668795,
+      "kf2": 3.15,
+      "avg_count": 2417,
+      "kf3": 2.83,
+      "mp_point": 3.08,
+      "years_used": 3,
+      "year_months": [
+        "2023-05",
+        "2024-05",
+        "2025-05"
+      ]
+    },
+    {
+      "month": 6,
+      "seasonal": 4.0,
+      "weekday": 3.07,
+      "visitor": 3.5,
+      "kf1": 3.52,
+      "avg_sales": 12141105,
+      "kf2": 4.78,
+      "avg_count": 2544,
+      "kf3": 3.03,
+      "mp_point": 3.78,
+      "years_used": 3,
+      "year_months": [
+        "2023-06",
+        "2024-06",
+        "2025-06"
+      ]
+    },
+    {
+      "month": 7,
+      "seasonal": 5.0,
+      "weekday": 3.13,
+      "visitor": 4.0,
+      "kf1": 4.04,
+      "avg_sales": 11183627,
+      "kf2": 4.15,
+      "avg_count": 2548,
+      "kf3": 3.04,
+      "mp_point": 3.74,
+      "years_used": 3,
+      "year_months": [
+        "2023-07",
+        "2024-07",
+        "2025-07"
+      ]
+    },
+    {
+      "month": 8,
+      "seasonal": 5.0,
+      "weekday": 3.19,
+      "visitor": 5.0,
+      "kf1": 4.4,
+      "avg_sales": 11832663,
+      "kf2": 4.58,
+      "avg_count": 2648,
+      "kf3": 3.19,
+      "mp_point": 4.06,
+      "years_used": 3,
+      "year_months": [
+        "2023-08",
+        "2024-08",
+        "2025-08"
+      ]
+    },
+    {
+      "month": 9,
+      "seasonal": 5.0,
+      "weekday": 3.07,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 12470954,
+      "kf2": 5.0,
+      "avg_count": 3792,
+      "kf3": 5.0,
+      "mp_point": 4.73,
+      "years_used": 3,
+      "year_months": [
+        "2023-09",
+        "2024-09",
+        "2025-09"
+      ]
+    },
+    {
+      "month": 10,
+      "seasonal": 5.0,
+      "weekday": 3.23,
+      "visitor": 4.0,
+      "kf1": 4.08,
+      "avg_sales": 11239478,
+      "kf2": 4.19,
+      "avg_count": 3584,
+      "kf3": 4.67,
+      "mp_point": 4.31,
+      "years_used": 3,
+      "year_months": [
+        "2023-10",
+        "2024-10",
+        "2025-10"
+      ]
+    },
+    {
+      "month": 11,
+      "seasonal": 3.0,
+      "weekday": 3.13,
+      "visitor": 2.5,
+      "kf1": 2.88,
+      "avg_sales": 9212097,
+      "kf2": 2.85,
+      "avg_count": 2197,
+      "kf3": 2.48,
+      "mp_point": 2.74,
+      "years_used": 3,
+      "year_months": [
+        "2023-11",
+        "2024-11",
+        "2025-11"
+      ]
+    },
+    {
+      "month": 12,
+      "seasonal": 5.0,
+      "weekday": 3.06,
+      "visitor": 3.5,
+      "kf1": 3.85,
+      "avg_sales": 11390492,
+      "kf2": 4.29,
+      "avg_count": 2171,
+      "kf3": 2.44,
+      "mp_point": 3.53,
+      "years_used": 3,
+      "year_months": [
+        "2023-12",
+        "2024-12",
+        "2025-12"
+      ]
+    },
+    {
+      "month": 1,
+      "seasonal": 2.0,
+      "weekday": 3.26,
+      "visitor": 2.0,
+      "kf1": 2.42,
+      "avg_sales": 6549106,
+      "kf2": 1.09,
+      "avg_count": 1870,
+      "kf3": 1.96,
+      "mp_point": 1.82,
+      "years_used": 3,
+      "year_months": [
+        "2023-01",
+        "2025-01",
+        "2026-01"
+      ]
+    },
+    {
+      "month": 2,
+      "seasonal": 3.0,
+      "weekday": 3.14,
+      "visitor": 3.0,
+      "kf1": 3.05,
+      "avg_sales": 7326050,
+      "kf2": 1.6,
+      "avg_count": 1958,
+      "kf3": 2.1,
+      "mp_point": 2.25,
+      "years_used": 2,
+      "year_months": [
+        "2023-02",
+        "2025-02"
+      ]
+    },
+    {
+      "month": 3,
+      "seasonal": 3.0,
+      "weekday": 3.03,
+      "visitor": 2.5,
+      "kf1": 2.84,
+      "avg_sales": 7140828,
+      "kf2": 1.48,
+      "avg_count": 1758,
+      "kf3": 1.79,
+      "mp_point": 2.04,
+      "years_used": 2,
+      "year_months": [
+        "2023-03",
+        "2025-03"
+      ]
+    }
+  ],
+  "TV_TOWER": [
+    {
+      "month": 4,
+      "seasonal": 2.0,
+      "weekday": 3.1,
+      "visitor": 2.0,
+      "kf1": 2.37,
+      "avg_sales": 7151292,
+      "kf2": 1.0,
+      "avg_count": 777,
+      "kf3": 1.0,
+      "mp_point": 1.46,
+      "years_used": 3,
+      "year_months": [
+        "2023-04",
+        "2024-04",
+        "2025-04"
+      ]
+    },
+    {
+      "month": 5,
+      "seasonal": 3.0,
+      "weekday": 3.26,
+      "visitor": 3.5,
+      "kf1": 3.25,
+      "avg_sales": 14048727,
+      "kf2": 3.12,
+      "avg_count": 1307,
+      "kf3": 2.93,
+      "mp_point": 3.1,
+      "years_used": 3,
+      "year_months": [
+        "2023-05",
+        "2024-05",
+        "2025-05"
+      ]
+    },
+    {
+      "month": 6,
+      "seasonal": 4.0,
+      "weekday": 3.07,
+      "visitor": 4.0,
+      "kf1": 3.69,
+      "avg_sales": 12857756,
+      "kf2": 2.75,
+      "avg_count": 1365,
+      "kf3": 3.14,
+      "mp_point": 3.19,
+      "years_used": 3,
+      "year_months": [
+        "2023-06",
+        "2024-06",
+        "2025-06"
+      ]
+    },
+    {
+      "month": 7,
+      "seasonal": 5.0,
+      "weekday": 3.13,
+      "visitor": 5.0,
+      "kf1": 4.38,
+      "avg_sales": 13304415,
+      "kf2": 2.89,
+      "avg_count": 1390,
+      "kf3": 3.23,
+      "mp_point": 3.5,
+      "years_used": 3,
+      "year_months": [
+        "2023-07",
+        "2024-07",
+        "2025-07"
+      ]
+    },
+    {
+      "month": 8,
+      "seasonal": 5.0,
+      "weekday": 3.19,
+      "visitor": 5.0,
+      "kf1": 4.4,
+      "avg_sales": 11549802,
+      "kf2": 2.35,
+      "avg_count": 1313,
+      "kf3": 2.95,
+      "mp_point": 3.23,
+      "years_used": 3,
+      "year_months": [
+        "2023-08",
+        "2024-08",
+        "2025-08"
+      ]
+    },
+    {
+      "month": 9,
+      "seasonal": 5.0,
+      "weekday": 3.07,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 11390986,
+      "kf2": 2.3,
+      "avg_count": 1272,
+      "kf3": 2.8,
+      "mp_point": 3.1,
+      "years_used": 3,
+      "year_months": [
+        "2023-09",
+        "2024-09",
+        "2025-09"
+      ]
+    },
+    {
+      "month": 10,
+      "seasonal": 5.0,
+      "weekday": 3.23,
+      "visitor": 4.0,
+      "kf1": 4.08,
+      "avg_sales": 13033332,
+      "kf2": 2.81,
+      "avg_count": 1537,
+      "kf3": 3.77,
+      "mp_point": 3.55,
+      "years_used": 3,
+      "year_months": [
+        "2023-10",
+        "2024-10",
+        "2025-10"
+      ]
+    },
+    {
+      "month": 11,
+      "seasonal": 3.0,
+      "weekday": 3.13,
+      "visitor": 3.0,
+      "kf1": 3.04,
+      "avg_sales": 12463512,
+      "kf2": 2.63,
+      "avg_count": 1445,
+      "kf3": 3.43,
+      "mp_point": 3.03,
+      "years_used": 3,
+      "year_months": [
+        "2023-11",
+        "2024-11",
+        "2025-11"
+      ]
+    },
+    {
+      "month": 12,
+      "seasonal": 5.0,
+      "weekday": 3.06,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 20182911,
+      "kf2": 5.0,
+      "avg_count": 1875,
+      "kf3": 5.0,
+      "mp_point": 4.73,
+      "years_used": 3,
+      "year_months": [
+        "2023-12",
+        "2024-12",
+        "2025-12"
+      ]
+    },
+    {
+      "month": 1,
+      "seasonal": 2.0,
+      "weekday": 3.26,
+      "visitor": 2.0,
+      "kf1": 2.42,
+      "avg_sales": 11104838,
+      "kf2": 2.21,
+      "avg_count": 1282,
+      "kf3": 2.84,
+      "mp_point": 2.49,
+      "years_used": 3,
+      "year_months": [
+        "2024-01",
+        "2025-01",
+        "2026-01"
+      ]
+    },
+    {
+      "month": 2,
+      "seasonal": 3.0,
+      "weekday": 3.14,
+      "visitor": 3.5,
+      "kf1": 3.21,
+      "avg_sales": 10047540,
+      "kf2": 1.89,
+      "avg_count": 1081,
+      "kf3": 2.11,
+      "mp_point": 2.4,
+      "years_used": 3,
+      "year_months": [
+        "2024-02",
+        "2025-02",
+        "2026-02"
+      ]
+    },
+    {
+      "month": 3,
+      "seasonal": 3.0,
+      "weekday": 3.03,
+      "visitor": 2.5,
+      "kf1": 2.84,
+      "avg_sales": 12496796,
+      "kf2": 2.64,
+      "avg_count": 1312,
+      "kf3": 2.95,
+      "mp_point": 2.81,
+      "years_used": 2,
+      "year_months": [
+        "2024-03",
+        "2025-03"
+      ]
+    }
+  ],
+  "AKARENGA": [
+    {
+      "month": 4,
+      "seasonal": 2.0,
+      "weekday": 3.1,
+      "visitor": 2.5,
+      "kf1": 2.53,
+      "avg_sales": 0,
+      "kf2": 1.0,
+      "avg_count": 0,
+      "kf3": 1.0,
+      "mp_point": 1.51,
+      "years_used": 0,
+      "year_months": [],
+      "note": "実績データなし"
+    },
+    {
+      "month": 5,
+      "seasonal": 3.0,
+      "weekday": 3.26,
+      "visitor": 3.5,
+      "kf1": 3.25,
+      "avg_sales": 2110465,
+      "kf2": 1.0,
+      "avg_count": 1575,
+      "kf3": 1.88,
+      "mp_point": 2.04,
+      "years_used": 1,
+      "year_months": [
+        "2025-05"
+      ]
+    },
+    {
+      "month": 6,
+      "seasonal": 4.0,
+      "weekday": 3.07,
+      "visitor": 4.0,
+      "kf1": 3.69,
+      "avg_sales": 7483400,
+      "kf2": 2.54,
+      "avg_count": 2720,
+      "kf3": 3.73,
+      "mp_point": 3.32,
+      "years_used": 1,
+      "year_months": [
+        "2025-06"
+      ]
+    },
+    {
+      "month": 7,
+      "seasonal": 5.0,
+      "weekday": 3.13,
+      "visitor": 5.0,
+      "kf1": 4.38,
+      "avg_sales": 10736360,
+      "kf2": 3.47,
+      "avg_count": 3431,
+      "kf3": 4.87,
+      "mp_point": 4.24,
+      "years_used": 1,
+      "year_months": [
+        "2025-07"
+      ]
+    },
+    {
+      "month": 8,
+      "seasonal": 5.0,
+      "weekday": 3.19,
+      "visitor": 5.0,
+      "kf1": 4.4,
+      "avg_sales": 11719270,
+      "kf2": 3.75,
+      "avg_count": 3510,
+      "kf3": 5.0,
+      "mp_point": 4.38,
+      "years_used": 1,
+      "year_months": [
+        "2025-08"
+      ]
+    },
+    {
+      "month": 9,
+      "seasonal": 5.0,
+      "weekday": 3.07,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 8470610,
+      "kf2": 2.82,
+      "avg_count": 2496,
+      "kf3": 3.36,
+      "mp_point": 3.46,
+      "years_used": 1,
+      "year_months": [
+        "2025-09"
+      ]
+    },
+    {
+      "month": 10,
+      "seasonal": 5.0,
+      "weekday": 3.23,
+      "visitor": 4.0,
+      "kf1": 4.08,
+      "avg_sales": 8687230,
+      "kf2": 2.88,
+      "avg_count": 3079,
+      "kf3": 4.3,
+      "mp_point": 3.75,
+      "years_used": 1,
+      "year_months": [
+        "2025-10"
+      ]
+    },
+    {
+      "month": 11,
+      "seasonal": 3.0,
+      "weekday": 3.13,
+      "visitor": 3.0,
+      "kf1": 3.04,
+      "avg_sales": 9984940,
+      "kf2": 3.26,
+      "avg_count": 2903,
+      "kf3": 4.02,
+      "mp_point": 3.44,
+      "years_used": 1,
+      "year_months": [
+        "2025-11"
+      ]
+    },
+    {
+      "month": 12,
+      "seasonal": 5.0,
+      "weekday": 3.06,
+      "visitor": 4.5,
+      "kf1": 4.19,
+      "avg_sales": 16066760,
+      "kf2": 5.0,
+      "avg_count": 3473,
+      "kf3": 4.94,
+      "mp_point": 4.71,
+      "years_used": 1,
+      "year_months": [
+        "2025-12"
+      ]
+    },
+    {
+      "month": 1,
+      "seasonal": 2.0,
+      "weekday": 3.26,
+      "visitor": 2.0,
+      "kf1": 2.42,
+      "avg_sales": 9643702,
+      "kf2": 3.16,
+      "avg_count": 2911,
+      "kf3": 4.03,
+      "mp_point": 3.2,
+      "years_used": 1,
+      "year_months": [
+        "2026-01"
+      ]
+    },
+    {
+      "month": 2,
+      "seasonal": 3.0,
+      "weekday": 3.14,
+      "visitor": 3.0,
+      "kf1": 3.05,
+      "avg_sales": 2625420,
+      "kf2": 1.15,
+      "avg_count": 1030,
+      "kf3": 1.0,
+      "mp_point": 1.73,
+      "years_used": 1,
+      "year_months": [
+        "2026-02"
+      ]
+    },
+    {
+      "month": 3,
+      "seasonal": 3.0,
+      "weekday": 3.03,
+      "visitor": 2.5,
+      "kf1": 2.84,
+      "avg_sales": 0,
+      "kf2": 1.0,
+      "avg_count": 0,
+      "kf3": 1.0,
+      "mp_point": 1.61,
+      "years_used": 0,
+      "year_months": [],
+      "note": "実績データなし"
+    }
+  ]
+}

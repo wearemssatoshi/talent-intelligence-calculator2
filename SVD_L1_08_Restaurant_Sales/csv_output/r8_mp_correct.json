@@ -1,0 +1,497 @@
+{
+  "MOIWAYAMA": {
+    "label": "🏔️ 藻岩山",
+    "annual_avg": 3.75,
+    "monthly": {
+      "4": {
+        "kf1": 1.7,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.23,
+        "avg_sales": 3564969,
+        "avg_count": 299,
+        "data_years": 3
+      },
+      "5": {
+        "kf1": 3.25,
+        "kf2": 4.44,
+        "kf3": 4.67,
+        "mp": 4.12,
+        "avg_sales": 16069859,
+        "avg_count": 1309,
+        "data_years": 3
+      },
+      "6": {
+        "kf1": 3.69,
+        "kf2": 4.6,
+        "kf3": 4.77,
+        "mp": 4.35,
+        "avg_sales": 16661354,
+        "avg_count": 1336,
+        "data_years": 3
+      },
+      "7": {
+        "kf1": 4.21,
+        "kf2": 4.64,
+        "kf3": 4.92,
+        "mp": 4.59,
+        "avg_sales": 16809757,
+        "avg_count": 1376,
+        "data_years": 3
+      },
+      "8": {
+        "kf1": 4.23,
+        "kf2": 4.59,
+        "kf3": 5.0,
+        "mp": 4.61,
+        "avg_sales": 16611063,
+        "avg_count": 1399,
+        "data_years": 3
+      },
+      "9": {
+        "kf1": 4.36,
+        "kf2": 4.46,
+        "kf3": 4.89,
+        "mp": 4.57,
+        "avg_sales": 16134184,
+        "avg_count": 1368,
+        "data_years": 3
+      },
+      "10": {
+        "kf1": 4.41,
+        "kf2": 4.7,
+        "kf3": 4.96,
+        "mp": 4.69,
+        "avg_sales": 16997748,
+        "avg_count": 1389,
+        "data_years": 3
+      },
+      "11": {
+        "kf1": 3.04,
+        "kf2": 3.7,
+        "kf3": 3.89,
+        "mp": 3.54,
+        "avg_sales": 13369534,
+        "avg_count": 1093,
+        "data_years": 3
+      },
+      "12": {
+        "kf1": 4.19,
+        "kf2": 5.0,
+        "kf3": 4.24,
+        "mp": 4.48,
+        "avg_sales": 18101058,
+        "avg_count": 1190,
+        "data_years": 3
+      },
+      "1": {
+        "kf1": 2.42,
+        "kf2": 3.65,
+        "kf3": 3.47,
+        "mp": 3.18,
+        "avg_sales": 13205528,
+        "avg_count": 979,
+        "data_years": 3
+      },
+      "2": {
+        "kf1": 3.05,
+        "kf2": 2.94,
+        "kf3": 2.76,
+        "mp": 2.92,
+        "avg_sales": 10626156,
+        "avg_count": 784,
+        "data_years": 3
+      },
+      "3": {
+        "kf1": 2.84,
+        "kf2": 2.63,
+        "kf3": 2.77,
+        "mp": 2.75,
+        "avg_sales": 9497382,
+        "avg_count": 786,
+        "data_years": 2
+      }
+    }
+  },
+  "OKURAYAMA": {
+    "label": "⛷️ 大倉山",
+    "annual_avg": 2.94,
+    "monthly": {
+      "4": {
+        "kf1": 2.37,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.46,
+        "avg_sales": 1428600,
+        "avg_count": 1857,
+        "data_years": 1
+      },
+      "5": {
+        "kf1": 3.25,
+        "kf2": 3.58,
+        "kf3": 4.16,
+        "mp": 3.66,
+        "avg_sales": 3410450,
+        "avg_count": 4300,
+        "data_years": 1
+      },
+      "6": {
+        "kf1": 3.52,
+        "kf2": 4.01,
+        "kf3": 4.26,
+        "mp": 3.93,
+        "avg_sales": 3742050,
+        "avg_count": 4376,
+        "data_years": 1
+      },
+      "7": {
+        "kf1": 4.04,
+        "kf2": 4.35,
+        "kf3": 4.62,
+        "mp": 4.34,
+        "avg_sales": 3999970,
+        "avg_count": 4655,
+        "data_years": 1
+      },
+      "8": {
+        "kf1": 4.06,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.69,
+        "avg_sales": 4503410,
+        "avg_count": 4947,
+        "data_years": 1
+      },
+      "9": {
+        "kf1": 4.19,
+        "kf2": 3.28,
+        "kf3": 3.93,
+        "mp": 3.8,
+        "avg_sales": 3182440,
+        "avg_count": 4124,
+        "data_years": 2
+      },
+      "10": {
+        "kf1": 4.08,
+        "kf2": 2.95,
+        "kf3": 3.62,
+        "mp": 3.55,
+        "avg_sales": 2925440,
+        "avg_count": 3878,
+        "data_years": 2
+      },
+      "11": {
+        "kf1": 2.88,
+        "kf2": 1.18,
+        "kf3": 1.19,
+        "mp": 1.75,
+        "avg_sales": 1566050,
+        "avg_count": 2002,
+        "data_years": 2
+      },
+      "12": {
+        "kf1": 3.85,
+        "kf2": 1.37,
+        "kf3": 1.32,
+        "mp": 2.18,
+        "avg_sales": 1712205,
+        "avg_count": 2105,
+        "data_years": 2
+      },
+      "1": {
+        "kf1": 2.42,
+        "kf2": 1.08,
+        "kf3": 1.07,
+        "mp": 1.52,
+        "avg_sales": 1491685,
+        "avg_count": 1909,
+        "data_years": 2
+      },
+      "2": {
+        "kf1": 3.05,
+        "kf2": 2.09,
+        "kf3": 2.06,
+        "mp": 2.4,
+        "avg_sales": 2269070,
+        "avg_count": 2676,
+        "data_years": 1
+      },
+      "3": {
+        "kf1": 2.84,
+        "kf2": 1.41,
+        "kf3": 1.56,
+        "mp": 1.94,
+        "avg_sales": 1743310,
+        "avg_count": 2292,
+        "data_years": 1
+      }
+    }
+  },
+  "TV_TOWER": {
+    "label": "🗼 テレビ塔",
+    "annual_avg": 3.58,
+    "monthly": {
+      "4": {
+        "kf1": 2.37,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.46,
+        "avg_sales": 7514059,
+        "avg_count": 1027,
+        "data_years": 3,
+        "ga_sales": 7151292,
+        "bg_sales": 544150,
+        "capped": false
+      },
+      "5": {
+        "kf1": 3.25,
+        "kf2": 4.18,
+        "kf3": 5.0,
+        "mp": 4.14,
+        "avg_sales": 17594610,
+        "avg_count": 3007,
+        "data_years": 3,
+        "ga_sales": 14048727,
+        "bg_sales": 3545883,
+        "capped": false
+      },
+      "6": {
+        "kf1": 3.69,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.56,
+        "avg_sales": 39020220,
+        "avg_count": 7610,
+        "data_years": 3,
+        "ga_sales": 12857756,
+        "bg_sales": 26162464,
+        "capped": true
+      },
+      "7": {
+        "kf1": 4.38,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.79,
+        "avg_sales": 69825895,
+        "avg_count": 13745,
+        "data_years": 3,
+        "ga_sales": 13304415,
+        "bg_sales": 56521480,
+        "capped": true
+      },
+      "8": {
+        "kf1": 4.4,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.8,
+        "avg_sales": 71013400,
+        "avg_count": 14490,
+        "data_years": 3,
+        "ga_sales": 11549802,
+        "bg_sales": 59463599,
+        "capped": true
+      },
+      "9": {
+        "kf1": 4.19,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.73,
+        "avg_sales": 23694125,
+        "avg_count": 4785,
+        "data_years": 3,
+        "ga_sales": 11390986,
+        "bg_sales": 12303139,
+        "capped": true
+      },
+      "10": {
+        "kf1": 4.08,
+        "kf2": 2.95,
+        "kf3": 4.58,
+        "mp": 3.87,
+        "avg_sales": 13699015,
+        "avg_count": 1786,
+        "data_years": 3,
+        "ga_sales": 13033332,
+        "bg_sales": 998525,
+        "capped": false
+      },
+      "11": {
+        "kf1": 3.04,
+        "kf2": 2.56,
+        "kf3": 2.97,
+        "mp": 2.86,
+        "avg_sales": 12463512,
+        "avg_count": 1445,
+        "data_years": 3,
+        "ga_sales": 12463512,
+        "bg_sales": 0,
+        "capped": false
+      },
+      "12": {
+        "kf1": 4.19,
+        "kf2": 5.0,
+        "kf3": 5.0,
+        "mp": 4.73,
+        "avg_sales": 20182911,
+        "avg_count": 1875,
+        "data_years": 3,
+        "ga_sales": 20182911,
+        "bg_sales": 0,
+        "capped": true
+      },
+      "1": {
+        "kf1": 2.42,
+        "kf2": 2.13,
+        "kf3": 2.2,
+        "mp": 2.25,
+        "avg_sales": 11104838,
+        "avg_count": 1282,
+        "data_years": 3,
+        "ga_sales": 11104838,
+        "bg_sales": 0,
+        "capped": false
+      },
+      "2": {
+        "kf1": 3.21,
+        "kf2": 1.91,
+        "kf3": 1.56,
+        "mp": 2.23,
+        "avg_sales": 10397248,
+        "avg_count": 1146,
+        "data_years": 3,
+        "ga_sales": 10047540,
+        "bg_sales": 1049125,
+        "capped": false
+      },
+      "3": {
+        "kf1": 2.84,
+        "kf2": 2.57,
+        "kf3": 2.34,
+        "mp": 2.58,
+        "avg_sales": 12496796,
+        "avg_count": 1312,
+        "data_years": 2,
+        "ga_sales": 12496796,
+        "bg_sales": 0,
+        "capped": false
+      }
+    }
+  },
+  "AKARENGA": {
+    "label": "🧱 赤れんが",
+    "annual_avg": 2.96,
+    "monthly": {
+      "4": {
+        "kf1": 2.53,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.51,
+        "avg_sales": 0,
+        "avg_count": 0,
+        "data_years": 0,
+        "note": "実績データなし"
+      },
+      "5": {
+        "kf1": 3.25,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.75,
+        "avg_sales": 0,
+        "avg_count": 0,
+        "data_years": 0,
+        "note": "実績データなし"
+      },
+      "6": {
+        "kf1": 3.69,
+        "kf2": 1.64,
+        "kf3": 2.3,
+        "mp": 2.54,
+        "avg_sales": 4178470,
+        "avg_count": 1835,
+        "data_years": 1
+      },
+      "7": {
+        "kf1": 4.38,
+        "kf2": 2.8,
+        "kf3": 4.87,
+        "mp": 4.02,
+        "avg_sales": 6990610,
+        "avg_count": 3431,
+        "data_years": 1
+      },
+      "8": {
+        "kf1": 4.4,
+        "kf2": 3.19,
+        "kf3": 5.0,
+        "mp": 4.2,
+        "avg_sales": 7928720,
+        "avg_count": 3510,
+        "data_years": 1
+      },
+      "9": {
+        "kf1": 4.19,
+        "kf2": 2.32,
+        "kf3": 3.36,
+        "mp": 3.29,
+        "avg_sales": 5832510,
+        "avg_count": 2496,
+        "data_years": 1
+      },
+      "10": {
+        "kf1": 4.08,
+        "kf2": 2.1,
+        "kf3": 4.3,
+        "mp": 3.49,
+        "avg_sales": 5282720,
+        "avg_count": 3079,
+        "data_years": 1
+      },
+      "11": {
+        "kf1": 3.04,
+        "kf2": 2.75,
+        "kf3": 4.02,
+        "mp": 3.27,
+        "avg_sales": 6856880,
+        "avg_count": 2903,
+        "data_years": 1
+      },
+      "12": {
+        "kf1": 4.19,
+        "kf2": 5.0,
+        "kf3": 4.94,
+        "mp": 4.71,
+        "avg_sales": 12316940,
+        "avg_count": 3473,
+        "data_years": 1
+      },
+      "1": {
+        "kf1": 2.42,
+        "kf2": 3.91,
+        "kf3": 4.03,
+        "mp": 3.45,
+        "avg_sales": 9682554,
+        "avg_count": 2911,
+        "data_years": 1
+      },
+      "2": {
+        "kf1": 3.05,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.68,
+        "avg_sales": 2628720,
+        "avg_count": 1030,
+        "data_years": 1
+      },
+      "3": {
+        "kf1": 2.84,
+        "kf2": 1.0,
+        "kf3": 1.0,
+        "mp": 1.61,
+        "avg_sales": 0,
+        "avg_count": 0,
+        "data_years": 0,
+        "note": "実績データなし"
+      }
+    }
+  }
+}
