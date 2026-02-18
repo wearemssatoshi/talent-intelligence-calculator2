@@ -304,15 +304,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadDefaultJSON() {
-    // mp_data.json をそのまま読込 (GASマージは無効化中 — 正しいデータソースで再実装予定)
+    // Step 1: Always load mp_data.json as base (contains config, meta, MP scores)
     fetch('mp_data.json?t=' + Date.now(), { cache: 'no-store' })
         .then(r => {
             if (!r.ok) throw new Error('mp_data.json not found');
             return r.json();
         })
-        .then(data => {
-            DATA = data;
-            onDataLoaded();
+        .then(baseData => {
+            DATA = baseData;
+            // Step 2: If GAS is configured, overlay live actuals from Spreadsheet
+            if (typeof GAS_BRIDGE !== 'undefined' && GAS_BRIDGE.getUrl()) {
+                mergeGASData(baseData);
+            } else {
+                onDataLoaded();
+            }
         })
         .catch(err => {
             console.warn('Default JSON load failed:', err);
