@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赤れんがテラス MAP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: #111;
+            color: #eee;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 16px 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 13px;
+            color: #888;
+            margin-top: 6px;
+        }
+
+        .map {
+            max-width: 800px;
+            margin: 0 auto 32px;
+            padding: 0 16px;
+        }
+
+        .map iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .gallery {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 16px 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .gallery img {
+            width: 100%;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.03);
+        }
+
+        .gallery .label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+            text-align: center;
+        }
+
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, .9);
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .lightbox.on {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 92%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>📍 赤れんがテラス</h1>
+        <p>〒060-0002 札幌市中央区北2条西4丁目1</p>
+    </header>
+
+    <div class="map">
+        <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2914.5!2d141.3486!3d43.0640!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x5f0b29a5b319f9d1%3A0x1c4bdc1608c02779!2z6LWk44KM44KT44GM44OG44Op44K5!5e0!3m2!1sja!2sjp!4v1700000000000"
+            allowfullscreen loading="lazy"></iframe>
+    </div>
+
+    <div class="gallery">
+        <div>
+            <img src="akarenga_map_dark_1771681098064.png" alt="Dark Premium" onclick="show(this)">
+            <div class="label">01 — ダークプレミアム</div>
+        </div>
+        <div>
+            <img src="akarenga_map_aerial_1771681016795.png" alt="Aerial GIS" onclick="show(this)">
+            <div class="label">02 — 航空写真GIS</div>
+        </div>
+        <div>
+            <img src="akarenga_map_material_1771681047266.png" alt="Flat Design" onclick="show(this)">
+            <div class="label">03 — フラットデザイン</div>
+        </div>
+        <div>
+            <img src="akarenga_map_watercolor_1771681139011.png" alt="Watercolor" onclick="show(this)">
+            <div class="label">04 — 水彩イラスト</div>
+        </div>
+        <div>
+            <img src="akarenga_map_isometric_1771681170101.png" alt="Cyberpunk 3D" onclick="show(this)">
+            <div class="label">05 — サイバーパンク3D</div>
+        </div>
+    </div>
+
+    <div class="lightbox" id="lb" onclick="this.classList.remove('on')">
+        <img id="lbi" src="">
+    </div>
+
+    <script>
+        function show(el) { document.getElementById('lbi').src = el.src; document.getElementById('lb').classList.add('on'); }
+    </script>
+
+</body>
+
+</html>
