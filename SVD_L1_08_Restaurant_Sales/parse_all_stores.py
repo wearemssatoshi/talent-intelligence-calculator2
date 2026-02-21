@@ -157,6 +157,8 @@ def parse_jw(xlsx_path, sheet_name):
         
         l_total = int(get_numeric(ws, r, lunch_col + 6))
         d_total = int(get_numeric(ws, r, dinner_col + 6)) if dinner_col else 0
+        to_food = int(get_numeric(ws, r, to_col + 2)) if to_col else 0
+        to_drink = int(get_numeric(ws, r, to_col + 4)) if to_col else 0
         to_total = int(get_numeric(ws, r, to_col + 6)) if to_col else 0
         seat_fee = int(get_numeric(ws, r, seat_col)) if seat_col else 0
         lock_fee = int(get_numeric(ws, r, lock_col)) if lock_col else 0
@@ -184,6 +186,8 @@ def parse_jw(xlsx_path, sheet_name):
             'd_drink': int(get_numeric(ws, r, dinner_col + 4)) if dinner_col else 0,
             'd_total': d_total,
             'd_avg': int(get_numeric(ws, r, dinner_col + 7)) if dinner_col else 0,
+            'to_food': to_food,
+            'to_drink': to_drink,
             'to_total': to_total,
             'rest_total': rest_total,
             'seat_fee': seat_fee,
@@ -230,15 +234,29 @@ def parse_ga(xlsx_path, sheet_name):
                 if '席料' in val or '室料' in val:
                     room_fee_col = c
     
-    # BG合計列を特定
+    # BG各列を動的に特定（年によって物販列の有無が異なるため）
+    bg_food_col = None
+    bg_drink_col = None
+    bg_tent_col = None
+    bg_goods_col = None
     bg_total_col = None
     if bg_col:
         for c in range(bg_col, min(bg_col + 12, ws.max_column + 1)):
             val = ws.cell(row=4, column=c).value
-            if val and isinstance(val, str) and '合計' in val:
-                bg_total_col = c
-                break
-    
+            if val and isinstance(val, str):
+                val_s = val.strip()
+                if '料理売上' in val_s and bg_food_col is None:
+                    bg_food_col = c
+                elif '飲料売上' in val_s and bg_drink_col is None:
+                    bg_drink_col = c
+                elif 'テント' in val_s:
+                    bg_tent_col = c
+                elif '物販' in val_s:
+                    bg_goods_col = c
+                elif val_s == '合計':
+                    bg_total_col = c
+                    break  # 合計が最後
+
     rows = []
     for r in range(5, ws.max_row + 1):
         dt = get_date(ws, r, 2)
@@ -261,10 +279,18 @@ def parse_ga(xlsx_path, sheet_name):
             'd_drink': int(get_numeric(ws, r, dinner_col + 4)) if dinner_col else 0,
             'd_total': int(get_numeric(ws, r, dinner_col + 6)) if dinner_col else 0,
             'd_avg': int(get_numeric(ws, r, dinner_col + 7)) if dinner_col else 0,
+            'to_food': int(get_numeric(ws, r, to_col + 2)) if to_col else 0,
+            'to_drink': int(get_numeric(ws, r, to_col + 4)) if to_col else 0,
             'to_total': int(get_numeric(ws, r, to_col + 6)) if to_col else 0,
             'bq_count': int(get_numeric(ws, r, banquet_col + 1)) if banquet_col else 0,
+            'bq_food': int(get_numeric(ws, r, banquet_col + 2)) if banquet_col else 0,
+            'bq_drink': int(get_numeric(ws, r, banquet_col + 4)) if banquet_col else 0,
             'bq_total': int(get_numeric(ws, r, banquet_col + 6)) if banquet_col else 0,
             'bg_count': int(get_numeric(ws, r, bg_col + 1)) if bg_col else 0,
+            'bg_food': int(get_numeric(ws, r, bg_food_col)) if bg_food_col else 0,
+            'bg_drink': int(get_numeric(ws, r, bg_drink_col)) if bg_drink_col else 0,
+            'bg_tent': int(get_numeric(ws, r, bg_tent_col)) if bg_tent_col else 0,
+            'bg_goods': int(get_numeric(ws, r, bg_goods_col)) if bg_goods_col else 0,
             'bg_total': int(get_numeric(ws, r, bg_total_col)) if bg_total_col else 0,
             'room_fee': int(get_numeric(ws, r, room_fee_col)) if room_fee_col else 0,
             'grand_total': int(get_numeric(ws, r, grand_total_col)) if grand_total_col else 0,
@@ -286,30 +312,26 @@ def parse_np(xlsx_path, sheet_name):
     
     lunch_col = find_column_by_keyword(sections, 'LUNCH')
     dinner_col = find_column_by_keyword(sections, 'DINNER')
-    other_col = find_column_by_keyword(sections, 'その他')
-    total_col = find_column_by_keyword(sections, '営業終了後') or find_column_by_keyword(sections, 'トータル売上')
     
     if not lunch_col:
         print(f"  WARNING: LUNCH not found in {xlsx_path} / {sheet_name}")
         return []
     
-    # Row4でL付帯/D付帯/Event列を検出
-    l_sub_col = None
-    d_sub_col = None
-    event_col = None
-    grand_total_col = None
+    # NP列構造 (Row5にヘッダー、全ファイル共通):
+    # LUNCH (col3):  件数(+0), 人数(+1), 料理(+2), 料理単価(+3), 飲料(+4), 飲料単価(+5), 合計(+6), 客単価(+7)
+    # DINNER (col11): 同上
+    # L付帯: col25=室料, col26=花束
+    # D付帯: col33=室料, col34=花束
+    # Event: col41=客数, col42=料理, col43=飲料, col44=室料, col45=花束, col51=合計
+    # grand_total: col60 = 売上合計（預かり金除く）
     
-    for c in range(1, ws.max_column + 1):
-        val = ws.cell(row=4, column=c).value
-        if val and isinstance(val, str):
-            if val.strip() == 'Lunch' and c > 20:
-                l_sub_col = c
-            elif val.strip() == 'Dinner' and c > 20:
-                d_sub_col = c
-            elif '婚礼' in val or 'Event' in val:
-                event_col = c
-    
-    grand_total_col = find_grand_total_col(ws)
+    # Event列が存在するか確認（col41の値で判定）
+    event_exists = False
+    for r in range(6, min(40, ws.max_row + 1)):
+        ev = ws.cell(row=r, column=41).value
+        if ev and float(ev) > 0:
+            event_exists = True
+            break
     
     rows = []
     for r in range(6, ws.max_row + 1):  # NP data starts at row 6
@@ -320,56 +342,39 @@ def parse_np(xlsx_path, sheet_name):
         if c1 and isinstance(c1, str) and '合計' in c1:
             continue
         
-        # NP LUNCH: 件数なし, c3=人数?, ... 動的にオフセット
-        # LUNCHセクション内: 人数(+0), 料理(+1), 飲料(+3), 合計(+5), 客単価(+6)
         row = {
             'date': dt.strftime('%Y-%m-%d'),
             'weekday': get_weekday_jp(dt),
-            'l_count': int(get_numeric(ws, r, lunch_col)),
-            'l_food': int(get_numeric(ws, r, lunch_col + 1)),
-            'l_drink': int(get_numeric(ws, r, lunch_col + 3)),
-            'l_total': int(get_numeric(ws, r, lunch_col + 5)),
-            'l_avg': int(get_numeric(ws, r, lunch_col + 6)),
-            'd_count': int(get_numeric(ws, r, dinner_col)) if dinner_col else 0,
-            'd_food': int(get_numeric(ws, r, dinner_col + 1)) if dinner_col else 0,
-            'd_drink': int(get_numeric(ws, r, dinner_col + 3)) if dinner_col else 0,
-            'd_total': int(get_numeric(ws, r, dinner_col + 5)) if dinner_col else 0,
-            'd_avg': int(get_numeric(ws, r, dinner_col + 6)) if dinner_col else 0,
+            'l_count': int(get_numeric(ws, r, lunch_col + 1)),   # 人数
+            'l_food': int(get_numeric(ws, r, lunch_col + 2)),    # 料理売上
+            'l_drink': int(get_numeric(ws, r, lunch_col + 4)),   # 飲料売上
+            'l_total': int(get_numeric(ws, r, lunch_col + 6)),   # 合計
+            'l_avg': int(get_numeric(ws, r, lunch_col + 7)),     # 客単価
+            'd_count': int(get_numeric(ws, r, dinner_col + 1)) if dinner_col else 0,
+            'd_food': int(get_numeric(ws, r, dinner_col + 2)) if dinner_col else 0,
+            'd_drink': int(get_numeric(ws, r, dinner_col + 4)) if dinner_col else 0,
+            'd_total': int(get_numeric(ws, r, dinner_col + 6)) if dinner_col else 0,
+            'd_avg': int(get_numeric(ws, r, dinner_col + 7)) if dinner_col else 0,
         }
         
-        # L付帯: 室料, 花束
-        if l_sub_col:
-            row['l_room_fee'] = int(get_numeric(ws, r, l_sub_col + 1))
-            row['l_flower'] = int(get_numeric(ws, r, l_sub_col + 2))
-        else:
-            row['l_room_fee'] = 0
-            row['l_flower'] = 0
+        # L付帯: 固定列 col25=室料, col26=花束
+        row['l_room_fee'] = int(get_numeric(ws, r, 25))
+        row['l_flower'] = int(get_numeric(ws, r, 26))
         
-        # D付帯: 室料, 花束
-        if d_sub_col:
-            row['d_room_fee'] = int(get_numeric(ws, r, d_sub_col + 1))
-            row['d_flower'] = int(get_numeric(ws, r, d_sub_col + 2))
-        else:
-            row['d_room_fee'] = 0
-            row['d_flower'] = 0
+        # D付帯: 固定列 col33=室料, col34=花束
+        row['d_room_fee'] = int(get_numeric(ws, r, 33))
+        row['d_flower'] = int(get_numeric(ws, r, 34))
         
-        # Event
-        if event_col:
-            row['event_count'] = int(get_numeric(ws, r, event_col))
-            row['event_food'] = int(get_numeric(ws, r, event_col + 1))
-            row['event_drink'] = int(get_numeric(ws, r, event_col + 3))
-            row['event_room_fee'] = int(get_numeric(ws, r, event_col + 4))
-            row['event_flower'] = int(get_numeric(ws, r, event_col + 5))
-            row['event_total'] = int(get_numeric(ws, r, event_col + 6))
-        else:
-            row['event_count'] = 0
-            row['event_food'] = 0
-            row['event_drink'] = 0
-            row['event_room_fee'] = 0
-            row['event_flower'] = 0
-            row['event_total'] = 0
+        # Event: 固定列 col41=客数, col42=料理, col43=飲料, col44=室料, col45=花束, col51=合計
+        row['event_count'] = int(get_numeric(ws, r, 41))
+        row['event_food'] = int(get_numeric(ws, r, 42))
+        row['event_drink'] = int(get_numeric(ws, r, 43))
+        row['event_room_fee'] = int(get_numeric(ws, r, 44))
+        row['event_flower'] = int(get_numeric(ws, r, 45))
+        row['event_total'] = int(get_numeric(ws, r, 51))
         
-        row['grand_total'] = int(get_numeric(ws, r, grand_total_col)) if grand_total_col else 0
+        # grand_total: 固定列 col60 = 売上合計（預かり金除く）
+        row['grand_total'] = int(get_numeric(ws, r, 60))
         rows.append(row)
     
     wb.close()

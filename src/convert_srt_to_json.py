@@ -53,8 +53,7 @@ def split_text_by_rules(text, original_start_ms, original_end_ms):
                 segment_text = "\n".join(current_segment_lines) # Join with newline for 2-line display
                 
                 # Remove "、" and "。"
-                segment_text = segment_text.replace("、", "").replace("。
-", "")
+                segment_text = segment_text.replace("、", "").replace("。", "")
 
                 segments.append(segment_text)
                 current_segment_lines = [] # Reset for next segment

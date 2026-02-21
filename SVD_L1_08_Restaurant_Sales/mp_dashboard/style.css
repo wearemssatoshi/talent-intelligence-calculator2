@@ -793,6 +793,32 @@ input[type="date"]:focus {
     }
 }
 
+@keyframes pulseDot {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        opacity: 1;
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        opacity: 1;
+    }
+}
+
+.pulse-dot {
+    display: inline-block;
+    border-radius: 50%;
+    animation: pulseDot 2s infinite;
+}
+
 /* ── Ropeway Toggle Buttons ── */
 .rw-btn {
     font-family: 'JetBrains Mono', monospace;
@@ -1319,4 +1345,211 @@ input[type="date"]:focus {
     padding: 6px 0 0;
     margin-top: 8px;
     border-top: 1px solid var(--border);
+}
+
+/* ═══════════════════════════════════════
+   ④ SALES ENTRY — 売上入力フォーム
+   ═══════════════════════════════════════ */
+
+.entry-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.entry-form-header h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.entry-status {
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Section ── */
+.entry-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color var(--transition);
+}
+
+.entry-section:hover {
+    border-color: var(--border-light);
+}
+
+.entry-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Fields Grid ── */
+.entry-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.entry-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.entry-field label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.entry-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.entry-input-wrap:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px var(--gold-dim);
+}
+
+.entry-prefix,
+.entry-suffix {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+}
+
+.entry-prefix {
+    background: var(--surface-2);
+    padding: 8px 8px;
+    border-right: 1px solid var(--border);
+}
+
+.entry-suffix {
+    background: var(--surface-2);
+    padding: 8px 8px;
+    border-left: 1px solid var(--border);
+}
+
+.entry-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 10px;
+    min-width: 0;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.entry-input::-webkit-inner-spin-button,
+.entry-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.entry-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* Count field styling */
+.entry-field.count .entry-input-wrap {
+    max-width: 140px;
+}
+
+.entry-field.count .entry-input {
+    text-align: center;
+}
+
+/* ── Total Bar ── */
+.entry-total-bar {
+    display: flex;
+    gap: 24px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, var(--gold-dim), var(--surface-2));
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+}
+
+.entry-total-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.entry-total-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.entry-total-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold-light);
+}
+
+.entry-total-value.count {
+    color: var(--blue);
+}
+
+.entry-total-sub {
+    font-size: 11px;
+    color: var(--text-sub);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── Actions ── */
+.entry-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.entry-save-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    margin-left: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .entry-fields {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .entry-total-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
 }

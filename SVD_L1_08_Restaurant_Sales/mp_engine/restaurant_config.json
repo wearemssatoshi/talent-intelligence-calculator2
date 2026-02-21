@@ -8,6 +8,89 @@
         "R7"
     ],
     "calendar_start": "2023-04-01",
+    "mp_version": "3.0",
+    "mp_thresholds": {
+        "_comment": "SAT設定: 年間共通の売上閾値テーブル (月別配分はKF①季節係数で自動)",
+        "sales": {
+            "_format": "[score2, score3, score4, score5] — score1 = below score2",
+            "JW": [
+                9000000,
+                13000000,
+                16000000,
+                20000000
+            ],
+            "NP": [
+                6000000,
+                8000000,
+                11000000,
+                15000000
+            ],
+            "Ce": [
+                1000000,
+                1200000,
+                1700000,
+                2200000
+            ],
+            "RP": [
+                600000,
+                800000,
+                1000000,
+                1200000
+            ],
+            "GA": [
+                9000000,
+                12000000,
+                14000000,
+                17000000
+            ],
+            "BG": [
+                18000000,
+                30000000,
+                40000000,
+                50000000
+            ],
+            "BQ": [
+                4000000,
+                6000000,
+                8000000,
+                10000000
+            ],
+            "RYB": [
+                2500000,
+                3000000,
+                3500000,
+                4000000
+            ]
+        },
+        "count": {
+            "_format": "[score2, score3, score4, score5] — 拠点別 (全店合算来客数)",
+            "_comment": "過去3年データから自動提案 → SAT調整用",
+            "MOIWAYAMA": [
+                800,
+                1000,
+                1300,
+                1400
+            ],
+            "OKURAYAMA": [
+                1300,
+                2200,
+                2600,
+                3800
+            ],
+            "TV_TOWER": [
+                1500,
+                2500,
+                5000,
+                14000
+            ],
+            "AKARENGA": [
+                1000,
+                1500,
+                1800,
+                2100
+            ]
+        }
+    },
     "bases": [
         {
             "id": "MOIWAYAMA",
@@ -16,7 +99,7 @@
             "stores": [
                 {
                     "id": "JW",
-                    "name": "The Jewels",
+                    "name": "THE JEWELS",
                     "csv_file": "JW_daily.csv",
                     "channels": {
                         "LUNCH": {
@@ -149,7 +232,7 @@
             "stores": [
                 {
                     "id": "GA",
-                    "name": "ザ ガーデン サッポロ",
+                    "name": "THE GARDEN SAPPORO HOKKAIDO GRILLE",
                     "csv_file": "TV_TOWER_daily.csv",
                     "channels": {
                         "LUNCH": {
@@ -204,9 +287,6 @@
                         "南京錠": {
                             "sales_col": "lock_fee"
                         },
-                        "花束": {
-                            "sales_col": "flower"
-                        },
                         "その他": {
                             "sales_col": "other"
                         }
@@ -218,7 +298,7 @@
                 },
                 {
                     "id": "BG",
-                    "name": "ビアガーデン",
+                    "name": "さっぽろテレビ塔ビアガーデン",
                     "csv_file": "TV_TOWER_daily.csv",
                     "channels": {
                         "ALL": {
@@ -243,7 +323,7 @@
             "stores": [
                 {
                     "id": "BQ",
-                    "name": "ラ・ブリック",
+                    "name": "LA BRIQUE SAPPORO Akarenga Terrace",
                     "csv_file": "AKARENGA_daily.csv",
                     "channels": {
                         "LUNCH": {
@@ -289,12 +369,25 @@
                         },
                         "物販": {
                             "sales_col": "goods"
-                        },
-                        "花束": {
-                            "sales_col": "flower"
                         }
                     },
                     "grand_total_col": "grand_total"
+                },
+                {
+                    "id": "RYB",
+                    "name": "ルスツ羊蹄とんかつテラス by BQ",
+                    "csv_file": "AKARENGA_daily.csv",
+                    "channels": {
+                        "ALL": {
+                            "count_col": "ryb_count",
+                            "sales_col": "ryb_total",
+                            "detail_cols": [
+                                "ryb_food",
+                                "ryb_drink"
+                            ]
+                        }
+                    },
+                    "grand_total_col": "ryb_total"
                 }
             ]
         }

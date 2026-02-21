@@ -15,6 +15,13 @@ let displayTaxExc = true;  // true=税抜表示, false=税込表示
 
 // ── Tax Display Helper ──
 function txv(v) { return displayTaxExc ? Math.round(v / 1.1) : Math.round(v); }
+function txvAccurate(totalInc, sales8pct) {
+    // 8%軽減税率分と 10%標準税率分を分離して税抜計算
+    if (!displayTaxExc) return Math.round(totalInc);
+    const s8 = sales8pct || 0;
+    const s10 = totalInc - s8;
+    return Math.round(s10 / 1.1 + s8 / 1.08);
+}
 function txLabel() { return displayTaxExc ? '税抜' : '税込'; }
 function toggleTaxDisplay() {
     displayTaxExc = !displayTaxExc;
@@ -26,6 +33,19 @@ function toggleTaxDisplay() {
     renderCurrentTab();
 }
 
+// ── Fiscal Year (年度: 4月〜3月) ──
+// SVDは4月起算の年度制。2025-04 → R7年度, 2025-03 → R6年度
+function getFiscalYear(dateStr) {
+    const d = new Date(dateStr);
+    const m = d.getMonth() + 1; // 1-12
+    const y = d.getFullYear();
+    return m >= 4 ? y : y - 1; // 4月以降=当年度, 1-3月=前年度
+}
+function fiscalYearLabel(fy) {
+    const reiwa = fy - 2018; // 令和元年=2019
+    return `R${reiwa} (${fy}/${fy + 1})`;
+}
+
 // ── Sekki Engine (client-side for forecast) ──
 const SEKKI_BOUNDARIES = {
     2023: [[1, 5], [1, 20], [2, 4], [2, 19], [3, 6], [3, 21], [4, 5], [4, 20], [5, 6], [5, 21], [6, 6], [6, 21], [7, 7], [7, 23], [8, 8], [8, 23], [9, 8], [9, 23], [10, 8], [10, 24], [11, 8], [11, 22], [12, 7], [12, 22]],
@@ -35,7 +55,15 @@ const SEKKI_BOUNDARIES = {
 };
 const SEKKI_NAMES = ['小寒', '大寒', '立春', '雨水', '啓蟄', '春分', '清明', '穀雨', '立夏', '小満', '芒種', '夏至', '小暑', '大暑', '立秋', '処暑', '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'];
 const WEEKDAY_JA = ['日', '月', '火', '水', '木', '金', '土'];
-const WEEKDAY_IDX = { '日': 4, '月': 2, '火': 2, '水': 2, '木': 3, '金': 4, '土': 5 };
+const WEEKDAY_IDX = { '日': 4, '月': 2, '火': 2, '水': 2, '木': 3, '金': 4, '土': 5 }; // v1 deprecated
+// Real MP v2.0 — 拠点別曜日乗数 (基準=全曜日平均 1.000)
+const WEEKDAY_MULTIPLIER = {
+    'MOIWAYAMA': { '月': 0.978, '火': 0.890, '水': 0.885, '木': 0.878, '金': 0.908, '土': 1.222, '日': 1.224 },
+    'OKURAYAMA': { '月': 0.732, '火': 0.844, '水': 0.890, '木': 0.803, '金': 1.005, '土': 1.330, '日': 1.143 },
+    'TV_TOWER': { '月': 0.842, '火': 0.876, '水': 0.939, '木': 0.875, '金': 0.995, '土': 1.307, '日': 1.163 },
+    'AKARENGA': { '月': 0.844, '火': 0.921, '水': 0.903, '木': 0.776, '金': 1.009, '土': 1.397, '日': 1.141 },
+};
+const STORE_TO_BASE = { 'JW': 'MOIWAYAMA', 'NP': 'OKURAYAMA', 'Ce': 'OKURAYAMA', 'RP': 'OKURAYAMA', 'GA': 'TV_TOWER', 'BG': 'TV_TOWER', 'BQ': 'AKARENGA', 'RYB': 'AKARENGA' };
 
 function getSekki(dateStr) {
     const d = new Date(dateStr);
@@ -57,14 +85,30 @@ function getSekki(dateStr) {
 // ── Helpers ──
 function fmt$(v) { return v ? '¥' + v.toLocaleString() : '—'; }
 function fmtK$(v) { return v >= 1000000 ? '¥' + (v / 1000000).toFixed(1) + 'M' : v >= 1000 ? '¥' + Math.round(v / 1000) + 'K' : '¥' + v; }
+
+// ── ロープウェイ式カラーシステム ──
+// TOP(1-5)=赤, HIGH(6-10)=橙, FLOW(11-15)=黄, LOW(16-20)=緑, OFF(21-24)=青
+// rank 1=最繁忙(TOP), 24=最閑散(OFF)
+const ROPEWAY_COLORS = {
+    TOP: { bg: '#dc2626', label: 'TOP' },   // 赤
+    HIGH: { bg: '#f97316', label: 'HIGH' },  // オレンジ
+    FLOW: { bg: '#eab308', label: 'FLOW' },  // 黄
+    LOW: { bg: '#22c55e', label: 'LOW' },   // グリーン
+    OFF: { bg: '#3b82f6', label: 'OFF' },   // ブルー
+};
+function rankCategory(rank) {
+    if (rank <= 5) return 'TOP';
+    if (rank <= 10) return 'HIGH';
+    if (rank <= 15) return 'FLOW';
+    if (rank <= 20) return 'LOW';
+    return 'OFF';
+}
+function rankCategoryColor(rank) {
+    return ROPEWAY_COLORS[rankCategory(rank)].bg;
+}
 function mpColor(v) {
-    if (v >= 4.5) return '#ef4444';
-    if (v >= 4.0) return '#f97316';
-    if (v >= 3.5) return '#eab308';
-    if (v >= 3.0) return '#4ade80';
-    if (v >= 2.5) return '#60a5fa';
-    if (v >= 2.0) return '#a78bfa';
-    return '#6b7280';
+    const level = mpScoreLevel(v);
+    return rankCategoryColor(level);
 }
 function seasonClass(s) { return 'season-' + (s || '').split(' ')[0]; }
 function ordinal(n) {
@@ -73,20 +117,24 @@ function ordinal(n) {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 function rankBadge(rank, size) {
-    const sz = size || 'normal'; // 'normal' | 'small'
-    const bg = sekkiWeatherColor(rank);
+    const sz = size || 'normal';
+    const cat = rankCategory(rank);
+    const rc = ROPEWAY_COLORS[cat];
     const fs = sz === 'small' ? '9px' : '11px';
     const pad = sz === 'small' ? '2px 6px' : '3px 8px';
-    return `<span style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:${fs};font-weight:700;letter-spacing:1px;padding:${pad};border-radius:3px;background:${bg};color:#fff">24LV/${ordinal(rank)}</span>`;
+    return `<span style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:${fs};font-weight:700;letter-spacing:1px;padding:${pad};border-radius:3px;background:${rc.bg};color:#fff">${rc.label} ${rank}</span>`;
 }
-// MPスコアベースのバッジ（日別レベル色）
+// MPスコアベースのバッジ（ロープウェイ式カテゴリ表示）
 function mpBadge(mpPoint, size) {
     const sz = size || 'normal';
     const level = mpScoreLevel(mpPoint);
-    const bg = mpScoreColor(mpPoint);
+    const cat = rankCategory(level);
+    const rc = ROPEWAY_COLORS[cat];
     const fs = sz === 'small' ? '9px' : '11px';
     const pad = sz === 'small' ? '2px 6px' : '3px 8px';
-    return `<span style="display:inline-block;font-family:'JetBrains Mono',monospace;font-size:${fs};font-weight:700;letter-spacing:1px;padding:${pad};border-radius:3px;background:${bg};color:#fff">MP ${mpPoint.toFixed(2)}</span>`;
+    const fs2 = sz === 'small' ? '8px' : '10px';
+    const w = sz === 'small' ? '60px' : '76px';
+    return `<span style="display:inline-block;width:${w};font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:0.5px;padding:4px 6px;border-radius:4px;background:${rc.bg};color:#fff;text-align:center;line-height:1.4;"><span style="font-size:${fs};display:block;">${mpPoint.toFixed(2)}</span><span style="font-size:${fs2};display:block;opacity:0.85;letter-spacing:0.5px;">${rc.label} ${level}</span></span>`;
 }
 function getBaseName(storeId) {
     if (!DATA) return '';
@@ -123,64 +171,103 @@ function meterBars(mp) {
     ).join('');
 }
 
-// ── Forecast Engine (同節気×同曜日マッチング) ──
+// ── Forecast Engine v2.0 (Recency Weighted × Customer-Count Centric) ──
+// SATの回答反映: 客数を先に予測し、売上 = 客数 × 客単価 で導出
+
+const TREND_WINDOW = 4; // 4週間（SATのQ4回答）
 
 /**
- * forecastForDate — 過去同節気×同曜日の実績平均から予測を算出
+ * forecastForDate — Recency-Weighted × Customer-Count Centric
+ * 
+ * v2.0 進化ポイント:
+ *   1. 時間減衰加重: 直近1年=3.0, 2年前=2.0, それ以前=1.0
+ *   2. 客数主軸: 客数→客単価→売上 の順で予測
+ *   3. チャネル別も加重平均化
+ * 
  * @param {string} storeId - 店舗ID (e.g. 'JW')
  * @param {string} dateStr - 予測対象日 (e.g. '2026-03-15')
- * @returns {Object} { predicted_sales, predicted_count, channels, matches, matchCount, sekki, weekday }
+ * @returns {Object} { predicted_sales, predicted_count, predicted_avg_spend, channels, matches, matchCount, sekki, weekday, weights }
  */
 function forecastForDate(storeId, dateStr) {
     const records = DATA.stores[storeId] || [];
-    const targetSekki = getSekki(dateStr);
-    const targetWeekday = WEEKDAY_JA[new Date(dateStr).getDay()];
+    const targetDate = new Date(dateStr);
+    const targetMonth = targetDate.getMonth() + 1; // 1-12
+    const targetWeekday = WEEKDAY_JA[targetDate.getDay()];
+    const targetSekki = getSekki(dateStr); // 表示用に残す
 
-    // 過去同節気×同曜日、actual_sales > 0 のレコードを抽出
-    const matches = records.filter(r =>
-        r.sekki === targetSekki &&
-        r.weekday === targetWeekday &&
-        r.actual_sales > 0 &&
-        r.date < dateStr // 未来データは除外
-    );
+    // 過去同月×同曜日、actual_sales > 0 のレコードを抽出
+    const matches = records.filter(r => {
+        const rMonth = parseInt(r.date.slice(5, 7));
+        return rMonth === targetMonth &&
+            r.weekday === targetWeekday &&
+            r.actual_sales > 0 &&
+            r.date < dateStr; // 未来データは除外
+    });
 
     if (matches.length === 0) {
         return {
             predicted_sales: 0,
             predicted_count: 0,
+            predicted_avg_spend: 0,
             channels: {},
             matches: [],
             matchCount: 0,
             sekki: targetSekki,
-            weekday: targetWeekday
+            weekday: targetWeekday,
+            weights: []
         };
     }
 
-    // 均等平均
-    const totalSales = matches.reduce((s, r) => s + r.actual_sales, 0);
-    const totalCount = matches.reduce((s, r) => s + r.actual_count, 0);
-    const n = matches.length;
+    // ── Growth Weighting (成長加味) ──
+    // 直近1年 = 1.05, 2年前 = 1.03, それ以前 = 1.00
+    // 微成長トレンドを反映しつつ到達可能なフォーキャストを維持
+    const targetYear = new Date(dateStr).getFullYear();
+    const weights = matches.map(r => {
+        const yearsAgo = targetYear - new Date(r.date).getFullYear();
+        return yearsAgo <= 1 ? 1.05 : yearsAgo <= 2 ? 1.03 : 1.0;
+    });
+    const totalWeight = weights.reduce((s, w) => s + w, 0);
 
-    // チャネル別予測（各チャネルの平均を個別に計算 — F/B含む）
+    // ── Customer-Count Centric Prediction ──
+    // Step 1: 平均客数を算出
+    const weightedCount = matches.reduce((s, r, i) => s + r.actual_count * weights[i], 0);
+    const predictedCount = Math.round(weightedCount / totalWeight);
+
+    // Step 2: 平均客単価を算出
+    const spendsWithWeight = matches.map((r, i) => ({
+        spend: r.actual_count > 0 ? r.actual_sales / r.actual_count : 0,
+        weight: weights[i]
+    })).filter(sw => sw.spend > 0);
+    const spendWeight = spendsWithWeight.reduce((s, sw) => s + sw.weight, 0);
+    const predictedAvgSpend = spendWeight > 0
+        ? Math.round(spendsWithWeight.reduce((s, sw) => s + sw.spend * sw.weight, 0) / spendWeight)
+        : 0;
+
+    // Step 3: 売上 = 客数 × 客単価
+    const predictedSales = predictedCount * predictedAvgSpend;
+
+    // ── チャネル別予測 (均等加重) ──
     const channelAgg = {};
-    matches.forEach(r => {
+    matches.forEach((r, mi) => {
         if (!r.channels) return;
+        const w = weights[mi];
         Object.entries(r.channels).forEach(([ch, data]) => {
-            if (!channelAgg[ch]) channelAgg[ch] = { sales: 0, count: 0, food: 0, drink: 0, n: 0 };
-            channelAgg[ch].sales += data.sales || 0;
-            channelAgg[ch].count += data.count || 0;
-            channelAgg[ch].food += data.food || 0;
-            channelAgg[ch].drink += data.drink || 0;
-            channelAgg[ch].n++;
+            if (!channelAgg[ch]) channelAgg[ch] = { sales: 0, count: 0, food: 0, drink: 0, wSum: 0 };
+            channelAgg[ch].sales += (data.sales || 0) * w;
+            channelAgg[ch].count += (data.count || 0) * w;
+            channelAgg[ch].food += (data.food || 0) * w;
+            channelAgg[ch].drink += (data.drink || 0) * w;
+            channelAgg[ch].wSum += w;
         });
     });
     const channels = {};
     Object.entries(channelAgg).forEach(([ch, data]) => {
+        if (data.wSum === 0) return;
         channels[ch] = {
-            sales: Math.round(data.sales / data.n),
-            count: Math.round(data.count / data.n),
-            food: Math.round(data.food / data.n),
-            drink: Math.round(data.drink / data.n)
+            sales: Math.round(data.sales / data.wSum),
+            count: Math.round(data.count / data.wSum),
+            food: Math.round(data.food / data.wSum),
+            drink: Math.round(data.drink / data.wSum)
         };
     });
 
@@ -188,7 +275,6 @@ function forecastForDate(storeId, dateStr) {
     const seatFeeChannels = ['席料'];
     seatFeeChannels.forEach(sfCh => {
         if (channels[sfCh]) {
-            // 直近90日間の実績から日平均を算出
             const cutoff = new Date(dateStr);
             cutoff.setDate(cutoff.getDate() - 90);
             const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -209,20 +295,23 @@ function forecastForDate(storeId, dateStr) {
     });
 
     return {
-        predicted_sales: Math.round(totalSales / n),
-        predicted_count: Math.round(totalCount / n),
+        predicted_sales: predictedSales,
+        predicted_count: predictedCount,
+        predicted_avg_spend: predictedAvgSpend,
         channels,
-        matches: matches.map(r => ({
+        matches: matches.map((r, i) => ({
             date: r.date,
             weekday: r.weekday,
             sekki: r.sekki,
             sales: r.actual_sales,
             count: r.actual_count,
-            channels: r.channels
+            channels: r.channels,
+            weight: weights[i]
         })),
-        matchCount: n,
+        matchCount: matches.length,
         sekki: targetSekki,
-        weekday: targetWeekday
+        weekday: targetWeekday,
+        weights
     };
 }
 
@@ -401,9 +490,11 @@ function renderCurrentTab() {
         case 'command': renderCommand(); break;
         case 'dive': renderDive(); break;
         case 'forecast': break; // Manual trigger
+        case 'entry': renderEntry(); break;
         case 'import': break;
         case 'staffing': renderStaffing(); break;
         case 'report': initReportTab(); break;
+        case 'bg': renderBG(); break;
     }
 }
 
@@ -439,7 +530,7 @@ function setRopeway(type) {
     if (timeInputs) timeInputs.style.display = type === 'time' ? 'flex' : 'none';
 }
 
-// ① COMMAND CENTER
+// ① THE BRIDGE — SVD操舵室
 // ═══════════════════════════════════════
 function renderCommand() {
     // Base Filter buttons
@@ -738,7 +829,9 @@ function renderCommand() {
             ` : ''}
 
             <div style="font-size:11px;color:#666;margin-bottom:4px;">チャネル別</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;">
             ${chRows || '<div style="color:#555;font-size:12px;">—</div>'}
+            </div>
         </div>`;
     }
 
@@ -771,6 +864,14 @@ function renderCommand() {
                 ${buildColumn('本日', '📍', todayData, y1Data.total, true, 'today')}
                 ${buildColumn('前年同日', '📅', y1Data, todayData.total, false, 'y1')}
                 ${buildColumn('前々年同日', '📆', y2Data, todayData.total, false, 'y2')}
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px;padding:8px 12px;background:rgba(255,255,255,0.03);border-radius:8px;flex-wrap:wrap;">
+                <span style="font-size:10px;color:#666;margin-right:4px;">MP LEVEL:</span>
+                <span style="font-size:10px;font-weight:700;color:#fff;background:#dc2626;padding:2px 8px;border-radius:3px;">TOP 1-5</span>
+                <span style="font-size:10px;font-weight:700;color:#fff;background:#f97316;padding:2px 8px;border-radius:3px;">HIGH 6-10</span>
+                <span style="font-size:10px;font-weight:700;color:#000;background:#eab308;padding:2px 8px;border-radius:3px;">FLOW 11-15</span>
+                <span style="font-size:10px;font-weight:700;color:#fff;background:#22c55e;padding:2px 8px;border-radius:3px;">LOW 16-20</span>
+                <span style="font-size:10px;font-weight:700;color:#fff;background:#3b82f6;padding:2px 8px;border-radius:3px;">OFF 21-24</span>
             </div>
         `;
     }
@@ -877,9 +978,6 @@ function renderCommand() {
             ${rationaleHtml}
         </div>`;
     }).join('');
-
-    // --- Sales Registration Form ---
-    renderSalesForm(filteredStores, dateStr);
 
     // Monthly Summary
     renderMonthlySummary();
@@ -1171,9 +1269,364 @@ function renderSalesForm(storeList, dateStr) {
         </div>
     `;
 
-    document.getElementById('sales-form').innerHTML = formHtml;
+    document.getElementById('entry-form').innerHTML = formHtml;
     updateTaxDisplay();
 }
+
+// ── ④ ENTRY — 売上入力タブ ──
+function renderEntry() {
+    if (!DATA) return;
+    const filteredStores = getStoresForBase(selectedBase);
+    renderSalesForm(filteredStores, selectedDate);
+}
+
+// ── ⑧ BG POP UP — さっぽろテレビ塔ビアガーデン ──
+function renderBG() {
+    if (!DATA) return;
+    const bgRecords = DATA.stores['BG'] || [];
+    const bgMeta = DATA.bg_meta || {};
+    const activeRecords = bgRecords.filter(r => r.actual_sales > 0);
+    const totalDays = activeRecords.length;
+    const totalSales = activeRecords.reduce((s, r) => s + r.actual_sales, 0);
+    const totalCount = activeRecords.reduce((s, r) => s + r.actual_count, 0);
+    const avgSales = totalDays > 0 ? Math.round(totalSales / totalDays) : 0;
+    const avgCount = totalDays > 0 ? Math.round(totalCount / totalDays) : 0;
+    const maxSales = Math.max(...activeRecords.map(r => r.actual_sales), 0);
+
+    // Year breakdown (FISCAL YEAR: 4月〜3月)
+    const byYear = {};
+    activeRecords.forEach(r => {
+        const fy = getFiscalYear(r.date);
+        if (!byYear[fy]) byYear[fy] = { sales: 0, count: 0, days: 0, records: [] };
+        byYear[fy].sales += r.actual_sales;
+        byYear[fy].count += r.actual_count;
+        byYear[fy].days++;
+        byYear[fy].records.push(r);
+    });
+
+    const yearRows = Object.entries(byYear).sort().map(([fy, d]) => `
+        <tr>
+            <td style="font-weight:700;color:var(--gold)">${fiscalYearLabel(Number(fy))}</td>
+            <td>${d.days}日</td>
+            <td>¥${txv(d.sales).toLocaleString()}</td>
+            <td>¥${txv(Math.round(d.sales / d.days)).toLocaleString()}</td>
+            <td>${d.count.toLocaleString()}名</td>
+            <td>${Math.round(d.count / d.days)}名</td>
+            <td>¥${d.count > 0 ? txv(Math.round(d.sales / d.count)).toLocaleString() : '—'}</td>
+        </tr>
+    `).join('');
+
+    // Monthly breakdown (latest FY)
+    const fyKeys = Object.keys(byYear).sort();
+    const latestFY = Number(fyKeys[fyKeys.length - 1]) || 2025;
+    const latestRecords = byYear[latestFY]?.records || [];
+    const byMonth = {};
+    latestRecords.forEach(r => {
+        const m = r.date.slice(0, 7);
+        if (!byMonth[m]) byMonth[m] = { sales: 0, count: 0, days: 0 };
+        byMonth[m].sales += r.actual_sales;
+        byMonth[m].count += r.actual_count;
+        byMonth[m].days++;
+    });
+    const monthRows = Object.entries(byMonth).sort().map(([m, d]) => `
+        <tr>
+            <td style="font-weight:700;color:var(--gold)">${m}</td>
+            <td>${d.days}日</td>
+            <td>¥${txv(d.sales).toLocaleString()}</td>
+            <td>¥${txv(Math.round(d.sales / d.days)).toLocaleString()}</td>
+            <td>${d.count.toLocaleString()}名</td>
+            <td>¥${d.count > 0 ? txv(Math.round(d.sales / d.count)).toLocaleString() : '—'}</td>
+        </tr>
+    `).join('');
+
+    // Forecast
+    const forecast = forecastForDate('BG', selectedDate);
+
+    // ── ① Weather × Sales Correlation ──
+    const weatherRecords = activeRecords.filter(r => r.weather && r.weather.ws !== null && r.weather.ws !== undefined);
+    const weatherByScore = {};
+    weatherRecords.forEach(r => {
+        const ws = r.weather.ws;
+        if (!weatherByScore[ws]) weatherByScore[ws] = { sales: 0, count: 0, days: 0, customers: 0 };
+        weatherByScore[ws].sales += r.actual_sales;
+        weatherByScore[ws].count++;
+        weatherByScore[ws].days++;
+        weatherByScore[ws].customers += r.actual_count;
+    });
+    const weatherScoreLabels = ['0<br>豪雨', '1<br>雨', '2<br>曇', '3<br>曇晴', '4<br>晴25↓', '5<br>晴33↓'];
+    const weatherBars = [0, 1, 2, 3, 4, 5].map(ws => {
+        const d = weatherByScore[ws] || { sales: 0, days: 0, customers: 0 };
+        const avg = d.days > 0 ? Math.round(d.sales / d.days) : 0;
+        const maxAvg = Math.max(...Object.values(weatherByScore).map(v => v.days > 0 ? v.sales / v.days : 0), 1);
+        const pct = Math.round(avg / maxAvg * 100);
+        const color = ws >= 4 ? '#66bb6a' : ws >= 2 ? '#ffa726' : '#ef5350';
+        return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+            <div class="mono" style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:4px;">${d.days > 0 ? '¥' + Math.round(txv(avg) / 1000) + 'K' : '—'}</div>
+            <div style="width:100%;max-width:36px;background:rgba(255,255,255,0.05);border-radius:4px;height:80px;position:relative;overflow:hidden;">
+                <div style="position:absolute;bottom:0;width:100%;height:${pct}%;background:${color};border-radius:4px;transition:height 0.5s;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;text-align:center;line-height:1.2;">${weatherScoreLabels[ws]}</div>
+            <div style="font-size:9px;color:var(--text-muted);">${d.days}日</div>
+        </div>`;
+    }).join('');
+
+    // ── ③ Plan Utilization ──
+    const planData = bgMeta.plan || [];
+    const planRows = planData.map(p => `
+        <tr>
+            <td style="font-weight:700;color:var(--gold)">${p.month}</td>
+            <td>${p.customers.toLocaleString()}</td>
+            <td>${p.p5500.toLocaleString()}</td>
+            <td>${p.p6600.toLocaleString()}</td>
+            <td>${p.p8800.toLocaleString()}</td>
+            <td>${p.ticket.toLocaleString()}</td>
+            <td style="font-weight:700;color:#66bb6a">${p.plan_rate}</td>
+            <td>${p.alacarte.toLocaleString()}</td>
+        </tr>
+    `).join('');
+
+    // ── ④ Reservation Data ──
+    const resData = bgMeta.reservation || [];
+    const resRows = resData.map(r => `
+        <tr>
+            <td style="font-weight:700;color:var(--gold)">${r.month}</td>
+            <td>${r.groups.toLocaleString()}</td>
+            <td>${r.tc.toLocaleString()} (${r.tc_rate || '—'})</td>
+            <td>${r.phone.toLocaleString()} (${r.phone_rate || '—'})</td>
+            <td>${r.passage.toLocaleString()} (${r.passage_rate || '—'})</td>
+            <td style="font-weight:700;color:#42a5f5">${r.web_rate}</td>
+        </tr>
+    `).join('');
+
+    // ── ⑤ Hourly Heatmap (aggregate by hour across all days) ──
+    const hourlyRecords = activeRecords.filter(r => r.hourly);
+    const hourTotals = Array(10).fill(0);
+    hourlyRecords.forEach(r => {
+        r.hourly.forEach((v, i) => { hourTotals[i] += v; });
+    });
+    const hourMax = Math.max(...hourTotals, 1);
+    const hourLabels = ['12', '13', '14', '15', '16', '17', '18', '19', '20', '21'];
+    const hourlyHeatmap = hourLabels.map((h, i) => {
+        const pct = Math.round(hourTotals[i] / hourMax * 100);
+        const intensity = Math.round(pct * 2.55);
+        const color = pct > 70 ? `rgba(239,83,80,${pct / 100})` : pct > 40 ? `rgba(255,167,38,${pct / 100})` : `rgba(102,187,106,${pct / 100})`;
+        return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;">
+            <div class="mono" style="font-size:9px;font-weight:700;color:var(--text-dim);margin-bottom:4px;">${Math.round(txv(hourTotals[i]) / 1000000)}M</div>
+            <div style="width:100%;max-width:36px;background:rgba(255,255,255,0.05);border-radius:4px;height:80px;position:relative;overflow:hidden;">
+                <div style="position:absolute;bottom:0;width:100%;height:${pct}%;background:${color};border-radius:4px;transition:height 0.5s;"></div>
+            </div>
+            <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${h}時</div>
+        </div>`;
+    }).join('');
+
+    // ── ② Labor Data (aggregate) ──
+    const laborRecords = activeRecords.filter(r => r.labor && r.labor.tt > 0);
+    const laborTotal = laborRecords.reduce((s, r) => s + r.labor.tt, 0);
+    const laborSales = laborRecords.reduce((s, r) => s + r.actual_sales, 0);
+    const laborAvgProd = laborTotal > 0 ? Math.round(laborSales / laborTotal) : 0;
+    const laborDays = laborRecords.length;
+
+    document.getElementById('bg-root').innerHTML = `
+        <div class="card" style="text-align:center;padding:30px 20px;">
+            <div style="font-size:42px;margin-bottom:8px;">🍺</div>
+            <div style="font-family:'JetBrains Mono';font-size:22px;font-weight:800;color:var(--gold);letter-spacing:3px;">
+                SAPPORO TV TOWER BEER GARDEN</div>
+            <div style="font-family:'JetBrains Mono';font-size:11px;color:var(--text-dim);letter-spacing:2px;margin-top:4px;">
+                さっぽろテレビ塔ビアガーデン — POP UP SEASONAL</div>
+        </div>
+
+        <!-- 🕒 REALTIME ON-HAND (TableCheck Integration Mock -> Actual API) -->
+        <div class="card" style="border-color:var(--gold);background:var(--surface-2);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h3 style="color:var(--gold);margin-bottom:0;"><span class="pulse-dot">🔴</span> リアルタイム オンハンド (本日)</h3>
+                <span class="gas-badge" id="bg-onhand-status" style="background:rgba(212,168,67,0.15);color:#d4a843;">同期を確認中...</span>
+            </div>
+            
+            <div id="bg-onhand-container" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);">
+                <div class="loader"></div> <span style="margin-left:8px;">TableCheckから最新の予約データを取得中...</span>
+            </div>
+        </div>
+
+        <!-- KPI Summary -->
+        <div class="card">
+            <h3>📊 GRATEFUL DATA — 全期間サマリー (${txLabel()})</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0;">
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">営業日数</div>
+                    <div style="font-size:24px;font-weight:800;color:var(--gold);">${totalDays}</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">累計売上 (${txLabel()})</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--gold);">¥${txv(totalSales).toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">日平均売上 (${txLabel()})</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--text-main);">¥${txv(avgSales).toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">累計客数</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--text-main);">${totalCount.toLocaleString()}名</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">日平均客数</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--text-main);">${avgCount}名</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">MAX売上</div>
+                    <div style="font-size:18px;font-weight:800;color:#ef5350;">¥${txv(maxSales).toLocaleString()}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ① Weather × Sales Correlation -->
+        <div class="card">
+            <h3>🌤️ 天候スコア × 日平均売上 (${txLabel()})</h3>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">
+                天候評価0-5 (0=豪雨〜5=晴33℃以下) × 日平均売上の相関 | 対象 ${weatherRecords.length}日分
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-end;padding:8px 0;">
+                ${weatherBars}
+            </div>
+        </div>
+
+        <!-- ⑤ Hourly Sales Heatmap -->
+        <div class="card">
+            <h3>⏰ 時間帯別売上ヒートマップ (${txLabel()})</h3>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">
+                全${hourlyRecords.length}日分の時間帯別累計売上 | ランチ(12-14) / アイドル(15-16) / ディナー(17-21)
+            </div>
+            <div style="display:flex;gap:6px;align-items:flex-end;padding:8px 0;">
+                ${hourlyHeatmap}
+            </div>
+        </div>
+
+        <!-- Year Breakdown -->
+        <div class="card">
+            <h3>📅 年度別パフォーマンス (${txLabel()})</h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-dim);font-size:11px;">
+                        <th style="padding:8px;text-align:left;">年</th>
+                        <th style="padding:8px;text-align:left;">営業日</th>
+                        <th style="padding:8px;text-align:left;">売上合計</th>
+                        <th style="padding:8px;text-align:left;">日平均売上</th>
+                        <th style="padding:8px;text-align:left;">客数合計</th>
+                        <th style="padding:8px;text-align:left;">日平均客数</th>
+                        <th style="padding:8px;text-align:left;">客単価</th>
+                    </tr></thead>
+                    <tbody>${yearRows}</tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Monthly Breakdown -->
+        <div class="card">
+            <h3>📆 月別詳細 — ${fiscalYearLabel(latestFY)}</h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-dim);font-size:11px;">
+                        <th style="padding:8px;text-align:left;">月</th>
+                        <th style="padding:8px;text-align:left;">営業日</th>
+                        <th style="padding:8px;text-align:left;">売上合計</th>
+                        <th style="padding:8px;text-align:left;">日平均売上</th>
+                        <th style="padding:8px;text-align:left;">客数合計</th>
+                        <th style="padding:8px;text-align:left;">客単価</th>
+                    </tr></thead>
+                    <tbody>${monthRows}</tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ③ Plan Utilization (R5) -->
+        ${planData.length > 0 ? `
+        <div class="card">
+            <h3>🎫 プラン利用率 — R5 (2023)</h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-dim);font-size:10px;">
+                        <th style="padding:6px;text-align:left;">月</th>
+                        <th style="padding:6px;text-align:left;">客数</th>
+                        <th style="padding:6px;text-align:left;">5,500</th>
+                        <th style="padding:6px;text-align:left;">6,600</th>
+                        <th style="padding:6px;text-align:left;">8,800</th>
+                        <th style="padding:6px;text-align:left;">チケット</th>
+                        <th style="padding:6px;text-align:left;">プラン率</th>
+                        <th style="padding:6px;text-align:left;">アラカルト</th>
+                    </tr></thead>
+                    <tbody>${planRows}</tbody>
+                </table>
+            </div>
+        </div>` : ''}
+
+        <!-- ④ Reservation Data -->
+        ${resData.length > 0 ? `
+        <div class="card">
+            <h3>📱 予約チャネル分析 — R5 (2023)</h3>
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                    <thead><tr style="border-bottom:1px solid var(--border);color:var(--text-dim);font-size:10px;">
+                        <th style="padding:6px;text-align:left;">月</th>
+                        <th style="padding:6px;text-align:left;">組数</th>
+                        <th style="padding:6px;text-align:left;">TC(Web予約)</th>
+                        <th style="padding:6px;text-align:left;">電話</th>
+                        <th style="padding:6px;text-align:left;">パッサージュ</th>
+                        <th style="padding:6px;text-align:left;">Web率</th>
+                    </tr></thead>
+                    <tbody>${resRows}</tbody>
+                </table>
+            </div>
+        </div>` : ''}
+
+        <!-- ② Labor Productivity -->
+        ${laborDays > 0 ? `
+        <div class="card">
+            <h3>👥 人時生産性サマリー</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0;">
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">平均人時生産性</div>
+                    <div style="font-size:22px;font-weight:800;color:#a78bfa;">¥${laborAvgProd.toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">総労働時間</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--text-main);">${Math.round(laborTotal).toLocaleString()}h</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">データ日数</div>
+                    <div style="font-size:20px;font-weight:800;color:var(--text-main);">${laborDays}日</div>
+                </div>
+            </div>
+        </div>` : ''}
+
+        <!-- MP Forecast -->
+        <div class="card">
+            <h3>🔮 MP予測 — ${selectedDate}</h3>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;">
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">予測売上</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--gold);">¥${txv(forecast.predicted_sales).toLocaleString()}</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">予測客数</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--text-main);">${forecast.predicted_count}名</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">マッチ数</div>
+                    <div style="font-size:22px;font-weight:800;color:var(--text-main);">${forecast.matchCount}日</div>
+                </div>
+            </div>
+            <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:8px;">
+                節気: ${forecast.sekki} | 曜日: ${forecast.weekday} | 
+                ${forecast.matchCount > 0 ? '重み: [' + forecast.weights.join(', ') + ']' : '営業期間外'}
+            </div>
+        </div>
+
+        <div class="card" style="text-align:center;padding:20px;">
+            <div style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono';letter-spacing:1px;">
+                🏆 BG 2023 勝利の地図 — SVDの資産として完全統合済</div>
+        </div>
+    `;
+}
+
 
 // ── Dynamic Tax Calculator (multi-store aware) ──
 function updateTaxDisplay() {
@@ -1364,8 +1817,8 @@ function renderMonthlySummary() {
         return `${y - 1}-${String(m).padStart(2, '0')}`;
     })();
 
-    let currentMonth = { sales: 0, count: 0, days: 0 };
-    let prevMonth = { sales: 0, count: 0, days: 0 };
+    let currentMonth = { sales: 0, count: 0, days: 0, sales_8pct: 0 };
+    let prevMonth = { sales: 0, count: 0, days: 0, sales_8pct: 0 };
 
     const filteredStores = getStoresForBase(selectedBase);
     const actualDates = new Set(); // Track which dates have actual data
@@ -1376,11 +1829,13 @@ function renderMonthlySummary() {
             if (rm === ym && r.actual_sales > 0) {
                 currentMonth.sales += r.actual_sales;
                 currentMonth.count += r.actual_count;
+                currentMonth.sales_8pct += (r.sales_8pct || 0);
                 currentMonth.days++;
                 actualDates.add(r.date);
             } else if (rm === prevYm && r.actual_sales > 0) {
                 prevMonth.sales += r.actual_sales;
                 prevMonth.count += r.actual_count;
+                prevMonth.sales_8pct += (r.sales_8pct || 0);
                 prevMonth.days++;
             }
         });
@@ -1407,10 +1862,10 @@ function renderMonthlySummary() {
 
     const ratio = prevMonth.sales > 0 ? (currentMonth.sales / prevMonth.sales * 100) : 0;
 
-    // ── Always tax-exclusive ──
-    const curExc = Math.round(currentMonth.sales / 1.1);
-    const prevExc = Math.round(prevMonth.sales / 1.1);
-    const fcstExc = Math.round(forecastTotal / 1.1);
+    // ── Always tax-exclusive (8%/10% 分離計算) ──
+    const curExc = txvAccurate(currentMonth.sales, currentMonth.sales_8pct);
+    const prevExc = txvAccurate(prevMonth.sales, prevMonth.sales_8pct);
+    const fcstExc = Math.round(forecastTotal / 1.1);  // 予測は10%一律（実績がないため）
     const progress = fcstExc > 0 ? (curExc / fcstExc * 100) : 0;
 
     document.getElementById('monthly-summary').innerHTML = `
@@ -1561,10 +2016,12 @@ function renderDive() {
                 <div class="svd-stat"><div class="stat-value">${mpBadge(rec.mp_point, 'small')}</div><div class="stat-label">RANK</div></div>
             </div>`;
 
-            // KF Breakdown compact
-            const layerLabel = rec.layers_used === 5 ? '5層(特別日)' : '4層';
+            // KF Breakdown compact — Real MP v2.0
+            const wdMultKey = STORE_TO_BASE[selectedStore] || '';
+            const wdMultVal = (WEEKDAY_MULTIPLIER[wdMultKey] || {})[rec.weekday] || 1.0;
+            const kf1s = rec.kf1_seasonal || (wdMultVal > 0 ? Math.round(rec.kf1 / wdMultVal * 100) / 100 : rec.kf1);
             html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;">
-                <div class="kf-card"><div class="kf-name">KF① 拠点定指数</div><div class="kf-val">${rec.kf1.toFixed(2)}</div><div class="kf-sub">月=${rec.monthly_idx} 曜=${rec.weekday_idx} 節=${rec.sekki_idx} 週=${rec.weekly_idx} 日=${rec.daily_idx || '—'} [${layerLabel}]</div></div>
+                <div class="kf-card"><div class="kf-name">KF① 拠点定指数</div><div class="kf-val">${rec.kf1.toFixed(2)}</div><div class="kf-sub">季節${kf1s.toFixed(2)} × ${rec.weekday}曜${wdMultVal.toFixed(3)}</div></div>
                 <div class="kf-card"><div class="kf-name">KF② 売上FACTOR</div><div class="kf-val">${rec.kf2.toFixed(2)}</div><div class="kf-sub">過去実績 min-max</div></div>
                 <div class="kf-card"><div class="kf-name">KF③ 来客FACTOR</div><div class="kf-val">${rec.kf3.toFixed(2)}</div><div class="kf-sub">過去実績 min-max</div></div>
             </div>`;
@@ -1760,7 +2217,7 @@ function refreshReport() {
     // Aggregate data per store and per channel
     const storeAgg = {};
     const channelGlobal = {};
-    let totalSales = 0, totalCount = 0, activeDays = 0;
+    let totalSales = 0, totalCount = 0, activeDays = 0, totalSales8pct = 0;
     const dailyTotals = {};
 
     storeIds.forEach(sid => {
@@ -1768,12 +2225,14 @@ function refreshReport() {
             r.date >= from && r.date <= to && r.actual_sales > 0
         );
 
-        const agg = { sales: 0, count: 0, days: records.length, channels: {} };
+        const agg = { sales: 0, count: 0, days: records.length, channels: {}, sales_8pct: 0 };
         records.forEach(r => {
             agg.sales += r.actual_sales;
             agg.count += r.actual_count;
+            agg.sales_8pct += (r.sales_8pct || 0);
             totalSales += r.actual_sales;
             totalCount += r.actual_count;
+            totalSales8pct += (r.sales_8pct || 0);
 
             // Track daily totals for active days count
             if (!dailyTotals[r.date]) { dailyTotals[r.date] = 0; activeDays++; }
@@ -1826,7 +2285,7 @@ function refreshReport() {
     html += `
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;">
             <div class="svd-stat" style="background:rgba(212,168,67,0.08);border:1px solid rgba(212,168,67,0.2);border-radius:10px;padding:14px;">
-                <div class="stat-value mono text-gold" style="font-size:22px;">${fmt$(txv(totalSales))}</div>
+                <div class="stat-value mono text-gold" style="font-size:22px;">${fmt$(txvAccurate(totalSales, totalSales8pct))}</div>
                 <div class="stat-label">期間売上合計(${tl})</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
@@ -1834,11 +2293,11 @@ function refreshReport() {
                 <div class="stat-label">来客数合計</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
-                <div class="stat-value mono" style="font-size:22px;">${fmt$(txv(avgPerCustomer))}</div>
+                <div class="stat-value mono" style="font-size:22px;">${fmt$(totalCount > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / totalCount) : 0)}</div>
                 <div class="stat-label">平均客単価(${tl})</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
-                <div class="stat-value mono" style="font-size:22px;">${fmt$(txv(avgDaily))}</div>
+                <div class="stat-value mono" style="font-size:22px;">${fmt$(activeDays > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / activeDays) : 0)}</div>
                 <div class="stat-label">日平均売上(${tl})</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
@@ -1867,8 +2326,9 @@ function refreshReport() {
         const a = storeAgg[sid];
         if (!a) return;
         const pct = totalSales > 0 ? (a.sales / totalSales * 100) : 0;
-        const avg = a.count > 0 ? Math.round(a.sales / a.count) : 0;
-        const dayAvg = a.days > 0 ? Math.round(a.sales / a.days) : 0;
+        const salesExc = txvAccurate(a.sales, a.sales_8pct);
+        const avg = a.count > 0 ? Math.round(salesExc / a.count) : 0;
+        const dayAvg = a.days > 0 ? Math.round(salesExc / a.days) : 0;
 
         // Store YoY
         let syoySales = 0;
@@ -1879,24 +2339,24 @@ function refreshReport() {
 
         html += `<tr>
             <td><strong>${sid}</strong> <span style="color:var(--text-dim);font-size:11px;">${getStoreName(sid)}</span></td>
-            <td class="num mono">${fmt$(txv(a.sales))}</td>
+            <td class="num mono">${fmt$(salesExc)}</td>
             <td class="num mono">${pct.toFixed(1)}%</td>
             <td class="num mono">${a.count.toLocaleString()}</td>
-            <td class="num mono">${fmt$(txv(avg))}</td>
+            <td class="num mono">${fmt$(avg)}</td>
             <td class="num mono">${a.days}</td>
-            <td class="num mono">${fmt$(txv(dayAvg))}</td>
+            <td class="num mono">${fmt$(dayAvg)}</td>
             <td class="num mono ${syoyPct >= 100 ? 'text-green' : syoyPct > 0 ? 'text-red' : ''}">${syoyPct > 0 ? syoyPct.toFixed(1) + '%' : '—'}</td>
         </tr>`;
     });
 
     html += `<tr style="border-top:2px solid var(--gold);font-weight:700;">
         <td>合計</td>
-        <td class="num mono text-gold">${fmt$(txv(totalSales))}</td>
+        <td class="num mono text-gold">${fmt$(txvAccurate(totalSales, totalSales8pct))}</td>
         <td class="num">100%</td>
         <td class="num mono">${totalCount.toLocaleString()}</td>
-        <td class="num mono">${fmt$(txv(avgPerCustomer))}</td>
+        <td class="num mono">${fmt$(totalCount > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / totalCount) : 0)}</td>
         <td class="num mono">${activeDays}</td>
-        <td class="num mono">${fmt$(txv(avgDaily))}</td>
+        <td class="num mono">${fmt$(activeDays > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / activeDays) : 0)}</td>
         <td class="num mono ${yoyPct >= 100 ? 'text-green' : yoyPct > 0 ? 'text-red' : ''}">${yoyPct > 0 ? yoyPct.toFixed(1) + '%' : '—'}</td>
     </tr>`;
     html += `</tbody></table></div>`;
@@ -2030,9 +2490,10 @@ function refreshReport() {
             r.date >= from && r.date <= to && r.actual_sales > 0
         ).forEach(r => {
             const m = r.date.slice(0, 7);
-            if (!monthlyAgg[m]) monthlyAgg[m] = { sales: 0, count: 0, days: new Set() };
+            if (!monthlyAgg[m]) monthlyAgg[m] = { sales: 0, count: 0, days: new Set(), sales_8pct: 0 };
             monthlyAgg[m].sales += r.actual_sales;
             monthlyAgg[m].count += r.actual_count;
+            monthlyAgg[m].sales_8pct += (r.sales_8pct || 0);
             monthlyAgg[m].days.add(r.date);
         });
     });
@@ -2048,15 +2509,16 @@ function refreshReport() {
         monthKeys.forEach(m => {
             const d = monthlyAgg[m];
             const days = d.days.size;
-            const avg = d.count > 0 ? Math.round(d.sales / d.count) : 0;
-            const dayAvg = days > 0 ? Math.round(d.sales / days) : 0;
+            const salesExc = txvAccurate(d.sales, d.sales_8pct);
+            const avg = d.count > 0 ? Math.round(salesExc / d.count) : 0;
+            const dayAvg = days > 0 ? Math.round(salesExc / days) : 0;
             html += `<tr>
                 <td><strong>${m}</strong></td>
-                <td class="num mono">${fmt$(txv(d.sales))}</td>
+                <td class="num mono">${fmt$(salesExc)}</td>
                 <td class="num mono">${d.count.toLocaleString()}</td>
-                <td class="num mono">${fmt$(txv(avg))}</td>
+                <td class="num mono">${fmt$(avg)}</td>
                 <td class="num mono">${days}</td>
-                <td class="num mono">${fmt$(txv(dayAvg))}</td>
+                <td class="num mono">${fmt$(dayAvg)}</td>
             </tr>`;
         });
         html += `</tbody></table></div>`;
@@ -2219,32 +2681,33 @@ function exportReportPDF() {
 }
 
 // 節気rank(1=TOP → 24=OFF)から天気配色を返す（バッジ表示用に残す）
+// ロープウェイ式 24段階カラーパレット（5カテゴリ内グラデーション）
 function sekkiWeatherColor(rank) {
+    // TOP(1-5)=赤系, HIGH(6-10)=橙系, FLOW(11-15)=黄系, LOW(16-20)=緑系, OFF(21-24)=青系
     const palette = [
-        '#dc2626', '#e03a1e', '#e54e16', '#ea620e',
-        '#ef7606', '#f08c14', '#f0a222', '#e8b830',
-        '#d4c73e', '#b8d44c', '#8ccc5a', '#60c468',
-        '#45b87a', '#3aac8c', '#36a09e', '#3294b0',
-        '#2e88c2', '#2a7cd4', '#266de6', '#2255d4',
-        '#2244b8', '#22339c', '#1e2280', '#1a1164',
+        '#dc2626', '#e03030', '#e53a3a', '#e44a18', '#ea5e06',  // TOP: 1-5 赤
+        '#f97316', '#f98320', '#f0932a', '#e8a334', '#e8b030',  // HIGH: 6-10 橙
+        '#eab308', '#e0c010', '#d4c820', '#c8c830', '#b8c040',  // FLOW: 11-15 黄
+        '#22c55e', '#30b860', '#3aac62', '#44a064', '#4e9466',  // LOW: 16-20 緑
+        '#3b82f6', '#3070e0', '#2960cc', '#2250b8',             // OFF: 21-24 青
     ];
     const idx = Math.max(0, Math.min(23, rank - 1));
     return palette[idx];
 }
 
-// 日別MPスコア → 24段階レベル（1=最繁忙, 24=最閑散）
+// 日別MPスコア → 24段階レベル（24=最繁忙, 1=最閑散）
 const MP_MIN = 1.2, MP_MAX = 5.0;
 function mpScoreLevel(mpPoint) {
     const t = (mpPoint - MP_MIN) / (MP_MAX - MP_MIN); // 0..1
     const clamped = Math.max(0, Math.min(1, t));
-    // Higher score = more busy = lower level number (1st)
+    // Higher score = more busy = lower level number (1 = busiest)
     return Math.max(1, Math.min(24, 25 - Math.ceil(clamped * 24)));
 }
 
-// 日別MPスコア → ヒートマップカラー（24段階パレット）
+// 日別MPスコア → ヒートマップカラー（ロープウェイ式）
 function mpScoreColor(mpPoint) {
     const level = mpScoreLevel(mpPoint);
-    return sekkiWeatherColor(level);
+    return rankCategoryColor(level);
 }
 
 function renderHeatmapInto(containerId, storeData) {
@@ -2320,27 +2783,36 @@ function runForecast() {
         const results = [];
         dates.forEach(dateStr => {
             const dd = new Date(dateStr);
-            const weekdayIdx = WEEKDAY_IDX[WEEKDAY_JA[dd.getDay()]] || 2;
+            const weekdayJa = WEEKDAY_JA[dd.getDay()];
             const sekkiName = getSekki(dateStr);
             const sekkiData = sekki[sekkiName] || { rank: 12, season: 'FLOW', pt: 3.0 };
             const month = dd.getMonth() + 1;
 
+            // Real MP v2.0 — 曜日乗数を取得
+            const baseForStore = STORE_TO_BASE[sid] || baseId;
+            const wdMult = (WEEKDAY_MULTIPLIER[baseForStore] || {})[weekdayJa] || 1.0;
+
             const existingRec = storeData.find(r => r.date === dateStr);
             let kf1, kf2, kf3;
             if (existingRec) {
-                kf1 = existingRec.kf1; kf2 = existingRec.kf2; kf3 = existingRec.kf3;
+                // 既存レコードのKF①も曜日乗数で再計算（v2.0整合性）
+                const kf1s = existingRec.kf1_seasonal || existingRec.kf1;
+                kf1 = Math.max(1, Math.min(5, Math.round(kf1s * wdMult * 100) / 100));
+                kf2 = existingRec.kf2; kf3 = existingRec.kf3;
             } else {
                 const sameMonth = storeData.filter(r => parseInt(r.date.slice(5, 7)) === month && r.actual_sales > 0);
                 const avgKf1 = sameMonth.length ? sameMonth.reduce((s, r) => s + r.kf1, 0) / sameMonth.length : 3.0;
                 const avgKf2 = sameMonth.length ? sameMonth.reduce((s, r) => s + r.kf2, 0) / sameMonth.length : 2.5;
                 const avgKf3 = sameMonth.length ? sameMonth.reduce((s, r) => s + r.kf3, 0) / sameMonth.length : 2.5;
-                kf1 = Math.max(1, Math.min(5, Math.round((avgKf1 + (weekdayIdx - 3) * 0.3) * 100) / 100));
+                // v2.0: 季節ベース × 曜日乗数
+                kf1 = Math.max(1, Math.min(5, Math.round(avgKf1 * wdMult * 100) / 100));
                 kf2 = avgKf2; kf3 = avgKf3;
             }
             const mp = Math.round((kf1 + kf2 + kf3) / 3 * 100) / 100;
             const monthSales = monthAvgSales[month] || [0];
             const avgDaily = monthSales.reduce((a, b) => a + b, 0) / monthSales.length;
-            const predicted = Math.round(avgDaily * (mp / 3.0));
+            // 予測売上 = 同月の日平均売上 × 曜日乗数（日別変動を反映）
+            const predicted = Math.round(avgDaily * wdMult);
 
             results.push({
                 date: dateStr, weekday: WEEKDAY_JA[dd.getDay()], sekki: sekkiName,
@@ -2410,12 +2882,16 @@ function runForecast() {
     });
     html += `<div class="card mt-16" style="text-align:center;padding:16px;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--gold);letter-spacing:2px;">${base.name} — FORECAST SUMMARY</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${displayTaxExc ? '税抜' : '税込'}表示</div>
         <div style="display:flex;justify-content:center;gap:32px;margin-top:12px;">
-            <div><div class="label">予測合計</div><div class="mono fw-900" style="font-size:28px;color:var(--blue);">${fmt$(totalPredicted)}</div></div>
-            <div><div class="label">実績合計</div><div class="mono fw-900" style="font-size:28px;color:var(--green);">${fmt$(totalActual)}</div></div>
+            <div><div class="label">予測合計</div><div class="mono fw-900" style="font-size:28px;color:var(--blue);">${fmt$(txv(totalPredicted))}</div></div>
+            <div><div class="label">実績合計</div><div class="mono fw-900" style="font-size:28px;color:var(--green);">${fmt$(txv(totalActual))}</div></div>
             <div><div class="label">期間</div><div class="mono" style="font-size:16px;color:var(--text-dim);">${dates.length}日間</div></div>
         </div>
+        <button onclick="exportForecastCSV()" style="margin-top:16px;padding:8px 24px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;">📥 CSV EXPORT</button>
     </div>`;
+    // Store for CSV export
+    window._forecastExportData = { allStoreResults, storeIds, dates, baseName: base.name };
 
     // Per-store forecast tables
     storeIds.forEach((sid, i) => {
@@ -2428,8 +2904,8 @@ function runForecast() {
         html += `<div class="card mt-16">
             <h3 style="color:${color};">${sid} — ${storeName}</h3>
             <div style="display:flex;gap:24px;margin-bottom:8px;font-size:12px;">
-                <span style="color:var(--text-dim);">予測: <strong style="color:${color};">${fmt$(storePredTotal)}</strong></span>
-                <span style="color:var(--text-dim);">実績: <strong style="color:var(--green);">${fmt$(storeActTotal)}</strong></span>
+                <span style="color:var(--text-dim);">予測: <strong style="color:${color};">${fmt$(txv(storePredTotal))}</strong></span>
+                <span style="color:var(--text-dim);">実績: <strong style="color:var(--green);">${fmt$(txv(storeActTotal))}</strong></span>
             </div>
             <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
             <table class="data-table"><thead><tr>
@@ -2444,8 +2920,8 @@ function runForecast() {
                 <td>${mpBadge(r.mp_point, 'small')}</td>
                 <td class="num">${r.kf1.toFixed(2)}</td><td class="num">${r.kf2.toFixed(2)}</td><td class="num">${r.kf3.toFixed(2)}</td>
                 <td class="num" style="color:var(--gold);font-weight:700">${r.mp_point.toFixed(2)}</td>
-                <td class="num" style="color:var(--blue)">${fmt$(r.predicted_sales)}</td>
-                <td class="num" style="color:var(--green)">${r.actual_sales > 0 ? fmt$(r.actual_sales) : '—'}</td>
+                <td class="num" style="color:var(--blue)">${fmt$(txv(r.predicted_sales))}</td>
+                <td class="num" style="color:var(--green)">${r.actual_sales > 0 ? fmt$(txv(r.actual_sales)) : '—'}</td>
             </tr>`;
         });
 
@@ -2898,25 +3374,122 @@ function saveAllSalesEntries() {
     try {
         renderCommand(); // Refresh UI
 
-        // ── GAS Cloud Sync (background) ──
+        // ── GAS Cloud Sync — Store-Specific Sheets Architecture ──
+        // channels obj → Code.gs STORE_SHEETS ヘッダー順の flat values 配列に変換して保存
         if (typeof GAS_BRIDGE !== 'undefined' && GAS_BRIDGE.getUrl()) {
-            const entries = [];
+            const STORE_TO_SHEET = {
+                'JW': 'MOIWA_JW', 'GA': 'TVTOWER_GA', 'BG': 'TVTOWER_BG',
+                'NP': 'OKURAYAMA_NP', 'Ce': 'OKURAYAMA_Ce', 'RP': 'OKURAYAMA_RP',
+                'BQ': 'AKARENGA_BQ', 'RYB': 'AKARENGA_RYB'
+            };
+
+            // channels → values 配列変換 (STORE_SHEETS ヘッダー順に完全準拠)
+            function channelsToGASValues(store, ch, date) {
+                const g = (sec, key) => (ch[sec] && ch[sec][key]) || 0;
+                switch (store) {
+                    case 'JW':
+                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 席料, 南京錠, 花束, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                            g('TAKEOUT', 'food'), g('TAKEOUT', 'drink'),
+                            g('席料', 'sales'), g('南京錠', 'sales'), g('花束', 'sales'),
+                            0, 0 // 物販_食品, 物販_アパレル (未入力)
+                        ];
+                    case 'GA':
+                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 宴会_Food, 宴会_Drink, 宴会人数, 室料, 展望台, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                            0, 0, // TO_Food, TO_Drink (GAフォームにTOなし→0)
+                            g('BANQUET', 'food'), g('BANQUET', 'drink'), g('BANQUET', 'count'),
+                            g('室料', 'sales'), g('展望台', 'sales'),
+                            0, 0 // 物販
+                        ];
+                    case 'BG':
+                        // headers: date, Food, Drink, Tent, 人数, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'tent'), g('ALL', 'count'),
+                            g('ALL', 'goods'), 0 // 物販_アパレル
+                        ];
+                    case 'NP':
+                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 室料, 花束, Event_Food, Event_Drink, Event人数, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                            g('EVENT', 'room') || 0, g('EVENT', 'flower') || 0,
+                            g('EVENT', 'food'), g('EVENT', 'drink'), g('EVENT', 'count'),
+                            0, 0 // 物販
+                        ];
+                    case 'Ce':
+                    case 'RP':
+                        // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('CAFE', 'food'), g('CAFE', 'drink'), g('CAFE', 'count'),
+                            g('GOODS', 'sales') || 0, 0 // 物販_アパレル
+                        ];
+                    case 'BQ':
+                        // headers: date, L_Food, L_Drink, L人数, AT_Food, AT_Drink, AT人数, D_Food, D_Drink, D人数, 席料, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                            g('AT', 'food'), g('AT', 'drink'), g('AT', 'count'),
+                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                            g('席料', 'sales'),
+                            0, 0 // 物販
+                        ];
+                    case 'RYB':
+                        // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
+                        return [date,
+                            g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'count'),
+                            0, 0 // 物販
+                        ];
+                    default:
+                        return null;
+                }
+            }
+
+            const gasPromises = [];
             storeBlocks.forEach(block => {
                 const store = block.dataset.store;
                 const r = DATA.stores[store]?.find(r => r.date === date);
-                if (r && (r.actual_sales > 0 || r.actual_count > 0)) {
-                    entries.push({
-                        store_id: store,
-                        actual_sales: r.actual_sales,
-                        actual_count: r.actual_count,
-                        channels: r.channels,
-                        labor: r.labor || null,
-                        ropeway: r.ropeway || null
-                    });
-                }
+                if (!r || (r.actual_sales === 0 && r.actual_count === 0)) return;
+
+                const sheetName = STORE_TO_SHEET[store];
+                if (!sheetName) return;
+
+                const values = channelsToGASValues(store, r.channels || {}, date);
+                if (!values) return;
+
+                const payload = {
+                    action: 'save',
+                    sheet: sheetName,
+                    date: date,
+                    values: values,
+                    user: 'DASHBOARD'
+                };
+
+                gasPromises.push(
+                    fetch(GAS_BRIDGE.getUrl(), {
+                        method: 'POST',
+                        redirect: 'follow',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(payload)
+                    }).then(r => r.json()).then(d => ({ store, status: d.status, action: d.action }))
+                        .catch(e => ({ store, status: 'error', message: e.message }))
+                );
             });
-            if (entries.length > 0) {
-                GAS_BRIDGE.bulkSave(date, entries, 'DASHBOARD').catch(e => console.warn('[GAS] sync error:', e));
+
+            if (gasPromises.length > 0) {
+                Promise.all(gasPromises).then(results => {
+                    const okCount = results.filter(r => r.status === 'ok').length;
+                    const errCount = results.filter(r => r.status !== 'ok').length;
+                    console.log(`[GAS] Sync: ${okCount} ok, ${errCount} errors`, results);
+                    const stat = document.getElementById('sf-status');
+                    if (stat && okCount > 0) {
+                        const prev = stat.textContent;
+                        stat.textContent = prev + ` ☁️ GAS ${okCount}店舗同期完了`;
+                    }
+                });
             }
         }
 
@@ -2935,4 +3508,143 @@ function saveAllSalesEntries() {
 function saveSalesEntry() { saveAllSalesEntries(); }
 function loadSalesEntry() {
     renderCommand(); // Re-render with current data
+}
+
+// ── CSV Export: 予測データ出力 ──
+function exportForecastCSV() {
+    const data = window._forecastExportData;
+    if (!data) { alert('先に③ FORECAST CHART を表示してください'); return; }
+
+    const { allStoreResults, storeIds, baseName } = data;
+    const taxLabel = displayTaxExc ? '税抜' : '税込';
+
+    // Header
+    const headers = ['日付', '店舗', '曜日', '節気', 'KF①', 'KF②', 'KF③', 'MP', '予測売上(' + taxLabel + ')', '実績売上(' + taxLabel + ')', '達成率'];
+    const rows = [headers.join(',')];
+
+    // Data rows
+    storeIds.forEach(sid => {
+        const results = allStoreResults[sid];
+        const storeName = getStoreName(sid);
+        results.forEach(r => {
+            const predTax = txv(r.predicted_sales);
+            const actTax = r.actual_sales > 0 ? txv(r.actual_sales) : 0;
+            const ratio = actTax > 0 && predTax > 0 ? (actTax / predTax * 100).toFixed(1) + '%' : '';
+            rows.push([
+                r.date,
+                sid + ' ' + storeName,
+                r.weekday,
+                r.sekki,
+                r.kf1.toFixed(2),
+                r.kf2.toFixed(2),
+                r.kf3.toFixed(2),
+                r.mp_point.toFixed(2),
+                predTax,
+                actTax || '',
+                ratio
+            ].join(','));
+        });
+    });
+
+    // BOM + CSV content for Excel compatibility
+    const bom = '\uFEFF';
+    const csvContent = bom + rows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    const monthStr = selectedDate.slice(0, 7);
+    a.href = url;
+    a.download = 'MP_Forecast_' + baseName + '_' + monthStr + '_' + taxLabel + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ── Async OnHand Fetcher (TableCheck Integration) ──
+async function fetchAndRenderOnhand(targetDate) {
+    const container = document.getElementById('bg-onhand-container');
+    const badge = document.getElementById('bg-onhand-status');
+    if (!container) return;
+
+    if (typeof GAS_BRIDGE === 'undefined' || !GAS_BRIDGE.getUrl()) {
+        badge.innerHTML = 'GAS未接続';
+        container.innerHTML = `<div style="text-align:center;padding:30px;opacity:0.6;">API未接続です。<br>設定画面からGASのURLを登録してください。</div>`;
+        return;
+    }
+
+    const onhandData = await GAS_BRIDGE.getOnhandData(targetDate);
+
+    if (!onhandData || !onhandData.totalPax) {
+        // データがない、またはエラーの時
+        badge.innerHTML = '未接続 / データなし';
+        badge.style.background = 'rgba(255,255,255,0.05)';
+        badge.style.color = 'var(--text-dim)';
+        container.innerHTML = `
+            <div style="text-align:center;padding:30px;opacity:0.6;">
+                <div style="font-size:32px;margin-bottom:8px;">💤</div>
+                <div>本日のリアルタイム予約データはありません</div>
+            </div>`;
+        return;
+    }
+
+    // データが取れた場合の描画
+    badge.innerHTML = '🟢 TableCheck 連携中';
+    badge.style.background = 'rgba(74, 222, 128, 0.15)';
+    badge.style.color = '#4ade80';
+
+    const totalPax = onhandData.totalPax || 0;
+    const groups = onhandData.groups || 0;
+    const estSales = Math.round((totalPax * 4000) / 1000); // 1人あたり4000円仮定(千円単位)
+
+    // タイムライン描画用
+    const hours = ['16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00'];
+    let timelineHtml = hours.map(h => {
+        const c = onhandData.timeline && onhandData.timeline[h] ? onhandData.timeline[h] : 0;
+        const pct = Math.min(100, Math.round((c / 50) * 100)); // MAX50名を最大に想定
+        const color = pct > 80 ? '#ef4444' : pct > 40 ? '#f97316' : '#4ade80';
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+                    <div style="font-size:10px;color:var(--text-sub);margin-bottom:4px;font-weight:600;">${c}</div>
+                    <div style="width:100%;max-width:24px;background:rgba(255,255,255,0.05);height:60px;position:relative;border-radius:3px;overflow:hidden;">
+                        <div style="position:absolute;bottom:0;width:100%;height:${Math.max(2, pct)}%;background:${color};transition:height 0.5s ease;"></div>
+                    </div>
+                    <div style="font-size:9px;color:var(--text-dim);margin-top:4px;">${h}</div>
+                </div>`;
+    }).join('');
+
+    container.innerHTML = `
+        <div style="width:100%;">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;border:1px solid rgba(212,168,67,0.3);">
+                    <div style="font-size:11px;color:var(--text-dim);">現在の総予約数</div>
+                    <div style="font-size:28px;font-weight:800;color:var(--gold);">${totalPax}<span style="font-size:14px;color:var(--text-dim);">名</span></div>
+                    <div style="font-size:10px;color:var(--green);margin-top:4px;">※API自動収集</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">予約組数</div>
+                    <div style="font-size:24px;font-weight:800;color:var(--text-main);">${groups}<span style="font-size:14px;color:var(--text-dim);">組</span></div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">推計オンハンド売上</div>
+                    <div style="font-size:24px;font-weight:800;color:var(--text-main);">¥${estSales}K</div>
+                </div>
+                <div style="background:var(--surface);padding:16px;border-radius:8px;text-align:center;">
+                    <div style="font-size:11px;color:var(--text-dim);">フリー残席目安</div>
+                    <div style="font-size:24px;font-weight:800;color:var(--text-dim);">-<span style="font-size:14px;color:var(--text-dim);">%</span></div>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">※未算定</div>
+                </div>
+            </div>
+
+            <!-- 予約タイムライン -->
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">時間帯別 予約人数</div>
+            <div style="display:flex;gap:4px;align-items:flex-end;height:100px;background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);">
+                ${timelineHtml}
+            </div>
+            
+            <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                <button class="btn btn-gold" style="font-size:10px;padding:6px 12px;" onclick="window.open('https://www.tablecheck.com/', '_blank')">
+                    TableCheck 詳細を開く ↗️
+                </button>
+            </div>
+        </div>
+    `;
 }
