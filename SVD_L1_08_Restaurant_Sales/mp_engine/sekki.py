@@ -132,20 +132,23 @@ def get_weekday_index(target_date: date, indices: Optional[Dict] = None) -> floa
 
 def get_kf1(target_date: date, base_id: str, indices: Optional[Dict] = None) -> Dict:
     """
-    KF①（拠点定指数）を計算する — 5層環境定数。
+    KF①（拠点定指数）を計算する — Real MP v2.0 2段構造。
     
-    5 Layers:
+    Step 1: KF①_seasonal（季節ベース）= 季節指標の平均
         ① 月別IDX     (seasonal)  — 12区分, 拠点別
-        ② 曜日IDX     (weekday)   — 7区分, 全店共通
-        ③ 節気別IDX   (sekki)     — 24区分, 拠点別  ← NEW
-        ④ 週別IDX     (weekly)    — 52区分, 拠点別  ← NEW
-        ⑤ 日別IDX     (daily)     — 特別日, 全店共通 ← NEW
+        ② 節気別IDX   (sekki)     — 24区分, 拠点別
+        ③ 週別IDX     (weekly)    — 52区分, 拠点別
+        ④ 日別IDX     (daily)     — 特別日, 全店共通
     
-    Formula: KF① = (月別 + 曜日別 + 節気別 + 週別 + 日別) / 5
-             ※ 日別が該当しない場合は 4層平均
+    Step 2: 曜日乗数で変調
+        KF① = KF①_seasonal × weekday_multiplier[曜日]
+    
+    v1.0 → v2.0 変更点:
+        旧: 曜日を他の季節指標と等重で足し算 → 曜日効果が希釈（±6-7%）
+        新: 曜日を掛け算で独立適用 → 実態の±35-47%を正確に反映
     
     Returns:
-        Dict with all 5 layer values + kf1
+        Dict with all layer values + kf1_seasonal + weekday_multiplier + kf1
     """
     if indices is None:
         indices = _load_indices()
@@ -155,34 +158,44 @@ def get_kf1(target_date: date, base_id: str, indices: Optional[Dict] = None) -> 
     month_str = str(target_date.month)
     base_data = indices["bases"][base_id]
     
+    # ── Step 1: KF①_seasonal ──
+    
     # ① 月別IDX
     monthly_idx = base_data["seasonal"].get(month_str, 2.50)
     
-    # ② 曜日IDX
-    weekday_idx = get_weekday_index(target_date, indices)
-    
-    # ③ 節気別IDX (実データから算出済み — 拠点別)
+    # ② 節気別IDX (実データから算出済み — 拠点別)
     sekki_idx_dict = base_data.get("sekki_index", {})
     sekki_idx = sekki_idx_dict.get(sekki_name, 3.00)
     
-    # ④ 週別IDX (実データから算出済み — 拠点別)
+    # ③ 週別IDX (実データから算出済み — 拠点別)
     iso_week = target_date.isocalendar()[1]
     if iso_week > 52:
         iso_week = 52
     weekly_idx_dict = base_data.get("weekly_index", {})
     weekly_idx = weekly_idx_dict.get(str(iso_week), 3.00)
     
-    # ⑤ 日別IDX (特別日判定)
+    # ④ 日別IDX (特別日判定)
     daily_idx = _get_daily_index(target_date, indices)
     
-    # KF① 計算: 日別が該当する場合は5層平均、しない場合は4層平均
+    # KF①_seasonal: 日別が該当する場合は4層平均、しない場合は3層平均
     if daily_idx is not None:
-        kf1 = round((monthly_idx + weekday_idx + sekki_idx + weekly_idx + daily_idx) / 5, 2)
-        layers_used = 5
-    else:
-        kf1 = round((monthly_idx + weekday_idx + sekki_idx + weekly_idx) / 4, 2)
-        daily_idx = 0.0  # 返却用
+        kf1_seasonal = round((monthly_idx + sekki_idx + weekly_idx + daily_idx) / 4, 2)
         layers_used = 4
+    else:
+        kf1_seasonal = round((monthly_idx + sekki_idx + weekly_idx) / 3, 2)
+        daily_idx = 0.0  # 返却用
+        layers_used = 3
+    
+    # ── Step 2: 曜日乗数を適用 ──
+    weekday_ja = get_weekday_ja(target_date)
+    weekday_mult_dict = base_data.get("weekday_multiplier", {})
+    weekday_multiplier = weekday_mult_dict.get(weekday_ja, 1.000)
+    
+    # KF① = KF①_seasonal × 曜日乗数 (クランプ 1.00〜5.00)
+    kf1 = round(max(1.0, min(5.0, kf1_seasonal * weekday_multiplier)), 2)
+    
+    # 後方互換: 旧weekday_idxも返却（表示用）
+    weekday_idx_legacy = indices.get("weekday_index_v1_deprecated", {}).get(weekday_ja, 3.0)
     
     return {
         "sekki": sekki_name,
@@ -190,11 +203,13 @@ def get_kf1(target_date: date, base_id: str, indices: Optional[Dict] = None) -> 
         "season": season,
         "season_pt": season_pt,
         "monthly_idx": monthly_idx,
-        "weekday_ja": get_weekday_ja(target_date),
-        "weekday_idx": weekday_idx,
+        "weekday_ja": weekday_ja,
+        "weekday_idx": weekday_idx_legacy,  # 後方互換
+        "weekday_multiplier": weekday_multiplier,  # Real MP v2.0
         "sekki_idx": sekki_idx,
         "weekly_idx": weekly_idx,
         "daily_idx": daily_idx,
+        "kf1_seasonal": kf1_seasonal,  # Real MP v2.0
         "layers_used": layers_used,
         "kf1": kf1,
     }
@@ -255,16 +270,21 @@ if __name__ == "__main__":
     
     result = get_kf1(test_date, base_id)
     
-    print(f"=== Momentum Peaks — 5層環境定数エンジン ===")
+    print(f"=== Momentum Peaks — Real MP v2.0 ===")
     print(f"日付:       {test_date} ({result['weekday_ja']})")
     print(f"節気:       {result['sekki']} (Level {result['rank']})")
     print(f"季節:       {result['season']} (PT: {result['season_pt']:.2f})")
     print(f"拠点:       {base_id}")
     print(f"─────────────────────────────")
-    print(f"① 月別IDX:   {result['monthly_idx']:.2f}")
-    print(f"② 曜日IDX:   {result['weekday_idx']:.2f}")
-    print(f"③ 節気IDX:   {result['sekki_idx']:.2f}")
-    print(f"④ 週別IDX:   {result['weekly_idx']:.2f}")
-    print(f"⑤ 日別IDX:   {result['daily_idx']:.2f} ({'特別日' if result['layers_used'] == 5 else '通常日'})")
+    print(f"[Step 1: 季節ベース]")
+    print(f"  ① 月別IDX:   {result['monthly_idx']:.2f}")
+    print(f"  ② 節気IDX:   {result['sekki_idx']:.2f}")
+    print(f"  ③ 週別IDX:   {result['weekly_idx']:.2f}")
+    print(f"  ④ 日別IDX:   {result['daily_idx']:.2f} ({'特別日' if result['layers_used'] >= 4 and result['daily_idx'] > 0 else '通常日'})")
+    print(f"  → KF①ₛ =    {result['kf1_seasonal']:.2f} ({result['layers_used']}層平均)")
+    print(f"")
+    print(f"[Step 2: 曜日乗数]")
+    print(f"  {result['weekday_ja']}曜 乗数: ×{result['weekday_multiplier']:.3f}")
     print(f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    print(f"KF① =        {result['kf1']:.2f} ({result['layers_used']}層平均)")
+    print(f"KF① =        {result['kf1']:.2f}")
+

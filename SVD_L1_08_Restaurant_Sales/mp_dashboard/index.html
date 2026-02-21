@@ -8,6 +8,7 @@
     <meta name="description" content="SVD Demand Intelligence Dashboard — 7-store MP monitoring">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="gas_bridge.js"></script>
 </head>
 
 <body>
@@ -23,30 +24,46 @@
                 <label>DATE</label>
                 <input type="date" id="selDate">
             </div>
+            <button class="tax-display-btn active" id="taxDisplayToggle" onclick="toggleTaxDisplay()">
+                <span class="tax-label" id="taxLabel">税抜</span>
+            </button>
         </div>
     </div>
 
     <!-- ═══ Navigation ═══ -->
     <nav class="nav" id="mainNav">
-        <button class="nav-btn active" data-tab="command">① COMMAND CENTER</button>
-        <button class="nav-btn" data-tab="dive">② STORE DEEP DIVE</button>
-        <button class="nav-btn" data-tab="forecast">③ FORECAST</button>
-        <button class="nav-btn" data-tab="compare">④ CROSS COMPARE</button>
-        <button class="nav-btn" data-tab="import">⑤ DATA IMPORT</button>
-        <button class="nav-btn" data-tab="staffing">⑥ STAFFING</button>
+        <button class="nav-btn active" data-tab="command">① THE BRIDGE<span class="nav-sub">SVD操舵室</span></button>
+        <button class="nav-btn" data-tab="dive">② FORECAST DETAIL<span class="nav-sub">予測詳細</span></button>
+        <button class="nav-btn" data-tab="forecast">③ FORECAST CHART<span class="nav-sub">予測チャート</span></button>
+        <button class="nav-btn" data-tab="entry">④ ENTRY<span class="nav-sub">売上入力</span></button>
+        <button class="nav-btn" data-tab="import">⑤ DATA IMPORT<span class="nav-sub">データ取込</span></button>
+        <button class="nav-btn" data-tab="staffing">⑥ STAFFING<span class="nav-sub">人員配置</span></button>
+        <button class="nav-btn" data-tab="report">⑦ REPORT<span class="nav-sub">実績レポート</span></button>
+        <button class="nav-btn" data-tab="bg">⑧ BG POP UP<span class="nav-sub">ビアガーデン</span></button>
     </nav>
 
-    <!-- ═══ ① COMMAND CENTER ═══ -->
+    <!-- ═══ ① THE BRIDGE ═══ -->
     <div class="panel active" id="p-command">
 
         <!-- Base Filter -->
         <div class="base-filter" id="base-filter"></div>
 
-        <!-- SVD Summary -->
-        <div class="svd-summary" id="svd-summary"></div>
+        <!-- Today's Forecast vs Actual -->
+        <div class="card">
+            <h3>📊 本日の予測 vs 実績</h3>
+            <div id="forecast-comparison"></div>
+        </div>
+
+        <!-- Channel Breakdown -->
+        <div class="card">
+            <h3>📋 チャネル別内訳</h3>
+            <div id="channel-breakdown"></div>
+        </div>
 
         <!-- Store Cards -->
         <div class="store-grid" id="store-grid"></div>
+
+
 
         <!-- Monthly Summary -->
         <div class="card">
@@ -58,59 +75,31 @@
         </div>
     </div>
 
-    <!-- ═══ ② STORE DEEP DIVE ═══ -->
+    <!-- ═══ ② FORECAST DETAIL ═══ -->
     <div class="panel" id="p-dive">
         <!-- Store Selector -->
         <div class="controls">
             <div class="control-group">
-                <label>STORE</label>
-                <select id="selStore"></select>
+                <label>店舗</label>
+                <select id="selBase"></select>
             </div>
+            <button class="btn" id="btn-compare-modal" style="margin-left:auto;">📊 全店比較</button>
         </div>
 
-        <!-- MP Hero -->
-        <div class="card" id="dive-hero"></div>
+        <!-- Forecast detail: matching records, channel breakdown, KF factors -->
+        <div id="dive-content"></div>
+    </div>
 
-        <!-- KF Breakdown -->
-        <div class="kf-grid" id="dive-kf"></div>
-
-        <!-- Channel Breakdown -->
-        <div class="card mt-16">
-            <h3>📊 チャネル別売上内訳</h3>
-            <div class="grid-2">
-                <div style="overflow-x:auto;">
-                    <table class="data-table" id="dive-ch-table">
-                        <thead></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="chart-wrap"><canvas id="chart-channels"></canvas></div>
+    <!-- ═══ CROSS COMPARE Modal ═══ -->
+    <div class="modal-overlay hidden" id="compare-modal">
+        <div class="modal-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>📊 全店舗比較</h3>
+                <button class="btn" id="btn-close-compare">✕ 閉じる</button>
             </div>
-        </div>
-
-        <!-- MP Trend -->
-        <div class="card">
-            <h3>📈 MP POINT 推移 — 直近90日</h3>
-            <div class="chart-wrap"><canvas id="chart-mp-trend"></canvas></div>
-        </div>
-
-        <!-- Heatmap -->
-        <div class="card">
-            <h3>🗓 HEATMAP</h3>
-            <div id="dive-heatmap"></div>
-        </div>
-
-        <!-- Data Table -->
-        <div class="card">
-            <h3>📋 DATA TABLE</h3>
-            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
-                <table class="data-table" id="dive-data-table">
-                    <thead>
-                        <tr id="dive-dt-th"></tr>
-                    </thead>
-                    <tbody id="dive-dt-tb"></tbody>
-                </table>
-            </div>
+            <div class="chart-wrap tall"><canvas id="chart-compare-monthly"></canvas></div>
+            <div class="chart-wrap tall"><canvas id="chart-season-perf"></canvas></div>
+            <div class="year-cards" id="compare-year-cards"></div>
         </div>
     </div>
 
@@ -118,8 +107,8 @@
     <div class="panel" id="p-forecast">
         <div class="controls">
             <div class="control-group">
-                <label>STORE</label>
-                <select id="fcStore"></select>
+                <label>拠点</label>
+                <select id="fcBase"></select>
             </div>
             <div class="control-group">
                 <label>FROM</label>
@@ -137,63 +126,21 @@
             <div class="chart-wrap tall"><canvas id="chart-forecast"></canvas></div>
         </div>
 
-        <div class="card">
-            <h3>📋 FORECAST TABLE</h3>
-            <div style="overflow-x:auto;max-height:500px;overflow-y:auto;">
-                <table class="data-table" id="fc-table">
-                    <thead>
-                        <tr>
-                            <th>DATE</th>
-                            <th>曜日</th>
-                            <th>節気</th>
-                            <th>SEASON</th>
-                            <th class="num">KF①</th>
-                            <th class="num">KF②</th>
-                            <th class="num">KF③</th>
-                            <th class="num">MP POINT</th>
-                            <th class="num">予測売上</th>
-                        </tr>
-                    </thead>
-                    <tbody id="fc-tb"></tbody>
-                </table>
-            </div>
-        </div>
+        <!-- Per-store forecast tables rendered dynamically -->
+        <div id="fc-content"></div>
     </div>
 
-    <!-- ═══ ④ CROSS COMPARE ═══ -->
-    <div class="panel" id="p-compare">
-        <div class="card">
-            <h3>📈 全店舗 MP POINT 月別平均</h3>
-            <div class="chart-wrap tall"><canvas id="chart-compare-monthly"></canvas></div>
-        </div>
 
-        <div class="card">
-            <h3>📊 季節帯別パフォーマンス</h3>
-            <div class="chart-wrap tall"><canvas id="chart-season-perf"></canvas></div>
-        </div>
 
-        <div class="card">
-            <h3>📊 年度対比</h3>
-            <div class="year-cards" id="compare-year-cards"></div>
-        </div>
 
-        <div class="card">
-            <h3>📊 KF②③ ランキング</h3>
-            <div class="grid-2">
-                <div>
-                    <h3 style="font-size:11px;color:var(--blue);">KF② 売上FACTOR</h3>
-                    <div id="rank-kf2"></div>
-                </div>
-                <div>
-                    <h3 style="font-size:11px;color:var(--green);">KF③ 来客FACTOR</h3>
-                    <div id="rank-kf3"></div>
-                </div>
-            </div>
-        </div>
+    <!-- ═══ ④ ENTRY（売上入力） ═══ -->
+    <div class="panel" id="p-entry">
+        <div id="entry-form"></div>
     </div>
 
     <!-- ═══ ⑤ DATA IMPORT ═══ -->
     <div class="panel" id="p-import">
+        <div class="card" id="gasSettingsCard"></div>
         <div class="card">
             <h3>📁 MP DATA (mp_data.json)</h3>
             <div class="drop-zone" id="dz-main" data-type="main">
@@ -262,7 +209,197 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- ═══ ⑦ REPORT ═══ -->
+    <div class="panel" id="p-report">
+        <div id="report-root"></div>
+    </div>
+
+    <!-- ═══ ⑧ BG POP UP（ビアガーデン） ═══ -->
+    <div class="panel" id="p-bg">
+        <div id="bg-root"></div>
+    </div>
+
+    <style>
+        .gas-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .gas-badge-on {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+
+        .gas-badge-offline {
+            background: rgba(244, 67, 54, 0.15);
+            color: #f44336;
+        }
+
+        .gas-badge-off {
+            background: rgba(158, 158, 158, 0.15);
+            color: #9e9e9e;
+        }
+
+        .gas-settings-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .gas-settings-panel h3 {
+            color: var(--gold);
+            margin: 0 0 16px 0;
+            font-size: 16px;
+        }
+
+        .gas-settings-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .gas-settings-row label {
+            color: var(--text-dim);
+            font-size: 13px;
+            min-width: 120px;
+        }
+
+        .gas-settings-row input {
+            flex: 1;
+            min-width: 250px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .gas-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .gas-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .gas-btn-primary {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .gas-test-result {
+            font-size: 13px;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+
+        .gas-settings-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .gas-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            z-index: 10000;
+        }
+
+        .gas-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Performance Report */
+        .period-btn {
+            padding: 6px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #aaa;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .period-btn:hover {
+            background: rgba(212, 168, 67, 0.15);
+            color: #d4a843;
+            border-color: rgba(212, 168, 67, 0.3);
+        }
+
+        .period-btn.active {
+            background: rgba(212, 168, 67, 0.2);
+            color: #d4a843;
+            border-color: #d4a843;
+        }
+
+        .svd-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #ccc;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .svd-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .svd-btn.gold {
+            border-color: rgba(212, 168, 67, 0.4);
+            color: #d4a843;
+        }
+
+        .svd-btn.gold:hover {
+            background: rgba(212, 168, 67, 0.2);
+            color: #f0d060;
+        }
+
+        #rpt-body input[type="date"] {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            color: #ccc;
+            padding: 4px 8px;
+        }
+    </style>
+    <script src="app.js?v=20260216a"></script>
 </body>
 
 </html>

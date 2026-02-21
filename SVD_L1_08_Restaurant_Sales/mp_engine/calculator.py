@@ -123,7 +123,9 @@ class MPCalculator:
                           lookback_years: int = 2) -> Tuple[float, float]:
         """
         KF②（売上ファクター）とKF③（来客数ファクター）を計算する。
-        過去N年の同月実績から正規化（min-max → 1.00-5.00）。
+        
+        MP v3.0: SATの閾値テーブル + 線形補間
+        年間基準 × KF①月別季節係数 → 月別閾値 → 実績を当てはめてスコア化
         
         Args:
             store_id: 店舗ID
@@ -133,86 +135,160 @@ class MPCalculator:
         Returns:
             (kf2, kf3) as floats
         """
-        if store_id not in self.store_data:
-            return 2.50, 2.50  # データなしの場合は中間値
+        thresholds = self.config.get("mp_thresholds", {})
+        
+        # ── KF② 売上スコア ──
+        kf2 = self._calc_threshold_score(
+            store_id, target_date, lookback_years,
+            thresholds.get("sales", {}).get(store_id),
+            mode="sales"
+        )
+        
+        # ── KF③ 来客数スコア (拠点ベース) ──
+        base_id = self._get_base_id_for_store(store_id)
+        kf3 = self._calc_threshold_score(
+            store_id, target_date, lookback_years,
+            thresholds.get("count", {}).get(base_id),
+            mode="count"
+        )
+        
+        return kf2, kf3
+    
+    def _calc_threshold_score(self, store_id: str, target_date: date,
+                              lookback_years: int,
+                              thresholds: list,
+                              mode: str = "sales") -> float:
+        """
+        閾値テーブル + 線形補間でスコアを算出する。
+        
+        Args:
+            thresholds: [score2_threshold, score3_threshold, score4_threshold, score5_threshold]
+            mode: "sales" or "count"
+        
+        Returns:
+            score 1.00-5.00
+        """
+        if not thresholds or store_id not in self.store_data:
+            return 2.50  # データなしの場合は中間値
         
         data = self.store_data[store_id]
         target_month = target_date.month
         
-        # 過去の同月データを収集（月別の日平均売上・日平均来客数）
-        monthly_sales = {}  # {year-month: avg_daily_sales}
-        monthly_counts = {}  # {year-month: avg_daily_count}
+        # ── 月別季節係数で閾値を配分 ──
+        # KF①の月別IDXを使って年間基準を月ごとに調整
+        base_id = self._get_base_id_for_store(store_id)
+        base_data = self.indices.get("bases", {}).get(base_id, {})
+        seasonal = base_data.get("seasonal", {})
         
+        # 全月の季節係数の平均を基準にして、月別の比率を算出
+        all_seasonal = [seasonal.get(str(m), 3.0) for m in range(1, 13)]
+        avg_seasonal = sum(all_seasonal) / len(all_seasonal)
+        month_ratio = seasonal.get(str(target_month), 3.0) / avg_seasonal if avg_seasonal > 0 else 1.0
+        
+        # 月別閾値 = 年間基準 × 月別比率
+        monthly_thresholds = [t * month_ratio for t in thresholds]
+        
+        # ── 過去同月の実績を取得 ──
+        if mode == "count" and store_id != self._get_primary_store(base_id):
+            # 来客数は拠点全体で集計
+            monthly_values = self._get_base_monthly_values(base_id, target_date, lookback_years, mode)
+        else:
+            monthly_values = self._get_store_monthly_values(store_id, target_date, lookback_years, mode)
+        
+        if not monthly_values:
+            return 2.50
+        
+        # 過去N年の同月平均
+        avg_value = sum(monthly_values) / len(monthly_values)
+        
+        # ── 線形補間でスコア算出 ──
+        return self._interpolate_score(avg_value, monthly_thresholds)
+    
+    def _interpolate_score(self, value: float, thresholds: list) -> float:
+        """
+        ピースワイズ線形補間: 値 → スコア 1.00-5.00
+        thresholds = [t2, t3, t4, t5]
+        """
+        t2, t3, t4, t5 = thresholds
+        
+        if value <= 0:
+            return 1.00
+        elif value < t2:
+            # 0 → t2 の間: スコア 1.00 → 2.00
+            return round(1.00 + (value / t2), 2) if t2 > 0 else 1.00
+        elif value < t3:
+            # t2 → t3: スコア 2.00 → 3.00
+            return round(2.00 + (value - t2) / (t3 - t2), 2) if t3 > t2 else 2.00
+        elif value < t4:
+            # t3 → t4: スコア 3.00 → 4.00
+            return round(3.00 + (value - t3) / (t4 - t3), 2) if t4 > t3 else 3.00
+        elif value < t5:
+            # t4 → t5: スコア 4.00 → 5.00
+            return round(4.00 + (value - t4) / (t5 - t4), 2) if t5 > t4 else 4.00
+        else:
+            return 5.00
+    
+    def _get_primary_store(self, base_id: str) -> str:
+        """拠点のプライマリ店舗IDを返す"""
+        for base in self.config["bases"]:
+            if base["id"] == base_id:
+                return base["stores"][0]["id"]
+        return ""
+    
+    def _get_store_monthly_values(self, store_id: str, target_date: date,
+                                   lookback_years: int, mode: str) -> list:
+        """店舗の過去同月の月間合計値を取得"""
+        data = self.store_data.get(store_id, {})
+        target_month = target_date.month
+        
+        monthly_totals = {}  # {year: total}
         for date_str, row in data.items():
             try:
                 d = date.fromisoformat(date_str)
             except ValueError:
                 continue
             
-            key = f"{d.year}-{d.month:02d}"
-            if key not in monthly_sales:
-                monthly_sales[key] = []
-                monthly_counts[key] = []
-            
-            if row["kf_sales"] > 0:  # 営業日のみ（KF用売上で判定）
-                monthly_sales[key].append(row["kf_sales"])
-                monthly_counts[key].append(row["kf_count"])
+            if d.month == target_month and d.year >= target_date.year - lookback_years and d.year <= target_date.year:
+                key = d.year
+                if key not in monthly_totals:
+                    monthly_totals[key] = 0
+                if mode == "sales":
+                    monthly_totals[key] += row.get("grand_total", 0)
+                else:
+                    monthly_totals[key] += row.get("kf_count", row.get("total_count", 0))
         
-        # 月別平均を計算
-        month_avg_sales = {}
-        month_avg_counts = {}
-        for key, values in monthly_sales.items():
-            if values:
-                month_avg_sales[key] = sum(values) / len(values)
-        for key, values in monthly_counts.items():
-            if values:
-                month_avg_counts[key] = sum(values) / len(values)
+        return list(monthly_totals.values()) if monthly_totals else []
+    
+    def _get_base_monthly_values(self, base_id: str, target_date: date,
+                                  lookback_years: int, mode: str) -> list:
+        """拠点全体の過去同月の月間合計値を取得 (来客数用)"""
+        store_ids = []
+        for base in self.config["bases"]:
+            if base["id"] == base_id:
+                store_ids = [s["id"] for s in base["stores"]]
+                break
         
-        if not month_avg_sales:
-            return 2.50, 2.50
+        target_month = target_date.month
+        monthly_totals = {}  # {year: total}
         
-        # 全月の平均値でmin-max正規化の基準を作る
-        all_sales_avgs = list(month_avg_sales.values())
-        all_count_avgs = list(month_avg_counts.values())
+        for sid in store_ids:
+            data = self.store_data.get(sid, {})
+            for date_str, row in data.items():
+                try:
+                    d = date.fromisoformat(date_str)
+                except ValueError:
+                    continue
+                
+                if d.month == target_month and d.year >= target_date.year - lookback_years and d.year <= target_date.year:
+                    key = d.year
+                    if key not in monthly_totals:
+                        monthly_totals[key] = 0
+                    if mode == "sales":
+                        monthly_totals[key] += row.get("grand_total", 0)
+                    else:
+                        monthly_totals[key] += row.get("total_count", 0)
         
-        min_sales = min(all_sales_avgs)
-        max_sales = max(all_sales_avgs)
-        min_count = min(all_count_avgs) if all_count_avgs else 0
-        max_count = max(all_count_avgs) if all_count_avgs else 1
-        
-        # 対象月の過去N年の平均を取得
-        target_sales_values = []
-        target_count_values = []
-        
-        for y in range(target_date.year - lookback_years, target_date.year + 1):
-            key = f"{y}-{target_month:02d}"
-            if key in month_avg_sales:
-                target_sales_values.append(month_avg_sales[key])
-            if key in month_avg_counts:
-                target_count_values.append(month_avg_counts[key])
-        
-        # 過去N年の同月平均
-        if target_sales_values:
-            avg_sales = sum(target_sales_values) / len(target_sales_values)
-        else:
-            avg_sales = sum(all_sales_avgs) / len(all_sales_avgs)
-        
-        if target_count_values:
-            avg_count = sum(target_count_values) / len(target_count_values)
-        else:
-            avg_count = sum(all_count_avgs) / len(all_count_avgs) if all_count_avgs else 0
-        
-        # min-max正規化 → 1.00-5.00
-        def normalize(val, vmin, vmax):
-            if vmax == vmin:
-                return 3.00
-            normalized = (val - vmin) / (vmax - vmin)
-            return round(1.00 + normalized * 4.00, 2)
-        
-        kf2 = normalize(avg_sales, min_sales, max_sales)
-        kf3 = normalize(avg_count, min_count, max_count)
-        
-        return kf2, kf3
+        return list(monthly_totals.values()) if monthly_totals else []
     
     def calculate_mp_point(self, store_id: str, target_date: date) -> Dict:
         """

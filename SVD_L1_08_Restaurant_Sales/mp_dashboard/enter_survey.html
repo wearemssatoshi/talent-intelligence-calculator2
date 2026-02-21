@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENTER — 店舗別スタッフ配置定義シート</title>
+    <style>
+        :root {
+            --bg: #0a0e1a;
+            --card: #111827;
+            --border: #1f2937;
+            --gold: #d4a843;
+            --blue: #60a5fa;
+            --green: #34d399;
+            --red: #ef4444;
+            --text: #e5e7eb;
+            --dim: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 4px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: var(--dim);
+            margin-bottom: 24px;
+        }
+
+        .store-selector {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .store-btn {
+            padding: 6px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--dim);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .store-btn.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .grid-wrap {
+            overflow-x: auto;
+        }
+
+        table.survey {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 1100px;
+        }
+
+        table.survey th,
+        table.survey td {
+            border: 1px solid #1f2937;
+            padding: 4px 2px;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        table.survey th {
+            background: #1a2332;
+            font-weight: 700;
+            color: var(--dim);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        table.survey th.mp-top {
+            color: #dc2626;
+            background: #1a1012;
+        }
+
+        table.survey th.mp-high {
+            color: #f97316;
+            background: #1a1510;
+        }
+
+        table.survey th.mp-flow {
+            color: #eab308;
+            background: #1a1810;
+        }
+
+        table.survey th.mp-low {
+            color: #22c55e;
+            background: #101a12;
+        }
+
+        table.survey th.mp-off {
+            color: #3b82f6;
+            background: #10121a;
+        }
+
+        table.survey td.role-label {
+            text-align: left;
+            padding: 6px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #1a2332;
+            white-space: nowrap;
+            position: sticky;
+            left: 0;
+            z-index: 1;
+            min-width: 150px;
+        }
+
+        table.survey td.separator-row {
+            background: var(--gold);
+            height: 3px;
+            padding: 0;
+            border: none;
+        }
+
+        table.survey input {
+            background: #0d1117;
+            border: 1px solid transparent;
+            color: var(--text);
+            text-align: center;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            padding: 4px 0;
+            width: 100%;
+            min-width: 32px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        table.survey input:focus {
+            border-color: var(--gold);
+        }
+
+        table.survey input::placeholder {
+            color: #252d3a;
+            font-size: 10px;
+        }
+
+        .totals-row td {
+            background: #1f2937 !important;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--green);
+            font-size: 11px !important;
+        }
+
+        .totals-row td.role-label {
+            color: var(--gold);
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-export {
+            padding: 10px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn-export:hover {
+            transform: scale(1.02);
+        }
+
+        .btn-export:active {
+            transform: scale(0.98);
+        }
+
+        .note {
+            text-align: center;
+            font-size: 10px;
+            color: var(--dim);
+            margin-top: 12px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <h1>MOMENTUM PEAKS × ENTER</h1>
+    <p class="subtitle">店舗別スタッフ配置定義シート — 24段階すべてに必要人員と労働時間を定義</p>
+
+    <div class="store-selector" id="storeSelector"></div>
+    <div id="surveyContent"></div>
+
+    <div class="btn-row">
+        <button class="btn-export" style="background:var(--gold);color:#000" onclick="exportCSV()">📥 CSV
+            EXPORT</button>
+        <button class="btn-export" style="background:var(--blue);color:#fff" onclick="exportJSON()">📋 JSON
+            EXPORT</button>
+    </div>
+    <p class="note">各店舗の「想定設計」に基づいて記入してください。ENTERはこの定義を読み込み最適化を実行します。</p>
+
+    <script>
+        const STORES = {
+            JW: { name: 'THE JEWELS', base: '藻岩山' },
+            NP: { name: 'ヌーベルプース大倉山', base: '大倉山' },
+            Ce: { name: '大倉山カフェ', base: '大倉山' },
+            RP: { name: '大倉山ラウンジ', base: '大倉山' },
+            GA: { name: 'ザ ガーデン', base: 'テレビ塔' },
+            BG: { name: 'ビアガーデン', base: 'テレビ塔' },
+            BQ: { name: 'ラ・ブリック', base: '赤れんが' },
+            RYB: { name: 'ルスツ羊蹄豚', base: '赤れんが' }
+        };
+
+        // 24段階 with category colors
+        function mpMeta(level) {
+            if (level <= 5) return { cat: 'TOP', cls: 'mp-top' };
+            if (level <= 10) return { cat: 'HIGH', cls: 'mp-high' };
+            if (level <= 15) return { cat: 'FLOW', cls: 'mp-flow' };
+            if (level <= 20) return { cat: 'LOW', cls: 'mp-low' };
+            return { cat: 'OFF', cls: 'mp-off' };
+        }
+
+        const LEVELS = Array.from({ length: 24 }, (_, i) => i + 1);
+
+        // Positioning
+        const HIERARCHY_ROLES = [
+            { key: 'directeur', emoji: '①', label: 'Directeur（拠点責任者）' },
+            { key: 'maitre', emoji: '②', label: "Maître d'（店舗責任者）" },
+            { key: 'chef_de_rang1', emoji: '③', label: 'Chef de Rang 1（時間帯責任者）' },
+            { key: 'chef_de_rang2', emoji: '④', label: 'Chef de Rang 2（エリア責任者）' },
+            { key: 'commis', emoji: '⑤', label: 'Commis（担当）' },
+            { key: 'part_time', emoji: '⑥', label: 'パート・バイト・スポット' },
+        ];
+
+        // Specialty
+        const SPECIALTY_ROLES = [
+            { key: 'sommelier', emoji: '🍷', label: 'Sommelier' },
+            { key: 'cuisinier', emoji: '👨‍🍳', label: 'Cuisinier（調理）' },
+            { key: 'patissier', emoji: '🍰', label: 'Pâtissier' },
+            { key: 'hotesse', emoji: '👔', label: 'Hôtesse（レセプション）' },
+            { key: 'barman', emoji: '🍸', label: 'Barman' },
+        ];
+
+        const ALL_ROLES = [...HIERARCHY_ROLES, ...SPECIALTY_ROLES];
+        let currentStore = 'JW';
+        let allData = {};
+
+        function init() {
+            try { allData = JSON.parse(localStorage.getItem('enter_survey_v2') || '{}'); } catch (e) { allData = {}; }
+            const sel = document.getElementById('storeSelector');
+            Object.entries(STORES).forEach(([id, s]) => {
+                const btn = document.createElement('button');
+                btn.className = 'store-btn' + (id === currentStore ? ' active' : '');
+                btn.textContent = `${id} ${s.name}`;
+                btn.onclick = () => { saveCurrentData(); currentStore = id; renderSurvey(); updateSel(); };
+                sel.appendChild(btn);
+            });
+            renderSurvey();
+        }
+
+        function updateSel() {
+            document.querySelectorAll('.store-btn').forEach((btn, i) => {
+                btn.className = 'store-btn' + (Object.keys(STORES)[i] === currentStore ? ' active' : '');
+            });
+        }
+
+        function buildTable(prefix, placeholder, sectionTitle) {
+            const data = allData[currentStore] || {};
+            let html = `<div class="card"><div class="section-title">${sectionTitle} — ${currentStore} ${STORES[currentStore].name}</div><div class="grid-wrap"><table class="survey"><thead><tr><th style="min-width:150px">ROLE</th>`;
+
+            LEVELS.forEach(lv => {
+                const m = mpMeta(lv);
+                html += `<th class="${m.cls}">${m.cat} ${lv}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Hierarchy roles
+            HIERARCHY_ROLES.forEach(role => {
+                html += `<tr><td class="role-label">${role.emoji} ${role.label}</td>`;
+                LEVELS.forEach(lv => {
+                    const key = `${prefix}_${role.key}_${lv}`;
+                    const val = data[key] !== undefined ? data[key] : '';
+                    html += `<td><input type="number" min="0" max="30" step="${prefix === 'hours' ? '0.5' : '1'}" data-key="${key}" value="${val}" placeholder="${placeholder}" oninput="calcTotals()"></td>`;
+                });
+                html += '</tr>';
+            });
+
+            // ── Separator Line ──
+            html += `<tr><td class="separator-row" colspan="${LEVELS.length + 1}"></td></tr>`;
+
+            // Specialty roles
+            SPECIALTY_ROLES.forEach(role => {
+                html += `<tr><td class="role-label">${role.emoji} ${role.label}</td>`;
+                LEVELS.forEach(lv => {
+                    const key = `${prefix}_${role.key}_${lv}`;
+                    const val = data[key] !== undefined ? data[key] : '';
+                    html += `<td><input type="number" min="0" max="30" step="${prefix === 'hours' ? '0.5' : '1'}" data-key="${key}" value="${val}" placeholder="${placeholder}" oninput="calcTotals()"></td>`;
+                });
+                html += '</tr>';
+            });
+
+            // Totals row
+            html += `<tr class="totals-row"><td class="role-label">合計${prefix === 'count' ? '人員' : '工数(人時)'}</td>`;
+            LEVELS.forEach(lv => {
+                html += `<td id="total_${prefix}_${lv}">—</td>`;
+            });
+            html += '</tr></tbody></table></div></div>';
+            return html;
+        }
+
+        function renderSurvey() {
+            let html = '';
+            html += buildTable('count', '0', '👥 必要人員数');
+            html += buildTable('hours', '8', '⏱️ 標準労働時間（h）');
+            document.getElementById('surveyContent').innerHTML = html;
+            calcTotals();
+        }
+
+        function calcTotals() {
+            ['count', 'hours'].forEach(prefix => {
+                LEVELS.forEach(lv => {
+                    let total = 0;
+                    ALL_ROLES.forEach(role => {
+                        const key = `${prefix}_${role.key}_${lv}`;
+                        const el = document.querySelector(`[data-key="${key}"]`);
+                        const v = parseFloat(el?.value) || 0;
+                        if (prefix === 'hours') {
+                            const countKey = `count_${role.key}_${lv}`;
+                            const countEl = document.querySelector(`[data-key="${countKey}"]`);
+                            const c = parseFloat(countEl?.value) || 0;
+                            total += c * v;
+                        } else {
+                            total += v;
+                        }
+                    });
+                    const el = document.getElementById(`total_${prefix}_${lv}`);
+                    if (el) el.textContent = total > 0 ? (prefix === 'count' ? total + '名' : total.toFixed(1) + 'h') : '—';
+                });
+            });
+        }
+
+        function saveCurrentData() {
+            const inputs = document.querySelectorAll('[data-key]');
+            if (!allData[currentStore]) allData[currentStore] = {};
+            inputs.forEach(inp => {
+                if (inp.value !== '') allData[currentStore][inp.dataset.key] = parseFloat(inp.value);
+                else delete allData[currentStore][inp.dataset.key];
+            });
+            localStorage.setItem('enter_survey_v2', JSON.stringify(allData));
+        }
+
+        function exportCSV() {
+            saveCurrentData();
+            const bom = '\uFEFF';
+            const headers = ['店舗', 'ROLE', 'タイプ', ...LEVELS.map(l => 'MP' + l + '_人数'), ...LEVELS.map(l => 'MP' + l + '_時間h')];
+            const rows = [headers.join(',')];
+            Object.entries(STORES).forEach(([sid]) => {
+                const data = allData[sid] || {};
+                ALL_ROLES.forEach(role => {
+                    const type = HIERARCHY_ROLES.includes(role) ? 'positioning' : 'specialty';
+                    const counts = LEVELS.map(lv => data[`count_${role.key}_${lv}`] || 0);
+                    const hours = LEVELS.map(lv => data[`hours_${role.key}_${lv}`] || 0);
+                    rows.push([sid, role.key, type, ...counts, ...hours].join(','));
+                });
+            });
+            const blob = new Blob([bom + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'ENTER_Staffing_24Levels.csv'; a.click();
+        }
+
+        function exportJSON() {
+            saveCurrentData();
+            const config = { staffing_profiles: {} };
+            Object.entries(STORES).forEach(([sid, store]) => {
+                const data = allData[sid] || {};
+                const profile = { name: store.name, base: store.base, mp_levels: {} };
+                LEVELS.forEach(lv => {
+                    const level = {};
+                    ALL_ROLES.forEach(role => {
+                        const c = data[`count_${role.key}_${lv}`] || 0;
+                        const h = data[`hours_${role.key}_${lv}`] || 0;
+                        if (c > 0) level[role.key] = { count: c, hours: h };
+                    });
+                    if (Object.keys(level).length > 0) profile.mp_levels['MP' + lv] = level;
+                });
+                config.staffing_profiles[sid] = profile;
+            });
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'ENTER_staffing_24levels.json'; a.click();
+        }
+
+        window.addEventListener('beforeunload', saveCurrentData);
+        init();
+    </script>
+</body>
+
+</html>
