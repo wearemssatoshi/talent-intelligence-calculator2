@@ -22,6 +22,27 @@ const CONFIG = {
   VERSION: '2.1'
 };
 
+// ── Token Authentication ──
+function verifyToken(e, isPost) {
+  const TOKEN = PropertiesService.getScriptProperties().getProperty('SVD_API_TOKEN');
+  if (!TOKEN) return true; // トークン未設定時はスキップ（段階的導入）
+  
+  let provided;
+  if (isPost) {
+    provided = e.parameter?.token;
+  } else {
+    provided = e.parameter?.token;
+  }
+  return provided === TOKEN;
+}
+
+function unauthorizedResponse() {
+  return ContentService.createTextOutput(JSON.stringify({ 
+    result: 'error', 
+    error: 'Unauthorized: Invalid or missing API token' 
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
 // ==============================================
 // RULE-BASED AI ADVICE (コストフリー)
 // ==============================================
@@ -179,6 +200,12 @@ function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.tryLock(10000);
 
+  // ── Auth Gate ──
+  if (!verifyToken(e, true)) {
+    lock.releaseLock();
+    return unauthorizedResponse();
+  }
+
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
@@ -334,6 +361,12 @@ function doPost(e) {
 function doGet(e) {
   const lock = LockService.getScriptLock();
   lock.tryLock(10000);
+
+  // ── Auth Gate ──
+  if (!verifyToken(e, false)) {
+    lock.releaseLock();
+    return unauthorizedResponse();
+  }
 
   try {
     const action = e.parameter.action || 'list';

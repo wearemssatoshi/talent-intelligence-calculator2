@@ -44,11 +44,41 @@ function jstTimestamp() {
 }
 
 // ═══════════════════════════════════════
+// TOKEN AUTHENTICATION
+// ═══════════════════════════════════════
+
+function verifyToken(e, isPost) {
+  const TOKEN = PropertiesService.getScriptProperties().getProperty('SVD_API_TOKEN');
+  if (!TOKEN) return true; // トークン未設定時はスキップ（段階的導入）
+  
+  let provided;
+  if (isPost) {
+    try {
+      const data = JSON.parse(e.postData.contents);
+      provided = data.token;
+    } catch (err) {
+      return false;
+    }
+  } else {
+    provided = e?.parameter?.token;
+  }
+  return provided === TOKEN;
+}
+
+function unauthorizedResponse() {
+  return respond({ status: 'error', message: 'Unauthorized: Invalid or missing API token' });
+}
+
+// ═══════════════════════════════════════
 // ENTRY POINTS
 // ═══════════════════════════════════════
 
 function doGet(e) {
   const action = (e && e.parameter && e.parameter.action) || 'loadAll';
+  // ── Auth Gate (ping は公開) ──
+  if (action !== 'ping') {
+    if (!verifyToken(e, false)) return unauthorizedResponse();
+  }
   try {
     switch (action) {
       case 'loadAll':
@@ -72,6 +102,8 @@ function doGet(e) {
 }
 
 function doPost(e) {
+  // ── Auth Gate ──
+  if (!verifyToken(e, true)) return unauthorizedResponse();
   try {
     const params = JSON.parse(e.postData.contents);
     const action = params.action;

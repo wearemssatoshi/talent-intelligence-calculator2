@@ -387,6 +387,34 @@ body {
     font-weight: 700;
 }
 
+/* ── Store Filter (per-store buttons) ── */
+.store-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 4px 10px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.store-btn:hover {
+    border-color: var(--border-light);
+    color: var(--text-sub);
+}
+
+.store-btn.active {
+    background: var(--blue-dim);
+    color: var(--blue);
+    border-color: var(--blue);
+    font-weight: 700;
+}
+
 /* ── SVD Summary ── */
 .svd-summary {
     display: grid;

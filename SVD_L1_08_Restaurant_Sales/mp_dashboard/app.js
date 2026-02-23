@@ -11,6 +11,7 @@ let currentTab = 'command';
 let selectedDate = '';
 let selectedStore = 'JW';
 let selectedBase = 'ALL';  // 拠点フィルタ: 'ALL' or base id
+let selectedStoreFilter = 'ALL'; // 店舗フィルタ: 'ALL' or store id
 let displayTaxExc = true;  // true=税抜表示, false=税込表示
 
 // ── Tax Display Helper ──
@@ -501,23 +502,56 @@ function renderCurrentTab() {
 // ═══════════════════════════════════════
 // ── Base Filter helpers ──
 function getStoresForBase(baseId) {
-    if (!DATA || baseId === 'ALL') return DATA.meta.stores;
-    const base = DATA.config.bases.find(b => b.id === baseId);
-    return base ? base.stores.map(s => s.id) : DATA.meta.stores;
+    let stores;
+    if (!DATA || baseId === 'ALL') {
+        stores = DATA.meta.stores;
+    } else {
+        const base = DATA.config.bases.find(b => b.id === baseId);
+        stores = base ? base.stores.map(s => s.id) : DATA.meta.stores;
+    }
+    // Apply store-level filter
+    if (selectedStoreFilter !== 'ALL') {
+        return stores.filter(s => s === selectedStoreFilter);
+    }
+    return stores;
 }
 
 function renderBaseFilter() {
     const bases = DATA.config.bases;
-    let html = `<button class="base-btn ${selectedBase === 'ALL' ? 'active' : ''}" onclick="setBase('ALL')">ALL — SVD統合</button>`;
+    // Base buttons
+    let html = `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">`;
+    html += `<button class="base-btn ${selectedBase === 'ALL' ? 'active' : ''}" onclick="setBase('ALL')">ALL — SVD統合</button>`;
     bases.forEach(b => {
         const storeCount = b.stores.length;
         html += `<button class="base-btn ${selectedBase === b.id ? 'active' : ''}" onclick="setBase('${b.id}')">${b.name}（${storeCount}店）</button>`;
     });
+    html += `</div>`;
+
+    // Store buttons (shown for selected base)
+    const storesForFilter = selectedBase === 'ALL' ? DATA.meta.stores : (DATA.config.bases.find(b => b.id === selectedBase)?.stores.map(s => s.id) || []);
+    if (storesForFilter.length > 0) {
+        html += `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;align-items:center;">`;
+        html += `<span style="font-size:10px;color:var(--text-dim);margin-right:4px;">STORE:</span>`;
+        html += `<button class="store-btn ${selectedStoreFilter === 'ALL' ? 'active' : ''}" onclick="setStoreFilter('ALL')">ALL</button>`;
+        storesForFilter.forEach(sid => {
+            const storeName = DATA.config.bases.flatMap(b => b.stores).find(s => s.id === sid);
+            const label = storeName ? storeName.name : sid;
+            html += `<button class="store-btn ${selectedStoreFilter === sid ? 'active' : ''}" onclick="setStoreFilter('${sid}')" title="${label}">${sid}</button>`;
+        });
+        html += `</div>`;
+    }
+
     document.getElementById('base-filter').innerHTML = html;
 }
 
 function setBase(baseId) {
     selectedBase = baseId;
+    selectedStoreFilter = 'ALL'; // Reset store filter when base changes
+    renderCommand();
+}
+
+function setStoreFilter(storeId) {
+    selectedStoreFilter = storeId;
     renderCommand();
 }
 
@@ -2103,9 +2137,15 @@ function initReportTab() {
             <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:flex-end;">
                 <div>
                     <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:4px;">拠点</div>
-                    <select id="rpt-base" onchange="refreshReport()" style="font-size:13px;padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#ccc;">
+                    <select id="rpt-base" onchange="updateRptStoreOptions(); refreshReport()" style="font-size:13px;padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#ccc;">
                         <option value="ALL">ALL — SVD統合</option>
                         ${baseOptions}
+                    </select>
+                </div>
+                <div>
+                    <div style="font-size:10px;color:var(--text-dim);letter-spacing:1px;margin-bottom:4px;">店舗</div>
+                    <select id="rpt-store" onchange="refreshReport()" style="font-size:13px;padding:6px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(96,165,250,0.25);border-radius:6px;color:#60a5fa;">
+                        <option value="ALL">ALL</option>
                     </select>
                 </div>
                 <div>
@@ -2150,7 +2190,30 @@ function initReportTab() {
     if (toEl) toEl.value = today;
 
     window._rptMode = 'month';
+    updateRptStoreOptions();
     refreshReport();
+}
+
+function updateRptStoreOptions() {
+    const rptBase = document.getElementById('rpt-base')?.value || 'ALL';
+    const storeSelect = document.getElementById('rpt-store');
+    if (!storeSelect) return;
+
+    let stores;
+    if (rptBase === 'ALL') {
+        stores = DATA.meta.stores;
+    } else {
+        const base = DATA.config.bases.find(b => b.id === rptBase);
+        stores = base ? base.stores.map(s => s.id) : DATA.meta.stores;
+    }
+
+    let opts = '<option value="ALL">ALL</option>';
+    stores.forEach(sid => {
+        const storeDef = DATA.config.bases.flatMap(b => b.stores).find(s => s.id === sid);
+        const label = storeDef ? `${sid} (${storeDef.name})` : sid;
+        opts += `<option value="${sid}">${label}</option>`;
+    });
+    storeSelect.innerHTML = opts;
 }
 
 function setReportMode(btn, mode) {
@@ -2198,8 +2261,9 @@ function refreshReport() {
         if (!from || !to) return;
     }
 
-    // Determine stores from rpt-base selector
+    // Determine stores from rpt-base + rpt-store selector
     const rptBase = document.getElementById('rpt-base')?.value || 'ALL';
+    const rptStore = document.getElementById('rpt-store')?.value || 'ALL';
     let storeIds;
     let scopeLabel;
 
@@ -2211,6 +2275,12 @@ function refreshReport() {
         if (!base) return;
         storeIds = base.stores.map(s => s.id);
         scopeLabel = base.name;
+    }
+
+    // Apply store-level filter
+    if (rptStore !== 'ALL') {
+        storeIds = storeIds.filter(s => s === rptStore);
+        scopeLabel = rptStore;
     }
     const tl = txLabel();
 
@@ -3188,7 +3258,7 @@ function renderStaffing() {
     DATA.meta.stores.forEach(sid => {
         const rec = (DATA.stores[sid] || []).find(r => r.date === dateStr);
         if (!rec) {
-            html += `< div class="year-card" ><h4>${sid}</h4><p style="color:var(--text-dim)">データなし</p></div > `;
+            html += `<div class="year-card"><h4>${sid}</h4><p style="color:var(--text-dim)">データなし</p></div>`;
             return;
         }
 
@@ -3202,7 +3272,7 @@ function renderStaffing() {
             const rules = STAFFING.filter(r => r.store_id === sid && mp >= parseFloat(r.mp_low) && mp < parseFloat(r.mp_high));
             if (rules.length) {
                 staffDetail = rules.map(r =>
-                    `< div class="year-stat" ><span class="yl">${r.segment}</span><span class="yv mono">H:${r.hall_count} K:${r.kitchen_count}</span></div > `
+                    `<div class="year-stat"><span class="yl">${r.segment}</span><span class="yv mono">H:${r.hall_count} K:${r.kitchen_count}</span></div>`
                 ).join('');
             }
         }
@@ -3211,11 +3281,11 @@ function renderStaffing() {
             // Default estimation
             const baseStaff = sid === 'Ce' || sid === 'RP' ? 2 : sid === 'BG' ? 8 : 4;
             const est = Math.round(baseStaff * mult);
-            staffDetail = `< div class="year-stat" ><span class="yl">推定人員</span><span class="yv mono">${est}名</span></div >
+            staffDetail = `<div class="year-stat"><span class="yl">推定人員</span><span class="yv mono">${est}名</span></div>
     <div class="year-stat"><span class="yl">倍率</span><span class="yv mono">×${mult}</span></div>`;
         }
 
-        html += `< div class="year-card" >
+        html += `<div class="year-card">
             <h4>${sid} <span style="font-size:11px;color:${intensity.color}">${intensity.label}</span></h4>
             <div class="year-stat"><span class="yl">MP Point</span><span class="yv text-gold mono">${mp.toFixed(2)}</span></div>
             <div class="year-stat"><span class="yl">節気</span><span class="yv mono">${rec.sekki}</span></div>

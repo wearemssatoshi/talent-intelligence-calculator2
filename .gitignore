@@ -13,3 +13,6 @@ agent-bus/
 
 # 機密資料 - 予算関連
 SVD_L1_07_budget/
+
+# 機密スクリプト - パスワード含有
+_archive/Scripts/

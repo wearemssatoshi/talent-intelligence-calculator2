@@ -566,583 +566,659 @@
 
 <body>
 
-    <div class="container">
-
-        <!-- HERO -->
-        <div class="hero">
-            <div class="hero-label">SAPPORO VIEWTIFUL DINING</div>
-            <h1>TV TOWER <span>3年間の軌跡</span></h1>
-            <div class="hero-sub">2023年4月 開業 → 2026年2月（税抜表記）</div>
+    <!-- PASSWORD LOCK OVERLAY -->
+    <div id="lockScreen" style="
+        position: fixed; inset: 0; z-index: 9999;
+        background: #171928;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Noto Sans JP', 'Inter', sans-serif;
+    ">
+        <div style="text-align: center; max-width: 360px; padding: 24px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🔒</div>
+            <div style="font-size: 11px; letter-spacing: 4px; color: #C5A55A; font-weight: 600; margin-bottom: 8px;">
+                SAPPORO VIEWTIFUL DINING</div>
+            <h2 style="color: #EDEAE4; font-size: 20px; margin-bottom: 24px;">アクセス認証</h2>
+            <input id="lockPassword" type="password" placeholder="パスワードを入力" autocomplete="off" style="
+                    width: 100%; padding: 14px 16px; font-size: 16px;
+                    background: #242740; border: 1px solid rgba(197,165,90,0.3);
+                    border-radius: 8px; color: #EDEAE4; text-align: center;
+                    outline: none; font-family: 'Inter', sans-serif;
+                " onkeydown="if(event.key==='Enter')unlockPage()">
+            <button onclick="unlockPage()" style="
+                margin-top: 12px; width: 100%; padding: 14px;
+                background: linear-gradient(135deg, #C5A55A, #D4B96E);
+                border: none; border-radius: 8px; color: #1E2030;
+                font-size: 15px; font-weight: 600; cursor: pointer;
+                font-family: 'Noto Sans JP', sans-serif;
+            ">🔓 解除</button>
+            <div id="lockError" style="
+                margin-top: 12px; font-size: 13px; color: #F472B6;
+                min-height: 20px;
+            "></div>
         </div>
-
-        <!-- BIG NUMBER: 全CH売上 -->
-        <div class="big-number-section">
-            <div class="big-number-label">全チャネル売上（税抜）</div>
-            <div class="big-number-row">
-                <div class="big-number-item">
-                    <div class="big-number-year">2023年度</div>
-                    <div class="big-number"><span class="big-number-unit">¥</span>2.37<span
-                            class="big-number-unit">億</span></div>
-                </div>
-                <div class="big-number-arrow">→</div>
-                <div class="big-number-item">
-                    <div class="big-number-year">2024年度</div>
-                    <div class="big-number"><span class="big-number-unit">¥</span>2.77<span
-                            class="big-number-unit">億</span></div>
-                    <div class="big-number-note">+16.8%</div>
-                </div>
-                <div class="big-number-arrow">→</div>
-                <div class="big-number-item">
-                    <div class="big-number-year">2025年度</div>
-                    <div class="big-number"><span class="big-number-unit">¥</span>3.13<span
-                            class="big-number-unit">億</span></div>
-                    <div class="big-number-note">11ヶ月時点</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- コロナ前最盛期との比較 -->
-        <div class="card" style="border-color: rgba(232,85,53,0.3); border-left: 3px solid var(--tower-red);">
-            <div class="card-title"><span class="icon">🏔️</span> コロナ禍前・最盛期との比較</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
-                テレビ塔拠点の過去最高期（コロナ前）と現在のチーム成果を比較
-            </div>
-            <div class="grid-3col-corona">
-                <!-- レストラン -->
-                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍽️ レストラン</div>
-                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
-                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
-                        ¥4,702<span style="font-size:11px;">万</span></div>
-                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
-                        <div
-                            style="height:100%; width:100%; background:var(--tower-red); border-radius:2px; opacity:0.4;">
-                        </div>
-                    </div>
-                    <div style="font-size:10px; color:var(--text-muted);">2025</div>
-                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--gold);">
-                        ¥1.11<span style="font-size:10px;">億</span></div>
-                    <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">236% 🔥
-                    </div>
-                </div>
-                <!-- 宴会 -->
-                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🥂 宴会</div>
-                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
-                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
-                        ¥3,868<span style="font-size:11px;">万</span></div>
-                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
-                        <div style="height:100%; width:53%; background:var(--gold); border-radius:2px;"></div>
-                    </div>
-                    <div style="font-size:10px; color:var(--text-muted);">2025 (11M)</div>
-                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-blue);">
-                        ¥2,033<span style="font-size:10px;">万</span></div>
-                    <div style="font-size:11px; color:var(--accent-orange); font-weight:600; margin-top:4px;">53% — 伸びしろ
-                    </div>
-                </div>
-                <!-- ビアガーデン -->
-                <div style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍺 ビアガーデン</div>
-                    <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
-                    <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
-                        ¥9,240<span style="font-size:11px;">万</span></div>
-                    <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
-                        <div style="height:100%; width:100%; background:var(--accent-green); border-radius:2px;"></div>
-                    </div>
-                    <div style="font-size:10px; color:var(--text-muted);">2025</div>
-                    <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-green);">
-                        ¥1.79<span style="font-size:10px;">億</span></div>
-                    <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">194% 🔥
-                    </div>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:12px; font-size:11px; color:var(--text-muted);">
-                レストランとBGはコロナ前を大幅超え。宴会はYear 4の最大の伸びしろ
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title"><span class="icon">🍽️</span> レストラン（L+D）</div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>年度</th>
-                        <th>売上</th>
-                        <th>客数</th>
-                        <th>客単価</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>2023</td>
-                        <td>¥1.06億</td>
-                        <td>15,718人</td>
-                        <td>¥6,752</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>2024</td>
-                        <td>¥1.15億</td>
-                        <td>16,214人</td>
-                        <td>¥7,075</td>
-                        <td><span class="growth-positive">+8.2%</span></td>
-                    </tr>
-                    <tr>
-                        <td>2025<span style="font-size:10px;color:var(--text-muted)"> 11M</span></td>
-                        <td>¥1.11億</td>
-                        <td>14,981人</td>
-                        <td>¥7,418</td>
-                        <td><span class="growth-positive">客単価↑</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- ランチ & ディナー -->
-        <div class="grid-2col">
-            <div class="card">
-                <div class="card-title"><span class="icon">☀️</span> ランチ</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>売上</th>
-                            <th>客単価</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>23</td>
-                            <td>¥4,078万</td>
-                            <td>¥4,164</td>
-                        </tr>
-                        <tr>
-                            <td>24</td>
-                            <td>¥4,267万</td>
-                            <td>¥4,407</td>
-                        </tr>
-                        <tr>
-                            <td>25</td>
-                            <td>¥3,783万</td>
-                            <td>¥4,472</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="icon">🌙</span> ディナー</div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>売上</th>
-                            <th>客単価</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>23</td>
-                            <td>¥6,535万</td>
-                            <td>¥11,029</td>
-                        </tr>
-                        <tr>
-                            <td>24</td>
-                            <td>¥7,205万</td>
-                            <td>¥11,032</td>
-                        </tr>
-                        <tr>
-                            <td>25</td>
-                            <td>¥7,330万</td>
-                            <td>¥11,239</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- 宴会 -->
-        <div class="card">
-            <div class="card-title"><span class="icon">🥂</span> 宴会 — 3年で約2倍</div>
-            <div class="bar-chart">
-                <div class="bar-row">
-                    <div class="bar-label">2023</div>
-                    <div class="bar-track">
-                        <div class="bar-fill"
-                            style="width:56%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
-                            ¥1,137万</div>
-                    </div>
-                </div>
-                <div class="bar-row">
-                    <div class="bar-label">2024</div>
-                    <div class="bar-track">
-                        <div class="bar-fill"
-                            style="width:87%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
-                            ¥1,768万</div>
-                    </div>
-                    <div class="bar-value" style="color:var(--accent-green)">+55.5%</div>
-                </div>
-                <div class="bar-row">
-                    <div class="bar-label">2025</div>
-                    <div class="bar-track">
-                        <div class="bar-fill"
-                            style="width:100%; background:linear-gradient(90deg, var(--accent-orange), var(--gold-light));">
-                            ¥2,033万</div>
-                    </div>
-                    <div class="bar-value" style="color:var(--text-muted)">11M</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ビアガーデン -->
-        <div class="card">
-            <div class="card-title"><span class="icon">🍺</span> ビアガーデン — 圧倒的成長</div>
-            <div class="bar-chart">
-                <div class="bar-row">
-                    <div class="bar-label">2023</div>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:65%; background:linear-gradient(90deg, #3B82F6, #60A5FA);">
-                            ¥1.16億</div>
-                    </div>
-                    <div class="bar-value">30,283人</div>
-                </div>
-                <div class="bar-row">
-                    <div class="bar-label">2024</div>
-                    <div class="bar-track">
-                        <div class="bar-fill" style="width:79%; background:linear-gradient(90deg, #3B82F6, #60A5FA);">
-                            ¥1.41億</div>
-                    </div>
-                    <div class="bar-value">37,403人</div>
-                </div>
-                <div class="bar-row">
-                    <div class="bar-label">2025</div>
-                    <div class="bar-track">
-                        <div class="bar-fill"
-                            style="width:100%; background:linear-gradient(90deg, var(--accent-orange), #FBBF24);">¥1.79億
-                        </div>
-                    </div>
-                    <div class="bar-value">45,522人</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 季節パターン -->
-        <div class="card">
-            <div class="card-title"><span class="icon">📅</span> 月別パターン（2024-25平均）</div>
-            <div class="season-grid">
-                <div class="season-cell season-low"><span class="month-name">4月</span><span
-                        class="month-value">¥909万</span></div>
-                <div class="season-cell season-mid"><span class="month-name">5月</span><span
-                        class="month-value">¥1,437万</span></div>
-                <div class="season-cell season-high"><span class="month-name">6月</span><span
-                        class="month-value">¥3,794万</span></div>
-                <div class="season-cell season-peak"><span class="month-name">7月</span><span
-                        class="month-value">¥6,836万</span></div>
-                <div class="season-cell season-peak"><span class="month-name">8月</span><span
-                        class="month-value">¥6,936万</span></div>
-                <div class="season-cell season-high"><span class="month-name">9月</span><span
-                        class="month-value">¥2,459万</span></div>
-                <div class="season-cell season-mid"><span class="month-name">10月</span><span
-                        class="month-value">¥1,381万</span></div>
-                <div class="season-cell season-mid"><span class="month-name">11月</span><span
-                        class="month-value">¥1,220万</span></div>
-                <div class="season-cell season-high"><span class="month-name">12月</span><span
-                        class="month-value">¥1,920万</span></div>
-                <div class="season-cell season-low"><span class="month-name">1月</span><span
-                        class="month-value">¥1,083万</span></div>
-                <div class="season-cell season-low"><span class="month-name">2月</span><span
-                        class="month-value">¥890万</span></div>
-                <div class="season-cell season-mid"><span class="month-name">3月</span><span
-                        class="month-value">¥1,193万</span></div>
-            </div>
-            <div style="margin-top:12px; display:flex; gap:12px; justify-content:center; font-size:10px;">
-                <span style="color:var(--accent-orange)">● BGピーク</span>
-                <span style="color:var(--accent-green)">● BG稼働/繁忙</span>
-                <span style="color:var(--accent-blue)">● 安定期</span>
-                <span style="color:var(--text-muted)">● 閑散期</span>
-            </div>
-        </div>
-
-        <!-- 月間売上ベスト5 -->
-        <div class="card">
-            <div class="card-title"><span class="icon">🏆</span> 月間売上ベスト5（税抜）</div>
-            <ul class="best-list">
-                <li class="best-item">
-                    <div class="best-rank">1</div>
-                    <div class="best-info">
-                        <div class="best-title">2025年度 7月</div>
-                        <div class="best-detail">BG最盛期 14,790人</div>
-                    </div>
-                    <div class="best-value">¥7,643万</div>
-                </li>
-                <li class="best-item">
-                    <div class="best-rank">2</div>
-                    <div class="best-info">
-                        <div class="best-title">2025年度 8月</div>
-                        <div class="best-detail">BG最盛期 14,547人</div>
-                    </div>
-                    <div class="best-value">¥7,210万</div>
-                </li>
-                <li class="best-item">
-                    <div class="best-rank">3</div>
-                    <div class="best-info">
-                        <div class="best-title">2024年度 8月</div>
-                        <div class="best-detail">BG過去最高更新時</div>
-                    </div>
-                    <div class="best-value">¥6,662万</div>
-                </li>
-                <li class="best-item">
-                    <div class="best-rank">4</div>
-                    <div class="best-info">
-                        <div class="best-title">2024年度 7月</div>
-                    </div>
-                    <div class="best-value">¥6,028万</div>
-                </li>
-                <li class="best-item">
-                    <div class="best-rank">5</div>
-                    <div class="best-info">
-                        <div class="best-title">2023年度 7月</div>
-                        <div class="best-detail">開業初年度の夏</div>
-                    </div>
-                    <div class="best-value">¥5,567万</div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- 曜日別 -->
-        <div class="card">
-            <div class="card-title"><span class="icon">📊</span> 曜日別 L+D売上（3年平均）</div>
-            <div class="weekday-grid">
-                <div class="weekday-cell">
-                    <span class="weekday-name">月</span>
-                    <span class="weekday-value">¥28.6万</span>
-                    <span class="weekday-idx">84</span>
-                </div>
-                <div class="weekday-cell">
-                    <span class="weekday-name">火</span>
-                    <span class="weekday-value">¥30.2万</span>
-                    <span class="weekday-idx">89</span>
-                </div>
-                <div class="weekday-cell">
-                    <span class="weekday-name">水</span>
-                    <span class="weekday-value">¥30.8万</span>
-                    <span class="weekday-idx">91</span>
-                </div>
-                <div class="weekday-cell">
-                    <span class="weekday-name">木</span>
-                    <span class="weekday-value">¥29.4万</span>
-                    <span class="weekday-idx">87</span>
-                </div>
-                <div class="weekday-cell">
-                    <span class="weekday-name">金</span>
-                    <span class="weekday-value">¥34.1万</span>
-                    <span class="weekday-idx">101</span>
-                </div>
-                <div class="weekday-cell weekend">
-                    <span class="weekday-name" style="color:var(--gold)">土</span>
-                    <span class="weekday-value" style="color:var(--gold)">¥44.4万</span>
-                    <span class="weekday-idx">131</span>
-                </div>
-                <div class="weekday-cell weekend">
-                    <span class="weekday-name" style="color:var(--gold-light)">日</span>
-                    <span class="weekday-value" style="color:var(--gold-light)">¥39.5万</span>
-                    <span class="weekday-idx">117</span>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top:8px; font-size:10px; color:var(--text-muted);">
-                指数100 = 全曜日平均。土曜は平均の1.3倍。
-            </div>
-        </div>
-
-        <!-- 3年間の物語 -->
-        <div class="card" style="border-color: rgba(232,85,53,0.25); border-top: 3px solid var(--tower-red);">
-            <div class="card-title"><span class="icon">📖</span> 3年間の物語 — テレビ塔拠点の進化</div>
-            <div style="font-size:13px; line-height:1.8;">
-                <div style="margin-bottom:16px;">
-                    <div
-                        style="color:var(--gold); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
-                        YEAR 1 — 覚悟の111日間</div>
-                    <div>
-                        2023年4月、レストランとビアガーデンが同時に立ち上がった。紙台帳とキャッシュオン方式を廃止し、POS・TableCheck・QRオーダーを導入。キッチンチームがゼロからメニューを作り上げ、サービスチームが400席のオペレーションを根本から構築した。システムは何度も落ちた。スタッフの入れ替わりもあった。それでもチームはやり方を変えなかった。111日間、全員で走り切った。
-                    </div>
-                </div>
-                <div style="margin-bottom:16px;">
-                    <div
-                        style="color:var(--accent-blue); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
-                        YEAR 2 — データで逆転した夏、宴会が動き出した年</div>
-                    <div>
-                        BGは5月末〜7月10日で前年比▲¥1,200万。しかし予約データ（先行指標）は前年超え。チームで「天気が悪いだけ。需要は生きている」と証明し、新エリア投資のゴーサインを勝ち取った。8月単月で+¥1,100万。一方、レストランではキッチンチームがコースの質を磨き上げ、ディナー客単価¥11,000超えを達成。宴会もYear
-                        1の¥1,137万から¥1,768万へ+55%成長。チーム全員が「テレビ塔で宴会ができる」という認知を育てた。
-                    </div>
-                </div>
-                <div style="margin-bottom:16px;">
-                    <div
-                        style="color:var(--accent-green); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
-                        YEAR 3 — 全チャネル圧勝</div>
-                    <div>全CH売上 ¥3.13億（11ヶ月時点）。BG
-                        ¥1.79億はコロナ前最盛期の194%。レストランも¥1.11億でコロナ前の236%を達成。キッチンチームの料理がリピーターを生み、サービスチームの接客が記念日利用を育て、ディナー客単価は3年連続で上昇（¥11,029→¥11,032→¥11,239）。宴会は3年で約2倍に成長。テイクアウト→アフタヌーンティー→WINE
-                        BARと、お客さまの声に応えて業態を進化させた。L率17.4%まで圧縮。すべてのチャネルでチームが結果を出した。
-                    </div>
-                </div>
-                <div>
-                    <div
-                        style="color:var(--tower-red); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
-                        YEAR 4 — ENTER REVOLUTIONS</div>
-                    <div>ラム肉45%値上がり。3年かけてチームで作った要塞に、羊が1匹突っ込んできただけ。キッチンチームの生み出す美味しさがあり、サービスチームのおもてなしがある。そして今年、Momentum
-                        Peaks × Talent Intelligence が初めて実戦投入される。
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 具体的行動 -->
-        <div class="card" style="border-color: rgba(74,222,128,0.3);">
-            <div class="card-title"><span class="icon">🎯</span> データが示す、次の具体的行動</div>
-            <div style="font-size:13px; line-height:1.8;">
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(251,146,60,0.08); border-radius:8px;">
-                    <div style="font-size:20px; flex-shrink:0;">🍺</div>
-                    <div>
-                        <div style="color:var(--accent-orange); font-weight:600; margin-bottom:4px;">BGの集客力をレストランに還元する
-                        </div>
-                        <div style="color:var(--text);">
-                            ビアガーデンチケットの未使用分を10月〜11月のレストラン利用券として活用。BGにお越しの45,000人のお客さまの一部がディナーのリピーターになる。2025年秋のディナー急成長（10月+45.7%、11月+31.5%）はこの構造が機能した証拠。
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(96,165,250,0.08); border-radius:8px;">
-                    <div style="font-size:20px; flex-shrink:0;">🥂</div>
-                    <div>
-                        <div style="color:var(--accent-blue); font-weight:600; margin-bottom:4px;">宴会受注を年間通して強化する</div>
-                        <div style="color:var(--text);">
-                            宴会売上は3年で約2倍（¥1,137万→¥2,033万）。特に団体受注と記念日プランが成長ドライバー。閑散期（1月・4月）にも宴会案件を獲得できれば、月間売上の底上げに直結する。
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(74,222,128,0.08); border-radius:8px;">
-                    <div style="font-size:20px; flex-shrink:0;">📈</div>
-                    <div>
-                        <div style="color:var(--accent-green); font-weight:600; margin-bottom:4px;">ディナー客単価の上昇トレンドを維持する
-                        </div>
-                        <div style="color:var(--text);">ディナー客単価
-                            ¥11,029→¥11,032→¥11,239（税抜）と着実に上昇。コース提案・ワインペアリング・記念日演出の質を高め続けることで、ご来店数が横ばいでも売上が伸びる構造をつくる。
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(197,165,90,0.08); border-radius:8px;">
-                    <div style="font-size:20px; flex-shrink:0;">🌤️</div>
-                    <div>
-                        <div style="color:var(--gold); font-weight:600; margin-bottom:8px;">予約構造の進化 — 天候リスクを吸収する仕組み
-                        </div>
-                        <div style="color:var(--text); margin-bottom:12px;">
-                            チーム全員で築いた予約構造が、天候に左右されない強さを生んだ。予約はすべてプラン利用のため客単価維持に寄与し、荒天時のキャンセルヘッジとしても機能。WEB予約は3年で184%成長。
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; text-align:center;">
-                            <div style="background:rgba(255,255,255,0.04); padding:10px 6px; border-radius:6px;">
-                                <div style="font-size:10px; color:var(--text-muted);">2023</div>
-                                <div style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--text);">
-                                    40.4<span style="font-size:12px;">%</span></div>
-                                <div style="font-size:10px; color:var(--text-muted);">WEB 1,937件</div>
-                            </div>
-                            <div style="background:rgba(255,255,255,0.04); padding:10px 6px; border-radius:6px;">
-                                <div style="font-size:10px; color:var(--text-muted);">2024</div>
-                                <div
-                                    style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--accent-blue);">
-                                    45.6<span style="font-size:12px;">%</span></div>
-                                <div style="font-size:10px; color:var(--accent-blue);">WEB 2,532件</div>
-                            </div>
-                            <div style="background:rgba(197,165,90,0.1); padding:10px 6px; border-radius:6px;">
-                                <div style="font-size:10px; color:var(--text-muted);">2025</div>
-                                <div style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--gold);">
-                                    50.9<span style="font-size:12px;">%</span></div>
-                                <div style="font-size:10px; color:var(--gold);">WEB 3,571件</div>
-                            </div>
-                        </div>
-                        <div style="margin-top:8px; font-size:11px; color:var(--text-muted); text-align:center;">天候指数:
-                            3.38 → 3.03(悪天候) → 3.49 ｜ 天気が悪いYear 2でも予約が守った</div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(244,114,182,0.08); border-radius:8px;">
-                    <div style="font-size:20px; flex-shrink:0;">🍷</div>
-                    <div>
-                        <div style="color:var(--accent-pink); font-weight:600; margin-bottom:4px;">T/Oの進化を止めない</div>
-                        <div style="color:var(--text);">テイクアウト→アフタヌーンティー→WINE
-                            BARと、お客さまのニーズに合わせて業態を進化させてきた。固定観念に縛られず、データと現場の声から次の形を見つけ続ける。</div>
-                    </div>
-                </div>
-
-                <div style="margin:20px 0 12px; border-top:1px solid var(--card-border); padding-top:16px;">
-                    <div
-                        style="font-size:11px; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:12px;">
-                        🐏 YEAR 4 ビアガーデン攻略法 2026</div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(251,146,60,0.12); border-radius:8px; border-left:3px solid var(--accent-orange);">
-                    <div style="font-size:20px; flex-shrink:0;">🐏</div>
-                    <div>
-                        <div style="color:var(--accent-orange); font-weight:600; margin-bottom:4px;">ラム原価+45%を吸収する —
-                            FL圧縮の余力</div>
-                        <div style="color:var(--text);">人件費率を22.9%→17.4%に圧縮済み（5.5pt =
-                            約¥960万の余力）。食べ飲み放題は¥5,500→¥6,050に改定するが、市民割・LINE割で実質+¥50。お客さまの負担感はゼロ。販管費もリース→資産購入（6年償却）に転換し、中期で固定費が消滅する設計。
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(96,165,250,0.12); border-radius:8px; border-left:3px solid var(--accent-blue);">
-                    <div style="font-size:20px; flex-shrink:0;">📱</div>
-                    <div>
-                        <div style="color:var(--accent-blue); font-weight:600; margin-bottom:4px;">
-                            LINE登録でお客さまデータを一夏で獲得する
-                        </div>
-                        <div style="color:var(--text);">
-                            ¥500割引の条件を公式LINE登録にする。45,000人のお客さまからセグメントデータを直接取得。天気×曜日×お客さま属性×二十四節気で精密な需要予測モデルを構築し、Momentum
-                            Peaksのデータ基盤にする。</div>
-                    </div>
-                </div>
-
-                <div
-                    style="display:flex; gap:12px; padding:12px; background:rgba(197,165,90,0.12); border-radius:8px; border-left:3px solid var(--gold);">
-                    <div style="font-size:20px; flex-shrink:0;">🥩</div>
-                    <div>
-                        <div style="color:var(--gold); font-weight:600; margin-bottom:4px;">プレミアムブースで客単価拡張をテストする</div>
-                        <div style="color:var(--text);">
-                            和牛マフィア×高級鍋ブース（40席・+¥1,100席料）を新設。席料を選ぶお客さま＝プレミアム体験を求める方々。このデータが来年以降のプレミアム戦略の基盤になる。</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div style="text-align:center; padding:32px 16px; margin-top:8px;">
-            <div style="font-size:15px; color:var(--text); font-weight:300; line-height:2;">
-                開業から3年。<br>
-                システムが落ちても、天候が味方しなくても、<br>
-                チーム全員で仕組みを変え、データで証明し、覚悟で突き抜けてきた。<br><br>
-                ラム肉が45%上がっても、大した問題じゃない。<br>
-                3年かけてみんなで作った要塞がある。<br>
-                <span style="color:var(--gold); font-weight:600;">Year 4、ENTER REVOLUTIONS。<br>この先もチームで。</span>
-            </div>
-        </div>
-
-        <!-- FOOTER -->
-        <div class="footer">
-            <div class="brand">SAPPORO VIEWTIFUL DINING</div>
-            <div style="margin-top:4px;">ここだけの美味しさ。ここだけのエンターテインメント。</div>
-            <div style="margin-top:8px;">税抜表記 / sales-data-parser v2.0 / 2026-02-11</div>
-        </div>
-
     </div>
+
+    <script>
+        const LOCK_PASS = '20230428';
+        const LOCK_KEY = 'tvtower_3years_unlocked';
+
+        function unlockPage() {
+            const input = document.getElementById('lockPassword').value;
+            if (input === LOCK_PASS) {
+                sessionStorage.setItem(LOCK_KEY, 'true');
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                document.getElementById('lockError').textContent = 'パスワードが違います';
+                document.getElementById('lockPassword').value = '';
+                document.getElementById('lockPassword').focus();
+            }
+        }
+
+        // セッション中に認証済みならスキップ
+        if (sessionStorage.getItem(LOCK_KEY) === 'true') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('lockScreen').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            });
+        }
+    </script>
+
+    <div id="mainContent" style="display: none;">
+        <div class="container">
+
+            <!-- HERO -->
+            <div class="hero">
+                <div class="hero-label">SAPPORO VIEWTIFUL DINING</div>
+                <h1>TV TOWER <span>3年間の軌跡</span></h1>
+                <div class="hero-sub">2023年4月 開業 → 2026年2月（税抜表記）</div>
+            </div>
+
+            <!-- BIG NUMBER: 全CH売上 -->
+            <div class="big-number-section">
+                <div class="big-number-label">全チャネル売上（税抜）</div>
+                <div class="big-number-row">
+                    <div class="big-number-item">
+                        <div class="big-number-year">2023年度</div>
+                        <div class="big-number"><span class="big-number-unit">¥</span>2.37<span
+                                class="big-number-unit">億</span></div>
+                    </div>
+                    <div class="big-number-arrow">→</div>
+                    <div class="big-number-item">
+                        <div class="big-number-year">2024年度</div>
+                        <div class="big-number"><span class="big-number-unit">¥</span>2.77<span
+                                class="big-number-unit">億</span></div>
+                        <div class="big-number-note">+16.8%</div>
+                    </div>
+                    <div class="big-number-arrow">→</div>
+                    <div class="big-number-item">
+                        <div class="big-number-year">2025年度</div>
+                        <div class="big-number"><span class="big-number-unit">¥</span>3.13<span
+                                class="big-number-unit">億</span></div>
+                        <div class="big-number-note">11ヶ月時点</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- コロナ前最盛期との比較 -->
+            <div class="card" style="border-color: rgba(232,85,53,0.3); border-left: 3px solid var(--tower-red);">
+                <div class="card-title"><span class="icon">🏔️</span> コロナ禍前・最盛期との比較</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">
+                    テレビ塔拠点の過去最高期（コロナ前）と現在のチーム成果を比較
+                </div>
+                <div class="grid-3col-corona">
+                    <!-- レストラン -->
+                    <div
+                        style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                        <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍽️ レストラン</div>
+                        <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                        <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                            ¥4,702<span style="font-size:11px;">万</span></div>
+                        <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                            <div
+                                style="height:100%; width:100%; background:var(--tower-red); border-radius:2px; opacity:0.4;">
+                            </div>
+                        </div>
+                        <div style="font-size:10px; color:var(--text-muted);">2025</div>
+                        <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--gold);">
+                            ¥1.11<span style="font-size:10px;">億</span></div>
+                        <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">236% 🔥
+                        </div>
+                    </div>
+                    <!-- 宴会 -->
+                    <div
+                        style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                        <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🥂 宴会</div>
+                        <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                        <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                            ¥3,868<span style="font-size:11px;">万</span></div>
+                        <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                            <div style="height:100%; width:53%; background:var(--gold); border-radius:2px;"></div>
+                        </div>
+                        <div style="font-size:10px; color:var(--text-muted);">2025 (11M)</div>
+                        <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-blue);">
+                            ¥2,033<span style="font-size:10px;">万</span></div>
+                        <div style="font-size:11px; color:var(--accent-orange); font-weight:600; margin-top:4px;">53% —
+                            伸びしろ
+                        </div>
+                    </div>
+                    <!-- ビアガーデン -->
+                    <div
+                        style="background:rgba(232,85,53,0.06); border-radius:8px; padding:12px 10px; text-align:center;">
+                        <div style="font-size:10px; color:var(--text-muted); margin-bottom:2px;">🍺 ビアガーデン</div>
+                        <div style="font-size:10px; color:var(--tower-red); margin-bottom:6px;">コロナ前最盛期</div>
+                        <div style="font-family:'Inter'; font-size:18px; font-weight:700; color:var(--text);">
+                            ¥9,240<span style="font-size:11px;">万</span></div>
+                        <div style="height:4px; background:rgba(255,255,255,0.06); border-radius:2px; margin:8px 0;">
+                            <div style="height:100%; width:100%; background:var(--accent-green); border-radius:2px;">
+                            </div>
+                        </div>
+                        <div style="font-size:10px; color:var(--text-muted);">2025</div>
+                        <div style="font-family:'Inter'; font-size:16px; font-weight:700; color:var(--accent-green);">
+                            ¥1.79<span style="font-size:10px;">億</span></div>
+                        <div style="font-size:11px; color:var(--accent-green); font-weight:600; margin-top:4px;">194% 🔥
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top:12px; font-size:11px; color:var(--text-muted);">
+                    レストランとBGはコロナ前を大幅超え。宴会はYear 4の最大の伸びしろ
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><span class="icon">🍽️</span> レストラン（L+D）</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>年度</th>
+                            <th>売上</th>
+                            <th>客数</th>
+                            <th>客単価</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2023</td>
+                            <td>¥1.06億</td>
+                            <td>15,718人</td>
+                            <td>¥6,752</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>2024</td>
+                            <td>¥1.15億</td>
+                            <td>16,214人</td>
+                            <td>¥7,075</td>
+                            <td><span class="growth-positive">+8.2%</span></td>
+                        </tr>
+                        <tr>
+                            <td>2025<span style="font-size:10px;color:var(--text-muted)"> 11M</span></td>
+                            <td>¥1.11億</td>
+                            <td>14,981人</td>
+                            <td>¥7,418</td>
+                            <td><span class="growth-positive">客単価↑</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ランチ & ディナー -->
+            <div class="grid-2col">
+                <div class="card">
+                    <div class="card-title"><span class="icon">☀️</span> ランチ</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>売上</th>
+                                <th>客単価</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>23</td>
+                                <td>¥4,078万</td>
+                                <td>¥4,164</td>
+                            </tr>
+                            <tr>
+                                <td>24</td>
+                                <td>¥4,267万</td>
+                                <td>¥4,407</td>
+                            </tr>
+                            <tr>
+                                <td>25</td>
+                                <td>¥3,783万</td>
+                                <td>¥4,472</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card">
+                    <div class="card-title"><span class="icon">🌙</span> ディナー</div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>売上</th>
+                                <th>客単価</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>23</td>
+                                <td>¥6,535万</td>
+                                <td>¥11,029</td>
+                            </tr>
+                            <tr>
+                                <td>24</td>
+                                <td>¥7,205万</td>
+                                <td>¥11,032</td>
+                            </tr>
+                            <tr>
+                                <td>25</td>
+                                <td>¥7,330万</td>
+                                <td>¥11,239</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 宴会 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">🥂</span> 宴会 — 3年で約2倍</div>
+                <div class="bar-chart">
+                    <div class="bar-row">
+                        <div class="bar-label">2023</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:56%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
+                                ¥1,137万</div>
+                        </div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2024</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:87%; background:linear-gradient(90deg, var(--gold), var(--gold-light));">
+                                ¥1,768万</div>
+                        </div>
+                        <div class="bar-value" style="color:var(--accent-green)">+55.5%</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2025</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:100%; background:linear-gradient(90deg, var(--accent-orange), var(--gold-light));">
+                                ¥2,033万</div>
+                        </div>
+                        <div class="bar-value" style="color:var(--text-muted)">11M</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ビアガーデン -->
+            <div class="card">
+                <div class="card-title"><span class="icon">🍺</span> ビアガーデン — 圧倒的成長</div>
+                <div class="bar-chart">
+                    <div class="bar-row">
+                        <div class="bar-label">2023</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:65%; background:linear-gradient(90deg, #3B82F6, #60A5FA);">
+                                ¥1.16億</div>
+                        </div>
+                        <div class="bar-value">30,283人</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2024</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:79%; background:linear-gradient(90deg, #3B82F6, #60A5FA);">
+                                ¥1.41億</div>
+                        </div>
+                        <div class="bar-value">37,403人</div>
+                    </div>
+                    <div class="bar-row">
+                        <div class="bar-label">2025</div>
+                        <div class="bar-track">
+                            <div class="bar-fill"
+                                style="width:100%; background:linear-gradient(90deg, var(--accent-orange), #FBBF24);">
+                                ¥1.79億
+                            </div>
+                        </div>
+                        <div class="bar-value">45,522人</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 季節パターン -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📅</span> 月別パターン（2024-25平均）</div>
+                <div class="season-grid">
+                    <div class="season-cell season-low"><span class="month-name">4月</span><span
+                            class="month-value">¥909万</span></div>
+                    <div class="season-cell season-mid"><span class="month-name">5月</span><span
+                            class="month-value">¥1,437万</span></div>
+                    <div class="season-cell season-high"><span class="month-name">6月</span><span
+                            class="month-value">¥3,794万</span></div>
+                    <div class="season-cell season-peak"><span class="month-name">7月</span><span
+                            class="month-value">¥6,836万</span></div>
+                    <div class="season-cell season-peak"><span class="month-name">8月</span><span
+                            class="month-value">¥6,936万</span></div>
+                    <div class="season-cell season-high"><span class="month-name">9月</span><span
+                            class="month-value">¥2,459万</span></div>
+                    <div class="season-cell season-mid"><span class="month-name">10月</span><span
+                            class="month-value">¥1,381万</span></div>
+                    <div class="season-cell season-mid"><span class="month-name">11月</span><span
+                            class="month-value">¥1,220万</span></div>
+                    <div class="season-cell season-high"><span class="month-name">12月</span><span
+                            class="month-value">¥1,920万</span></div>
+                    <div class="season-cell season-low"><span class="month-name">1月</span><span
+                            class="month-value">¥1,083万</span></div>
+                    <div class="season-cell season-low"><span class="month-name">2月</span><span
+                            class="month-value">¥890万</span></div>
+                    <div class="season-cell season-mid"><span class="month-name">3月</span><span
+                            class="month-value">¥1,193万</span></div>
+                </div>
+                <div style="margin-top:12px; display:flex; gap:12px; justify-content:center; font-size:10px;">
+                    <span style="color:var(--accent-orange)">● BGピーク</span>
+                    <span style="color:var(--accent-green)">● BG稼働/繁忙</span>
+                    <span style="color:var(--accent-blue)">● 安定期</span>
+                    <span style="color:var(--text-muted)">● 閑散期</span>
+                </div>
+            </div>
+
+            <!-- 月間売上ベスト5 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">🏆</span> 月間売上ベスト5（税抜）</div>
+                <ul class="best-list">
+                    <li class="best-item">
+                        <div class="best-rank">1</div>
+                        <div class="best-info">
+                            <div class="best-title">2025年度 7月</div>
+                            <div class="best-detail">BG最盛期 14,790人</div>
+                        </div>
+                        <div class="best-value">¥7,643万</div>
+                    </li>
+                    <li class="best-item">
+                        <div class="best-rank">2</div>
+                        <div class="best-info">
+                            <div class="best-title">2025年度 8月</div>
+                            <div class="best-detail">BG最盛期 14,547人</div>
+                        </div>
+                        <div class="best-value">¥7,210万</div>
+                    </li>
+                    <li class="best-item">
+                        <div class="best-rank">3</div>
+                        <div class="best-info">
+                            <div class="best-title">2024年度 8月</div>
+                            <div class="best-detail">BG過去最高更新時</div>
+                        </div>
+                        <div class="best-value">¥6,662万</div>
+                    </li>
+                    <li class="best-item">
+                        <div class="best-rank">4</div>
+                        <div class="best-info">
+                            <div class="best-title">2024年度 7月</div>
+                        </div>
+                        <div class="best-value">¥6,028万</div>
+                    </li>
+                    <li class="best-item">
+                        <div class="best-rank">5</div>
+                        <div class="best-info">
+                            <div class="best-title">2023年度 7月</div>
+                            <div class="best-detail">開業初年度の夏</div>
+                        </div>
+                        <div class="best-value">¥5,567万</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 曜日別 -->
+            <div class="card">
+                <div class="card-title"><span class="icon">📊</span> 曜日別 L+D売上（3年平均）</div>
+                <div class="weekday-grid">
+                    <div class="weekday-cell">
+                        <span class="weekday-name">月</span>
+                        <span class="weekday-value">¥28.6万</span>
+                        <span class="weekday-idx">84</span>
+                    </div>
+                    <div class="weekday-cell">
+                        <span class="weekday-name">火</span>
+                        <span class="weekday-value">¥30.2万</span>
+                        <span class="weekday-idx">89</span>
+                    </div>
+                    <div class="weekday-cell">
+                        <span class="weekday-name">水</span>
+                        <span class="weekday-value">¥30.8万</span>
+                        <span class="weekday-idx">91</span>
+                    </div>
+                    <div class="weekday-cell">
+                        <span class="weekday-name">木</span>
+                        <span class="weekday-value">¥29.4万</span>
+                        <span class="weekday-idx">87</span>
+                    </div>
+                    <div class="weekday-cell">
+                        <span class="weekday-name">金</span>
+                        <span class="weekday-value">¥34.1万</span>
+                        <span class="weekday-idx">101</span>
+                    </div>
+                    <div class="weekday-cell weekend">
+                        <span class="weekday-name" style="color:var(--gold)">土</span>
+                        <span class="weekday-value" style="color:var(--gold)">¥44.4万</span>
+                        <span class="weekday-idx">131</span>
+                    </div>
+                    <div class="weekday-cell weekend">
+                        <span class="weekday-name" style="color:var(--gold-light)">日</span>
+                        <span class="weekday-value" style="color:var(--gold-light)">¥39.5万</span>
+                        <span class="weekday-idx">117</span>
+                    </div>
+                </div>
+                <div style="text-align:center; margin-top:8px; font-size:10px; color:var(--text-muted);">
+                    指数100 = 全曜日平均。土曜は平均の1.3倍。
+                </div>
+            </div>
+
+            <!-- 3年間の物語 -->
+            <div class="card" style="border-color: rgba(232,85,53,0.25); border-top: 3px solid var(--tower-red);">
+                <div class="card-title"><span class="icon">📖</span> 3年間の物語 — テレビ塔拠点の進化</div>
+                <div style="font-size:13px; line-height:1.8;">
+                    <div style="margin-bottom:16px;">
+                        <div
+                            style="color:var(--gold); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                            YEAR 1 — 覚悟の111日間</div>
+                        <div>
+                            2023年4月、レストランとビアガーデンが同時に立ち上がった。紙台帳とキャッシュオン方式を廃止し、POS・TableCheck・QRオーダーを導入。キッチンチームがゼロからメニューを作り上げ、サービスチームが400席のオペレーションを根本から構築した。システムは何度も落ちた。スタッフの入れ替わりもあった。それでもチームはやり方を変えなかった。111日間、全員で走り切った。
+                        </div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div
+                            style="color:var(--accent-blue); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                            YEAR 2 — データで逆転した夏、宴会が動き出した年</div>
+                        <div>
+                            BGは5月末〜7月10日で前年比▲¥1,200万。しかし予約データ（先行指標）は前年超え。チームで「天気が悪いだけ。需要は生きている」と証明し、新エリア投資のゴーサインを勝ち取った。8月単月で+¥1,100万。一方、レストランではキッチンチームがコースの質を磨き上げ、ディナー客単価¥11,000超えを達成。宴会もYear
+                            1の¥1,137万から¥1,768万へ+55%成長。チーム全員が「テレビ塔で宴会ができる」という認知を育てた。
+                        </div>
+                    </div>
+                    <div style="margin-bottom:16px;">
+                        <div
+                            style="color:var(--accent-green); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                            YEAR 3 — 全チャネル圧勝</div>
+                        <div>全CH売上 ¥3.13億（11ヶ月時点）。BG
+                            ¥1.79億はコロナ前最盛期の194%。レストランも¥1.11億でコロナ前の236%を達成。キッチンチームの料理がリピーターを生み、サービスチームの接客が記念日利用を育て、ディナー客単価は3年連続で上昇（¥11,029→¥11,032→¥11,239）。宴会は3年で約2倍に成長。テイクアウト→アフタヌーンティー→WINE
+                            BARと、お客さまの声に応えて業態を進化させた。L率17.4%まで圧縮。すべてのチャネルでチームが結果を出した。
+                        </div>
+                    </div>
+                    <div>
+                        <div
+                            style="color:var(--tower-red); font-weight:600; font-size:12px; letter-spacing:1px; margin-bottom:4px;">
+                            YEAR 4 — ENTER REVOLUTIONS</div>
+                        <div>
+                            ラム肉45%値上がり。3年かけてチームで作った要塞に、羊が1匹突っ込んできただけ。キッチンチームの生み出す美味しさがあり、サービスチームのおもてなしがある。そして今年、Momentum
+                            Peaks × Talent Intelligence が初めて実戦投入される。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 具体的行動 -->
+            <div class="card" style="border-color: rgba(74,222,128,0.3);">
+                <div class="card-title"><span class="icon">🎯</span> データが示す、次の具体的行動</div>
+                <div style="font-size:13px; line-height:1.8;">
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(251,146,60,0.08); border-radius:8px;">
+                        <div style="font-size:20px; flex-shrink:0;">🍺</div>
+                        <div>
+                            <div style="color:var(--accent-orange); font-weight:600; margin-bottom:4px;">
+                                BGの集客力をレストランに還元する
+                            </div>
+                            <div style="color:var(--text);">
+                                ビアガーデンチケットの未使用分を10月〜11月のレストラン利用券として活用。BGにお越しの45,000人のお客さまの一部がディナーのリピーターになる。2025年秋のディナー急成長（10月+45.7%、11月+31.5%）はこの構造が機能した証拠。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(96,165,250,0.08); border-radius:8px;">
+                        <div style="font-size:20px; flex-shrink:0;">🥂</div>
+                        <div>
+                            <div style="color:var(--accent-blue); font-weight:600; margin-bottom:4px;">宴会受注を年間通して強化する
+                            </div>
+                            <div style="color:var(--text);">
+                                宴会売上は3年で約2倍（¥1,137万→¥2,033万）。特に団体受注と記念日プランが成長ドライバー。閑散期（1月・4月）にも宴会案件を獲得できれば、月間売上の底上げに直結する。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(74,222,128,0.08); border-radius:8px;">
+                        <div style="font-size:20px; flex-shrink:0;">📈</div>
+                        <div>
+                            <div style="color:var(--accent-green); font-weight:600; margin-bottom:4px;">
+                                ディナー客単価の上昇トレンドを維持する
+                            </div>
+                            <div style="color:var(--text);">ディナー客単価
+                                ¥11,029→¥11,032→¥11,239（税抜）と着実に上昇。コース提案・ワインペアリング・記念日演出の質を高め続けることで、ご来店数が横ばいでも売上が伸びる構造をつくる。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(197,165,90,0.08); border-radius:8px;">
+                        <div style="font-size:20px; flex-shrink:0;">🌤️</div>
+                        <div>
+                            <div style="color:var(--gold); font-weight:600; margin-bottom:8px;">予約構造の進化 — 天候リスクを吸収する仕組み
+                            </div>
+                            <div style="color:var(--text); margin-bottom:12px;">
+                                チーム全員で築いた予約構造が、天候に左右されない強さを生んだ。予約はすべてプラン利用のため客単価維持に寄与し、荒天時のキャンセルヘッジとしても機能。WEB予約は3年で184%成長。
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; text-align:center;">
+                                <div style="background:rgba(255,255,255,0.04); padding:10px 6px; border-radius:6px;">
+                                    <div style="font-size:10px; color:var(--text-muted);">2023</div>
+                                    <div
+                                        style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--text);">
+                                        40.4<span style="font-size:12px;">%</span></div>
+                                    <div style="font-size:10px; color:var(--text-muted);">WEB 1,937件</div>
+                                </div>
+                                <div style="background:rgba(255,255,255,0.04); padding:10px 6px; border-radius:6px;">
+                                    <div style="font-size:10px; color:var(--text-muted);">2024</div>
+                                    <div
+                                        style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--accent-blue);">
+                                        45.6<span style="font-size:12px;">%</span></div>
+                                    <div style="font-size:10px; color:var(--accent-blue);">WEB 2,532件</div>
+                                </div>
+                                <div style="background:rgba(197,165,90,0.1); padding:10px 6px; border-radius:6px;">
+                                    <div style="font-size:10px; color:var(--text-muted);">2025</div>
+                                    <div
+                                        style="font-family:'Inter'; font-size:20px; font-weight:700; color:var(--gold);">
+                                        50.9<span style="font-size:12px;">%</span></div>
+                                    <div style="font-size:10px; color:var(--gold);">WEB 3,571件</div>
+                                </div>
+                            </div>
+                            <div style="margin-top:8px; font-size:11px; color:var(--text-muted); text-align:center;">
+                                天候指数:
+                                3.38 → 3.03(悪天候) → 3.49 ｜ 天気が悪いYear 2でも予約が守った</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(244,114,182,0.08); border-radius:8px;">
+                        <div style="font-size:20px; flex-shrink:0;">🍷</div>
+                        <div>
+                            <div style="color:var(--accent-pink); font-weight:600; margin-bottom:4px;">T/Oの進化を止めない</div>
+                            <div style="color:var(--text);">テイクアウト→アフタヌーンティー→WINE
+                                BARと、お客さまのニーズに合わせて業態を進化させてきた。固定観念に縛られず、データと現場の声から次の形を見つけ続ける。</div>
+                        </div>
+                    </div>
+
+                    <div style="margin:20px 0 12px; border-top:1px solid var(--card-border); padding-top:16px;">
+                        <div
+                            style="font-size:11px; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:12px;">
+                            🐏 YEAR 4 ビアガーデン攻略法 2026</div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(251,146,60,0.12); border-radius:8px; border-left:3px solid var(--accent-orange);">
+                        <div style="font-size:20px; flex-shrink:0;">🐏</div>
+                        <div>
+                            <div style="color:var(--accent-orange); font-weight:600; margin-bottom:4px;">ラム原価+45%を吸収する —
+                                FL圧縮の余力</div>
+                            <div style="color:var(--text);">人件費率を22.9%→17.4%に圧縮済み（5.5pt =
+                                約¥960万の余力）。食べ飲み放題は¥5,500→¥6,050に改定するが、市民割・LINE割で実質+¥50。お客さまの負担感はゼロ。販管費もリース→資産購入（6年償却）に転換し、中期で固定費が消滅する設計。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; margin-bottom:16px; padding:12px; background:rgba(96,165,250,0.12); border-radius:8px; border-left:3px solid var(--accent-blue);">
+                        <div style="font-size:20px; flex-shrink:0;">📱</div>
+                        <div>
+                            <div style="color:var(--accent-blue); font-weight:600; margin-bottom:4px;">
+                                LINE登録でお客さまデータを一夏で獲得する
+                            </div>
+                            <div style="color:var(--text);">
+                                ¥500割引の条件を公式LINE登録にする。45,000人のお客さまからセグメントデータを直接取得。天気×曜日×お客さま属性×二十四節気で精密な需要予測モデルを構築し、Momentum
+                                Peaksのデータ基盤にする。</div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="display:flex; gap:12px; padding:12px; background:rgba(197,165,90,0.12); border-radius:8px; border-left:3px solid var(--gold);">
+                        <div style="font-size:20px; flex-shrink:0;">🥩</div>
+                        <div>
+                            <div style="color:var(--gold); font-weight:600; margin-bottom:4px;">プレミアムブースで客単価拡張をテストする
+                            </div>
+                            <div style="color:var(--text);">
+                                和牛マフィア×高級鍋ブース（40席・+¥1,100席料）を新設。席料を選ぶお客さま＝プレミアム体験を求める方々。このデータが来年以降のプレミアム戦略の基盤になる。</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="text-align:center; padding:32px 16px; margin-top:8px;">
+                <div style="font-size:15px; color:var(--text); font-weight:300; line-height:2;">
+                    開業から3年。<br>
+                    システムが落ちても、天候が味方しなくても、<br>
+                    チーム全員で仕組みを変え、データで証明し、覚悟で突き抜けてきた。<br><br>
+                    ラム肉が45%上がっても、大した問題じゃない。<br>
+                    3年かけてみんなで作った要塞がある。<br>
+                    <span style="color:var(--gold); font-weight:600;">Year 4、ENTER REVOLUTIONS。<br>この先もチームで。</span>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer">
+                <div class="brand">SAPPORO VIEWTIFUL DINING</div>
+                <div style="margin-top:4px;">ここだけの美味しさ。ここだけのエンターテインメント。</div>
+                <div style="margin-top:8px;">税抜表記 / sales-data-parser v2.0 / 2026-02-11</div>
+            </div>
+
+        </div>
+    </div><!-- /mainContent -->
 
 </body>
 
