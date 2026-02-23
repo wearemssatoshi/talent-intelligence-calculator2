@@ -12,7 +12,35 @@
  * 7. SVD_MINDFUL.htmlのSCRIPT_URLSに設定
  */
 
+// ── Token Authentication ──
+function verifyToken(e, isPost) {
+  const TOKEN = PropertiesService.getScriptProperties().getProperty('SVD_API_TOKEN');
+  if (!TOKEN) return true; // トークン未設定時はスキップ（段階的導入）
+  
+  let provided;
+  if (isPost) {
+    try {
+      const data = JSON.parse(e.postData.contents);
+      provided = data.token;
+    } catch (err) {
+      return false;
+    }
+  } else {
+    provided = e?.parameter?.token;
+  }
+  return provided === TOKEN;
+}
+
+function unauthorizedResponse() {
+  return ContentService.createTextOutput(JSON.stringify({ 
+    success: false, 
+    error: 'Unauthorized: Invalid or missing API token' 
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
 function doPost(e) {
+  // ── Auth Gate ──
+  if (!verifyToken(e, true)) return unauthorizedResponse();
   try {
     const data = JSON.parse(e.postData.contents);
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -143,8 +171,12 @@ function doPost(e) {
 }
 
 function doGet(e) {
+  // ── Auth Gate (version/ping は公開) ──
+  const action = e?.parameter?.action || 'data';
+  if (action !== 'version' && action !== 'ping') {
+    if (!verifyToken(e, false)) return unauthorizedResponse();
+  }
   try {
-    const action = e?.parameter?.action || 'data';
     
     // バージョン確認
     if (action === 'version') {

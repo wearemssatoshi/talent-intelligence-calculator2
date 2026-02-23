@@ -1122,6 +1122,9 @@
                 GAS_URL: localStorage.getItem('TI_GAS_URL') || '',
                 VERSION: '8.0'
             };
+            // ── SVD API Token (PropertiesServiceに設定するものと同じ値) ──
+            const SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56'; // ← デプロイ時に設定
+            function tokenParam() { return SVD_API_TOKEN ? `&token=${encodeURIComponent(SVD_API_TOKEN)}` : ''; }
 
             // バックエンドURL設定用ヘルパー
             function setBackendUrl(url) {
@@ -1326,7 +1329,7 @@
                             params.append(key, value);
                         }
 
-                        const response = await fetch(BACKEND_CONFIG.GAS_URL, {
+                        const response = await fetch(BACKEND_CONFIG.GAS_URL + '?token=' + encodeURIComponent(SVD_API_TOKEN || ''), {
                             method: 'POST',
                             body: params
                         });
@@ -2175,7 +2178,7 @@
             }
 
             // --- CALCULATION & CHART LOGIC ---
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec' + (SVD_API_TOKEN ? '?token=' + encodeURIComponent(SVD_API_TOKEN) : '');
 
             function submitData() {
                 const formData = new FormData();

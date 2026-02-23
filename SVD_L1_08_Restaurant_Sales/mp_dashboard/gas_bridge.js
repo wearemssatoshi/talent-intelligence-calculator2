@@ -12,6 +12,11 @@ const GAS_BRIDGE = (() => {
     let isOnline = false;
     let lastSyncTime = null;
 
+    // ── SVD API Token Authentication ──
+    const SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56'; // ← デプロイ時に設定。空文字ならトークンなし（段階的導入）
+    function tokenParam() { return SVD_API_TOKEN ? `&token=${encodeURIComponent(SVD_API_TOKEN)}` : ''; }
+    function addToken(payload) { if (SVD_API_TOKEN) payload.token = SVD_API_TOKEN; return payload; }
+
     // ── Configuration ──
     function setUrl(url) {
         GAS_URL = url.trim();
@@ -42,7 +47,7 @@ const GAS_BRIDGE = (() => {
     async function loadAll() {
         if (!GAS_URL) return null;
         try {
-            const resp = await fetch(`${GAS_URL}?action=loadAll`, { redirect: 'follow' });
+            const resp = await fetch(`${GAS_URL}?action=loadAll${tokenParam()}`, { redirect: 'follow' });
             const data = await resp.json();
             if (data.status === 'ok') {
                 isOnline = true;
@@ -66,7 +71,7 @@ const GAS_BRIDGE = (() => {
     async function getOnhandData(dateStr) {
         if (!GAS_URL) return null;
         try {
-            const resp = await fetch(`${GAS_URL}?action=getOnhand&date=${dateStr}`, { redirect: 'follow' });
+            const resp = await fetch(`${GAS_URL}?action=getOnhand&date=${dateStr}${tokenParam()}`, { redirect: 'follow' });
             return await resp.json();
         } catch (e) {
             console.warn('[GAS] getOnhandData failed:', e.message);
@@ -78,7 +83,7 @@ const GAS_BRIDGE = (() => {
     async function loadDate(dateStr) {
         if (!GAS_URL) return null;
         try {
-            const resp = await fetch(`${GAS_URL}?action=loadDate&date=${dateStr}`, { redirect: 'follow' });
+            const resp = await fetch(`${GAS_URL}?action=loadDate&date=${dateStr}${tokenParam()}`, { redirect: 'follow' });
             return await resp.json();
         } catch (e) {
             console.warn('[GAS] loadDate failed:', e.message);
@@ -90,7 +95,7 @@ const GAS_BRIDGE = (() => {
     async function loadRange(from, to, storeId) {
         if (!GAS_URL) return null;
         try {
-            let url = `${GAS_URL}?action=loadRange&from=${from}&to=${to}`;
+            let url = `${GAS_URL}?action=loadRange&from=${from}&to=${to}${tokenParam()}`;
             if (storeId) url += `&store=${storeId}`;
             const resp = await fetch(url, { redirect: 'follow' });
             return await resp.json();
@@ -111,7 +116,7 @@ const GAS_BRIDGE = (() => {
         saveLocal(date, storeId, { actual_sales: actualSales, actual_count: actualCount, channels });
 
         try {
-            const payload = {
+            const payload = addToken({
                 action: 'save',
                 date,
                 store_id: storeId,
@@ -119,7 +124,7 @@ const GAS_BRIDGE = (() => {
                 actual_count: actualCount,
                 channels: channels || {},
                 user: user || 'DASHBOARD'
-            };
+            });
 
             const resp = await fetch(GAS_URL, {
                 method: 'POST',
@@ -149,12 +154,12 @@ const GAS_BRIDGE = (() => {
         if (!GAS_URL) return { status: 'error', message: 'GAS URL not set' };
 
         try {
-            const payload = {
+            const payload = addToken({
                 action: 'bulkSave',
                 date,
                 entries,
                 user: user || 'DASHBOARD'
-            };
+            });
 
             const resp = await fetch(GAS_URL, {
                 method: 'POST',
@@ -332,6 +337,6 @@ const GAS_BRIDGE = (() => {
         save, bulkSave, processQueue,
         loadLocal, saveLocal, getCachedData,
         renderSettingsPanel, testConnection, saveSettings, syncNow,
-        updateStatusBadge
+        updateStatusBadge, showToast
     };
 })();
