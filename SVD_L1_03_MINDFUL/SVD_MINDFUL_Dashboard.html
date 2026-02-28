@@ -857,6 +857,9 @@
             akarenga: 'https://script.google.com/macros/s/AKfycbzHN2p9eYAFFxip_Wj6b0J_Qm9SIxjetvPJENTBIBiBwLuEPaej_iJC4AUghIJF1cwZZQ/exec'
         };
 
+        const SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56';
+        function tokenParam() { return SVD_API_TOKEN ? `&token=${encodeURIComponent(SVD_API_TOKEN)}` : ''; }
+
         let currentBase = 'moiwayama';
         let currentPeriod = 'today';
         let allData = { healthChecks: [], reflections: [] };
@@ -914,7 +917,7 @@
             const url = SCRIPT_URLS[currentBase];
             if (!url) return;
             try {
-                const response = await fetch(url + '?action=users');
+                const response = await fetch(url + '?action=users' + tokenParam());
                 const result = await response.json();
                 usersData = result.users || [];
                 renderUsersTable();
@@ -968,7 +971,7 @@
             const base = baseMap[currentBase] || 'all';
 
             try {
-                const response = await fetch(`${url}?action=ranking&period=${period}&base=${base}`);
+                const response = await fetch(`${url}?action=ranking&period=${period}&base=${base}${tokenParam()}`);
                 const result = await response.json();
 
                 if (result.success && result.ranking) {
@@ -1206,7 +1209,7 @@
             }
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(url + (url.includes('?') ? '' : '?') + tokenParam().replace('&', ''));
                 const result = await response.json();
 
                 // バックエンドの生データをダッシュボード形式に変換
@@ -1401,7 +1404,7 @@
                     author: '管理者'
                 });
 
-                const response = await fetch(`${url}?${params.toString()}`);
+                const response = await fetch(`${url}?${params.toString()}${tokenParam()}`);
                 const result = await response.json();
 
                 if (result.success) {
@@ -1440,7 +1443,7 @@
                         author: '管理者（全拠点）'
                     });
 
-                    const response = await fetch(`${url}?${params.toString()}`);
+                    const response = await fetch(`${url}?${params.toString()}${tokenParam()}`);
                     const result = await response.json();
 
                     if (result.success) {
