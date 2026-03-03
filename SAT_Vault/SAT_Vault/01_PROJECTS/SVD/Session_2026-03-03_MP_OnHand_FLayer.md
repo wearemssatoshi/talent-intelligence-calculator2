@@ -49,6 +49,22 @@ python3 parse_onhand.py on_hand/
 python3 import_onhand_to_gas.py <GAS_URL>
 ```
 
+## バグ修正
+
+### Entryタブ拠点切替バグ
+- **症状**: 売上入力タブで大倉山以外に遷移できない
+- **原因**: `renderSalesForm` L1244 のベースタブonclickが `renderCommand()` を呼んでいた
+- **修正**: `renderEntry()` に変更 + `selectedStoreFilter='ALL'` リセット
+
+## デプロイ状況
+
+| 対象 | 状態 | 備考 |
+|:--|:--:|:--|
+| GASバックエンド | ✅ @11 | clasp deploy完了、旧URL維持 |
+| origin (GitHub) | ✅ push済 | talent-intelligence-calculator2 |
+| GitHub Pages | ⚠️ 未デプロイ | pagesリモートへのpushが必要 |
+| localhost:8888 | ✅ 最新反映 | リロードで確認可 |
+
 ## 設計上の重要な判断
 
 | 判断 | 理由 |
