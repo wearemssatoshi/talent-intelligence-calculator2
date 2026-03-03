@@ -67,14 +67,16 @@ const GAS_BRIDGE = (() => {
         }
     }
 
-    // ── GET: TableCheck OnHand Data ──
-    async function getOnhandData(dateStr) {
+    // ── GET: Load All OnHand Data ──
+    async function loadOnHand() {
         if (!GAS_URL) return null;
         try {
-            const resp = await fetch(`${GAS_URL}?action=getOnhand&date=${dateStr}${tokenParam()}`, { redirect: 'follow' });
-            return await resp.json();
+            const resp = await fetch(`${GAS_URL}?action=loadOnHand${tokenParam()}`, { redirect: 'follow' });
+            const data = await resp.json();
+            if (data.status === 'ok') return data;
+            return null;
         } catch (e) {
-            console.warn('[GAS] getOnhandData failed:', e.message);
+            console.warn('[GAS] loadOnHand failed:', e.message);
             return null;
         }
     }
@@ -333,7 +335,7 @@ const GAS_BRIDGE = (() => {
     // ── Public API ──
     return {
         setUrl, getUrl, getStatus, ping,
-        loadAll, loadDate, loadRange, getOnhandData,
+        loadAll, loadDate, loadRange, loadOnHand,
         save, bulkSave, processQueue,
         loadLocal, saveLocal, getCachedData,
         renderSettingsPanel, testConnection, saveSettings, syncNow,
