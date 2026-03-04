@@ -52,14 +52,15 @@ STORE_SHEETS = {
             0,                # 物販_アパレル: なし
         ]
     },
-    # TVTOWER_GA: date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|TO_Food|TO_Drink|宴会_Food|宴会_Drink|宴会人数|室料|展望台|物販_食品|物販_アパレル
+    # TVTOWER_GA: date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|TO_Food|TO_Drink|WB_Food|WB_Drink|WB人数|宴会_Food|宴会_Drink|宴会人数|室料|展望台|物販_食品|物販_アパレル
     'TVTOWER_GA': {
-        'csv_file': 'GA_daily.csv',
+        'csv_file': 'TV_TOWER_daily.csv',
         'mapper': lambda r: [
             r.get('date', ''),
             i(r, 'l_food'), i(r, 'l_drink'), i(r, 'l_count'),
             i(r, 'd_food'), i(r, 'd_drink'), i(r, 'd_count'),
-            i(r, 'to_food'), i(r, 'to_drink'),
+            i(r, 'to_total'), 0,                                  # TO_Food (legacy), TO_Drink
+            i(r, 'wb_food'), i(r, 'wb_drink'), i(r, 'wb_count'), # Wine Bar
             i(r, 'bq_food'), i(r, 'bq_drink'), i(r, 'bq_count'),
             i(r, 'room_fee'),
             0,                # 展望台（CSVに列なし）
@@ -68,7 +69,7 @@ STORE_SHEETS = {
     },
     # TVTOWER_BG: date|Food|Drink|Tent|人数|物販_食品|物販_アパレル
     'TVTOWER_BG': {
-        'csv_file': 'GA_daily.csv',
+        'csv_file': 'TV_TOWER_daily.csv',
         'mapper': lambda r: [
             r.get('date', ''),
             i(r, 'bg_food'),
@@ -82,20 +83,20 @@ STORE_SHEETS = {
     },
     # OKURAYAMA_NP: date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|室料|花束|Event_Food|Event_Drink|Event人数|物販_食品|物販_アパレル
     'OKURAYAMA_NP': {
-        'csv_file': 'NP_daily.csv',
+        'csv_file': 'OKURAYAMA_NP_daily.csv',
         'mapper': lambda r: [
             r.get('date', ''),
             i(r, 'l_food'), i(r, 'l_drink'), i(r, 'l_count'),
             i(r, 'd_food'), i(r, 'd_drink'), i(r, 'd_count'),
-            i(r, 'l_room_fee') + i(r, 'd_room_fee') + i(r, 'event_room_fee'),  # 室料まとめ
-            i(r, 'l_flower') + i(r, 'd_flower') + i(r, 'event_flower'),         # 花束まとめ
-            i(r, 'event_food'), i(r, 'event_drink'), i(r, 'event_count'),
-            0, 0,             # 物販
+            i(r, 'seat_fee'),                                                    # 室料(ol_room+od_room統合済)
+            i(r, 'flower'),                                                       # 花束(ol_flower+od_flower統合済)
+            i(r, 'w_food'), i(r, 'w_drink'), i(r, 'w_count'),                    # Wedding/Event
+            i(r, 'goods'), 0,  # 物販_食品, 物販_アパレル
         ]
     },
     # OKURAYAMA_Ce: date|Food|Drink|人数|物販_食品|物販_アパレル
     'OKURAYAMA_Ce': {
-        'csv_file': 'Ce_daily.csv',
+        'csv_file': 'OKURAYAMA_Ce_daily.csv',
         'mapper': lambda r: [
             r.get('date', ''),
             i(r, 'food'),
@@ -107,7 +108,7 @@ STORE_SHEETS = {
     },
     # OKURAYAMA_RP: date|Food|Drink|人数|物販_食品|物販_アパレル
     'OKURAYAMA_RP': {
-        'csv_file': 'RP_daily.csv',
+        'csv_file': 'OKURAYAMA_RP_daily.csv',
         'mapper': lambda r: [
             r.get('date', ''),
             i(r, 'food'),
@@ -169,9 +170,12 @@ def load_csv(sheet_name, config):
     return records
 
 
+SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56'
+
 def post_to_gas(url, action, payload):
     """GAS APIにPOST"""
     payload['action'] = action
+    payload['token'] = SVD_API_TOKEN
     data = json.dumps(payload).encode('utf-8')
 
     req = urllib.request.Request(

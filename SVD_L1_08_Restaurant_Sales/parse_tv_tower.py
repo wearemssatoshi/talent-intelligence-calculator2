@@ -106,6 +106,8 @@ def detect_tv_columns(ws):
             cols['rest_total_start'] = c
         elif ('EAT-IN' in val or 'アフターランチ' in val) and ('T/O' in val or 'T.O' in val):
             cols['to_start'] = c
+        elif 'Wine Bar' in val or 'WINE BAR' in val or 'ワインバー' in val:
+            cols['wb_start'] = c
         elif 'ビアガーデン' in val or 'ピコレ' in val:
             cols['bg_start'] = c
         elif ('L+D' in val or 'L＋D' in val) and ('TOTAL' in val):
@@ -176,6 +178,25 @@ def detect_tv_columns(ws):
                 cols['at_sales'] = c
             elif '合計' in val and '人数' not in val and 'to_total' not in cols:
                 cols['to_total'] = c
+
+    # === Wine Bar 内部列 ===
+    wbs = cols.get('wb_start')
+    if wbs:
+        for c in range(wbs, min(wbs + 10, max_col + 1)):
+            val = ws.cell(row=4, column=c).value
+            if val is None:
+                continue
+            val = str(val).strip()
+            if '人数' in val and 'wb_count' not in cols:
+                cols['wb_count'] = c
+            elif '料理売上' in val and 'wb_food' not in cols:
+                cols['wb_food'] = c
+            elif '飲料売上' in val and 'wb_drink' not in cols:
+                cols['wb_drink'] = c
+            elif '合計' in val and '人数' not in val and 'wb_total' not in cols:
+                cols['wb_total'] = c
+            elif '客単価' in val and 'wb_avg' not in cols:
+                cols['wb_avg'] = c
 
     # === 宴会 内部列 ===
     bs = cols.get('bq_start')
@@ -312,6 +333,10 @@ def parse_tv_sheet(xlsx_path, sheet_name):
             # T.O / AT
             'to_total': get_numeric(ws, r, cols.get('to_total')),
             'at_sales': get_numeric(ws, r, cols.get('at_sales')),
+            # Wine Bar
+            'wb_count': get_numeric(ws, r, cols.get('wb_count')),
+            'wb_food': get_numeric(ws, r, cols.get('wb_food')),
+            'wb_drink': get_numeric(ws, r, cols.get('wb_drink')),
             # 宴会
             'bq_count': get_numeric(ws, r, cols.get('bq_count')),
             'bq_food': get_numeric(ws, r, cols.get('bq_food')),
@@ -355,6 +380,7 @@ def main():
         'l_count', 'l_food', 'l_drink', 'l_total', 'l_avg',
         'd_count', 'd_food', 'd_drink', 'd_total', 'd_avg',
         'to_total', 'at_sales',
+        'wb_count', 'wb_food', 'wb_drink',
         'bq_count', 'bq_food', 'bq_drink', 'bq_total',
         'bg_count', 'bg_food', 'bg_drink', 'bg_tent', 'bg_goods', 'bg_total',
         'room_fee', 'seat_fee', 'ticket', 'lock_fee', 'flower', 'other',
@@ -370,7 +396,7 @@ def main():
     print(f"{'=' * 60}")
     print(f"  TV_TOWER パーサー v4.0")
     print(f"  拠点: テレビ塔 → GA + BG + ピコレ")
-    print(f"  チャネル: L/D/TO/AT/宴会/BG/室料/展望台/花束")
+    print(f"  チャネル: L/D/TO/AT/WB/宴会/BG/室料/展望台/花束")
     print(f"{'=' * 60}")
 
     for xlsx in xlsx_files:
