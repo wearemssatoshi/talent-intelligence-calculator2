@@ -27,7 +27,7 @@
 
 ### MOIWAYAMA / JW（もいわ山 ザ ジュエルズ）
 ```
-LUNCH    → 通常営業  historical_weighted
+LUNCH    → 通常営業  historical_weighted  ※土日祝のみ（平日ランチ休み）
 DINNER   → 通常営業  historical_weighted
 T.O      → 通常営業  historical_weighted
 席料     → 付帯      recent_90d_avg
