@@ -19,3 +19,5 @@ _archive/Scripts/
 
 # 機密データ - 売上実績
 SVD_L1_08_Restaurant_Sales/mp_dashboard/mp_data.json
+# MP Dashboard - 機密コード（絶対にパブリックリポジトリにpushしない）
+SVD_L1_08_Restaurant_Sales/mp_dashboard/
