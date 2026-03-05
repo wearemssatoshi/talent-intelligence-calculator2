@@ -1,6 +1,6 @@
 ---
 name: momentum-peaks
-description: "売上予測・需要予測に関する質問、シフト人数の計算、モメンタムピークスの計算、二十四節気の係数、拠点定指数、営業インテンシティの算出、チャネル別フォーキャスト、OnHand統合、定休日判定が必要な時に発動する。トリガー: MP, mp, モメンタムピークス, 売上予測, 需要予測, シフト最適化, フォーキャスト"
+description: "売上予測・需要予測に関する質問、シフト人数の計算、モメンタムピークスの計算、二十四節気の係数、拠点定指数、営業インテンシティの算出、チャネル別フォーキャスト、OnHand統合、定休日判定が必要な時に発動する。トリガー: MP, mp, モメンタムピークス, 売上予測, 需要予測, シフト最適化, フォーキャスト, ダッシュボード, OnHand, 予約データ, GASインポート, 売上データ, Code.gs, mp_dashboard, mp_data, 3CH, チャネル, バックエンド"
 ---
 
 # Momentum Peaks — 完全憲法 📈
@@ -73,10 +73,10 @@ https://script.google.com/macros/s/AKfycbyE_uNfiMB6_szu0D0cQoR8JBgwxXm-3H45DGs6q
 SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56'
 ```
 
-### GAS Store Sheets（ヘッダー定義）
+### GAS Store Sheets（ヘッダー定義 — 2026-03-05更新）
 ```
 MOIWA_JW:       date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|TO_Food|TO_Drink|席料|南京錠|花束|物販_食品|物販_アパレル
-TVTOWER_GA:     date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|TO_Food|TO_Drink|WB_Food|WB_Drink|WB人数|宴会_Food|宴会_Drink|宴会人数|室料|展望台|物販_食品|物販_アパレル
+TVTOWER_GA:     date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|3CH_Food|3CH_Drink|3CH人数|宴会_Food|宴会_Drink|宴会人数|室料|展望台|物販_食品|物販_アパレル
 TVTOWER_BG:     date|Food|Drink|Tent|人数|物販_食品|物販_アパレル
 OKURAYAMA_NP:   date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|室料|花束|Event_Food|Event_Drink|Event人数|物販_食品|物販_アパレル
 OKURAYAMA_Ce:   date|Food|Drink|人数|物販_食品|物販_アパレル
@@ -84,6 +84,12 @@ OKURAYAMA_RP:   date|Food|Drink|人数|物販_食品|物販_アパレル
 AKARENGA_BQ:    date|L_Food|L_Drink|L人数|AT_Food|AT_Drink|AT人数|D_Food|D_Drink|D人数|席料|物販_食品|物販_アパレル
 AKARENGA_RYB:   date|Food|Drink|人数|物販_食品|物販_アパレル
 ```
+
+> [!NOTE]
+> GA の `3CH` = 第3チャネル統合（TO→AT→WBの時代変遷を1つに統合）
+> - TO時代（〜2025/3）: テイクアウト
+> - AT時代（2025/4〜2026/1/12）: アフタヌーンティ
+> - WB時代（2026/1/13〜）: ワインバー
 
 ---
 
@@ -102,6 +108,13 @@ AKARENGA_RYB:   date|Food|Drink|人数|物販_食品|物販_アパレル
 ```
 予約進捗率 = OnHand確定額 / フォーキャスト予測額 × 100%
 ```
+
+### OnHand反映ルール（2026-03-05確定）
+- **全店舗** でOnHandをフォーキャストに加算（`addOnHand = true`）
+- ステータスフィルタ: **キャンセル/ノーショー除外**方式（ホワイトリストではない）
+  - 除外: `キャンセル`, `ノーショー`, `ノーショー（無断キャンセル）`
+  - それ以外（確認, 確認済み, 花束手配済, ガトー手配済 等）は全て有効
+- OnHand Radar: 今後30日 × 20名以上の大型案件を表示
 
 ### 全店舗チャネルマッピング
 
@@ -129,6 +142,49 @@ AKARENGA/RYB:   ALL=通常 | 物販=付帯
 | トップシーズン | OnHand（予約）でほぼ確定 |
 | 1〜2週先 | 実績ベース × **0.75** |
 | 当日〜数日前 | OnHand確定 + ウォークイン見込み |
+
+---
+
+## §4.1 F-Layer フォーキャスト統合ルール（2026-03-05確定）
+
+> フォーキャストは5段階のF-Layerを積み上げて算出する。
+
+### F1: Historical Weighted（ロングラン実績）
+同月×同曜日の過去実績を**成長加重平均**で算出。全ての基盤。
+```
+客数 = Σ(過去同月同曜日の客数 × weight) / Σ(weight)
+客単価 = Σ(過去同月同曜日の客単価 × weight) / Σ(weight)
+売上 = 客数 × 客単価
+weight = 直近ほど高く（例: 今年=3, 昨年=2, 一昨年=1）
+```
+
+### F2: チャネル別分解
+F1をLUNCH/DINNER/3CH/宴会等の**チャネル単位**に分解し、§4の5分類ルールを適用:
+- `通常営業` → F1の加重平均そのまま
+- `予約確定`（GA宴会/NP Event）→ OnHand確定額 = 予測値
+- `天候依存`（BG）→ 実績 × 0.75
+- `付帯収入`（席料/南京錠/花束/室料/展望台）→ **直近90日の日平均**
+- `成長チャネル`（WB）→ 月間¥200,000固定目標（日割≈¥7,000）
+
+### F3: OnHand合流（予約データ）
+**全店舗**でTableCheckの予約データをフォーキャストに加算。
+- フィルタ: キャンセル/ノーショー**除外**方式（ホワイトリストではない）
+- GA宴会: コース名に「宴会」含む → `store='GA_宴会'` に分離
+- `predicted_sales += OnHand金額`, `predicted_count += OnHand人数`
+
+### F4: Walk-in Layer（フリー客見込み）
+**当日〜翌日のみ**、4レストラン（JW/NP/BQ/GA）に加算。
+```
+Walk-in = 各チャネル(L/D) × 1組2名 × チャネル平均客単価
+```
+- 2日以上先には Walk-in は加算しない（ノイズ防止）
+
+### F5: 最終統合
+```
+predicted_sales = F2チャネル合計 + F3 OnHand額 + F4 Walk-in額
+predicted_count = F2客数合計 + F3 OnHand人数 + F4 Walk-in人数
+predicted_avg_spend = predicted_sales / predicted_count
+```
 
 ---
 
@@ -387,10 +443,63 @@ python3 mp_dashboard/gas/import_csv_to_gas.py --url <GAS_URL> --dry-run
 mp_dashboard/
 ├── index.html            — ダッシュボード本体
 ├── app.js                — メインロジック（SVD_CONFIG, isStoreHoliday, buildDataFromGAS含む）
-├── gas_bridge.js         — GAS通信ブリッジ
-├── mp_data.json          — フォールバックJSON（GASオフライン時のみ）
+├── gas_bridge.js         — GAS通信ブリッジ（importData含む）
+├── mp_data.json          — フォールバックJSON（GASオフライン時 + 過去データソース）
 ├── CHANNEL_FORECAST_CONFIG.md — チャネル予測設定（本ファイルの§4と同内容）
 └── gas/
-    ├── Code.gs           — GASバックエンド
-    └── import_csv_to_gas.py — CSVインポートスクリプト
+    ├── Code.gs           — GASバックエンド（handleImport含む）
+    └── import_to_sheets.py — CSVインポートスクリプト（Service Account版）
 ```
+
+---
+
+## §14. 🚨 セキュリティルール（絶対遵守）
+
+### git push 絶対禁止
+
+> **MPダッシュボードに関するファイルは、いかなる理由があっても `talent-intelligence-calculator2` やその他のパブリックリポジトリに git push してはならない。**
+
+| ルール | 内容 |
+|--------|------|
+| push禁止 | `SVD_L1_08_Restaurant_Sales/mp_dashboard/` を含むcommitをパブリックリポにpushしない |
+| .gitignore | `SVD_L1_08_Restaurant_Sales/` 全体が .gitignore 済み |
+| 運用形態 | **localhost専用**（準備でき次第URL共有に移行予定） |
+| AI Agent | `git push` コマンドをMP関連で提案・実行してはならない |
+
+### ダッシュボード起動手順
+
+```bash
+# ローカルHTTPサーバー起動（mp_dashboardディレクトリから）
+cd ~/dotfiles/SVD_L1_08_Restaurant_Sales/mp_dashboard
+python3 -m http.server 8080
+# ブラウザで http://localhost:8080 を開く
+```
+
+---
+
+## §15. データ移行フロー（GAS-First初期セットアップ）
+
+### 問題
+mp_data.jsonに3年分の過去データがあるが、GASスプレッドシートには入力した分しかない。
+→ フォーキャスト計算に必要な「同月×同曜日」の過去データが不足し、予測値が0になる。
+
+### 解決: GASインポート機能
+
+1. ダッシュボード → ⑤ DATA IMPORT タブ
+2. GAS接続URLが設定済みであることを確認
+3. **「📥 過去データをGASにインポート」** ボタンをクリック
+4. mp_data.json → GAS STORE_SHEETSヘッダー形式に自動変換 → 8店舗一括送信
+5. 完了後、自動的にデータを再読み込み
+
+### ハイブリッドデータソース
+
+GASインポートが完了するまでの間、`mergeHistoricalFallback()` が自動的にmp_data.jsonの過去データをGASデータに補完する。
+
+```
+GAS (SSoT) ← 最新データ優先
+  ↑ 補完
+mp_data.json ← GASにない日付のactual_sales>0のレコードのみ追加
+```
+
+GASにデータが蓄積されれば、mp_data.jsonからの補完は自然にゼロになる。
+
