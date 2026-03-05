@@ -16,3 +16,6 @@ SVD_L1_07_budget/
 
 # 機密スクリプト - パスワード含有
 _archive/Scripts/
+
+# 機密データ - 売上実績
+SVD_L1_08_Restaurant_Sales/mp_dashboard/mp_data.json
