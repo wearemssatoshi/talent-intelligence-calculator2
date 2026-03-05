@@ -21,3 +21,22 @@ _archive/Scripts/
 SVD_L1_08_Restaurant_Sales/mp_dashboard/mp_data.json
 # MP Dashboard - 機密コード（絶対にパブリックリポジトリにpushしない）
 SVD_L1_08_Restaurant_Sales/mp_dashboard/
+
+# ═══════════════════════════════════
+# 🚨 機密データ — 絶対にパブリックにしない
+# ═══════════════════════════════════
+
+# 売上実績データ（全拠点・全年度）
+SVD_L1_08_Restaurant_Sales/
+
+# 決済分析データ
+PaymentAnalysis/
+
+# ビアガーデン売上・労務
+BeerGarden/
+
+# KRM売上レポート
+KRMSALES/
+
+# Momentum Peaks 拠点定指数Excel
+MomentumPeaks/
