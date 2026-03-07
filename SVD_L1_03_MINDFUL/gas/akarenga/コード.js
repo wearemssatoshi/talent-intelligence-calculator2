@@ -16,7 +16,7 @@
 function verifyToken(e, isPost) {
   const TOKEN = PropertiesService.getScriptProperties().getProperty('SVD_API_TOKEN');
   if (!TOKEN) return true; // トークン未設定時はスキップ（段階的導入）
-  
+
   let provided;
   if (isPost) {
     try {
@@ -32,9 +32,9 @@ function verifyToken(e, isPost) {
 }
 
 function unauthorizedResponse() {
-  return ContentService.createTextOutput(JSON.stringify({ 
-    success: false, 
-    error: 'Unauthorized: Invalid or missing API token' 
+  return ContentService.createTextOutput(JSON.stringify({
+    success: false,
+    error: 'Unauthorized: Invalid or missing API token'
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -44,17 +44,17 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    
+
     // ============ 拠点移籍（transferUser） ============
     if (data.action === 'transferUser') {
       return handleTransferUser(data);
     }
-    
+
     // ============ アナウンスメント投稿 ============
     if (data.action === 'postAnnouncement') {
       return postAnnouncement(data.content, data.author);
     }
-    
+
     // MINDFUL_Logシートを取得または作成
     let sheet = ss.getSheetByName('MINDFUL_Log');
     if (!sheet) {
@@ -70,11 +70,11 @@ function doPost(e) {
       ]]);
       sheet.getRange(1, 1, 1, 22).setFontWeight('bold');
     }
-    
+
     // 重複防止のための日付取得（workDateがあればその日付、なければ今日）
     const checkDate = data.workDate || new Date().toISOString().split('T')[0];
     const allData = sheet.getDataRange().getValues();
-    
+
     // ============ C/IN 重複チェック ============
     if (data.type === 'checkin') {
       for (let i = 1; i < allData.length; i++) {
@@ -83,7 +83,7 @@ function doPost(e) {
           const rowDate = new Date(allData[i][0]).toISOString().split('T')[0];
           if (rowDate === checkDate) {
             // Already checked in for this date - reject with error
-            return ContentService.createTextOutput(JSON.stringify({ 
+            return ContentService.createTextOutput(JSON.stringify({
               success: false,
               error: 'Already checked in for this date',
               duplicate: true
@@ -92,11 +92,11 @@ function doPost(e) {
         }
       }
     }
-    
+
     // トークン残高を計算（ユーザー別累計）
     let tokenBalance = 0;
     const tokenEarned = data.tokenEarned || 0;
-    
+
     // ============ C/O (reflection) 重複チェック ============
     if (data.type === 'reflection' && tokenEarned > 0) {
       // Check for duplicate reflection for this date (same user, same date)
@@ -107,14 +107,14 @@ function doPost(e) {
             const rowDate = new Date(allData[i][0]).toISOString().split('T')[0];
             if (rowDate === checkDate) {
               // Already checked out for this date - reject with error
-              return ContentService.createTextOutput(JSON.stringify({ 
+              return ContentService.createTextOutput(JSON.stringify({
                 success: false,
                 error: 'Already checked out for this date',
                 duplicate: true
               })).setMimeType(ContentService.MimeType.JSON);
             }
           }
-          
+
           // Get previous token balance
           const prevBalance = allData[i][20]; // Token Balance列
           if (prevBalance && !isNaN(prevBalance)) {
@@ -124,7 +124,7 @@ function doPost(e) {
       }
       tokenBalance += tokenEarned;
     }
-    
+
     // データを追加
     const row = [
       data.timestamp,
@@ -150,20 +150,20 @@ function doPost(e) {
       tokenBalance || '',
       data.tokenBreakdown || ''
     ];
-    
+
     sheet.appendRow(row);
-    
+
     // ============ C/O時はユーザーデータも更新 ============
     if (data.type === 'reflection' && tokenBalance > 0) {
       updateUserData(data.name, tokenBalance, checkDate);
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
-      tokenBalance: tokenBalance 
+      tokenBalance: tokenBalance
     }))
       .setMimeType(ContentService.MimeType.JSON);
-      
+
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -177,7 +177,7 @@ function doGet(e) {
     if (!verifyToken(e, false)) return unauthorizedResponse();
   }
   try {
-    
+
     // バージョン確認
     if (action === 'version') {
       return ContentService.createTextOutput(JSON.stringify({
@@ -193,26 +193,26 @@ function doGet(e) {
         deployedAt: '2026-01-17'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // ============ SATOSHI AI (OpenClaw) 連携 ============
     if (action === 'askSatoshi') {
       const message = e?.parameter?.message || '';
       const userId = e?.parameter?.userId || 'anonymous';
-      
+
       if (!message) {
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: false, 
-          error: 'メッセージを入力してください' 
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false,
+          error: 'メッセージを入力してください'
         })).setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       const reply = callOpenClawGateway(message, userId);
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: true, 
-        reply: reply 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        reply: reply
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // ============ PIN認証: ユーザー登録 ============
     if (action === 'register') {
       const name = e?.parameter?.name || '';
@@ -220,91 +220,93 @@ function doGet(e) {
       const base = e?.parameter?.base || '';
       const goalsThisYear = e?.parameter?.goalsThisYear || '[]';
       const goalsFuture = e?.parameter?.goalsFuture || '[]';
-      
+
       if (!name || !pin) {
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: false, 
-          error: '名前とPINを入力してください' 
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false,
+          error: '名前とPINを入力してください'
         })).setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       return registerUser(name, pin, base, goalsThisYear, goalsFuture);
     }
-    
+
     // ============ PIN認証: ログイン ============
     if (action === 'login') {
       const name = e?.parameter?.name || '';
       const pin = e?.parameter?.pin || '';
-      
+
       if (!name || !pin) {
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: false, 
-          error: '名前とPINを入力してください' 
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false,
+          error: '名前とPINを入力してください'
         })).setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       return loginUser(name, pin);
     }
-    
+
     // ============ データ同期 ============
     if (action === 'sync') {
       const name = e?.parameter?.name || '';
       const pin = e?.parameter?.pin || '';
-      
+
       return syncUserData(name, pin);
     }
-    
+
     // ============ PIN変更 ============
     if (action === 'changePin') {
       const name = e?.parameter?.name || '';
       const currentPin = e?.parameter?.currentPin || '';
       const newPin = e?.parameter?.newPin || '';
-      
+
       return changePinForUser(name, currentPin, newPin);
     }
-    
+
     // ============ 目標更新 ============
     if (action === 'updateGoals') {
       const name = e?.parameter?.name || '';
       const pin = e?.parameter?.pin || '';
       const goalsThisYear = e?.parameter?.goalsThisYear || '[]';
       const goalsFuture = e?.parameter?.goalsFuture || '[]';
-      
+
       return updateUserGoals(name, pin, goalsThisYear, goalsFuture);
     }
-    
+
     // ============ 写真アップロード ============
     if (action === 'uploadProfileImage') {
       const name = e?.parameter?.name || '';
       const pin = e?.parameter?.pin || '';
       const image = e?.parameter?.image || '';
-      
+
       return uploadProfileImage(name, pin, image);
     }
-    
+
     // ============ ユーザー検索（移行用） ============
     if (action === 'lookupUser') {
       const name = e?.parameter?.name || '';
       return lookupUserByName(name);
     }
-    
+
     // ============ ユーザー一覧（ダッシュボード用） ============
     if (action === 'users') {
       return getUsersList();
     }
-    
+
     // ============ トークンランキング（ダッシュボード用） ============
     if (action === 'ranking') {
       const period = e?.parameter?.period || 'week';
       const base = e?.parameter?.base || 'all';
-      return getTokenRanking(period, base);
+      const fromDate = e?.parameter?.from || '';
+      const toDate = e?.parameter?.to || '';
+      return getTokenRanking(period, base, fromDate, toDate);
     }
-    
+
     // INSIGHT機能: 記事取得
     if (action === 'articles') {
       return getInsightArticles();
     }
-    
+
     // INSIGHT機能: SATOSHI AI
     if (action === 'chat') {
       const question = e?.parameter?.q || '';
@@ -312,38 +314,38 @@ function doGet(e) {
       const userBase = e?.parameter?.base || '';
       const userRole = e?.parameter?.role || '';
       const chatHistory = e?.parameter?.history || '';
-      
+
       const userContext = {
         name: userName,
         base: userBase,
         role: userRole,
         history: chatHistory
       };
-      
+
       return askSatoshiAI(question, userContext);
     }
-    
+
     // ============ アナウンスメント投稿（GET経由：CORS回避） ============
     if (action === 'postAnnouncement') {
       const content = e?.parameter?.content || '';
       const author = e?.parameter?.author || '管理者';
       return postAnnouncement(content, author);
     }
-    
+
     // ============ アナウンスメント取得 ============
     if (action === 'announcements') {
       return getAnnouncements();
     }
-    
+
     // デフォルト: ダッシュボード用データ取得
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
-    
+
     if (!sheet) {
       return ContentService.createTextOutput(JSON.stringify({ data: [] }))
         .setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const data = sheet.getDataRange().getValues();
     const headers = data[0];
     const rows = data.slice(1).map(row => {
@@ -351,10 +353,10 @@ function doGet(e) {
       headers.forEach((h, i) => obj[h] = row[i]);
       return obj;
     });
-    
+
     return ContentService.createTextOutput(JSON.stringify({ data: rows }))
       .setMimeType(ContentService.MimeType.JSON);
-      
+
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -367,9 +369,9 @@ function getInsightArticles() {
     const RSS_FEEDS = [
       { url: 'https://www.inshokuten.com/foodist/feed/', source: 'FOODIST' }
     ];
-    
+
     const articles = [];
-    
+
     RSS_FEEDS.forEach(feed => {
       try {
         const response = UrlFetchApp.fetch(feed.url, { muteHttpExceptions: true });
@@ -378,7 +380,7 @@ function getInsightArticles() {
         const root = doc.getRootElement();
         const channel = root.getChild('channel');
         const items = channel.getChildren('item');
-        
+
         items.slice(0, 5).forEach(item => {
           articles.push({
             title: item.getChildText('title') || '',
@@ -391,10 +393,10 @@ function getInsightArticles() {
         console.log('Feed error:', feedError);
       }
     });
-    
+
     return ContentService.createTextOutput(JSON.stringify({ articles }))
       .setMimeType(ContentService.MimeType.JSON);
-      
+
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({ error: error.message, articles: [] }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -415,14 +417,14 @@ function formatDate(dateStr) {
 function askSatoshiAI(question, userContext = {}) {
   try {
     const GEMINI_API_KEY = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
-    
+
     if (!GEMINI_API_KEY) {
-      return ContentService.createTextOutput(JSON.stringify({ 
+      return ContentService.createTextOutput(JSON.stringify({
         response: generateLocalSatoshiResponse(question),
         source: 'local'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // 相談者コンテキストを構築
     let contextInfo = '';
     if (userContext.name && userContext.name !== '相談者') {
@@ -437,7 +439,7 @@ function askSatoshiAI(question, userContext = {}) {
     if (userContext.history) {
       contextInfo += `過去の相談テーマ:\n${userContext.history}\n`;
     }
-    
+
     const systemPrompt = `あなたは「SATOSHI」です。レストラン業界で働く仲間をサポートするAIメンターです。
 
 ## あなたの基本姿勢
@@ -498,7 +500,7 @@ ${contextInfo || '（初めての相談者です）'}
         }]
       }]
     };
-    
+
     const response = UrlFetchApp.fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=' + GEMINI_API_KEY,
       {
@@ -508,22 +510,22 @@ ${contextInfo || '（初めての相談者です）'}
         muteHttpExceptions: true
       }
     );
-    
+
     const responseText = response.getContentText();
     console.log('API Response:', responseText);
-    
+
     const result = JSON.parse(responseText);
     console.log('Parsed result:', JSON.stringify(result));
-    
+
     const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || generateLocalSatoshiResponse(question);
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       response: aiText,
       source: 'gemini'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
+    return ContentService.createTextOutput(JSON.stringify({
       response: generateLocalSatoshiResponse(question),
       source: 'local',
       error: error.message
@@ -534,31 +536,31 @@ ${contextInfo || '（初めての相談者です）'}
 function generateLocalSatoshiResponse(question) {
   // キーワードに基づいて適切な回答を選択（寄り添い型）
   const q = question.toLowerCase();
-  
+
   if (q.includes('サービス') || q.includes('接客') || q.includes('お客様') || q.includes('ゲスト')) {
     return 'サービスについての相談だね。一つ提案があるよ。お客様と目が合った瞬間、自分から先に笑顔を届けてみて。これを「ファースト・スマイル」と呼んでいるんだけど、第一印象が大きく変わるよ。まずこれを1日意識してみてどうかな？';
   }
-  
+
   if (q.includes('チーム') || q.includes('仲間') || q.includes('協力') || q.includes('連携') || q.includes('人間関係')) {
     return 'チームについての相談だね。仲間との連携で大切なのは「頼まれる前にサポートする」こと。相手の視線の先を読んで動けると、言葉なしで通じる信頼関係が生まれるよ。何か具体的に困っていることがあれば、もう少し詳しく教えて？';
   }
-  
+
   if (q.includes('キャリア') || q.includes('成長') || q.includes('将来') || q.includes('夢') || q.includes('スキル')) {
     return 'キャリアについて考えているんだね。レストランで身につくスキルは、実は他の業界でも通用するものが多いよ。コミュニケーション、チームワーク、問題解決力...。今の仕事で何を伸ばしたいか、具体的に聞かせてもらえる？';
   }
-  
+
   if (q.includes('忙しい') || q.includes('大変') || q.includes('疲れ') || q.includes('つらい') || q.includes('しんどい')) {
     return '大変な状況なんだね。まず話してくれてありがとう。忙しい時こそ、できることとできないことを整理することが大事だよ。今一番負担になっていることは何？整理を手伝えるかもしれない。';
   }
-  
+
   if (q.includes('ワイン') || q.includes('お酒') || q.includes('料理') || q.includes('メニュー')) {
     return '商品知識についての質問だね。詳しく答えたいところなんだけど、今ちょっとネットワークの調子が良くなくて...。もう一度試してもらえると、もっと詳しく調べて答えられるよ！';
   }
-  
+
   if (q.includes('クレーム') || q.includes('怒') || q.includes('トラブル')) {
     return 'トラブル対応の相談だね。まず落ち着いて状況を整理しよう。お客様が何に不満を感じているか、正確に理解することが第一歩。具体的にどんな状況か教えてもらえる？一緒に対応を考えよう。';
   }
-  
+
   // デフォルトの回答（謙虚・寄り添い型）
   const responses = [
     'いい質問だね。もう少し詳しく状況を教えてもらえる？具体的なアドバイスができると思う。',
@@ -574,7 +576,7 @@ function testGemini() {
   const key = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
   console.log('API Key exists:', !!key);
   console.log('Key starts with:', key ? key.substring(0, 10) : 'null');
-  
+
   if (key) {
     const result = askSatoshiAI('レストランで働く若者へのキャリアアドバイスを3つ教えて');
     console.log('Result:', result.getContent());
@@ -629,35 +631,35 @@ function registerUser(name, pin, base, goalsThisYear, goalsFuture) {
   try {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
-    
+
     // 既存ユーザーチェック
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name) {
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: false, 
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false,
           error: 'この名前は既に登録されています。ログインしてください。',
           exists: true
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
+
     // 新規ユーザー登録
     const pinHash = hashPin(pin);
     const now = new Date().toISOString();
-    
+
     // 目標を含めて保存
     sheet.appendRow([name, pinHash, base, 0, '[]', now, now, goalsThisYear || '[]', goalsFuture || '[]']);
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: true, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
       message: '登録完了！',
       tokenBalance: 0
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -670,21 +672,21 @@ function loginUser(name, pin) {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
     const pinHash = hashPin(pin);
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name && data[i][1] === pinHash) {
         // ログイン成功 - 最終ログイン時刻を更新
         sheet.getRange(i + 1, 7).setValue(new Date().toISOString());
-        
+
         // ユーザーデータを返す（目標と写真を含む）
         const tokenBalance = data[i][3] || 0;
         const checkoutDates = data[i][4] || '[]';
         const goalsThisYear = data[i][7] || '[]';
         const goalsFuture = data[i][8] || '[]';
         const profileImage = data[i][9] || '';
-        
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           name: name,
           base: data[i][2] || '',
           tokenBalance: tokenBalance,
@@ -695,17 +697,17 @@ function loginUser(name, pin) {
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
+
     // ログイン失敗
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
       error: '名前またはPINが正しくありません'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -718,26 +720,26 @@ function syncUserData(name, pin) {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
     const pinHash = hashPin(pin);
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name && data[i][1] === pinHash) {
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           tokenBalance: data[i][3] || 0,
           checkoutDates: JSON.parse(data[i][4] || '[]')
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
       error: '認証に失敗しました'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -749,12 +751,12 @@ function updateUserData(name, tokenBalance, checkoutDate) {
   try {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name) {
         // トークン残高を更新
         sheet.getRange(i + 1, 4).setValue(tokenBalance);
-        
+
         // C/O日付を追加
         let checkoutDates = [];
         try {
@@ -762,7 +764,7 @@ function updateUserData(name, tokenBalance, checkoutDate) {
         } catch (e) {
           checkoutDates = [];
         }
-        
+
         if (!checkoutDates.includes(checkoutDate)) {
           checkoutDates.push(checkoutDate);
           // 過去30日分だけ保持
@@ -771,7 +773,7 @@ function updateUserData(name, tokenBalance, checkoutDate) {
           }
           sheet.getRange(i + 1, 5).setValue(JSON.stringify(checkoutDates));
         }
-        
+
         return true;
       }
     }
@@ -790,37 +792,37 @@ function changePinForUser(name, currentPin, newPin) {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
     const currentPinHash = hashPin(currentPin);
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name) {
         // 現在のPINを確認
         if (data[i][1] !== currentPinHash) {
-          return ContentService.createTextOutput(JSON.stringify({ 
-            success: false, 
+          return ContentService.createTextOutput(JSON.stringify({
+            success: false,
             error: '現在のPINが正しくありません'
           })).setMimeType(ContentService.MimeType.JSON);
         }
-        
+
         // 新しいPINを保存
         const newPinHash = hashPin(newPin);
         sheet.getRange(i + 1, 2).setValue(newPinHash);
-        
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           message: 'PINを変更しました'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
       error: 'ユーザーが見つかりません'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -833,29 +835,29 @@ function updateUserGoals(name, pin, goalsThisYear, goalsFuture) {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
     const pinHash = hashPin(pin);
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name && data[i][1] === pinHash) {
         // 目標を更新
         sheet.getRange(i + 1, 8).setValue(goalsThisYear || '[]');
         sheet.getRange(i + 1, 9).setValue(goalsFuture || '[]');
-        
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           message: '目標を更新しました'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
       error: 'ユーザーが見つかりません'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -866,38 +868,38 @@ function updateUserGoals(name, pin, goalsThisYear, goalsFuture) {
 function uploadProfileImage(name, pin, image) {
   try {
     if (!name || !pin || !image) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: '名前、PIN、画像が必要です'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
     const pinHash = hashPin(pin);
-    
+
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === name && data[i][1] === pinHash) {
         // 写真を保存（列10 = Profile_Image）
         sheet.getRange(i + 1, 10).setValue(image);
         SpreadsheetApp.flush();
-        
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           message: '写真を保存しました'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
       error: 'ユーザーが見つかりません'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -915,18 +917,18 @@ function handleTransferUser(data) {
     const goalsFuture = data.goalsFuture || '[]';
     const profileImage = data.profileImage || '';
     const checkoutDates = data.checkoutDates || '[]';
-    
+
     if (!name || !pin || !newBase) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: '名前、PIN、新しい拠点が必要です'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const sheet = getUsersSheet();
     const pinHash = hashPin(pin);
     const now = new Date().toISOString();
-    
+
     // 既存ユーザーがいるかチェック
     const data_rows = sheet.getDataRange().getValues();
     for (let i = 1; i < data_rows.length; i++) {
@@ -941,30 +943,30 @@ function handleTransferUser(data) {
         sheet.getRange(i + 1, 9).setValue(goalsFuture);
         sheet.getRange(i + 1, 10).setValue(profileImage); // Photo
         SpreadsheetApp.flush();
-        
-        return ContentService.createTextOutput(JSON.stringify({ 
-          success: true, 
+
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
           message: '拠点を移籍しました（既存ユーザー更新）'
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
-    
+
     // 新規ユーザーとして登録
     sheet.appendRow([
       name, pinHash, newBase, tokenBalance, checkoutDates,
       now, now, goalsThisYear, goalsFuture, profileImage
     ]);
     SpreadsheetApp.flush();
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: true, 
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
       message: '拠点を移籍しました（新規登録）'
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -976,24 +978,24 @@ function handleTransferUser(data) {
 function lookupUserByName(name) {
   try {
     if (!name) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: '名前を入力してください'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
-    
+
     if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: 'データが見つかりません'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const data = sheet.getDataRange().getValues();
-    
+
     // 固定列インデックス（スプレッドシートの実際の構造に合わせる）
     // A=0, B=1, C=2(Name), D=3(Base), ... T=19(Token Earned), U=20(Token Balance)
     const nameIndex = 2;      // C列: Name
@@ -1002,26 +1004,26 @@ function lookupUserByName(name) {
     const tokenEarnedIndex = 19;  // T列: Token Earned
     const tokenBalanceIndex = 20; // U列: Token Balance
     const timestampIndex = 0;     // A列: Timestamp
-    
+
     // ユーザーのデータを検索
     let totalTokenEarned = 0;
     let latestTokenBalance = 0;
     let latestBase = '';
     let foundUser = false;
     let checkoutDates = [];
-    
+
     for (let i = 1; i < data.length; i++) {
       const rowName = data[i][nameIndex >= 0 ? nameIndex : 2];
-      
+
       if (rowName === name) {
         foundUser = true;
-        
+
         // 拠点を取得（最新を保持）
         const rowBase = data[i][baseIndex >= 0 ? baseIndex : 3];
         if (rowBase) {
           latestBase = rowBase;
         }
-        
+
         // Token Earnedを合計（C/O時のトークン獲得）
         if (tokenEarnedIndex >= 0) {
           const earned = data[i][tokenEarnedIndex];
@@ -1029,7 +1031,7 @@ function lookupUserByName(name) {
             totalTokenEarned += Number(earned);
           }
         }
-        
+
         // Token Balanceも確認（最大値を保持）
         if (tokenBalanceIndex >= 0) {
           const balance = data[i][tokenBalanceIndex];
@@ -1037,7 +1039,7 @@ function lookupUserByName(name) {
             latestTokenBalance = Number(balance);
           }
         }
-        
+
         // C/O日付を収集
         const rowType = data[i][typeIndex >= 0 ? typeIndex : 1];
         if (rowType === 'reflection') {
@@ -1046,22 +1048,22 @@ function lookupUserByName(name) {
             if (!checkoutDates.includes(dateStr)) {
               checkoutDates.push(dateStr);
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       }
     }
-    
+
     // トークン残高は Token Earned の合計 か Token Balance の最大値のどちらか大きい方
     const finalTokenBalance = Math.max(totalTokenEarned, latestTokenBalance);
-    
+
     if (!foundUser) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: 'ユーザーが見つかりません。名前を正確に入力してください。'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
       name: name,
       base: latestBase,
@@ -1069,11 +1071,11 @@ function lookupUserByName(name) {
       tokenEarnedTotal: totalTokenEarned,
       checkoutDates: checkoutDates.slice(-30) // 最新30日分
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.message 
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -1086,7 +1088,7 @@ function getUsersList() {
   try {
     const sheet = getUsersSheet();
     const data = sheet.getDataRange().getValues();
-    
+
     const users = [];
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
@@ -1100,21 +1102,21 @@ function getUsersList() {
         });
       }
     }
-    
+
     // 登録日の新しい順にソート
     users.sort((a, b) => {
       const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
       const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
       return dateB - dateA;
     });
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
       users: users
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
+    return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: error.message,
       users: []
@@ -1128,90 +1130,98 @@ function getUsersList() {
  * @param {string} period - today/yesterday/week/month/all
  * @param {string} base - all/okurayama/moiwa/teletou/akarenga
  */
-function getTokenRanking(period, base) {
+function getTokenRanking(period, base, fromDate, toDate) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
-    
+
     if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
         error: 'MINDFUL_Logシートが見つかりません',
         ranking: []
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const data = sheet.getDataRange().getValues();
-    
-    // 期間の開始日を計算（JSTで計算）
+
+    // JST基準の現在時刻
     const now = new Date();
-    const jstOffset = 9 * 60 * 60 * 1000; // JST = UTC+9
+    const jstOffset = 9 * 60 * 60 * 1000;
     const nowJST = new Date(now.getTime() + jstOffset);
     const todayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
-    
-    let startDate;
-    switch (period) {
-      case 'today':
-        startDate = todayJST;
-        break;
-      case 'yesterday':
-        startDate = new Date(todayJST.getTime() - 24 * 60 * 60 * 1000);
-        break;
-      case 'week':
-        startDate = new Date(todayJST.getTime() - 7 * 24 * 60 * 60 * 1000);
-        break;
-      case 'month':
-        startDate = new Date(todayJST.getFullYear(), todayJST.getMonth(), 1);
-        break;
-      case 'all':
-      default:
-        startDate = new Date(0); // 全期間
-        break;
+
+    let startDate, endDate;
+
+    // v2: from/to パラメータがあれば日付範囲で正確にフィルタ
+    if (fromDate && toDate) {
+      startDate = new Date(fromDate + 'T00:00:00+09:00');
+      endDate = new Date(toDate + 'T23:59:59+09:00');
+    } else if (fromDate) {
+      startDate = new Date(fromDate + 'T00:00:00+09:00');
+      endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000); // 今日の終わり
+    } else {
+      // v1互換: period パラメータによるフォールバック
+      switch (period) {
+        case 'today':
+          startDate = todayJST;
+          endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000);
+          break;
+        case 'yesterday':
+          startDate = new Date(todayJST.getTime() - 24 * 60 * 60 * 1000);
+          endDate = todayJST;
+          break;
+        case 'week':
+          startDate = new Date(todayJST.getTime() - 7 * 24 * 60 * 60 * 1000);
+          endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000);
+          break;
+        case 'month':
+          startDate = new Date(todayJST.getFullYear(), todayJST.getMonth(), 1);
+          endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000);
+          break;
+        case 'all':
+        default:
+          startDate = new Date(0);
+          endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000);
+          break;
+      }
     }
-    
-    // 拠点名のマッピング（ダッシュボードからの値 → スプレッドシートに保存されている値）
-    // フロントエンドのbaseMap: 'moiwayama' → 'moiwa', 'tvtower' → 'teletou'
-    // スプレッドシートには英語名(moiwayama, okurayama, tvtower, akarenga)が保存されている
+
+    // 拠点名のマッピング
     const baseMap = {
       'okurayama': 'okurayama',
       'moiwa': 'moiwayama',
       'teletou': 'tvtower',
       'akarenga': 'akarenga'
     };
-    
+
     // ユーザー別にToken Earnedを集計
     const tokenByUser = {};
-    
+
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       const timestamp = new Date(row[0]);
       const rowType = row[1];
       const userName = row[2];
       const rowBase = row[3];
-      const tokenEarned = Number(row[19]) || 0; // Token Earned列
-      
-      // reflectionタイプ（C/O）のみカウント
+      const tokenEarned = Number(row[19]) || 0;
+
       if (rowType !== 'reflection') continue;
-      
-      // 期間フィルタ
-      if (timestamp < startDate) continue;
-      
-      // 拠点フィルタ
+      if (timestamp < startDate || timestamp > endDate) continue;
+
       if (base && base !== 'all') {
         const targetBase = baseMap[base];
         if (targetBase && rowBase !== targetBase) continue;
       }
-      
-      // トークンがない場合はスキップ
+
       if (tokenEarned <= 0) continue;
-      
-      // ユーザー別に集計
+
       if (!tokenByUser[userName]) {
         tokenByUser[userName] = { name: userName, base: rowBase, tokens: 0 };
       }
       tokenByUser[userName].tokens += tokenEarned;
     }
-    
+
     // ランキング作成（TOP3）
     const ranking = Object.values(tokenByUser)
       .sort((a, b) => b.tokens - a.tokens)
@@ -1222,16 +1232,17 @@ function getTokenRanking(period, base) {
         base: user.base,
         tokens: user.tokens
       }));
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
-      period: period,
+      from: fromDate || period,
+      to: toDate || '',
       base: base || 'all',
       ranking: ranking
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
+    return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: error.message,
       ranking: []
@@ -1262,14 +1273,14 @@ function getAnnouncements() {
   try {
     const sheet = getAnnouncementsSheet();
     const data = sheet.getDataRange().getValues();
-    
+
     if (data.length <= 1) {
-      return ContentService.createTextOutput(JSON.stringify({ 
+      return ContentService.createTextOutput(JSON.stringify({
         success: true,
         announcements: []
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const announcements = [];
     for (let i = 1; i < data.length; i++) {
       announcements.push({
@@ -1279,17 +1290,17 @@ function getAnnouncements() {
         content: data[i][3] || ''
       });
     }
-    
+
     // 新しい順にソート
     announcements.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
       announcements: announcements
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
+    return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: error.message,
       announcements: []
@@ -1303,26 +1314,26 @@ function getAnnouncements() {
 function postAnnouncement(content, author) {
   try {
     if (!content) {
-      return ContentService.createTextOutput(JSON.stringify({ 
+      return ContentService.createTextOutput(JSON.stringify({
         success: false,
         error: '内容を入力してください'
       })).setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const sheet = getAnnouncementsSheet();
     const id = 'ann_' + Date.now();
     const now = new Date().toISOString();
-    
+
     sheet.appendRow([id, now, author || '管理者', content]);
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
+
+    return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: 'アナウンスメントを投稿しました',
       id: id
     })).setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
+    return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: error.message
     })).setMimeType(ContentService.MimeType.JSON);
@@ -1340,11 +1351,11 @@ function postAnnouncement(content, author) {
 function callOpenClawGateway(message, userId) {
   const GATEWAY_URL = 'https://sat-macbook-pro.tail243dad.ts.net/v1/chat/completions';
   const TOKEN = PropertiesService.getScriptProperties().getProperty('OPENCLAW_TOKEN');
-  
+
   if (!TOKEN) {
     return 'OPENCLAW_TOKENが設定されていません。スクリプトプロパティを確認してください。';
   }
-  
+
   const options = {
     method: 'post',
     headers: {
@@ -1358,7 +1369,7 @@ function callOpenClawGateway(message, userId) {
     }),
     muteHttpExceptions: true
   };
-  
+
   try {
     const response = UrlFetchApp.fetch(GATEWAY_URL, options);
     const data = JSON.parse(response.getContentText());

@@ -69,16 +69,28 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01_PROJECTS/SVD/L1_社内戦略/08_Sales/SVD_拠点別売上実績データ.md",
+                "file": "01_PROJECTS/SVD/L3_北極星/SVD.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "SVD_拠点別売上実績データ"
+              "title": "SVD"
+            }
+          },
+          {
+            "id": "97beb792e1ff79e9",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "リリースノート 1.12.4"
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -101,7 +113,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "ファイルエクスプローラ"
             }
           },
           {
@@ -241,18 +253,21 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false,
+      "switcher:クイックスイッチャーを開く": false,
+      "graph:グラフビューを開く": false,
+      "canvas:新規キャンバスを作成": false,
+      "daily-notes:今日のデイリーノートを開く": false,
+      "templates:テンプレートを挿入": false,
+      "command-palette:コマンドパレットを開く": false,
+      "bases:新規ベースを作成": false,
       "obsidian-kanban:Create new board": false
     }
   },
-  "active": "27a4e19827d96e25",
+  "active": "97beb792e1ff79e9",
   "lastOpenFiles": [
+    "01_PROJECTS/SVD/L3_北極星/SVD_BrandGuide_v1.1_テキスト版.md",
+    "01_PROJECTS/SVD/L3_北極星/SVDの哲学_北極星.md",
+    "01_PROJECTS/SVD/L1_社内戦略/08_Sales/SVD_拠点別売上実績データ.md",
     "SVD Global Intelligence.md",
     "SAPPORO VIEWTIFUL DINING.md",
     "Real Momentum Peaks Build.md",
@@ -280,9 +295,6 @@
     "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/MP_Data_TVTOWER_YoY.md",
     "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/MP_Data_TVTOWER_Trends.md",
     "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/MP_Data_TVTOWER_GA.md",
-    "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/MP_Data_MOIWA_Trends.md",
-    "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/MP_Data_MOIWA_JW.md",
-    "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP/03_MP_MomentumPeaks.md",
     "01_PROJECTS/SVD/L1_社内戦略/03_SVD-OS/MP",
     "01_PROJECTS/SVD/L1_社内戦略/06_Planning",
     "01_PROJECTS/SVD/L1_社内戦略/05_Marketing",

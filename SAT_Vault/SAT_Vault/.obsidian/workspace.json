@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01_PROJECTS/SVD/04_Sales/MP_Data_全拠点CSV基盤.md",
+                "file": "01_PROJECTS/SVD/04_Sales/MP_24LEVELS_設計書.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "MP_Data_全拠点CSV基盤"
+              "title": "MP_24LEVELS_設計書"
             }
           }
         ],
@@ -59,7 +59,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "ファイルエクスプローラ"
             }
           },
           {
@@ -189,25 +189,25 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "switcher:クイックスイッチャーを開く": false,
+      "graph:グラフビューを開く": false,
+      "canvas:新規キャンバスを作成": false,
+      "daily-notes:今日のデイリーノートを開く": false,
+      "templates:テンプレートを挿入": false,
+      "command-palette:コマンドパレットを開く": false,
+      "bases:新規ベースを作成": false
     }
   },
   "active": "da1085d28122bae9",
   "lastOpenFiles": [
-    "01_PROJECTS/R8_Momentum_Peaks_Point.md",
-    "01_PROJECTS/SVD/04_Sales/MP_Data_全拠点CSV基盤.md",
-    "01_PROJECTS/SVD/04_Sales/MP_設計図_Blueprint.md",
-    "01_PROJECTS/SVD/SVD_レストランディレクトリ.md",
-    "01_PROJECTS/SVD/SVD_社内プレスリリース_MP×TI.md",
-    "01_PROJECTS/SVD/Session_2026-02-16_MP_Pipeline_Fix_and_Claude_CLI.md",
-    "01_PROJECTS/SVD/04_Sales/MP_24LEVELS_設計書.md",
     "Antigravity（Google）とClaude Code（Anthropic）を３か月使い倒してわかったこと。2026年のAIコーディング、結局「どっちが強い？」じゃなくて「何をやりたいか」で決まる.md",
+    "01_PROJECTS/R8_Momentum_Peaks_Point.md",
+    "01_PROJECTS/SVD/SVD_社内プレスリリース_MP×TI.md",
+    "01_PROJECTS/SVD/SVD_レストランディレクトリ.md",
+    "01_PROJECTS/SVD/04_Sales/MP_24LEVELS_設計書.md",
+    "01_PROJECTS/SVD/04_Sales/MP_設計図_Blueprint.md",
+    "01_PROJECTS/SVD/04_Sales/MP_Data_全拠点CSV基盤.md",
+    "01_PROJECTS/SVD/Session_2026-02-16_MP_Pipeline_Fix_and_Claude_CLI.md",
     "01_PROJECTS/note記事/note - レストランで25年働いている人がAntigravityを使ったらこうなった.md",
     "01_PROJECTS/note記事/note - 「美味しさ」は味ではない——レストラン体験を再定義する方程式.md"
   ]

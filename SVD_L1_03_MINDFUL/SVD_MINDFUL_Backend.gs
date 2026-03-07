@@ -295,9 +295,11 @@ function doGet(e) {
     
     // ============ トークンランキング（ダッシュボード用） ============
     if (action === 'ranking') {
-      const period = e?.parameter?.period || 'week';
+      const period = e?.parameter?.period || '';
       const base = e?.parameter?.base || 'all';
-      return getTokenRanking(period, base);
+      const fromParam = e?.parameter?.from || '';
+      const toParam = e?.parameter?.to || '';
+      return getTokenRanking(period, base, fromParam, toParam);
     }
     
     // INSIGHT機能: 記事取得
@@ -1125,10 +1127,12 @@ function getUsersList() {
 /**
  * トークンランキングを取得（ダッシュボード用）
  * 期間別・拠点別でToken EarnedをTOP3で返す
- * @param {string} period - today/yesterday/week/month/all
+ * @param {string} period - today/yesterday/week/month/all（from/toが未指定時のフォールバック）
  * @param {string} base - all/okurayama/moiwa/teletou/akarenga
+ * @param {string} fromParam - 開始日 (YYYY-MM-DD)。指定時はperiodより優先
+ * @param {string} toParam - 終了日 (YYYY-MM-DD)。指定時はperiodより優先
  */
-function getTokenRanking(period, base) {
+function getTokenRanking(period, base, fromParam, toParam) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
@@ -1143,30 +1147,42 @@ function getTokenRanking(period, base) {
     
     const data = sheet.getDataRange().getValues();
     
-    // 期間の開始日を計算（JSTで計算）
+    // 期間の開始日・終了日を計算（JSTで計算）
     const now = new Date();
     const jstOffset = 9 * 60 * 60 * 1000; // JST = UTC+9
     const nowJST = new Date(now.getTime() + jstOffset);
     const todayJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
     
     let startDate;
-    switch (period) {
-      case 'today':
-        startDate = todayJST;
-        break;
-      case 'yesterday':
-        startDate = new Date(todayJST.getTime() - 24 * 60 * 60 * 1000);
-        break;
-      case 'week':
-        startDate = new Date(todayJST.getTime() - 7 * 24 * 60 * 60 * 1000);
-        break;
-      case 'month':
-        startDate = new Date(todayJST.getFullYear(), todayJST.getMonth(), 1);
-        break;
-      case 'all':
-      default:
-        startDate = new Date(0); // 全期間
-        break;
+    let endDate;
+    
+    // from/to パラメータが両方指定されている場合はそちらを優先
+    if (fromParam && toParam) {
+      startDate = new Date(fromParam + 'T00:00:00+09:00');
+      endDate = new Date(toParam + 'T23:59:59+09:00');
+    } else {
+      // フォールバック: periodパラメータで計算
+      endDate = new Date(todayJST.getTime() + 24 * 60 * 60 * 1000 - 1); // 今日の23:59:59
+      const effectivePeriod = period || 'week';
+      switch (effectivePeriod) {
+        case 'today':
+          startDate = todayJST;
+          break;
+        case 'yesterday':
+          startDate = new Date(todayJST.getTime() - 24 * 60 * 60 * 1000);
+          endDate = new Date(todayJST.getTime() - 1); // 昨日の23:59:59
+          break;
+        case 'week':
+          startDate = new Date(todayJST.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case 'month':
+          startDate = new Date(todayJST.getFullYear(), todayJST.getMonth(), 1);
+          break;
+        case 'all':
+        default:
+          startDate = new Date(0); // 全期間
+          break;
+      }
     }
     
     // 拠点名のマッピング（ダッシュボードからの値 → スプレッドシートに保存されている値）
@@ -1193,8 +1209,9 @@ function getTokenRanking(period, base) {
       // reflectionタイプ（C/O）のみカウント
       if (rowType !== 'reflection') continue;
       
-      // 期間フィルタ
+      // 期間フィルタ（開始日・終了日の両方でチェック）
       if (timestamp < startDate) continue;
+      if (endDate && timestamp > endDate) continue;
       
       // 拠点フィルタ
       if (base && base !== 'all') {

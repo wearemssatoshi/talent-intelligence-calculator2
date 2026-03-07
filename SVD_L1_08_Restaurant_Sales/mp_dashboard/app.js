@@ -637,14 +637,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('compare-modal').classList.add('hidden');
     });
 
-    // Load default data
-    document.getElementById('btn-load-default').addEventListener('click', loadDefaultJSON);
+    // Load default data (⑤インポートUI削除済み — 要素がなくてもエラーにならない)
+    document.getElementById('btn-load-default')?.addEventListener('click', loadDefaultJSON);
 
-    // Save / Clear localStorage
-    document.getElementById('btn-save-local').addEventListener('click', () => {
+    // Save / Clear localStorage (⑤インポートUI削除済み)
+    document.getElementById('btn-save-local')?.addEventListener('click', () => {
         alert('ℹ️ データは常にサーバーから最新を読み込みます');
     });
-    document.getElementById('btn-clear-local').addEventListener('click', () => {
+    document.getElementById('btn-clear-local')?.addEventListener('click', () => {
         localStorage.removeItem('mp_data');
         localStorage.removeItem('mp_reserves');
         localStorage.removeItem('mp_staffing');
@@ -977,6 +977,11 @@ function buildDataFromGAS(gasResult) {
             const sekkiData = SVD_CONFIG.sekki_levels[sekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
             const channels = rec.channels || buildChannelsFromGAS(storeId, rec);
 
+            // ── Ce/RP エイリアス: ALL → CAFE (フォーム定義IDに合わせる) ──
+            if ((storeId === 'Ce' || storeId === 'RP') && channels['ALL'] && !channels['CAFE']) {
+                channels['CAFE'] = channels['ALL'];
+            }
+
             return {
                 date: dateStr,
                 weekday,
@@ -1087,9 +1092,9 @@ function buildChannelsFromGAS(storeId, rec) {
             };
         }
     }
-    // 宴会 (GA)
+    // 宴会 (GA) → フォーム定義ID 'BANQUET' に合わせる
     if (rec['宴会_Food'] || rec['宴会_Drink']) {
-        channels['宴会'] = {
+        channels['BANQUET'] = {
             sales: (Number(rec['宴会_Food']) || 0) + (Number(rec['宴会_Drink']) || 0),
             count: Number(rec['宴会人数']) || 0,
             food: Number(rec['宴会_Food']) || 0,
@@ -1111,9 +1116,9 @@ function buildChannelsFromGAS(storeId, rec) {
             channels[key] = { sales: Number(rec[key]), count: 0 };
         }
     });
-    // Event (NP)
+    // Event (NP) → フォーム定義ID 'EVENT' に合わせる
     if (rec.Event_Food || rec.Event_Drink) {
-        channels['Event'] = {
+        channels['EVENT'] = {
             sales: (Number(rec.Event_Food) || 0) + (Number(rec.Event_Drink) || 0),
             count: Number(rec['Event人数']) || 0,
             food: Number(rec.Event_Food) || 0,
@@ -1827,8 +1832,8 @@ const STORE_FORMS = {
     'GA': [
         { id: 'LUNCH', type: 'section', title: '🌤 LUNCH', fields: ['count', 'food', 'drink'] },
         { id: 'DINNER', type: 'section', title: '🌙 DINNER', fields: ['count', 'food', 'drink'] },
+        { id: '3CH', type: 'section', title: '🍷 WINE BAR', fields: ['count', 'food', 'drink'] },
         { id: 'BANQUET', type: 'section', title: '🎉 宴会 / バンケット', fields: ['count', 'food', 'drink'] },
-        { id: 'WINEBAR', type: 'simple', title: '🍷 WINE BAR', field: 'sales' },
         {
             id: 'MISC', type: 'group', title: '📋 施設・その他', items: [
                 { ch: '室料', label: '室料' }, { ch: '展望台', label: '展望台チケット' },
@@ -4222,7 +4227,7 @@ function renderStaffing() {
 // ═══════════════════════════════════════
 // ── Sales Registration Persistence ──
 // ═══════════════════════════════════════
-function saveAllSalesEntries() {
+async function saveAllSalesEntries() {
     const date = document.getElementById('sf-date')?.value;
     if (!date) return;
 
@@ -4366,131 +4371,162 @@ function saveAllSalesEntries() {
 
         // ── GAS Cloud Sync — Store-Specific Sheets Architecture ──
         // channels obj → Code.gs STORE_SHEETS ヘッダー順の flat values 配列に変換して保存
-        if (typeof GAS_BRIDGE !== 'undefined' && GAS_BRIDGE.getUrl()) {
-            const STORE_TO_SHEET = {
-                'JW': 'MOIWA_JW', 'GA': 'TVTOWER_GA', 'BG': 'TVTOWER_BG',
-                'NP': 'OKURAYAMA_NP', 'Ce': 'OKURAYAMA_Ce', 'RP': 'OKURAYAMA_RP',
-                'BQ': 'AKARENGA_BQ', 'RYB': 'AKARENGA_RYB'
+        const stat = document.getElementById('sf-status');
+
+        if (typeof GAS_BRIDGE === 'undefined' || !GAS_BRIDGE.getUrl()) {
+            // ❌ GAS未接続 — ユーザーに明確に警告
+            if (stat) {
+                stat.textContent = '❌ GAS未接続！データはクラウドに保存されません。⑤SETTINGSでGAS URLを設定してください。';
+                stat.style.color = 'var(--red)';
+            }
+            alert('⚠️ GAS Backend が接続されていません。\n入力データはページをリロードすると消えます。\n⑤ SETTINGS でGAS URLを設定してください。');
+            return;
+        }
+
+        // ── GAS接続中 — 保存中メッセージ ──
+        if (stat) {
+            stat.textContent = `⏳ ${savedCount}店舗をGASに保存中...`;
+            stat.style.color = 'var(--gold)';
+        }
+
+        const STORE_TO_SHEET = {
+            'JW': 'MOIWA_JW', 'GA': 'TVTOWER_GA', 'BG': 'TVTOWER_BG',
+            'NP': 'OKURAYAMA_NP', 'Ce': 'OKURAYAMA_Ce', 'RP': 'OKURAYAMA_RP',
+            'BQ': 'AKARENGA_BQ', 'RYB': 'AKARENGA_RYB'
+        };
+
+        // channels → values 配列変換 (STORE_SHEETS ヘッダー順に完全準拠)
+        function channelsToGASValues(store, ch, date) {
+            const g = (sec, key) => (ch[sec] && ch[sec][key]) || 0;
+            switch (store) {
+                case 'JW':
+                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 席料, 南京錠, 花束, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                        g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                        g('TAKEOUT', 'food'), g('TAKEOUT', 'drink'),
+                        g('席料', 'sales'), g('南京錠', 'sales'), g('花束', 'sales'),
+                        0, 0 // 物販_食品, 物販_アパレル (未入力)
+                    ];
+                case 'GA':
+                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 3CH_Food, 3CH_Drink, 3CH人数, 宴会_Food, 宴会_Drink, 宴会人数, 室料, 展望台, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                        g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                        g('3CH', 'food'), g('3CH', 'drink'), g('3CH', 'count'),
+                        g('BANQUET', 'food'), g('BANQUET', 'drink'), g('BANQUET', 'count'),
+                        g('室料', 'sales'), g('展望台', 'sales'),
+                        0, 0 // 物販
+                    ];
+                case 'BG':
+                    // headers: date, Food, Drink, Tent, 人数, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'tent'), g('ALL', 'count'),
+                        g('ALL', 'goods'), 0 // 物販_アパレル
+                    ];
+                case 'NP':
+                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 室料, 花束, Event_Food, Event_Drink, Event人数, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                        g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                        g('EVENT', 'room') || 0, g('EVENT', 'flower') || 0,
+                        g('EVENT', 'food'), g('EVENT', 'drink'), g('EVENT', 'count'),
+                        0, 0 // 物販
+                    ];
+                case 'Ce':
+                case 'RP':
+                    // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('CAFE', 'food'), g('CAFE', 'drink'), g('CAFE', 'count'),
+                        g('GOODS', 'sales') || 0, 0 // 物販_アパレル
+                    ];
+                case 'BQ':
+                    // headers: date, L_Food, L_Drink, L人数, AT_Food, AT_Drink, AT人数, D_Food, D_Drink, D人数, 席料, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
+                        g('AT', 'food'), g('AT', 'drink'), g('AT', 'count'),
+                        g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
+                        g('席料', 'sales'),
+                        0, 0 // 物販
+                    ];
+                case 'RYB':
+                    // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
+                    return [date,
+                        g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'count'),
+                        0, 0 // 物販
+                    ];
+                default:
+                    return null;
+            }
+        }
+
+        const gasPromises = [];
+        storeBlocks.forEach(block => {
+            const store = block.dataset.store;
+            const r = DATA.stores[store]?.find(r => r.date === date);
+            if (!r || (r.actual_sales === 0 && r.actual_count === 0)) return;
+
+            const sheetName = STORE_TO_SHEET[store];
+            if (!sheetName) return;
+
+            const values = channelsToGASValues(store, r.channels || {}, date);
+            if (!values) return;
+
+            const payload = {
+                action: 'save',
+                sheet: sheetName,
+                date: date,
+                values: values,
+                user: 'DASHBOARD'
             };
 
-            // channels → values 配列変換 (STORE_SHEETS ヘッダー順に完全準拠)
-            function channelsToGASValues(store, ch, date) {
-                const g = (sec, key) => (ch[sec] && ch[sec][key]) || 0;
-                switch (store) {
-                    case 'JW':
-                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 席料, 南京錠, 花束, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
-                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
-                            g('TAKEOUT', 'food'), g('TAKEOUT', 'drink'),
-                            g('席料', 'sales'), g('南京錠', 'sales'), g('花束', 'sales'),
-                            0, 0 // 物販_食品, 物販_アパレル (未入力)
-                        ];
-                    case 'GA':
-                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 宴会_Food, 宴会_Drink, 宴会人数, 室料, 展望台, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
-                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
-                            0, 0, // TO_Food, TO_Drink (GAフォームにTOなし→0)
-                            g('BANQUET', 'food'), g('BANQUET', 'drink'), g('BANQUET', 'count'),
-                            g('室料', 'sales'), g('展望台', 'sales'),
-                            0, 0 // 物販
-                        ];
-                    case 'BG':
-                        // headers: date, Food, Drink, Tent, 人数, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'tent'), g('ALL', 'count'),
-                            g('ALL', 'goods'), 0 // 物販_アパレル
-                        ];
-                    case 'NP':
-                        // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 室料, 花束, Event_Food, Event_Drink, Event人数, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
-                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
-                            g('EVENT', 'room') || 0, g('EVENT', 'flower') || 0,
-                            g('EVENT', 'food'), g('EVENT', 'drink'), g('EVENT', 'count'),
-                            0, 0 // 物販
-                        ];
-                    case 'Ce':
-                    case 'RP':
-                        // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('CAFE', 'food'), g('CAFE', 'drink'), g('CAFE', 'count'),
-                            g('GOODS', 'sales') || 0, 0 // 物販_アパレル
-                        ];
-                    case 'BQ':
-                        // headers: date, L_Food, L_Drink, L人数, AT_Food, AT_Drink, AT人数, D_Food, D_Drink, D人数, 席料, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
-                            g('AT', 'food'), g('AT', 'drink'), g('AT', 'count'),
-                            g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
-                            g('席料', 'sales'),
-                            0, 0 // 物販
-                        ];
-                    case 'RYB':
-                        // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
-                        return [date,
-                            g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'count'),
-                            0, 0 // 物販
-                        ];
-                    default:
-                        return null;
+            gasPromises.push(
+                fetch(GAS_BRIDGE.getUrl(), {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(payload)
+                }).then(r => r.json()).then(d => ({ store, status: d.status, action: d.action }))
+                    .catch(e => ({ store, status: 'error', message: e.message }))
+            );
+        });
+
+        if (gasPromises.length > 0) {
+            // ── GAS完了を待ってから結果を表示（await） ──
+            const results = await Promise.all(gasPromises);
+            const okCount = results.filter(r => r.status === 'ok').length;
+            const errCount = results.filter(r => r.status !== 'ok').length;
+            const errStores = results.filter(r => r.status !== 'ok').map(r => `${r.store}: ${r.message || 'unknown error'}`);
+            console.log(`[GAS] Sync: ${okCount} ok, ${errCount} errors`, results);
+
+            if (errCount > 0) {
+                // ❌ エラー — 赤色メッセージ + alert
+                if (stat) {
+                    stat.textContent = `❌ ${errCount}店舗の保存に失敗！ (${okCount}店舗は成功) — ${date}`;
+                    stat.style.color = 'var(--red)';
+                }
+                alert(`⚠️ GAS保存エラー:\n${errStores.join('\n')}\n\n成功: ${okCount}店舗\n失敗: ${errCount}店舗\n\nもう一度保存してください。`);
+            } else {
+                // ✅ 全店舗成功 — 緑色メッセージ
+                if (stat) {
+                    stat.textContent = `✅ ${okCount}店舗 GAS保存完了 ☁️ ${date} (拠点合計: ¥${totalAllSales.toLocaleString()})`;
+                    stat.style.color = 'var(--green)';
+                    setTimeout(() => stat.textContent = '', 5000);
                 }
             }
-
-            const gasPromises = [];
-            storeBlocks.forEach(block => {
-                const store = block.dataset.store;
-                const r = DATA.stores[store]?.find(r => r.date === date);
-                if (!r || (r.actual_sales === 0 && r.actual_count === 0)) return;
-
-                const sheetName = STORE_TO_SHEET[store];
-                if (!sheetName) return;
-
-                const values = channelsToGASValues(store, r.channels || {}, date);
-                if (!values) return;
-
-                const payload = {
-                    action: 'save',
-                    sheet: sheetName,
-                    date: date,
-                    values: values,
-                    user: 'DASHBOARD'
-                };
-
-                gasPromises.push(
-                    fetch(GAS_BRIDGE.getUrl(), {
-                        method: 'POST',
-                        redirect: 'follow',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify(payload)
-                    }).then(r => r.json()).then(d => ({ store, status: d.status, action: d.action }))
-                        .catch(e => ({ store, status: 'error', message: e.message }))
-                );
-            });
-
-            if (gasPromises.length > 0) {
-                Promise.all(gasPromises).then(results => {
-                    const okCount = results.filter(r => r.status === 'ok').length;
-                    const errCount = results.filter(r => r.status !== 'ok').length;
-                    console.log(`[GAS] Sync: ${okCount} ok, ${errCount} errors`, results);
-                    const stat = document.getElementById('sf-status');
-                    if (stat && okCount > 0) {
-                        const prev = stat.textContent;
-                        stat.textContent = prev + ` ☁️ GAS ${okCount}店舗同期完了`;
-                    }
-                });
+        } else {
+            if (stat) {
+                stat.textContent = `⚠️ 保存対象の店舗がありません（売上0）`;
+                stat.style.color = 'var(--gold)';
             }
         }
-
+    } catch (e) {
         const stat = document.getElementById('sf-status');
         if (stat) {
-            stat.textContent = `✅ ${savedCount}店舗保存完了 ${date} (拠点合計: ¥${totalAllSales.toLocaleString()})`;
-            stat.style.color = 'var(--green)';
-            setTimeout(() => stat.textContent = '', 4000);
+            stat.textContent = `❌ 保存エラー: ${e.message}`;
+            stat.style.color = 'var(--red)';
         }
-    } catch (e) {
-        alert('Storage Save Failed: ' + e.message);
+        alert('❌ 保存に失敗しました: ' + e.message);
     }
 }
 

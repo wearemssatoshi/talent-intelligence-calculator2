@@ -2482,6 +2482,10 @@
         const SCRIPT_URLS = { moiwayama: 'https://script.google.com/macros/s/AKfycbxGL8p3a8-k7xnhz2jfmyq39fXplB0qGI55urinPg9tRBWmbmKEEWcqZNSpUxhs5K3T/exec', okurayama: 'https://script.google.com/macros/s/AKfycbxVVfr-XAgj4n-hOEobZ2wwbgk3QIKQk1T9qFSDsk7PdQ4J8cd5WGH-KA0K9z_x_Vip/exec', tvtower: 'https://script.google.com/macros/s/AKfycbxlj2-3R6HcTd5A45azVScgQDvUBSTGC8faWBXDRI_ck7kbCltTYKnkfaW6njZ88bsi/exec', akarenga: 'https://script.google.com/macros/s/AKfycbzHN2p9eYAFFxip_Wj6b0J_Qm9SIxjetvPJENTBIBiBwLuEPaej_iJC4AUghIJF1cwZZQ/exec' };
         const BASE_NAMES = { moiwayama: '藻岩山', okurayama: '大倉山', tvtower: 'テレビ塔', akarenga: '赤れんが' };
 
+        // ── API Token Authentication ──
+        const SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56';
+        function tokenParam() { return '&token=' + SVD_API_TOKEN; }
+
         const playbook = [
             // ===== AWAKENING (001-010) =====
             { id: "001", titleEn: "MAGIC MOMENT CAPTURE", titleJp: "マジック・モーメント・キャプチャ", action: "感動的な瞬間が生まれた時、「God Job!」と共有する。チーム全員でその喜びを味わおう。" },
@@ -2898,7 +2902,7 @@
             if (url) {
                 try {
                     const tokens = localStorage.getItem('mindful_tokens') || '0';
-                    await fetch(`${url}?action=register&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}`);
+                    await fetch(`${url}?action=register&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}${tokenParam()}`);
                     console.log('PIN saved to backend');
                 } catch (e) {
                     console.error('Backend PIN save error:', e);
@@ -2970,7 +2974,7 @@
             try {
                 const goalsThisYearStr = encodeURIComponent(JSON.stringify(goalsThisYear || []));
                 const goalsFutureStr = encodeURIComponent(JSON.stringify(goalsFuture || []));
-                const response = await fetch(`${url}?action=register&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}`);
+                const response = await fetch(`${url}?action=register&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}&base=${encodeURIComponent(base)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}${tokenParam()}`);
                 const result = await response.json();
                 console.log('Backend registration:', result);
             } catch (e) {
@@ -3004,7 +3008,7 @@
                 if (!url) continue;
 
                 try {
-                    const response = await fetch(`${url}?action=login&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}`);
+                    const response = await fetch(`${url}?action=login&name=${encodeURIComponent(name)}&pin=${encodeURIComponent(pin)}${tokenParam()}`);
                     const result = await response.json();
 
                     if (result.success) {
@@ -3110,7 +3114,7 @@
 
             if (url) {
                 try {
-                    const response = await fetch(`${url}?action=changePin&name=${encodeURIComponent(profile.name)}&currentPin=${encodeURIComponent(currentPin)}&newPin=${encodeURIComponent(newPin)}`);
+                    const response = await fetch(`${url}?action=changePin&name=${encodeURIComponent(profile.name)}&currentPin=${encodeURIComponent(currentPin)}&newPin=${encodeURIComponent(newPin)}${tokenParam()}`);
                     const result = await response.json();
 
                     if (!result.success) {
@@ -3349,7 +3353,7 @@
             try {
                 const goalsThisYearStr = encodeURIComponent(JSON.stringify(profile.goalsThisYear || []));
                 const goalsFutureStr = encodeURIComponent(JSON.stringify(profile.goalsFuture || []));
-                const response = await fetch(`${url}?action=updateGoals&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}`);
+                const response = await fetch(`${url}?action=updateGoals&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&goalsThisYear=${goalsThisYearStr}&goalsFuture=${goalsFutureStr}${tokenParam()}`);
                 const result = await response.json();
                 console.log('Goals sync:', result);
             } catch (e) {
@@ -3440,6 +3444,7 @@
 
                 const transferData = {
                     action: 'transferUser',
+                    token: SVD_API_TOKEN,
                     name: profile.name,
                     pin: profile.pin,
                     newBase: selectedNewBase,
@@ -3528,7 +3533,7 @@
             if (!url) return;
 
             try {
-                const response = await fetch(`${url}?action=uploadProfileImage&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&image=${encodeURIComponent(imageData)}`);
+                const response = await fetch(`${url}?action=uploadProfileImage&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&image=${encodeURIComponent(imageData)}${tokenParam()}`);
                 const result = await response.json();
                 console.log('Photo sync:', result);
             } catch (e) {
@@ -4029,6 +4034,7 @@
                 payload.tokenBreakdown = tokenData.breakdown.map(b => `${b.label}:+${b.amount}`).join(', ');
             }
 
+            payload.token = SVD_API_TOKEN;
             try { await fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(payload) }); } catch (e) { console.error('Failed:', e); }
             setTimeout(() => { document.getElementById('sendingOverlay').classList.remove('active'); }, 800);
         }

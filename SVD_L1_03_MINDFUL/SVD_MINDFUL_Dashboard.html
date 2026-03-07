@@ -265,6 +265,7 @@
             max-width: 150px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -401,7 +402,7 @@
             }
         }
 
-        /* ===== PODIUM RANKING STYLES ===== */
+        /* ===== PODIUM RANKING STYLES (Premium v2) ===== */
         .podium-section {
             margin: 35px 0;
         }
@@ -410,139 +411,224 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            gap: 15px;
-            padding: 30px 20px;
-            background: linear-gradient(180deg, var(--off-white) 0%, var(--white) 100%);
+            gap: 20px;
+            padding: 40px 20px 20px;
+            background: linear-gradient(180deg, #f8f9fc 0%, #ffffff 60%, #fefcf5 100%);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            min-height: 280px;
+            border-radius: 20px;
+            min-height: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .podium-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #C0C0C0 25%, #FFD700 50%, #CD7F32 75%);
         }
 
         .podium-place {
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: fadeInUp 0.5s ease;
+            animation: podiumReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            transition: transform 0.2s;
         }
 
-        @keyframes fadeInUp {
+        .podium-place:hover {
+            transform: translateY(-4px);
+        }
+
+        @keyframes podiumReveal {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px) scale(0.9);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes crownPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+                filter: brightness(1.2);
             }
         }
 
         .podium-avatar {
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 10px;
+            position: relative;
+        }
+
+        .podium-crown {
+            position: absolute;
+            top: -16px;
+            font-size: 20px;
+            animation: crownPulse 2s ease-in-out infinite;
         }
 
         .podium-name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             color: var(--navy);
             text-align: center;
-            max-width: 100px;
+            max-width: 110px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .podium-tokens {
             font-family: 'Montserrat', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
         }
 
-        .podium-base {
+        .podium-token-bar {
+            width: 80px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .podium-token-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .podium-pedestal {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
+            justify-content: flex-start;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             color: var(--white);
-            border-radius: 8px 8px 0 0;
-            padding: 15px 25px;
-            min-width: 100px;
+            border-radius: 10px 10px 0 0;
+            padding: 16px 28px 12px;
+            min-width: 110px;
         }
 
-        /* 1位: ゴールド - 中央 - 最も高い */
+        .podium-rank-num {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            opacity: 0.9;
+        }
+
+        .podium-rank-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        /* 1位: ゴールド */
         .podium-place.first {
             order: 2;
         }
 
         .podium-place.first .podium-avatar {
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 6px 24px rgba(255, 215, 0, 0.45);
         }
 
         .podium-place.first .podium-tokens {
-            color: #D4A400;
+            color: #B8860B;
         }
 
-        .podium-place.first .podium-base {
+        .podium-place.first .podium-token-bar-fill {
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+        }
+
+        .podium-place.first .podium-pedestal {
             background: linear-gradient(180deg, #FFD700 0%, #D4A400 100%);
-            height: 120px;
+            height: 130px;
+            box-shadow: 0 -4px 20px rgba(255, 215, 0, 0.2);
         }
 
-        /* 2位: シルバー - 左 */
+        /* 2位: シルバー */
         .podium-place.second {
             order: 1;
         }
 
         .podium-place.second .podium-avatar {
-            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
-            box-shadow: 0 4px 15px rgba(192, 192, 192, 0.4);
+            background: linear-gradient(135deg, #E0E0E0 0%, #A8A8A8 100%);
+            box-shadow: 0 4px 16px rgba(192, 192, 192, 0.4);
         }
 
         .podium-place.second .podium-tokens {
-            color: #808080;
+            color: #707070;
         }
 
-        .podium-place.second .podium-base {
+        .podium-place.second .podium-token-bar-fill {
+            background: linear-gradient(90deg, #C0C0C0, #909090);
+        }
+
+        .podium-place.second .podium-pedestal {
             background: linear-gradient(180deg, #C0C0C0 0%, #909090 100%);
-            height: 90px;
+            height: 95px;
         }
 
-        /* 3位: ブロンズ - 右 */
+        /* 3位: ブロンズ */
         .podium-place.third {
             order: 3;
         }
 
         .podium-place.third .podium-avatar {
             background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
-            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+            box-shadow: 0 4px 16px rgba(205, 127, 50, 0.4);
         }
 
         .podium-place.third .podium-tokens {
             color: #8B4513;
         }
 
-        .podium-place.third .podium-base {
+        .podium-place.third .podium-token-bar-fill {
+            background: linear-gradient(90deg, #CD7F32, #A0522D);
+        }
+
+        .podium-place.third .podium-pedestal {
             background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
-            height: 60px;
+            height: 65px;
         }
 
         .podium-empty {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
             color: var(--text-gray);
             font-size: 14px;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -672,36 +758,54 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Today Check-ins</div>
+                <div class="stat-label" id="labelCheckins">CHECK-INS</div>
                 <div class="stat-value" id="statCheckins">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">All OK Rate</div>
+                <div class="stat-label" id="labelOkRate">ALL OK RATE</div>
                 <div class="stat-value success" id="statOkRate">--%</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Reflections</div>
+                <div class="stat-label" id="labelReflections">REFLECTIONS</div>
                 <div class="stat-value" id="statReflections">--</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Avg Rating</div>
+                <div class="stat-label" id="labelAvgRating">AVG RATING</div>
                 <div class="stat-value" id="statAvgRating">--</div>
             </div>
             <div class="stat-card" style="border-color: var(--gold);">
-                <div class="stat-label">🪙 Today's Tokens</div>
+                <div class="stat-label" id="labelPeriodTokens">🪙 GET TOKENS</div>
                 <div class="stat-value" style="color: var(--gold);" id="statTodayTokens">--</div>
             </div>
             <div class="stat-card" style="border-color: var(--gold);">
-                <div class="stat-label">🏆 Total Tokens</div>
+                <div class="stat-label">🏆 TOTAL TOKENS</div>
                 <div class="stat-value" style="color: var(--gold);" id="statTotalTokens">--</div>
             </div>
         </div>
 
         <!-- TOKEN RANKING PODIUM -->
         <div class="podium-section">
-            <div class="section-title">🏆 TOKEN RANKING</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div class="section-title" style="margin: 0;">🏆 TOKEN RANKING</div>
+                <button onclick="loadTokenRanking()" style="
+                    padding: 8px 18px;
+                    border: 1px solid var(--gold);
+                    border-radius: 20px;
+                    background: var(--gold-light);
+                    color: var(--gold);
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 11px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                " id="rankingBtn">📊 期間に合わせて表示</button>
+            </div>
             <div class="podium-container" id="podiumContainer">
-                <div class="podium-empty">ランキングを読み込み中...</div>
+                <div class="podium-empty">
+                    <div style="font-size:36px;margin-bottom:12px;opacity:0.4;">🏆</div>
+                    <div style="font-weight:600;margin-bottom:4px;">上のボタンを押してランキングを表示</div>
+                    <div style="font-size:12px;opacity:0.6;">選択中の期間でトークンランキングを集計します</div>
+                </div>
             </div>
         </div>
 
@@ -909,7 +1013,7 @@
             selectPeriod('today');
             loadData();
             loadUsersData();
-            loadTokenRanking();
+            // TOKEN RANKINGはボタントリガー（初期読み込みしない）
         }
 
         // メンバー一覧を取得
@@ -942,22 +1046,17 @@
             }).join('');
         }
 
-        // トークンランキングを取得
+        // トークンランキングを取得（v2: ボタントリガー方式）
         async function loadTokenRanking() {
             const url = SCRIPT_URLS[currentBase];
             if (!url) return;
 
-            // 期間マッピング（Frontend → Backend）
-            const periodMap = {
-                'today': 'today',
-                'yesterday': 'yesterday',
-                'week': 'week',
-                'month': 'month',
-                'quarter': 'month', // 四半期は月に近似
-                'year': 'all',      // 年間は全期間に近似
-                'custom': 'week',   // カスタムはweekに近似
-                'single': 'today'   // 単一日はtodayに近似
-            };
+            // ボタンをローディング状態に
+            const btn = document.getElementById('rankingBtn');
+            if (btn) {
+                btn.textContent = '⚙️ 取得中...';
+                btn.disabled = true;
+            }
 
             // 拠点マッピング（Frontend → Backend）
             const baseMap = {
@@ -966,12 +1065,14 @@
                 'tvtower': 'teletou',
                 'akarenga': 'akarenga'
             };
-
-            const period = periodMap[currentPeriod] || 'week';
             const base = baseMap[currentBase] || 'all';
 
+            // 日付範囲を直接送信（期間の近似マッピングではなく正確な範囲）
+            const fromDate = startDate || getLocalDateString(new Date());
+            const toDate = endDate || fromDate;
+
             try {
-                const response = await fetch(`${url}?action=ranking&period=${period}&base=${base}${tokenParam()}`);
+                const response = await fetch(`${url}?action=ranking&from=${fromDate}&to=${toDate}&base=${base}${tokenParam()}`);
                 const result = await response.json();
 
                 if (result.success && result.ranking) {
@@ -982,30 +1083,60 @@
             } catch (e) {
                 console.log('Ranking data not available:', e);
                 renderPodium([]);
+            } finally {
+                // ボタンを復元
+                if (btn) {
+                    btn.textContent = '📊 期間に合わせて表示';
+                    btn.disabled = false;
+                }
             }
         }
 
-        // ポディウム表示
+        // 期間変更時にランキング表示をリセット（ボタンを押すよう促す）
+        function resetRankingHint() {
+            const container = document.getElementById('podiumContainer');
+            if (container) {
+                container.innerHTML = `<div class="podium-empty">
+                    <div style="font-size:36px;margin-bottom:12px;opacity:0.4;">🏆</div>
+                    <div style="font-weight:600;margin-bottom:4px;">期間が変更されました</div>
+                    <div style="font-size:12px;opacity:0.6;">「📊 期間に合わせて表示」ボタンを押してください</div>
+                </div>`;
+            }
+        }
+
+        // ポディウム表示（Premium v2）
         function renderPodium(ranking) {
             const container = document.getElementById('podiumContainer');
             if (!container) return;
 
             if (!ranking || ranking.length === 0) {
-                container.innerHTML = '<div class="podium-empty">📊 この期間のランキングデータがありません</div>';
+                container.innerHTML = `<div class="podium-empty">
+                    <div style="font-size:36px;margin-bottom:12px;opacity:0.4;">🏆</div>
+                    <div style="font-weight:600;margin-bottom:4px;">ランキングデータがありません</div>
+                    <div style="font-size:12px;opacity:0.6;">期間を変更してみてください</div>
+                </div>`;
                 return;
             }
 
             const placeClass = ['first', 'second', 'third'];
             const placeEmoji = ['🥇', '🥈', '🥉'];
+            const maxTokens = Math.max(...ranking.map(u => u.tokens || 0), 1);
 
             container.innerHTML = ranking.map((user, index) => {
-                if (index > 2) return ''; // TOP3のみ
+                if (index > 2) return '';
+                const barPct = Math.round((user.tokens / maxTokens) * 100);
+                const crown = index === 0 ? '<span class="podium-crown">👑</span>' : '';
+                const delay = [0.1, 0, 0.2][index]; // 2位→1位→3位の順
                 return `
-                    <div class="podium-place ${placeClass[index]}" style="animation-delay: ${index * 0.1}s">
-                        <div class="podium-avatar">${placeEmoji[index]}</div>
+                    <div class="podium-place ${placeClass[index]}" style="animation-delay: ${delay}s">
+                        <div class="podium-avatar">${crown}${placeEmoji[index]}</div>
                         <div class="podium-name">${user.name}</div>
-                        <div class="podium-tokens">🪙 ${user.tokens}</div>
-                        <div class="podium-base">${index + 1}位</div>
+                        <div class="podium-tokens">🪙 ${user.tokens.toLocaleString()}</div>
+                        <div class="podium-token-bar"><div class="podium-token-bar-fill" style="width:${barPct}%;"></div></div>
+                        <div class="podium-pedestal">
+                            <div class="podium-rank-num">${index + 1}</div>
+                            <div class="podium-rank-label">${index === 0 ? 'CHAMPION' : index === 1 ? 'RUNNER-UP' : 'THIRD'}</div>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -1056,7 +1187,8 @@
             document.getElementById('customDatePicker').style.display = 'none';
             updatePeriodDisplay();
             renderFilteredData();
-            loadTokenRanking();
+            // TOKEN RANKINGはボタントリガーに変更（自動fetchしない）
+            resetRankingHint();
         }
 
         function toggleCustomDate() {
@@ -1268,6 +1400,21 @@
             renderFilteredData();
         }
 
+        // 期間ラベルヘルパー
+        function getPeriodLabel() {
+            const labels = {
+                'today': 'TODAY',
+                'yesterday': 'YESTERDAY',
+                'week': 'THIS WEEK',
+                'month': 'THIS MONTH',
+                'quarter': 'QUARTER',
+                'year': 'ANNUAL',
+                'custom': 'PERIOD',
+                'single': 'DATE'
+            };
+            return labels[currentPeriod] || '';
+        }
+
         function renderFilteredData() {
             const filteredChecks = filterByDateRange(allData.healthChecks);
             const filteredReflections = filterByDateRange(allData.reflections);
@@ -1275,6 +1422,14 @@
             const avgRating = filteredReflections.length > 0
                 ? (filteredReflections.reduce((sum, r) => sum + r.rating, 0) / filteredReflections.length).toFixed(1)
                 : '--';
+
+            // 期間に応じたラベル更新
+            const pl = getPeriodLabel();
+            document.getElementById('labelCheckins').textContent = `CHECK-INS`;
+            document.getElementById('labelOkRate').textContent = `ALL OK RATE`;
+            document.getElementById('labelReflections').textContent = `REFLECTIONS`;
+            document.getElementById('labelAvgRating').textContent = `AVG RATING`;
+            document.getElementById('labelPeriodTokens').textContent = `🪙 GET TOKENS`;
 
             document.getElementById('statCheckins').textContent = filteredChecks.length;
             document.getElementById('statOkRate').textContent = filteredChecks.length > 0

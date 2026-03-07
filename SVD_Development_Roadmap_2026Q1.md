@@ -140,6 +140,17 @@
    - スキル定義の見直し
    - 責務・役割の数値化ロジック設計
 
+2. **🖥️ Mac mini + LG 29" モニタ環境構築**（機材到着後）
+   - Mac mini ↔ LG 29" ウルトラワイド接続セットアップ
+   - MacBook との同一アカウント・デュアルマシン運用
+   - dotfiles / Antigravity / 開発環境の同期
+   - **TableCheck → MP 自動パイプライン構築**
+     - Mac miniで予約メールをローカル受信（別アカウント運用）
+     - Python/GASパーサーで予約データ（日時・人数・店舗）を自動抽出
+     - MP (GAS) へ自動プッシュ → ダッシュボード連携
+     - 前回構想（セッション`87489587`）の `TC_Webhook_MailParser.gs` 資産を活用
+     - `gas_bridge.js` の `getOnhandData()` と接続
+
 ---
 
 *Last Updated: 2026-02-01*  
