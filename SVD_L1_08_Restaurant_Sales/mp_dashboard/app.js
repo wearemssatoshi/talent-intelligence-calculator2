@@ -24,7 +24,156 @@ const STORE_CAPACITY = {
     'BQ': { fullThreshold: 20, seats: 32, note: '6卓24席+サロン8名' },
 };
 
-// ── SVD Static Config (Single Source of Truth: organizational structure) ──
+// ═══════════════════════════════════════════════════════════════
+// STORE_SCHEMA v3 — Single Source of Truth for all column definitions
+// ═══════════════════════════════════════════════════════════════
+// 各エントリ: [gasKey, channelId, field]
+// gasKey = GASスプレッドシートのヘッダー名
+// channelId = channels オブジェクトのキー
+// field = チャネル内のフィールド名 (food/drink/count/sales/tent/room/flower/goods)
+const STORE_SCHEMA = {
+    'JW': {
+        gasSheet: 'MOIWA_JW',
+        columns: [
+            ['L_Food', 'LUNCH', 'food'], ['L_Drink', 'LUNCH', 'drink'], ['L人数', 'LUNCH', 'count'],
+            ['D_Food', 'DINNER', 'food'], ['D_Drink', 'DINNER', 'drink'], ['D人数', 'DINNER', 'count'],
+            ['TO_Food', 'T.O', 'food'], ['TO_Drink', 'T.O', 'drink'],
+            ['席料', '席料', 'sales'], ['南京錠', '南京錠', 'sales'], ['花束', '花束', 'sales'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'GA': {
+        gasSheet: 'TVTOWER_GA',
+        columns: [
+            ['L_Food', 'LUNCH', 'food'], ['L_Drink', 'LUNCH', 'drink'], ['L人数', 'LUNCH', 'count'],
+            ['D_Food', 'DINNER', 'food'], ['D_Drink', 'DINNER', 'drink'], ['D人数', 'DINNER', 'count'],
+            ['3CH_Food', '3CH', 'food'], ['3CH_Drink', '3CH', 'drink'], ['3CH人数', '3CH', 'count'],
+            ['宴会_Food', 'BANQUET', 'food'], ['宴会_Drink', 'BANQUET', 'drink'], ['宴会人数', 'BANQUET', 'count'],
+            ['室料', '室料', 'sales'], ['展望台', '展望台', 'sales'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'BG': {
+        gasSheet: 'TVTOWER_BG',
+        columns: [
+            ['Food', 'ALL', 'food'], ['Drink', 'ALL', 'drink'], ['Tent', 'ALL', 'tent'], ['人数', 'ALL', 'count'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'NP': {
+        gasSheet: 'OKURAYAMA_NP',
+        columns: [
+            ['L_Food', 'LUNCH', 'food'], ['L_Drink', 'LUNCH', 'drink'], ['L人数', 'LUNCH', 'count'],
+            ['D_Food', 'DINNER', 'food'], ['D_Drink', 'DINNER', 'drink'], ['D人数', 'DINNER', 'count'],
+            ['室料', '室料', 'sales'], ['花束', '花束', 'sales'],
+            ['Event_Food', 'EVENT', 'food'], ['Event_Drink', 'EVENT', 'drink'], ['Event人数', 'EVENT', 'count'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'Ce': {
+        gasSheet: 'OKURAYAMA_Ce',
+        readAlias: 'CAFE',  // 読み込み時: ALL → CAFE
+        columns: [
+            ['Food', 'ALL', 'food'], ['Drink', 'ALL', 'drink'], ['人数', 'ALL', 'count'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'RP': {
+        gasSheet: 'OKURAYAMA_RP',
+        readAlias: 'CAFE',  // 読み込み時: ALL → CAFE
+        columns: [
+            ['Food', 'ALL', 'food'], ['Drink', 'ALL', 'drink'], ['人数', 'ALL', 'count'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'BQ': {
+        gasSheet: 'AKARENGA_BQ',
+        columns: [
+            ['L_Food', 'LUNCH', 'food'], ['L_Drink', 'LUNCH', 'drink'], ['L人数', 'LUNCH', 'count'],
+            ['AT_Food', 'AFTERNOON_TEA', 'food'], ['AT_Drink', 'AFTERNOON_TEA', 'drink'], ['AT人数', 'AFTERNOON_TEA', 'count'],
+            ['D_Food', 'DINNER', 'food'], ['D_Drink', 'DINNER', 'drink'], ['D人数', 'DINNER', 'count'],
+            ['席料', '席料', 'sales'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    },
+    'RYB': {
+        gasSheet: 'AKARENGA_RYB',
+        columns: [
+            ['Food', 'ALL', 'food'], ['Drink', 'ALL', 'drink'], ['人数', 'ALL', 'count'],
+            ['物販_食品', '物販_食品', 'sales'], ['物販_アパレル', '物販_アパレル', 'sales']
+        ]
+    }
+};
+
+// ── STORE_SCHEMA v3 Auto-Generated Functions ──
+
+/**
+ * buildChannelsFromSchema — GASレコードからchannelsオブジェクトを自動構築
+ * @param {string} storeId - 店舗ID
+ * @param {Object} rec - GASから取得した1レコード（key-valueオブジェクト）
+ * @returns {Object} channels - { LUNCH: {sales,count,food,drink}, ... }
+ */
+function buildChannelsFromSchema(storeId, rec) {
+    const schema = STORE_SCHEMA[storeId];
+    if (!schema) return {};
+    const channels = {};
+    schema.columns.forEach(([gasKey, chId, field]) => {
+        const val = Number(rec[gasKey]) || 0;
+        // readAlias: Ce/RPのALL → CAFE変換
+        const actualChId = (schema.readAlias && chId === 'ALL') ? schema.readAlias : chId;
+        if (!channels[actualChId]) channels[actualChId] = {};
+        channels[actualChId][field] = val;
+    });
+    // salesの自動計算: food + drink がある場合
+    Object.entries(channels).forEach(([chId, data]) => {
+        if (data.food !== undefined && data.drink !== undefined && data.sales === undefined) {
+            data.sales = (data.food || 0) + (data.drink || 0) + (data.tent || 0);
+        }
+    });
+    return channels;
+}
+
+/**
+ * channelsToGASValuesFromSchema — channelsからGAS保存用の値配列を自動生成
+ * @param {string} storeId - 店舗ID
+ * @param {Object} channels - { LUNCH: {food, drink, count}, DINNER: {...}, ... }
+ * @returns {Array} GAS列順の値配列（dateは含まない）
+ */
+function channelsToGASValuesFromSchema(storeId, channels) {
+    const schema = STORE_SCHEMA[storeId];
+    if (!schema) return [];
+    return schema.columns.map(([gasKey, chId, field]) => {
+        // readAlias逆変換: CAFE → ALL (保存時)
+        const actualChId = (schema.readAlias && chId === 'ALL') ? schema.readAlias : chId;
+        const chData = channels[actualChId] || {};
+        return chData[field] || 0;
+    });
+}
+
+/**
+ * validateSchemaAgainstGAS — STORE_SCHEMAとGAS STORE_SHEETSのヘッダー数を検証
+ * @param {Object} storeSheets - GASから取得したSTORE_SHEETS定義
+ * @returns {Array} エラーメッセージ配列（空なら正常）
+ */
+function validateSchemaAgainstGAS(storeSheets) {
+    const errors = [];
+    Object.entries(STORE_SCHEMA).forEach(([storeId, schema]) => {
+        const gasConfig = storeSheets[schema.gasSheet];
+        if (!gasConfig) {
+            errors.push(`${storeId}: GASシート '${schema.gasSheet}' が見つかりません`);
+            return;
+        }
+        // GASヘッダーの最初は 'date'、STORE_SCHEMAにはdateを含まない
+        const gasColCount = gasConfig.headers.length - 1; // dateを除く
+        const schemaColCount = schema.columns.length;
+        if (gasColCount !== schemaColCount) {
+            errors.push(`${storeId}: GASヘッダー${gasColCount}列 ≠ SCHEMA ${schemaColCount}列`);
+        }
+    });
+    return errors;
+}
+
+
 // This config never changes — it's the SVD organizational structure.
 // GAS handles dynamic data (actuals), this handles static structure.
 const SVD_CONFIG = {
@@ -270,96 +419,116 @@ function meterBars(mp) {
     ).join('');
 }
 
-// ── Forecast Engine v2.0 (Recency Weighted × Customer-Count Centric) ──
-// SATの回答反映: 客数を先に予測し、売上 = 客数 × 客単価 で導出
+// ═══════════════════════════════════════════════════════════════
+// Forecast Engine v3.0 — 100人の仲間の現場のために
+// ═══════════════════════════════════════════════════════════════
+// POS(過去) × TableCheck(未来) 統合予測エンジン
+// 5関数分割: findMatches → predictFromHistory → applyStoreRules → applyFLayer → forecastForDate
+// v3.0 改善: 隣接月フォールバック, チャネル独立予測, 動的F2, 祝日判定, 信頼度スコア, Walk-in非破壊, MAPE
 
-const TREND_WINDOW = 4; // 4週間（SATのQ4回答）
+const TREND_WINDOW = 4;
 
-/**
- * forecastForDate — Recency-Weighted × Customer-Count Centric
- * 
- * v2.0 進化ポイント:
- *   1. 時間減衰加重: 直近1年=3.0, 2年前=2.0, それ以前=1.0
- *   2. 客数主軸: 客数→客単価→売上 の順で予測
- *   3. チャネル別も加重平均化
- * 
- * @param {string} storeId - 店舗ID (e.g. 'JW')
- * @param {string} dateStr - 予測対象日 (e.g. '2026-03-15')
- * @returns {Object} { predicted_sales, predicted_count, predicted_avg_spend, channels, matches, matchCount, sekki, weekday, weights }
- */
-function forecastForDate(storeId, dateStr) {
-    // ── 定休日チェック ──
-    if (isStoreHoliday(storeId, dateStr)) {
-        const hSekki = getSekki(dateStr);
-        const hSekkiData = SVD_CONFIG.sekki_levels[hSekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
-        return {
-            predicted_sales: 0, predicted_count: 0, predicted_avg_spend: 0,
-            channels: {}, matches: [], matchCount: 0,
-            sekki: hSekki, weekday: WEEKDAY_JA[new Date(dateStr).getDay()],
-            weights: [], is_holiday: true, holiday_note: '定休日',
-            onhand_records: [], onhand_amount: 0,
-            walkin_sales: 0, walkin_count: 0, walkin_detail: {},
-            mp_point: hSekkiData.pt, kf1: hSekkiData.pt, kf2: 0, kf3: 0,
-            rank: hSekkiData.rank, season: hSekkiData.season
-        };
-    }
+// ── 祝日判定（日本の祝日） ──
+const JAPAN_HOLIDAYS_2026 = [
+    '2026-01-01', '2026-01-12', '2026-02-11', '2026-02-23',
+    '2026-03-20', '2026-04-29', '2026-05-03', '2026-05-04', '2026-05-05',
+    '2026-05-06', '2026-07-20', '2026-08-11', '2026-09-21', '2026-09-22',
+    '2026-09-23', '2026-10-12', '2026-11-03', '2026-11-23', '2026-12-23'
+];
+const JAPAN_HOLIDAYS_2025 = [
+    '2025-01-01', '2025-01-13', '2025-02-11', '2025-02-23', '2025-02-24',
+    '2025-03-20', '2025-04-29', '2025-05-03', '2025-05-04', '2025-05-05',
+    '2025-05-06', '2025-07-21', '2025-08-11', '2025-09-15', '2025-09-23',
+    '2025-10-13', '2025-11-03', '2025-11-23', '2025-11-24'
+];
+const JAPAN_HOLIDAYS_2027 = [
+    '2027-01-01', '2027-01-11', '2027-02-11', '2027-02-23',
+    '2027-03-21', '2027-04-29', '2027-05-03', '2027-05-04', '2027-05-05',
+    '2027-07-19', '2027-08-11', '2027-09-20', '2027-09-23',
+    '2027-10-11', '2027-11-03', '2027-11-23'
+];
+const JAPAN_HOLIDAYS = new Set([...JAPAN_HOLIDAYS_2025, ...JAPAN_HOLIDAYS_2026, ...JAPAN_HOLIDAYS_2027]);
+function isPublicHoliday(dateStr) { return JAPAN_HOLIDAYS.has(dateStr); }
+function isWeekendOrHoliday(dateStr) {
+    const dow = new Date(dateStr).getDay();
+    return dow === 0 || dow === 6 || isPublicHoliday(dateStr);
+}
 
+// ── 信頼度スコア ──
+function computeConfidence(matchCount) {
+    if (matchCount >= 8) return { level: 'HIGH', score: 95, label: '⬛ 信頼度: 高（' + matchCount + '件）' };
+    if (matchCount >= 4) return { level: 'MEDIUM', score: 75, label: '🟧 信頼度: 中（' + matchCount + '件）' };
+    if (matchCount >= 2) return { level: 'LOW', score: 50, label: '🟨 信頼度: 低（' + matchCount + '件）' };
+    if (matchCount >= 1) return { level: 'VERY_LOW', score: 25, label: '🟥 信頼度: 極低（' + matchCount + '件）' };
+    return { level: 'NONE', score: 0, label: '⬜ データなし' };
+}
+
+// ═══════════════════════════════════════
+// FUNCTION 1: findHistoricalMatches
+// POS過去データから同月同曜日マッチ + 隣接月フォールバック
+// ═══════════════════════════════════════
+function findHistoricalMatches(storeId, dateStr) {
     const records = DATA.stores[storeId] || [];
     const targetDate = new Date(dateStr);
-    const targetMonth = targetDate.getMonth() + 1; // 1-12
+    const targetMonth = targetDate.getMonth() + 1;
     const targetWeekday = WEEKDAY_JA[targetDate.getDay()];
-    const targetSekki = getSekki(dateStr); // 表示用に残す
+    const targetYear = targetDate.getFullYear();
 
-    // 過去同月×同曜日、actual_sales > 0 のレコードを抽出
-    const matches = records.filter(r => {
+    // 同月×同曜日×actual_sales > 0 × 過去データのみ
+    let matches = records.filter(r => {
         const rMonth = parseInt(r.date.slice(5, 7));
         return rMonth === targetMonth &&
             r.weekday === targetWeekday &&
             r.actual_sales > 0 &&
-            r.date < dateStr; // 未来データは除外
+            r.date < dateStr;
     });
 
-    if (matches.length === 0) {
-        const noMatchSekkiData = SVD_CONFIG.sekki_levels[targetSekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
-        const noMatchBaseId = STORE_TO_BASE[storeId] || '';
-        const noMatchWdMult = (WEEKDAY_MULTIPLIER[noMatchBaseId] || {})[targetWeekday] || 1.0;
-        const noMatchKf1 = Math.max(1, Math.min(5, Math.round(noMatchSekkiData.pt * noMatchWdMult * 100) / 100));
-        return {
-            predicted_sales: 0,
-            predicted_count: 0,
-            predicted_avg_spend: 0,
-            channels: {},
-            matches: [],
-            matchCount: 0,
-            sekki: targetSekki,
-            weekday: targetWeekday,
-            weights: [],
-            is_holiday: false,
-            mp_point: noMatchKf1,
-            kf1: noMatchKf1, kf2: 0, kf3: 0,
-            rank: noMatchSekkiData.rank,
-            season: noMatchSekkiData.season,
-            onhand_records: [], onhand_amount: 0,
-            walkin_sales: 0, walkin_count: 0, walkin_detail: {}
-        };
+    // ── 隣接月フォールバック: マッチが2件未満なら前後±1ヶ月を追加 ──
+    let fallbackUsed = false;
+    if (matches.length < 2) {
+        const adjMonth1 = targetMonth === 1 ? 12 : targetMonth - 1;
+        const adjMonth2 = targetMonth === 12 ? 1 : targetMonth + 1;
+        const adjMatches = records.filter(r => {
+            const rMonth = parseInt(r.date.slice(5, 7));
+            return (rMonth === adjMonth1 || rMonth === adjMonth2) &&
+                r.weekday === targetWeekday &&
+                r.actual_sales > 0 &&
+                r.date < dateStr;
+        });
+        if (adjMatches.length > 0) {
+            matches = matches.concat(adjMatches);
+            fallbackUsed = true;
+        }
     }
 
-    // ── Growth Weighting (成長加味) ──
-    // 直近1年 = 1.05, 2年前 = 1.03, それ以前 = 1.00
-    // 微成長トレンドを反映しつつ到達可能なフォーキャストを維持
-    const targetYear = new Date(dateStr).getFullYear();
+    // ── Growth Weight (成長加味) ──
     const weights = matches.map(r => {
         const yearsAgo = targetYear - new Date(r.date).getFullYear();
-        return yearsAgo <= 1 ? 1.05 : yearsAgo <= 2 ? 1.03 : 1.0;
+        let w = yearsAgo <= 1 ? 1.05 : yearsAgo <= 2 ? 1.03 : 1.0;
+        // 隣接月フォールバック分は×0.7減衰
+        if (fallbackUsed) {
+            const rMonth = parseInt(r.date.slice(5, 7));
+            if (rMonth !== targetMonth) w *= 0.7;
+        }
+        return w;
     });
     const totalWeight = weights.reduce((s, w) => s + w, 0);
 
-    // ── Customer-Count Centric Prediction ──
-    // Step 1: 平均客数を算出
+    return { matches, weights, totalWeight, fallbackUsed, targetMonth, targetWeekday };
+}
+
+// ═══════════════════════════════════════
+// FUNCTION 2: predictFromHistory
+// POS統計から客数主軸予測（チャネル独立）
+// ═══════════════════════════════════════
+function predictFromHistory(storeId, matches, weights, totalWeight) {
+    if (matches.length === 0 || totalWeight === 0) {
+        return { sales: 0, count: 0, avgSpend: 0, channels: {} };
+    }
+
+    // ── 全体 客数 + 客単価 ──
     const weightedCount = matches.reduce((s, r, i) => s + r.actual_count * weights[i], 0);
     const predictedCount = Math.round(weightedCount / totalWeight);
-
-    // Step 2: 平均客単価を算出
     const spendsWithWeight = matches.map((r, i) => ({
         spend: r.actual_count > 0 ? r.actual_sales / r.actual_count : 0,
         weight: weights[i]
@@ -369,20 +538,21 @@ function forecastForDate(storeId, dateStr) {
         ? Math.round(spendsWithWeight.reduce((s, sw) => s + sw.spend * sw.weight, 0) / spendWeight)
         : 0;
 
-    // Step 3: 売上 = 客数 × 客単価
-    const predictedSales = predictedCount * predictedAvgSpend;
-
-    // ── チャネル別予測 (均等加重) ──
+    // ── チャネル独立予測: 各チャネルを独立に加重平均 ──
     const channelAgg = {};
     matches.forEach((r, mi) => {
         if (!r.channels) return;
         const w = weights[mi];
         Object.entries(r.channels).forEach(([ch, data]) => {
-            if (!channelAgg[ch]) channelAgg[ch] = { sales: 0, count: 0, food: 0, drink: 0, wSum: 0 };
+            if (!channelAgg[ch]) channelAgg[ch] = { sales: 0, count: 0, food: 0, drink: 0, tent: 0, goods: 0, room: 0, flower: 0, wSum: 0 };
             channelAgg[ch].sales += (data.sales || 0) * w;
             channelAgg[ch].count += (data.count || 0) * w;
             channelAgg[ch].food += (data.food || 0) * w;
             channelAgg[ch].drink += (data.drink || 0) * w;
+            channelAgg[ch].tent += (data.tent || 0) * w;
+            channelAgg[ch].goods += (data.goods || 0) * w;
+            channelAgg[ch].room += (data.room || 0) * w;
+            channelAgg[ch].flower += (data.flower || 0) * w;
             channelAgg[ch].wSum += w;
         });
     });
@@ -395,22 +565,33 @@ function forecastForDate(storeId, dateStr) {
             food: Math.round(data.food / data.wSum),
             drink: Math.round(data.drink / data.wSum)
         };
+        // BG tent/goods等の追加フィールドを保持
+        if (data.tent > 0) channels[ch].tent = Math.round(data.tent / data.wSum);
+        if (data.goods > 0) channels[ch].goods = Math.round(data.goods / data.wSum);
+        if (data.room > 0) channels[ch].room = Math.round(data.room / data.wSum);
+        if (data.flower > 0) channels[ch].flower = Math.round(data.flower / data.wSum);
     });
 
-    // ── JW 平日ランチ除外（MP憲法§5: 土日祝のみLUNCH営業） ──
-    if (storeId === 'JW') {
-        const dow = targetDate.getDay(); // 0=日, 6=土
-        const isWeekend = (dow === 0 || dow === 6);
-        // TODO: 祝日判定API連携後、祝日もLUNCH営業に含める
-        if (!isWeekend && channels['LUNCH']) {
-            delete channels['LUNCH'];
-        }
+    return { sales: predictedCount * predictedAvgSpend, count: predictedCount, avgSpend: predictedAvgSpend, channels };
+}
+
+// ═══════════════════════════════════════
+// FUNCTION 3: applyStoreRules
+// 店舗固有ルール（JW平日LUNCH、席料直近90日）
+// ═══════════════════════════════════════
+function applyStoreRules(storeId, dateStr, channels, records) {
+    // deep copy — 元データを破壊しない
+    const ch = JSON.parse(JSON.stringify(channels));
+
+    // ── JW 平日ランチ除外（土日祝のみLUNCH営業） ──
+    if (storeId === 'JW' && !isWeekendOrHoliday(dateStr) && ch['LUNCH']) {
+        delete ch['LUNCH'];
     }
 
-    // ── 席料: 直近3ヶ月の日営業日平均（トレンド反映） ──
+    // ── 席料系: 直近90日の営業日平均（トレンド反映） ──
     const seatFeeChannels = ['席料', '貸切', '室料', 'テント指定席料', 'アネックス席料'];
     seatFeeChannels.forEach(sfCh => {
-        if (channels[sfCh]) {
+        if (ch[sfCh]) {
             const cutoff = new Date(dateStr);
             cutoff.setDate(cutoff.getDate() - 90);
             const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -418,19 +599,39 @@ function forecastForDate(storeId, dateStr) {
             records.forEach(r => {
                 if (r.date >= cutoffStr && r.date < dateStr && r.channels && r.channels[sfCh]) {
                     const val = r.channels[sfCh].sales || 0;
-                    if (val > 0) {
-                        sfTotal += val;
-                        sfDays++;
-                    }
+                    if (val > 0) { sfTotal += val; sfDays++; }
                 }
             });
-            if (sfDays > 0) {
-                channels[sfCh].sales = Math.round(sfTotal / sfDays);
-            }
+            if (sfDays > 0) { ch[sfCh].sales = Math.round(sfTotal / sfDays); }
         }
     });
 
-    // ── F-Layer: OnHand データ取得 ──
+    return ch;
+}
+
+// ═══════════════════════════════════════
+// FUNCTION 4: applyFLayer
+// F-Layer: TableCheck OnHand統合 + Walk-in（非破壊）
+// 予約制4店 (JW, NP, GA, BQ) のみ
+// ═══════════════════════════════════════
+function applyFLayer(storeId, dateStr, basePrediction) {
+    // deep copy — Walk-inで元データを破壊しない
+    const channels = JSON.parse(JSON.stringify(basePrediction.channels));
+    let finalSales = basePrediction.sales;
+    let finalCount = basePrediction.count;
+    let finalAvgSpend = basePrediction.avgSpend;
+
+    // ── チャネル合計から売上・客数を再計算 ──
+    const channelKeys = Object.keys(channels);
+    if (channelKeys.length > 0) {
+        finalSales = channelKeys.reduce((s, ch) => s + (channels[ch].sales || 0), 0);
+        finalCount = channelKeys
+            .filter(ch => !['席料', '南京錠', '花束', '室料', '展望台', '物販_食品', '物販_アパレル', '物販', 'GOODS', 'テント指定席料', 'アネックス席料'].includes(ch))
+            .reduce((s, ch) => s + (channels[ch].count || 0), 0);
+    }
+    finalAvgSpend = finalCount > 0 ? Math.round(finalSales / finalCount) : basePrediction.avgSpend;
+
+    // ── OnHand データ取得 ──
     const ONHAND_EXCLUDE = ['キャンセル', 'ノーショー', 'ノーショー（無断キャンセル）'];
     const storeOnHand = ONHAND_DATA.filter(r =>
         r.date === dateStr && r.store === storeId && !ONHAND_EXCLUDE.includes(r.status)
@@ -438,32 +639,23 @@ function forecastForDate(storeId, dateStr) {
     const onhandAmount = storeOnHand.reduce((s, r) => s + (Number(r.amount) || 0), 0);
     const onhandCount = storeOnHand.reduce((s, r) => s + (Number(r.count) || 0), 0);
 
-    // ── Walk-in Layer: フリー客見込み（当日〜翌日のみ） ──
-    // 4レストラン（JW, NP, BQ, GA）に対し、各時間帯1組2名 × 客単価を加算
+    // ── Walk-in Layer: 予約制4店 × 当日〜翌日のみ ──
     const WALKIN_STORES = ['JW', 'NP', 'BQ', 'GA'];
     const WALKIN_CHANNELS = ['LUNCH', 'DINNER'];
-    const WALKIN_GUESTS = 2; // 1組2名
-    let walkInSales = 0;
-    let walkInCount = 0;
+    const WALKIN_GUESTS = 2;
+    let walkInSales = 0, walkInCount = 0;
     const walkInDetail = {};
 
     if (WALKIN_STORES.includes(storeId)) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const targetDateObj = new Date(dateStr);
-        targetDateObj.setHours(0, 0, 0, 0);
-
-        const isShortTerm = targetDateObj.getTime() === today.getTime() ||
-            targetDateObj.getTime() === tomorrow.getTime();
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+        const targetDateObj = new Date(dateStr); targetDateObj.setHours(0, 0, 0, 0);
+        const isShortTerm = targetDateObj.getTime() === today.getTime() || targetDateObj.getTime() === tomorrow.getTime();
 
         if (isShortTerm) {
             WALKIN_CHANNELS.forEach(ch => {
-                if (!channels[ch]) return; // チャネルが存在しない場合はスキップ（JW平日LUNCHなし等）
-                const chAvgSpend = channels[ch].count > 0
-                    ? Math.round(channels[ch].sales / channels[ch].count)
-                    : 0;
+                if (!channels[ch]) return;
+                const chAvgSpend = channels[ch].count > 0 ? Math.round(channels[ch].sales / channels[ch].count) : 0;
                 if (chAvgSpend > 0) {
                     const addSales = WALKIN_GUESTS * chAvgSpend;
                     channels[ch].sales += addSales;
@@ -473,112 +665,220 @@ function forecastForDate(storeId, dateStr) {
                     walkInDetail[ch] = { guests: WALKIN_GUESTS, avg_spend: chAvgSpend, sales: addSales };
                 }
             });
+            // Walk-in後にfinalSales/Count再計算
+            finalSales += walkInSales;
+            finalCount += walkInCount;
+            finalAvgSpend = finalCount > 0 ? Math.round(finalSales / finalCount) : finalAvgSpend;
         }
     }
 
-    // ── チャネル合計から売上・客数を再計算（チャネル除外後の正確な値） ──
-    const channelKeys = Object.keys(channels);
-    let finalSales = predictedSales;
-    let finalCount = predictedCount;
-    if (channelKeys.length > 0) {
-        finalSales = channelKeys.reduce((s, ch) => s + (channels[ch].sales || 0), 0);
-        finalCount = channelKeys
-            .filter(ch => !['席料', '南京錠', '花束', '室料', '展望台', '物販_食品', '物販_アパレル'].includes(ch))
-            .reduce((s, ch) => s + (channels[ch].count || 0), 0);
-    }
-    let finalAvgSpend = finalCount > 0 ? Math.round(finalSales / finalCount) : predictedAvgSpend;
-
-    // ── F-Layer: OnHand時間軸統合（SAT × G 設計 2026-03-07）──
-    // F0 (F-ZERO): 当日〜明日 → OnHand確定（NPは予約制15:00まで）
-    // F1: 2日〜1週間前 → OnHand最優先
-    // F2: 1週間〜先 → 統計30% + OnHand70%
-    let fLayer = 'F5';  // デフォルト: 統計予測のみ
-    const capacity = STORE_CAPACITY[storeId];
+    // ── F-Layer: OnHand時間軸統合 ──
+    let fLayer = 'F5';
+    const capacity = STORE_CAPACITY[storeId]; // 予約制4店のみ定義あり
     if (capacity && onhandCount > 0) {
-        const todayObj = new Date();
-        todayObj.setHours(0, 0, 0, 0);
-        const targetObj = new Date(dateStr);
-        targetObj.setHours(0, 0, 0, 0);
+        const todayObj = new Date(); todayObj.setHours(0, 0, 0, 0);
+        const targetObj = new Date(dateStr); targetObj.setHours(0, 0, 0, 0);
         const daysUntil = Math.round((targetObj - todayObj) / (1000 * 60 * 60 * 24));
-
-        // 満席しきい値（GAはチャネル別）
         const threshold = capacity.fullThreshold
             || Math.min(capacity.fullThresholdLunch || 999, capacity.fullThresholdDinner || 999);
-        const isFull = onhandCount >= threshold;
 
-        // OnHandベース予測（確定金額がある場合はそれを最優先）
-        const ohSpend = finalAvgSpend || predictedAvgSpend;
+        const ohSpend = finalAvgSpend || basePrediction.avgSpend;
         const onhandBasedSales = onhandAmount > 0
             ? Math.max(onhandAmount, onhandCount * ohSpend)
             : onhandCount * ohSpend;
 
         if (daysUntil <= 1) {
-            // F0 (F-ZERO): 当日〜明日 — 確定情報ベース
             fLayer = 'F0';
             finalSales = Math.max(finalSales, onhandBasedSales);
             finalCount = Math.max(finalCount, onhandCount);
         } else if (daysUntil <= 7) {
-            // F1: OnHand最優先
             fLayer = 'F1';
             finalSales = Math.max(finalSales, onhandBasedSales);
             finalCount = Math.max(finalCount, onhandCount);
         } else {
-            // F2: 統計30% + OnHand70%
+            // ── 動的F2ウェイト: 予約確定率ベース ──
+            // 過去の同店舗データから「1週間前OnHand → 当日実績」の比率を算出
             fLayer = 'F2';
-            finalSales = Math.round(finalSales * 0.3 + onhandBasedSales * 0.7);
-            finalCount = Math.round(finalCount * 0.3 + onhandCount * 0.7);
+            const records = DATA.stores[storeId] || [];
+            let ohRatioSum = 0, ohRatioCount = 0;
+            records.forEach(r => {
+                if (r.actual_sales > 0 && r.onhand_at_week_prior) {
+                    const ratio = r.actual_sales / r.onhand_at_week_prior;
+                    if (ratio > 0 && ratio < 5) { // 異常値除外
+                        ohRatioSum += ratio;
+                        ohRatioCount++;
+                    }
+                }
+            });
+            // 予約確定率データがあれば動的ウェイト、なければ30:70固定
+            const statsWeight = ohRatioCount >= 5 ? Math.max(0.1, Math.min(0.5, 1 - (ohRatioSum / ohRatioCount) * 0.5)) : 0.3;
+            const ohWeight = 1 - statsWeight;
+            finalSales = Math.round(finalSales * statsWeight + onhandBasedSales * ohWeight);
+            finalCount = Math.round(finalCount * statsWeight + onhandCount * ohWeight);
         }
         finalAvgSpend = finalCount > 0 ? Math.round(finalSales / finalCount) : ohSpend;
     }
 
     return {
-        predicted_sales: finalSales,
-        predicted_count: finalCount,
-        predicted_avg_spend: finalAvgSpend,
-        base_sales: predictedSales,       // F5 ロングラン（OnHand除外）
-        base_count: predictedCount,        // F5 ロングラン客数
-        onhand_amount: onhandAmount,       // OnHand加算分
-        onhand_count: onhandCount,         // OnHand客数
-        onhand_records: storeOnHand,       // OnHand明細
-        f_layer: fLayer,                   // 適用F-Layer: F0/F1/F2/F5
+        finalSales, finalCount, finalAvgSpend, channels,
+        fLayer,
         is_full: capacity ? onhandCount >= (capacity.fullThreshold || Math.min(capacity.fullThresholdLunch || 999, capacity.fullThresholdDinner || 999)) : false,
-        walkin_sales: walkInSales,         // フリー客見込み売上
-        walkin_count: walkInCount,         // フリー客見込み人数
-        walkin_detail: walkInDetail,       // チャネル別フリー客明細
-        channels,
-        matches: matches.map((r, i) => ({
-            date: r.date,
-            weekday: r.weekday,
-            sekki: r.sekki,
-            sales: r.actual_sales,
-            count: r.actual_count,
-            channels: r.channels,
-            weight: weights[i]
-        })),
-        matchCount: matches.length,
-        sekki: targetSekki,
-        weekday: targetWeekday,
-        weights,
-        is_holiday: false,
-        // ── V2.0 MP Point (KF1 × weekday multiplier + KF2/KF3 from same-month averages) ──
-        ...(() => {
-            const fcSekkiData = SVD_CONFIG.sekki_levels[targetSekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
-            const fcBaseId = STORE_TO_BASE[storeId] || '';
-            const fcWdMult = (WEEKDAY_MULTIPLIER[fcBaseId] || {})[targetWeekday] || 1.0;
-            const fcKf1 = Math.max(1, Math.min(5, Math.round(fcSekkiData.pt * fcWdMult * 100) / 100));
-            // KF2/KF3: same-month actuals average (from matches)
-            const fcKf2Arr = matches.filter(r => r.kf2 > 0).map(r => r.kf2);
-            const fcKf3Arr = matches.filter(r => r.kf3 > 0).map(r => r.kf3);
-            const fcKf2 = fcKf2Arr.length > 0 ? fcKf2Arr.reduce((a, b) => a + b, 0) / fcKf2Arr.length : 0;
-            const fcKf3 = fcKf3Arr.length > 0 ? fcKf3Arr.reduce((a, b) => a + b, 0) / fcKf3Arr.length : 0;
-            // If KF2/KF3 available → 3-factor, else KF1 only
-            const fcMpPoint = (fcKf2 > 0 || fcKf3 > 0)
-                ? Math.round(((fcKf1 + fcKf2 + fcKf3) / 3) * 100) / 100
-                : fcKf1;
-            return { mp_point: fcMpPoint, kf1: fcKf1, kf2: Math.round(fcKf2 * 100) / 100, kf3: Math.round(fcKf3 * 100) / 100, rank: fcSekkiData.rank, season: fcSekkiData.season };
-        })()
+        onhand_amount: onhandAmount, onhand_count: onhandCount, onhand_records: storeOnHand,
+        walkin_sales: walkInSales, walkin_count: walkInCount, walkin_detail: walkInDetail
     };
 }
+
+// ═══════════════════════════════════════
+// FUNCTION 5: computeMPPoint
+// MP Point (KF1 × weekday × KF2 × KF3)
+// ═══════════════════════════════════════
+function computeMPPoint(storeId, dateStr, matches) {
+    const targetSekki = getSekki(dateStr);
+    const targetWeekday = WEEKDAY_JA[new Date(dateStr).getDay()];
+    const sekkiData = SVD_CONFIG.sekki_levels[targetSekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
+    const baseId = STORE_TO_BASE[storeId] || '';
+    const wdMult = (WEEKDAY_MULTIPLIER[baseId] || {})[targetWeekday] || 1.0;
+    const kf1 = Math.max(1, Math.min(5, Math.round(sekkiData.pt * wdMult * 100) / 100));
+    const kf2Arr = matches.filter(r => r.kf2 > 0).map(r => r.kf2);
+    const kf3Arr = matches.filter(r => r.kf3 > 0).map(r => r.kf3);
+    const kf2 = kf2Arr.length > 0 ? kf2Arr.reduce((a, b) => a + b, 0) / kf2Arr.length : 0;
+    const kf3 = kf3Arr.length > 0 ? kf3Arr.reduce((a, b) => a + b, 0) / kf3Arr.length : 0;
+    const mpPoint = (kf2 > 0 || kf3 > 0) ? Math.round(((kf1 + kf2 + kf3) / 3) * 100) / 100 : kf1;
+    return { mp_point: mpPoint, kf1, kf2: Math.round(kf2 * 100) / 100, kf3: Math.round(kf3 * 100) / 100, rank: sekkiData.rank, season: sekkiData.season };
+}
+
+// ═══════════════════════════════════════
+// MAPE — 予測精度トラッカー（直近30日）
+// ═══════════════════════════════════════
+let MAPE_CACHE = {};
+function computeMAPE(storeId) {
+    if (MAPE_CACHE[storeId] !== undefined) return MAPE_CACHE[storeId];
+    const records = DATA.stores[storeId] || [];
+    const today = new Date();
+    const cutoff = new Date(today); cutoff.setDate(cutoff.getDate() - 30);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    const todayStr = today.toISOString().slice(0, 10);
+
+    let totalError = 0, count = 0;
+    records.forEach(r => {
+        if (r.actual_sales > 0 && r.date >= cutoffStr && r.date < todayStr) {
+            // 過去日の予測を再計算（OnHand除外のF5ベース）
+            const hist = findHistoricalMatches(storeId, r.date);
+            if (hist.matches.length > 0) {
+                const pred = predictFromHistory(storeId, hist.matches, hist.weights, hist.totalWeight);
+                if (pred.sales > 0) {
+                    totalError += Math.abs(r.actual_sales - pred.sales) / r.actual_sales;
+                    count++;
+                }
+            }
+        }
+    });
+    const mape = count > 0 ? Math.round((totalError / count) * 100) : null;
+    MAPE_CACHE[storeId] = mape;
+    return mape; // MAPE 20 = 「平均±20%の精度」
+}
+function resetMAPECache() { MAPE_CACHE = {}; }
+
+// ═══════════════════════════════════════
+// MAIN: forecastForDate v3.0
+// 5関数を統合するオーケストレータ
+// ═══════════════════════════════════════
+/**
+ * forecastForDate — POS×TableCheck統合予測 v3.0
+ *
+ * @param {string} storeId - 店舗ID (JW, NP, GA, BQ, Ce, RP, BG, RYB)
+ * @param {string} dateStr - 予測対象日 (e.g. '2026-03-15')
+ * @returns {Object} 予測結果
+ */
+function forecastForDate(storeId, dateStr) {
+    // ── Step 0: 定休日チェック ──
+    if (isStoreHoliday(storeId, dateStr)) {
+        const hSekki = getSekki(dateStr);
+        const hSekkiData = SVD_CONFIG.sekki_levels[hSekki] || { rank: 12, season: 'FLOW SEASON', pt: 3.0 };
+        return {
+            predicted_sales: 0, predicted_count: 0, predicted_avg_spend: 0,
+            channels: {}, matches: [], matchCount: 0,
+            sekki: hSekki, weekday: WEEKDAY_JA[new Date(dateStr).getDay()],
+            weights: [], is_holiday: true, holiday_note: '定休日',
+            onhand_records: [], onhand_amount: 0,
+            walkin_sales: 0, walkin_count: 0, walkin_detail: {},
+            mp_point: hSekkiData.pt, kf1: hSekkiData.pt, kf2: 0, kf3: 0,
+            rank: hSekkiData.rank, season: hSekkiData.season,
+            confidence: computeConfidence(0), mape: null,
+            f_layer: 'F5', is_full: false, base_sales: 0, base_count: 0,
+            fallback_used: false
+        };
+    }
+
+    // ── Step 1: POS過去データマッチング（隣接月フォールバック付き） ──
+    const historical = findHistoricalMatches(storeId, dateStr);
+
+    if (historical.matches.length === 0) {
+        const noMatchMp = computeMPPoint(storeId, dateStr, []);
+        return {
+            predicted_sales: 0, predicted_count: 0, predicted_avg_spend: 0,
+            channels: {}, matches: [], matchCount: 0,
+            sekki: getSekki(dateStr), weekday: historical.targetWeekday,
+            weights: [], is_holiday: false,
+            ...noMatchMp,
+            onhand_records: [], onhand_amount: 0,
+            walkin_sales: 0, walkin_count: 0, walkin_detail: {},
+            confidence: computeConfidence(0), mape: computeMAPE(storeId),
+            f_layer: 'F5', is_full: false, base_sales: 0, base_count: 0,
+            fallback_used: historical.fallbackUsed
+        };
+    }
+
+    // ── Step 2: POS統計予測（チャネル独立） ──
+    const prediction = predictFromHistory(storeId, historical.matches, historical.weights, historical.totalWeight);
+
+    // ── Step 3: 店舗固有ルール適用（JW平日LUNCH除外、席料90日平均） ──
+    const records = DATA.stores[storeId] || [];
+    const adjustedChannels = applyStoreRules(storeId, dateStr, prediction.channels, records);
+
+    // ── Step 4: F-Layer（TableCheck OnHand統合 + Walk-in）──
+    const fResult = applyFLayer(storeId, dateStr, {
+        sales: prediction.sales, count: prediction.count,
+        avgSpend: prediction.avgSpend, channels: adjustedChannels
+    });
+
+    // ── Step 5: MP Point + 信頼度 + MAPE ──
+    const mpPoint = computeMPPoint(storeId, dateStr, historical.matches);
+    const confidence = computeConfidence(historical.matches.length);
+    const mape = computeMAPE(storeId);
+
+    return {
+        predicted_sales: fResult.finalSales,
+        predicted_count: fResult.finalCount,
+        predicted_avg_spend: fResult.finalAvgSpend,
+        base_sales: prediction.sales,
+        base_count: prediction.count,
+        channels: fResult.channels,
+        matches: historical.matches.map((r, i) => ({
+            date: r.date, weekday: r.weekday, sekki: r.sekki,
+            sales: r.actual_sales, count: r.actual_count,
+            channels: r.channels, weight: historical.weights[i]
+        })),
+        matchCount: historical.matches.length,
+        sekki: getSekki(dateStr),
+        weekday: historical.targetWeekday,
+        weights: historical.weights,
+        is_holiday: false,
+        ...mpPoint,
+        f_layer: fResult.fLayer,
+        is_full: fResult.is_full,
+        onhand_amount: fResult.onhand_amount,
+        onhand_count: fResult.onhand_count,
+        onhand_records: fResult.onhand_records,
+        walkin_sales: fResult.walkin_sales,
+        walkin_count: fResult.walkin_count,
+        walkin_detail: fResult.walkin_detail,
+        confidence,
+        mape,
+        fallback_used: historical.fallbackUsed
+    };
+}
+
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
@@ -1082,13 +1382,15 @@ function buildChannelsFromGAS(storeId, rec) {
     }
     // BG specific (Ce, RP, RYB, BG — L_Foodがない単一チャネル店舗)
     if (rec.Food !== undefined && rec.Drink !== undefined && !rec.L_Food) {
-        const mainSales = (Number(rec.Food) || 0) + (Number(rec.Drink) || 0) + (Number(rec.Tent) || 0);
+        const tentVal = Number(rec.Tent) || 0;
+        const mainSales = (Number(rec.Food) || 0) + (Number(rec.Drink) || 0) + tentVal;
         if (mainSales > 0) {
             channels['ALL'] = {
                 sales: mainSales,
                 count: Number(rec['人数']) || 0,
                 food: Number(rec.Food) || 0,
-                drink: Number(rec.Drink) || 0
+                drink: Number(rec.Drink) || 0,
+                tent: tentVal   // ← BG tentバグ修正: tentフィールドを保持
             };
         }
     }
@@ -3754,6 +4056,9 @@ function runForecast() {
                 is_full: fc.is_full,
                 onhand_amount: fc.onhand_amount || 0,
                 onhand_count: fc.onhand_count || 0,
+                confidence: fc.confidence,
+                mape: fc.mape,
+                fallback_used: fc.fallback_used,
             });
         });
         allStoreResults[sid] = results;
@@ -3814,6 +4119,18 @@ function runForecast() {
             totalActual += allStoreResults[sid][di].actual_sales;
         });
     });
+    // MAPE & 信頼度バッジ生成
+    const mapeInfo = storeIds.map(sid => {
+        const m = computeMAPE(sid);
+        const storeName = (base.stores.find(s => s.id === sid) || { name: sid }).name;
+        const mapeLabel = m !== null ? `${m}%` : '—';
+        const mapeColor = m === null ? '#4a4a68' : m <= 15 ? '#4ade80' : m <= 25 ? '#eab308' : m <= 40 ? '#f97316' : '#ef4444';
+        return `<span style="margin:0 8px;color:${mapeColor};font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;">${sid}:${mapeLabel}</span>`;
+    }).join('');
+    // 代表信頼度：最初の店舗の最初の非休日日
+    const repConf = Object.values(allStoreResults)[0]?.find(r => !r.is_holiday && r.confidence)?.confidence;
+    const confLabel = repConf ? repConf.label : '⬜ データなし';
+
     html += `<div class="card mt-16" style="text-align:center;padding:16px;">
         <div style="font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;color:var(--gold);letter-spacing:2px;">${base.name} — FORECAST SUMMARY</div>
         <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">${displayTaxExc ? '税抜' : '税込'}表示</div>
@@ -3822,6 +4139,11 @@ function runForecast() {
             <div><div class="label">実績合計</div><div class="mono fw-900" style="font-size:28px;color:var(--green);">${fmt$(txv(totalActual))}</div></div>
             <div><div class="label">期間</div><div class="mono" style="font-size:16px;color:var(--text-dim);">${dates.length}日間</div></div>
         </div>
+        <div style="margin-top:12px;padding:8px;border-radius:6px;background:rgba(255,255,255,0.03);">
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;letter-spacing:1px;">📊 MAPE（直近30日予測精度）</div>
+            <div>${mapeInfo}</div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:var(--text-dim);">${confLabel}</div>
         <button onclick="exportForecastCSV()" style="margin-top:16px;padding:8px 24px;background:var(--blue);color:#fff;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;">📥 CSV EXPORT</button>
     </div>`;
     // Store for CSV export
