@@ -3572,18 +3572,18 @@ function refreshReport() {
     const yoyPct = yoySales > 0 ? (totalSales / yoySales * 100) : 0;
     const yoyCountPct = yoyCount > 0 ? (totalCount / yoyCount * 100) : 0;
     const avgDaily = activeDays > 0 ? Math.round(totalSales / activeDays) : 0;
-    // 客単価はレストランチャネル（LUNCH/DINNER/3CH/CAFE）の客数のみで計算
-    const RESTAURANT_CHANNELS = ['LUNCH', 'DINNER', '3CH', 'CAFE', 'ランチ', 'ディナー', 'レストラン'];
-    let restaurantSales = 0, restaurantCount = 0;
+    // レストランチャネル（客数が取れるチャネル）の売上・客数を集計
+    const REST_CH = ['LUNCH', 'DINNER', '3CH', 'CAFE', 'ランチ', 'ディナー'];
+    let restSales = 0, restCount = 0;
     storeIds.forEach(sid => {
         Object.entries(storeAgg[sid]?.channels || {}).forEach(([ch, v]) => {
-            if (RESTAURANT_CHANNELS.some(rc => ch.includes(rc))) {
-                restaurantSales += v.sales || 0;
-                restaurantCount += v.count || 0;
+            if (REST_CH.some(rc => ch.includes(rc))) {
+                restSales += v.sales || 0;
+                restCount += v.count || 0;
             }
         });
     });
-    const avgPerCustomer = restaurantCount > 0 ? Math.round(txv(restaurantSales) / restaurantCount) : (totalCount > 0 ? Math.round(txv(totalSales) / totalCount) : 0);
+    const avgPerCustomer = restCount > 0 ? Math.round(txv(restSales) / restCount) : 0;
 
     // ── Build Report HTML ──
     let html = '';
@@ -3596,12 +3596,12 @@ function refreshReport() {
                 <div class="stat-label">期間売上合計(${tl})</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
-                <div class="stat-value mono" style="font-size:22px;">${totalCount.toLocaleString()}名</div>
-                <div class="stat-label">来客数合計</div>
+                <div class="stat-value mono" style="font-size:22px;">${restCount.toLocaleString()}名</div>
+                <div class="stat-label">レストラン来客数</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
-                <div class="stat-value mono" style="font-size:22px;">${fmt$(totalCount > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / totalCount) : 0)}</div>
-                <div class="stat-label">平均客単価(${tl})</div>
+                <div class="stat-value mono" style="font-size:22px;">${fmt$(avgPerCustomer)}</div>
+                <div class="stat-label">レストラン客単価(${tl})</div>
             </div>
             <div class="svd-stat" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;">
                 <div class="stat-value mono" style="font-size:22px;">${fmt$(activeDays > 0 ? Math.round(txvAccurate(totalSales, totalSales8pct) / activeDays) : 0)}</div>
@@ -4018,6 +4018,50 @@ function exportReportCSV() {
             const dayAvg = days > 0 ? Math.round(d.sales / days) : 0;
             csv += `${m},${txv(d.sales)},${d.count},${txv(avg)},${days},${txv(dayAvg)}\n`;
         });
+    }
+    csv += '\n';
+
+    // Daily breakdown (予測 vs 実績)
+    csv += `日別実績（予測 vs 実績）\n`;
+    csv += `日付,曜日,予測売上(${tl}),実績売上(${tl}),達成率,客数,客単価(${tl}),メモ\n`;
+    const WDAY_CSV = ['日', '月', '火', '水', '木', '金', '土'];
+    const REST_CH_CSV = ['LUNCH', 'DINNER', '3CH', 'CAFE', 'ランチ', 'ディナー'];
+    let dCsv = new Date(r.from);
+    const dEnd = new Date(r.to);
+    while (dCsv <= dEnd) {
+        const dateStr = dCsv.toISOString().slice(0, 10);
+        const wday = WDAY_CSV[dCsv.getDay()];
+        let daySales = 0, dayCount = 0, dayRestSales = 0, dayRestCount = 0;
+        let dayHasData = false, dayFcSales = 0, dayMemo = '';
+
+        r.storeIds.forEach(sid => {
+            const fc = forecastForDate(sid, dateStr);
+            dayFcSales += fc.predicted_sales || 0;
+            const rec = (DATA.stores[sid] || []).find(x => x.date === dateStr);
+            if (rec && rec.has_data) {
+                dayHasData = true;
+                daySales += rec.actual_sales;
+                dayCount += rec.actual_count;
+                if (rec.memo && !dayMemo) dayMemo = rec.memo;
+                if (rec.channels) {
+                    Object.entries(rec.channels).forEach(([ch, v]) => {
+                        if (REST_CH_CSV.some(rc => ch.includes(rc))) {
+                            dayRestSales += v.sales || 0;
+                            dayRestCount += v.count || 0;
+                        }
+                    });
+                }
+            }
+        });
+
+        const fcDisp = txv(dayFcSales);
+        const acDisp = dayHasData ? txv(daySales) : '';
+        const achRate = dayHasData && dayFcSales > 0 ? (daySales / dayFcSales * 100).toFixed(1) + '%' : '';
+        const unitPrice = dayRestCount > 0 ? Math.round(txv(dayRestSales) / dayRestCount) : '';
+        const memoSafe = dayMemo.replace(/,/g, '，').replace(/\n/g, ' ');
+
+        csv += `${dateStr},${wday},${fcDisp},${acDisp},${achRate},${dayHasData ? dayCount : ''},${unitPrice},${memoSafe}\n`;
+        dCsv.setDate(dCsv.getDate() + 1);
     }
 
     // Download (BOM付きでExcel/Chrome互換)
