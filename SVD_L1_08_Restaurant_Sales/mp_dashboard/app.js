@@ -4098,6 +4098,10 @@ function runForecast() {
                 confidence: fc.confidence,
                 mape: fc.mape,
                 fallback_used: fc.fallback_used,
+                memo: existingRec ? existingRec.memo || '' : '',
+                channels: existingRec ? existingRec.channels || {} : {},
+                ropeway: existingRec ? existingRec.ropeway || null : null,
+                actual_count: existingRec ? existingRec.actual_count || 0 : 0,
             });
         });
         allStoreResults[sid] = results;
@@ -4201,12 +4205,15 @@ function runForecast() {
             <div style="display:flex;gap:24px;margin-bottom:8px;font-size:12px;">
                 <span style="color:var(--text-dim);">予測: <strong style="color:${color};">${fmt$(txv(storePredTotal))}</strong></span>
                 <span style="color:var(--text-dim);">実績: <strong style="color:var(--green);">${fmt$(txv(storeActTotal))}</strong></span>
+                <span style="color:var(--text-dim);">達成率: <strong class="${storeActTotal > 0 && storePredTotal > 0 ? (storeActTotal / storePredTotal * 100 >= 100 ? 'text-green' : 'text-red') : ''}">${storePredTotal > 0 ? (storeActTotal / storePredTotal * 100).toFixed(1) + '%' : '—'}</strong></span>
             </div>
-            <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
+            <div style="overflow-x:auto;max-height:600px;overflow-y:auto;">
             <table class="data-table fc-table"><thead><tr>
-                <th style="width:160px;">DATE</th><th style="width:36px;">曜日</th><th style="width:48px;">節気</th><th style="width:80px;">RANK</th>
-                <th class="num" style="width:56px;">KF①</th><th class="num" style="width:56px;">KF②</th><th class="num" style="width:56px;">KF③</th>
-                <th class="num" style="width:56px;">MP</th><th class="num" style="width:90px;">予測売上</th><th class="num" style="width:90px;">実績売上</th>
+                <th style="width:120px;">DATE</th><th style="width:36px;">曜日</th>
+                <th class="num" style="width:90px;">予測売上</th><th class="num" style="width:90px;">実績売上</th>
+                <th class="num" style="width:60px;">達成率</th>
+                <th class="num" style="width:50px;">客数</th><th class="num" style="width:70px;">客単価</th>
+                <th style="min-width:120px;">メモ</th>
             </tr></thead><tbody>`;
 
         results.forEach(r => {
@@ -4214,65 +4221,67 @@ function runForecast() {
             const predCell = r.is_holiday
                 ? `<span style="color:#f87171;font-weight:600;">🔴 定休日</span>`
                 : `${fmt$(txv(r.predicted_sales))}`;
+            const achRate = r.is_actual && r.predicted_sales > 0
+                ? (r.actual_sales / r.predicted_sales * 100).toFixed(1) + '%'
+                : '—';
+            const achClass = r.is_actual && r.predicted_sales > 0
+                ? (r.actual_sales / r.predicted_sales * 100 >= 100 ? 'text-green' : 'text-red')
+                : '';
+            const actCount = r.is_actual ? r.actual_count : 0;
+            const actAvg = actCount > 0 ? fmt$(Math.round(txv(r.actual_sales) / actCount)) : '—';
 
-            // ── OnHand アコーディオングルーピング ──
-            let ohAccordion = '';
-            if (r.onhand_tags && r.onhand_tags.length > 0) {
-                // カテゴリ分類: 個別予約 / 団体 / 宴会 / その他
-                const OH_CATEGORIES = {
-                    '個別予約': { icon: '🎯', color: '#fb923c', bg: 'rgba(251,146,60,0.12)', types: ['予約', '個別予約', 'LUNCH', 'DINNER', 'ディナー', 'ランチ'] },
-                    '団体': { icon: '👥', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)', types: ['団体', 'グループ', 'GROUP'] },
-                    '宴会': { icon: '🎉', color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', types: ['宴会', 'バンケット', 'BANQUET', '婚礼', 'EVENT', 'パーティー'] },
-                };
-                const grouped = {};
-                const other = [];
-                r.onhand_tags.forEach(oh => {
-                    let matched = false;
-                    for (const [catName, cat] of Object.entries(OH_CATEGORIES)) {
-                        if (cat.types.some(t => (oh.type || '').includes(t))) {
-                            if (!grouped[catName]) grouped[catName] = [];
-                            grouped[catName].push(oh);
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (!matched) other.push(oh);
-                });
-                // 未分類は「個別予約」にフォールバック
-                if (other.length > 0) {
-                    if (!grouped['個別予約']) grouped['個別予約'] = [];
-                    grouped['個別予約'].push(...other);
-                }
-
-                const uid = `oh_${sid}_${r.date.replace(/-/g, '')}`;
-                ohAccordion = `<div class="oh-accordion">`;
-                Object.entries(grouped).forEach(([catName, items]) => {
-                    const cat = OH_CATEGORIES[catName] || OH_CATEGORIES['個別予約'];
-                    const totalCount = items.reduce((s, oh) => s + (Number(oh.count) || 0), 0);
-                    const totalAmount = items.reduce((s, oh) => s + (Number(oh.amount) || 0), 0);
-                    const accId = `${uid}_${catName}`;
-                    ohAccordion += `
-                        <div style="margin-bottom:2px;">
-                            <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.querySelector('.oh-arrow').textContent=this.nextElementSibling.style.display==='none'?'▸':'▾'"
-                                 class="oh-accordion-trigger" style="background:${cat.bg};color:${cat.color};">
-                                <span class="oh-arrow" style="font-size:8px;">▸</span>${cat.icon} ${catName} ${items.length}件 ${totalCount}名 ¥${totalAmount.toLocaleString()}
-                            </div>
-                            <div class="oh-accordion-detail">
-                                ${items.map(oh => `<div style="color:${cat.color};">・${oh.type || ''} ${oh.count || ''}名 ¥${Number(oh.amount || 0).toLocaleString()}</div>`).join('')}
-                            </div>
-                        </div>`;
-                });
-                ohAccordion += `</div>`;
+            // メモ + ロープウェイバッジ
+            let memoCell = '';
+            if (r.ropeway && r.ropeway.type && r.ropeway.type !== 'none') {
+                const rwLabels = { 'full': '🚡終日運休', 'partial': '🚡一部運休', 'time': `🚡${r.ropeway.from || ''}〜${r.ropeway.to || ''}` };
+                memoCell += `<span style="display:inline-block;background:rgba(251,146,60,0.15);color:#fb923c;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-bottom:2px;">${rwLabels[r.ropeway.type] || ''}</span><br>`;
+            }
+            if (r.memo) {
+                memoCell += `<span style="color:#aaa;font-size:11px;">${r.memo}</span>`;
             }
 
-            html += `<tr style="${holidayStyle}">
-                <td>${r.date}${ohAccordion}</td><td>${r.weekday}</td><td>${r.sekki}</td>
-                <td>${mpBadge(r.mp_point, 'small')}</td>
-                <td class="num">${r.kf1.toFixed(2)}</td><td class="num">${r.kf2.toFixed(2)}</td><td class="num">${r.kf3.toFixed(2)}</td>
-                <td class="num" style="color:var(--gold);font-weight:700">${r.mp_point.toFixed(2)}</td>
+            // チャネル詳細（展開トグル）
+            let chDetail = '';
+            const chEntries = Object.entries(r.channels).filter(([, v]) => v && (v.sales > 0 || v.food > 0 || v.drink > 0 || v.count > 0));
+            if (chEntries.length > 0) {
+                const detailId = `ch_${sid}_${r.date.replace(/-/g, '')}`;
+                chDetail = `<tr class="ch-detail-row" id="${detailId}" style="display:none;"><td colspan="8" style="padding:4px 16px 8px;background:rgba(255,255,255,0.02);">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    ${chEntries.map(([ch, v]) => {
+                    const s = txv(v.sales || 0);
+                    const avg = v.count > 0 ? fmt$(Math.round(s / v.count)) : '';
+                    return `<div style="background:rgba(200,164,94,0.08);border:1px solid rgba(200,164,94,0.15);border-radius:6px;padding:4px 8px;font-size:11px;">
+                            <strong style="color:#c8a45e;">${ch}</strong>
+                            <span class="mono" style="color:#ccc;margin-left:4px;">${fmt$(s)}</span>
+                            ${v.count > 0 ? `<span style="color:#888;margin-left:4px;">${v.count}名</span>` : ''}
+                            ${avg ? `<span style="color:#666;margin-left:4px;">@${avg}</span>` : ''}
+                        </div>`;
+                }).join('')}
+                    </div>
+                </td></tr>`;
+            }
+
+            // OnHand
+            let ohAccordion = '';
+            if (r.onhand_tags && r.onhand_tags.length > 0) {
+                const totalOhCount = r.onhand_tags.reduce((s, oh) => s + (Number(oh.count) || 0), 0);
+                const totalOhAmt = r.onhand_tags.reduce((s, oh) => s + (Number(oh.amount) || 0), 0);
+                ohAccordion = `<span style="font-size:10px;background:rgba(251,146,60,0.12);color:#fb923c;padding:1px 6px;border-radius:4px;margin-left:4px;">🎯${totalOhCount}名 ¥${totalOhAmt.toLocaleString()}</span>`;
+            }
+
+            const rowClick = chEntries.length > 0
+                ? `onclick="const el=document.getElementById('ch_${sid}_${r.date.replace(/-/g, '')}');if(el)el.style.display=el.style.display==='none'?'table-row':'none'" style="cursor:pointer;${holidayStyle}"`
+                : `style="${holidayStyle}"`;
+
+            html += `<tr ${rowClick}>
+                <td>${r.date}${ohAccordion}</td><td>${r.weekday}</td>
                 <td class="num" style="color:var(--blue)">${predCell}</td>
                 <td class="num" style="color:var(--green)">${r.is_actual ? fmt$(txv(r.actual_sales)) : '—'}</td>
-            </tr>`;
+                <td class="num ${achClass}">${achRate}</td>
+                <td class="num">${r.is_actual ? actCount : '—'}</td>
+                <td class="num">${r.is_actual ? actAvg : '—'}</td>
+                <td style="font-size:11px;max-width:200px;">${memoCell}</td>
+            </tr>${chDetail}`;
         });
 
         html += `</tbody></table></div></div>`;
