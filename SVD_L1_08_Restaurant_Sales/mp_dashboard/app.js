@@ -1745,7 +1745,7 @@ function renderCommand() {
 
         // Type badge
         const typeBadge = isForecast
-            ? (totalActual > 0
+            ? (activeStores > 0
                 ? `<span style="font-size:10px;background:rgba(74,222,128,0.15);color:#4ade80;padding:2px 8px;border-radius:10px;font-weight:600;">📊 実績</span>`
                 : `<span style="font-size:10px;background:rgba(212,168,67,0.15);color:#d4a843;padding:2px 8px;border-radius:10px;font-weight:600;animation:pulse 2s infinite;">⏳ 予測</span>`)
             : `<span style="font-size:10px;background:rgba(255,255,255,0.06);color:#888;padding:2px 8px;border-radius:10px;">📋 実績</span>`;
@@ -1821,7 +1821,7 @@ function renderCommand() {
         let forecastRow = '';
         if (isForecast && todayForecast > 0) {
             const fcDisp = txv(todayForecast);
-            const pct = totalActual > 0 ? (totalActual / todayForecast * 100) : 0;
+            const pct = activeStores > 0 ? (totalActual / todayForecast * 100) : 0;
             forecastRow = `
                 <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;">
                     <span style="color:#60a5fa;font-size:12px;">MP予測</span>
@@ -1829,7 +1829,7 @@ function renderCommand() {
                 </div>
                 <div style="display:flex;justify-content:space-between;padding:0 0 8px;">
                     <span style="color:#888;font-size:12px;">達成率</span>
-                    <span class="mono ${pct >= 100 ? 'text-green' : pct > 0 ? 'text-red' : ''}" style="font-size:14px;">${pct > 0 ? pct.toFixed(1) + '%' : '—'}</span>
+                    <span class="mono ${pct >= 100 ? 'text-green' : activeStores > 0 ? 'text-red' : ''}" style="font-size:14px;">${activeStores > 0 ? pct.toFixed(1) + '%' : '—'}</span>
                 </div>
             `;
         }
@@ -1887,8 +1887,9 @@ function renderCommand() {
         </div>`;
     }
 
-    // If today has no actual data, overlay forecast into the todayData for display
-    if (todayData.total === 0 && totalForecast > 0) {
+    // §0: 実績が入力済み(activeStores > 0)の場合はforecastで上書きしない
+    // 本当にデータがない場合(activeStores === 0)のみforecastを表示用に使う
+    if (activeStores === 0 && totalForecast > 0) {
         todayData.total = totalForecast;
         todayData.count = totalForecastCount;
         todayData.ch = {};
@@ -1913,7 +1914,7 @@ function renderCommand() {
     if (compEl) {
         compEl.innerHTML = `
             <div style="display:flex;gap:16px;flex-wrap:wrap;">
-                ${buildColumn('本日', '📍', todayData, y1Data.total, true, 'today')}
+                ${buildColumn(dateStr, '📍', todayData, y1Data.total, true, 'today')}
                 ${buildColumn('前年同日', '📅', y1Data, todayData.total, false, 'y1')}
                 ${buildColumn('前々年同日', '📆', y2Data, todayData.total, false, 'y2')}
             </div>
@@ -1962,6 +1963,24 @@ function renderCommand() {
                 <td class="mono">${fmt$(acAvg)}</td>
             </tr>`;
         });
+        // ── 合計行 ──
+        const totalFcSales = allChannelNames.reduce((s, ch) => s + txv((allChannelsForecast[ch] || {}).sales || 0), 0);
+        const totalAcSales = allChannelNames.reduce((s, ch) => s + txv((allChannelsActual[ch] || {}).sales || 0), 0);
+        const totalFcCount = allChannelNames.reduce((s, ch) => s + ((allChannelsForecast[ch] || {}).count || 0), 0);
+        const totalAcCount = allChannelNames.reduce((s, ch) => s + ((allChannelsActual[ch] || {}).count || 0), 0);
+        const totalPct = totalFcSales > 0 ? (totalAcSales / totalFcSales * 100) : 0;
+        const totalFcAvg = totalFcCount > 0 ? Math.round(totalFcSales / totalFcCount) : 0;
+        const totalAcAvg = totalAcCount > 0 ? Math.round(totalAcSales / totalAcCount) : 0;
+        channelHtml += `<tr style="border-top:2px solid rgba(255,255,255,0.15);font-weight:700;">
+            <td><strong>合計</strong></td>
+            <td class="mono">${fmt$(totalFcSales)}</td>
+            <td class="mono text-gold">${fmt$(totalAcSales)}</td>
+            <td class="mono ${totalPct >= 100 ? 'text-green' : activeStores > 0 ? 'text-red' : ''}">${activeStores > 0 ? totalPct.toFixed(1) + '%' : '—'}</td>
+            <td class="mono">${totalFcCount}</td>
+            <td class="mono">${totalAcCount}</td>
+            <td class="mono">${fmt$(totalFcAvg)}</td>
+            <td class="mono">${fmt$(totalAcAvg)}</td>
+        </tr>`;
         channelHtml += '</tbody></table>';
     } else {
         channelHtml = '<div class="text-dim" style="padding:16px;text-align:center;">チャネルデータなし</div>';
