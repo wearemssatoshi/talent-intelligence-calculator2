@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#0a0a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MP Pocket</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Reset & Base ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #0a0a1a;
+            --surface-1: #111128;
+            --surface-2: #16163a;
+            --surface-3: #1e1e4a;
+            --border: rgba(37, 37, 72, .5);
+            --border-light: rgba(55, 55, 100, .6);
+            --gold: #d4a843;
+            --gold-dim: rgba(212, 168, 67, .08);
+            --gold-light: #e8c96a;
+            --red: #ef4444;
+            --red-dim: rgba(239, 68, 68, .08);
+            --green: #4ade80;
+            --green-dim: rgba(74, 222, 128, .08);
+            --blue: #60a5fa;
+            --blue-dim: rgba(96, 165, 250, .08);
+            --purple: #a78bfa;
+            --text: #e8e6f0;
+            --text-sub: #b8b6c8;
+            --text-dim: #6b6888;
+            --text-muted: #4a4870;
+            --radius: 8px;
+            --radius-lg: 12px;
+            --transition: .2s ease;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-body: 'Noto Sans JP', sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+        }
+
+        /* ── Header ── */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(180deg, var(--surface-1) 0%, rgba(17, 17, 40, .95) 100%);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 16px 10px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .brand {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--gold);
+        }
+
+        .brand-sub {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin-top: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .icon-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all var(--transition);
+        }
+
+        .icon-btn:hover,
+        .icon-btn:active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-dim);
+        }
+
+        /* ── Base Tabs ── */
+        .base-tabs {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+        }
+
+        .base-tabs::-webkit-scrollbar {
+            display: none
+        }
+
+        .base-tab {
+            flex: 0 0 auto;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+
+        .base-tab.active {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ── Drop Zone ── */
+        .drop-zone-wrap {
+            padding: 20px 16px;
+            min-height: calc(100vh - 120px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone {
+            width: 100%;
+            max-width: 400px;
+            border: 2px dashed var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s ease;
+        }
+
+        .drop-zone.dragover {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            transform: scale(1.02);
+        }
+
+        .dz-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: .8
+        }
+
+        .dz-title {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+        }
+
+        .dz-hint {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .dz-hint em {
+            color: var(--gold);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        input[type="file"] {
+            display: none
+        }
+
+        /* ── Main Content ── */
+        .main {
+            padding: 0 12px 80px;
+            display: none;
+        }
+
+        .main.visible {
+            display: block
+        }
+
+        /* ── Summary Card ── */
+        .summary {
+            background: linear-gradient(135deg, var(--surface-2), var(--surface-1));
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .sum-item {
+            text-align: center
+        }
+
+        .sum-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: var(--font-mono);
+            margin-bottom: 4px;
+        }
+
+        .sum-value {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .sum-value.gold {
+            color: var(--gold)
+        }
+
+        .sum-value.green {
+            color: var(--green)
+        }
+
+        .sum-value.blue {
+            color: var(--blue)
+        }
+
+        /* ── Store Section ── */
+        .store-section {
+            margin-bottom: 16px;
+        }
+
+        .store-header {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-sub);
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .store-summary {
+            display: flex;
+            gap: 12px;
+            padding: 4px 4px 8px;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .store-summary span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── Day Cards ── */
+        .day-card {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 6px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .day-card.season-TOP::before {
+            background: var(--red)
+        }
+
+        .day-card.season-HIGH::before {
+            background: var(--gold)
+        }
+
+        .day-card.season-FLOW::before {
+            background: var(--blue)
+        }
+
+        .day-card.season-LOW::before {
+            background: var(--purple)
+        }
+
+        .day-card.season-OFF::before {
+            background: #6b7280
+        }
+
+        .day-card.today {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, var(--gold-dim), var(--surface-1));
+        }
+
+        .day-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .day-date {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .day-weekday {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-left: 6px;
+        }
+
+        .day-weekday.sun {
+            color: var(--red)
+        }
+
+        .day-weekday.sat {
+            color: var(--blue)
+        }
+
+        .day-sekki {
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-left: 6px;
+        }
+
+        .day-mp {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mp-val {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .mp-badge {
+            font-family: var(--font-mono);
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .mp-badge.TOP {
+            background: var(--red-dim);
+            color: var(--red)
+        }
+
+        .mp-badge.HIGH {
+            background: var(--gold-dim);
+            color: var(--gold)
+        }
+
+        .mp-badge.FLOW {
+            background: var(--blue-dim);
+            color: var(--blue)
+        }
+
+        .mp-badge.LOW {
+            background: rgba(167, 139, 250, .1);
+            color: var(--purple)
+        }
+
+        .mp-badge.OFF {
+            background: rgba(107, 114, 128, .1);
+            color: #6b7280
+        }
+
+        .day-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .day-label {
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            letter-spacing: .5px;
+        }
+
+        .day-val {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .day-val.forecast {
+            color: var(--gold)
+        }
+
+        .day-val.actual {
+            color: var(--green)
+        }
+
+        /* ── Actual Input ── */
+        .actual-input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .actual-input {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--green);
+            background: transparent;
+            border: none;
+            border-bottom: 1px dashed var(--border-light);
+            width: 110px;
+            padding: 2px 0;
+            text-align: right;
+            outline: none;
+            transition: border-color var(--transition);
+        }
+
+        .actual-input:focus {
+            border-bottom-color: var(--green);
+        }
+
+        .actual-input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .yen-prefix {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        /* ── Achievement Rate ── */
+        .achievement {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0 2px;
+            border-top: 1px solid rgba(37, 37, 72, .3);
+            margin-top: 4px;
+        }
+
+        .ach-label {
+            font-size: 9px;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+        }
+
+        .ach-value {
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .ach-value.high {
+            color: var(--green)
+        }
+
+        .ach-value.mid {
+            color: var(--blue)
+        }
+
+        .ach-value.low {
+            color: var(--red)
+        }
+
+        .ach-value.none {
+            color: var(--text-muted)
+        }
+
+        /* ── File info ── */
+        .file-info {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .file-name {
+            color: var(--text-sub);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .fade-up {
+            animation: fadeUp .3s ease forwards
+        }
+
+        .day-card {
+            opacity: 0;
+            animation: fadeUp .3s ease forwards
+        }
+
+        .day-card:nth-child(1) {
+            animation-delay: .05s
+        }
+
+        .day-card:nth-child(2) {
+            animation-delay: .1s
+        }
+
+        .day-card:nth-child(3) {
+            animation-delay: .15s
+        }
+
+        .day-card:nth-child(4) {
+            animation-delay: .2s
+        }
+
+        .day-card:nth-child(5) {
+            animation-delay: .25s
+        }
+
+        .day-card:nth-child(6) {
+            animation-delay: .3s
+        }
+
+        .day-card:nth-child(7) {
+            animation-delay: .35s
+        }
+
+        /* ── Safe Area (iPhone) ── */
+        @supports(padding-bottom:env(safe-area-inset-bottom)) {
+            .main {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom))
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Header ── -->
+    <div class="header">
+        <div class="header-top">
+            <div>
+                <div class="brand">MP POCKET</div>
+                <div class="brand-sub">FORECAST ANSWER CHECK</div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="btnUpload" title="CSVアップロード">📁</button>
+                <button class="icon-btn" id="btnClear" title="データクリア" style="display:none">🗑️</button>
+            </div>
+        </div>
+        <div class="base-tabs" id="baseTabs" style="display:none"></div>
+    </div>
+
+    <!-- ── Drop Zone ── -->
+    <div class="drop-zone-wrap" id="dropWrap">
+        <div class="drop-zone" id="dropZone">
+            <div class="dz-icon">📊</div>
+            <div class="dz-title">CSV DROP</div>
+            <div class="dz-hint">
+                MPダッシュボードの<br>
+                <em>📥 CSV EXPORT</em> で出力した<br>
+                ファイルをここにドロップ
+            </div>
+        </div>
+        <input type="file" id="fileInput" accept=".csv">
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="main" id="mainContent">
+        <div class="file-info" id="fileInfo"></div>
+        <div class="summary" id="summaryCard"></div>
+        <div id="storeCards"></div>
+    </div>
+
+    <script>
+        // ── Constants ── 
+        const BASES = {
+            '藻岩山': ['JW', 'BQ'],
+            '大倉山': ['NP', 'CL', 'LP'],
+            'テレビ塔': ['GA', 'RP'],
+            'あかれんが': ['RYB']
+        };
+
+        const SEASON_LABELS = {
+            TOP: 'TOP 1-5', HIGH: 'HIGH 6-10', FLOW: 'FLOW 11-15',
+            LOW: 'LOW 16-20', OFF: 'OFF 21-24'
+        };
+
+        const WEEKDAY_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
+        const STORAGE_KEY = 'mp_pocket_data';
+        const STORAGE_FILE_KEY = 'mp_pocket_file';
+
+        // ── State ── 
+        let allData = [];
+        let currentBase = null;
+        let fileName = '';
+
+        // ── DOM ── 
+        const $ = id => document.getElementById(id);
+        const dropWrap = $('dropWrap');
+        const dropZone = $('dropZone');
+        const fileInput = $('fileInput');
+        const mainContent = $('mainContent');
+        const baseTabs = $('baseTabs');
+        const btnUpload = $('btnUpload');
+        const btnClear = $('btnClear');
+        const summaryCard = $('summaryCard');
+        const storeCards = $('storeCards');
+        const fileInfo = $('fileInfo');
+
+        // ── Init ── 
+        document.addEventListener('DOMContentLoaded', () => {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    allData = JSON.parse(stored);
+                    fileName = localStorage.getItem(STORAGE_FILE_KEY) || 'saved data';
+                    showData();
+                } catch (e) { localStorage.removeItem(STORAGE_KEY); }
+            }
+            setupDragDrop();
+            setupButtons();
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./sw.js').catch(() => { });
+            }
+        });
+
+        // ── Drag & Drop ── 
+        function setupDragDrop() {
+            ['dragenter', 'dragover'].forEach(ev => {
+                dropZone.addEventListener(ev, e => {
+                    e.preventDefault(); e.stopPropagation();
+                    dropZone.classList.add('dragover');
+                });
+            });
+            ['dragleave', 'drop'].forEach(ev => {
+                dropZone.addEventListener(ev, e => {
+                    e.preventDefault(); e.stopPropagation();
+                    dropZone.classList.remove('dragover');
+                });
+            });
+            dropZone.addEventListener('drop', e => {
+                const file = e.dataTransfer.files[0];
+                if (file) handleFile(file);
+            });
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', e => {
+                if (e.target.files[0]) handleFile(e.target.files[0]);
+            });
+        }
+
+        // ── Buttons ── 
+        function setupButtons() {
+            btnUpload.addEventListener('click', () => fileInput.click());
+            btnClear.addEventListener('click', () => {
+                if (confirm('データをクリアしますか？')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(STORAGE_FILE_KEY);
+                    allData = [];
+                    mainContent.classList.remove('visible');
+                    dropWrap.style.display = 'flex';
+                    baseTabs.style.display = 'none';
+                    btnClear.style.display = 'none';
+                }
+            });
+        }
+
+        // ── File Handler ── 
+        function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                alert('CSVファイルを選択してください');
+                return;
+            }
+            fileName = file.name;
+            const reader = new FileReader();
+            reader.onload = e => {
+                parseCSV(e.target.result);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+                localStorage.setItem(STORAGE_FILE_KEY, fileName);
+                showData();
+            };
+            reader.readAsText(file, 'utf-8');
+        }
+
+        // ── CSV Parser ── 
+        function parseCSV(text) {
+            // Remove BOM
+            if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+            const lines = text.trim().split('\n');
+            if (lines.length < 2) return;
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            allData = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(',');
+                if (cols.length < 8) continue;
+
+                const row = {};
+                headers.forEach((h, idx) => {
+                    row[h] = (cols[idx] || '').trim();
+                });
+
+                // Normalize
+                const storeRaw = row['店舗'] || '';
+                const storeId = storeRaw.split(' ')[0];
+                const storeName = storeRaw.replace(storeId, '').trim();
+
+                // Detect tax label from headers
+                const predKey = headers.find(h => h.startsWith('予測売上'));
+                const actKey = headers.find(h => h.startsWith('実績売上'));
+                const taxLabel = predKey ? predKey.match(/\((.+)\)/)?.[1] || '' : '';
+
+                allData.push({
+                    date: row['日付'] || '',
+                    storeId: storeId,
+                    storeName: storeName,
+                    weekday: row['曜日'] || '',
+                    sekki: row['節気'] || '',
+                    kf1: parseFloat(row['KF①']) || 0,
+                    kf2: parseFloat(row['KF②']) || 0,
+                    kf3: parseFloat(row['KF③']) || 0,
+                    mp: parseFloat(row['MP']) || 0,
+                    predicted: parseFloat(row[predKey]) || 0,
+                    actual: parseFloat(row[actKey]) || 0,
+                    ratio: row['達成率'] || '',
+                    taxLabel: taxLabel
+                });
+            }
+        }
+
+        // ── Show Data ── 
+        function showData() {
+            if (!allData.length) return;
+
+            dropWrap.style.display = 'none';
+            mainContent.classList.add('visible');
+            btnClear.style.display = 'flex';
+
+            // Detect bases
+            const storeIds = [...new Set(allData.map(d => d.storeId))];
+            const detectedBases = {};
+            Object.entries(BASES).forEach(([base, stores]) => {
+                const matched = stores.filter(s => storeIds.includes(s));
+                if (matched.length) detectedBases[base] = matched;
+            });
+
+            // Handle unknown stores
+            const knownStores = Object.values(BASES).flat();
+            const unknownStores = storeIds.filter(s => !knownStores.includes(s));
+            if (unknownStores.length) detectedBases['その他'] = unknownStores;
+
+            // Render base tabs
+            if (Object.keys(detectedBases).length > 0) {
+                baseTabs.style.display = 'flex';
+                baseTabs.innerHTML = '';
+                if (Object.keys(detectedBases).length > 1) {
+                    const allBtn = document.createElement('button');
+                    allBtn.className = 'base-tab';
+                    allBtn.textContent = 'ALL';
+                    allBtn.onclick = () => selectBase(null, detectedBases);
+                    baseTabs.appendChild(allBtn);
+                }
+                Object.keys(detectedBases).forEach(base => {
+                    const btn = document.createElement('button');
+                    btn.className = 'base-tab';
+                    btn.textContent = base;
+                    btn.onclick = () => selectBase(base, detectedBases);
+                    baseTabs.appendChild(btn);
+                });
+                // Auto-select first base
+                currentBase = Object.keys(detectedBases).length > 1 ? null : Object.keys(detectedBases)[0];
+                selectBase(currentBase, detectedBases);
+            }
+        }
+
+        function selectBase(base, detectedBases) {
+            currentBase = base;
+
+            // Update tab active state
+            document.querySelectorAll('.base-tab').forEach(tab => {
+                tab.classList.toggle('active',
+                    (base === null && tab.textContent === 'ALL') || tab.textContent === base
+                );
+            });
+
+            // Filter data
+            let filteredStores;
+            if (base === null) {
+                filteredStores = Object.values(detectedBases).flat();
+            } else {
+                filteredStores = detectedBases[base] || [];
+            }
+            const filteredData = allData.filter(d => filteredStores.includes(d.storeId));
+
+            renderContent(filteredData, filteredStores);
+        }
+
+        // ── Render ── 
+        function renderContent(data, stores) {
+            // File info
+            fileInfo.innerHTML = `
+        <span class="file-name">📄 ${fileName}</span>
+        <span>${data.length} rows</span>
+    `;
+
+            // Summary
+            const totalPred = data.reduce((s, d) => s + d.predicted, 0);
+            const totalAct = data.reduce((s, d) => s + d.actual, 0);
+            const achRate = totalPred > 0 && totalAct > 0 ? (totalAct / totalPred * 100) : 0;
+            const achClass = achRate === 0 ? 'blue' : achRate >= 100 ? 'green' : achRate >= 80 ? 'blue' : 'gold';
+
+            summaryCard.innerHTML = `
+        <div class="sum-item">
+            <div class="sum-label">予測合計</div>
+            <div class="sum-value gold">${fmt$(totalPred)}</div>
+        </div>
+        <div class="sum-item">
+            <div class="sum-label">実績合計</div>
+            <div class="sum-value green">${totalAct > 0 ? fmt$(totalAct) : '—'}</div>
+        </div>
+        <div class="sum-item">
+            <div class="sum-label">達成率</div>
+            <div class="sum-value ${achClass}">${achRate > 0 ? achRate.toFixed(1) + '%' : '—'}</div>
+        </div>
+    `;
+
+            // Per-store cards
+            storeCards.innerHTML = '';
+            stores.forEach(sid => {
+                const storeData = data.filter(d => d.storeId === sid);
+                if (!storeData.length) return;
+
+                const section = document.createElement('div');
+                section.className = 'store-section fade-up';
+
+                const sName = storeData[0].storeName || sid;
+                const sPred = storeData.reduce((s, d) => s + d.predicted, 0);
+                const sAct = storeData.reduce((s, d) => s + d.actual, 0);
+
+                section.innerHTML = `
+            <div class="store-header">${sid} — ${sName}</div>
+            <div class="store-summary">
+                <span>📊 ${fmt$(sPred)}</span>
+                <span>✅ ${sAct > 0 ? fmt$(sAct) : '—'}</span>
+                <span>📅 ${storeData.length}日</span>
+            </div>
+        `;
+
+                storeData.forEach(d => {
+                    section.appendChild(createDayCard(d));
+                });
+
+                storeCards.appendChild(section);
+            });
+        }
+
+        // ── Day Card ── 
+        function createDayCard(d) {
+            const card = document.createElement('div');
+            const season = getSeason(d.mp);
+            const isToday = d.date === new Date().toISOString().split('T')[0];
+            const wdIdx = WEEKDAY_NAMES.indexOf(d.weekday);
+            const wdClass = wdIdx === 0 ? 'sun' : wdIdx === 6 ? 'sat' : '';
+
+            card.className = `day-card season-${season}${isToday ? ' today' : ''}`;
+
+            // Compute achievement
+            const achRate = d.predicted > 0 && d.actual > 0 ? (d.actual / d.predicted * 100) : 0;
+            const achClass = achRate === 0 ? 'none' : achRate >= 100 ? 'high' : achRate >= 80 ? 'mid' : 'low';
+            const achText = achRate > 0 ? achRate.toFixed(1) + '%' : '—';
+
+            // Season rank from MP
+            const rank = mpToRank(d.mp);
+
+            card.innerHTML = `
+        <div class="day-top">
+            <div>
+                <span class="day-date">${formatDate(d.date)}</span>
+                <span class="day-weekday ${wdClass}">${d.weekday}</span>
+                <span class="day-sekki">${d.sekki}</span>
+            </div>
+            <div class="day-mp">
+                <span class="mp-badge ${season}">${season} ${rank}</span>
+                <span class="mp-val">${d.mp.toFixed(2)}</span>
+            </div>
+        </div>
+        <div class="day-row">
+            <span class="day-label">予測</span>
+            <span class="day-val forecast">${fmt$(d.predicted)}</span>
+        </div>
+        <div class="day-row">
+            <span class="day-label">実績</span>
+            <div class="actual-input-wrap">
+                <span class="yen-prefix">¥</span>
+                <input type="text" inputmode="numeric" class="actual-input"
+                    placeholder="タップで入力"
+                    value="${d.actual > 0 ? d.actual.toLocaleString() : ''}"
+                    data-date="${d.date}" data-store="${d.storeId}">
+            </div>
+        </div>
+        <div class="achievement">
+            <span class="ach-label">達成率</span>
+            <span class="ach-value ${achClass}" id="ach_${d.storeId}_${d.date}">${achText}</span>
+        </div>
+    `;
+
+            // Input handler
+            const input = card.querySelector('.actual-input');
+            input.addEventListener('input', e => {
+                // Allow only numbers
+                let raw = e.target.value.replace(/[^0-9]/g, '');
+                if (raw) {
+                    const num = parseInt(raw);
+                    e.target.value = num.toLocaleString();
+                    updateActual(d.storeId, d.date, num);
+                } else {
+                    e.target.value = '';
+                    updateActual(d.storeId, d.date, 0);
+                }
+            });
+
+            input.addEventListener('focus', e => {
+                // Show raw number on focus
+                const raw = e.target.value.replace(/[^0-9]/g, '');
+                e.target.value = raw;
+                e.target.select();
+            });
+
+            input.addEventListener('blur', e => {
+                // Format on blur
+                const raw = e.target.value.replace(/[^0-9]/g, '');
+                if (raw) {
+                    e.target.value = parseInt(raw).toLocaleString();
+                }
+            });
+
+            return card;
+        }
+
+        // ── Update Actual ── 
+        function updateActual(storeId, date, value) {
+            const item = allData.find(d => d.storeId === storeId && d.date === date);
+            if (item) {
+                item.actual = value;
+                // Update achievement display
+                const achEl = document.getElementById(`ach_${storeId}_${date}`);
+                if (achEl && item.predicted > 0 && value > 0) {
+                    const rate = (value / item.predicted * 100);
+                    achEl.textContent = rate.toFixed(1) + '%';
+                    achEl.className = 'ach-value ' + (rate >= 100 ? 'high' : rate >= 80 ? 'mid' : 'low');
+                } else if (achEl) {
+                    achEl.textContent = '—';
+                    achEl.className = 'ach-value none';
+                }
+                // Save
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+                // Update summary
+                updateSummary();
+            }
+        }
+
+        function updateSummary() {
+            const activeStores = currentBase === null
+                ? Object.values(BASES).flat()
+                : BASES[currentBase] || [];
+            const filteredData = allData.filter(d => activeStores.includes(d.storeId));
+            const totalPred = filteredData.reduce((s, d) => s + d.predicted, 0);
+            const totalAct = filteredData.reduce((s, d) => s + d.actual, 0);
+            const achRate = totalPred > 0 && totalAct > 0 ? (totalAct / totalPred * 100) : 0;
+            const achClass = achRate === 0 ? 'blue' : achRate >= 100 ? 'green' : achRate >= 80 ? 'blue' : 'gold';
+
+            summaryCard.innerHTML = `
+        <div class="sum-item">
+            <div class="sum-label">予測合計</div>
+            <div class="sum-value gold">${fmt$(totalPred)}</div>
+        </div>
+        <div class="sum-item">
+            <div class="sum-label">実績合計</div>
+            <div class="sum-value green">${totalAct > 0 ? fmt$(totalAct) : '—'}</div>
+        </div>
+        <div class="sum-item">
+            <div class="sum-label">達成率</div>
+            <div class="sum-value ${achClass}">${achRate > 0 ? achRate.toFixed(1) + '%' : '—'}</div>
+        </div>
+    `;
+        }
+
+        // ── Helpers ── 
+        function fmt$(n) {
+            if (!n || n === 0) return '¥0';
+            return '¥' + Math.round(n).toLocaleString();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            return parts[1] + '/' + parts[2];
+        }
+
+        function getSeason(mp) {
+            if (mp >= 4.0) return 'TOP';
+            if (mp >= 3.0) return 'HIGH';
+            if (mp >= 2.2) return 'FLOW';
+            if (mp >= 1.5) return 'LOW';
+            return 'OFF';
+        }
+
+        function mpToRank(mp) {
+            // Approximate rank from MP value (1=highest, 24=lowest)
+            const rank = Math.max(1, Math.min(24, Math.round(25 - mp * 4.8)));
+            return rank;
+        }
+    </script>
+</body>
+
+</html>
