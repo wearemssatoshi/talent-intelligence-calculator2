@@ -3572,7 +3572,18 @@ function refreshReport() {
     const yoyPct = yoySales > 0 ? (totalSales / yoySales * 100) : 0;
     const yoyCountPct = yoyCount > 0 ? (totalCount / yoyCount * 100) : 0;
     const avgDaily = activeDays > 0 ? Math.round(totalSales / activeDays) : 0;
-    const avgPerCustomer = totalCount > 0 ? Math.round(totalSales / totalCount) : 0;
+    // 客単価はレストランチャネル（LUNCH/DINNER/3CH/CAFE）の客数のみで計算
+    const RESTAURANT_CHANNELS = ['LUNCH', 'DINNER', '3CH', 'CAFE', 'ランチ', 'ディナー', 'レストラン'];
+    let restaurantSales = 0, restaurantCount = 0;
+    storeIds.forEach(sid => {
+        Object.entries(storeAgg[sid]?.channels || {}).forEach(([ch, v]) => {
+            if (RESTAURANT_CHANNELS.some(rc => ch.includes(rc))) {
+                restaurantSales += v.sales || 0;
+                restaurantCount += v.count || 0;
+            }
+        });
+    });
+    const avgPerCustomer = restaurantCount > 0 ? Math.round(txv(restaurantSales) / restaurantCount) : (totalCount > 0 ? Math.round(txv(totalSales) / totalCount) : 0);
 
     // ── Build Report HTML ──
     let html = '';
@@ -3818,6 +3829,124 @@ function refreshReport() {
             </tr>`;
         });
         html += `</tbody></table></div>`;
+    }
+
+    // ── 日別実績テーブル ──
+    {
+        const allDates = [];
+        let d = new Date(from);
+        const endD = new Date(to);
+        while (d <= endD) { allDates.push(d.toISOString().slice(0, 10)); d.setDate(d.getDate() + 1); }
+
+        const RESTAURANT_CH = ['LUNCH', 'DINNER', '3CH', 'CAFE', 'ランチ', 'ディナー', 'レストラン'];
+
+        html += `<div style="overflow-x:auto;margin-bottom:20px;">
+            <div style="font-size:12px;color:var(--gold);letter-spacing:2px;font-weight:700;margin-bottom:8px;">📅 日別実績</div>
+            <div style="max-height:500px;overflow-y:auto;">
+            <table class="data-table" id="rpt-daily-table">
+                <thead><tr>
+                    <th>DATE</th><th>曜日</th>
+                    <th class="num">予測売上(${tl})</th>
+                    <th class="num">実績売上(${tl})</th>
+                    <th class="num">達成率</th>
+                    <th class="num">客数</th>
+                    <th class="num">客単価(${tl})</th>
+                    <th>メモ</th>
+                </tr></thead><tbody>`;
+
+        allDates.forEach(dateStr => {
+            // 全対象店舗の当日データを集計
+            let daySales = 0, dayCount = 0, dayRestCount = 0, dayRestSales = 0;
+            let dayHasData = false;
+            let dayMemo = '', dayRopeway = null;
+            let dayFcSales = 0;
+            const dayCh = {};
+            const WDAY = ['日', '月', '火', '水', '木', '金', '土'];
+            const wday = WDAY[new Date(dateStr).getDay()];
+            const wdayColor = wday === '土' ? '#60a5fa' : wday === '日' ? '#f87171' : '#ccc';
+
+            storeIds.forEach(sid => {
+                const fc = forecastForDate(sid, dateStr);
+                dayFcSales += fc.predicted_sales || 0;
+                const rec = (DATA.stores[sid] || []).find(r => r.date === dateStr);
+                if (rec && rec.has_data) {
+                    dayHasData = true;
+                    daySales += rec.actual_sales;
+                    dayCount += rec.actual_count;
+                    if (rec.memo && !dayMemo) dayMemo = rec.memo;
+                    if (rec.ropeway && !dayRopeway) dayRopeway = rec.ropeway;
+                    if (rec.channels) {
+                        Object.entries(rec.channels).forEach(([ch, v]) => {
+                            if (!dayCh[ch]) dayCh[ch] = { sales: 0, count: 0, food: 0, drink: 0 };
+                            dayCh[ch].sales += v.sales || 0;
+                            dayCh[ch].count += v.count || 0;
+                            dayCh[ch].food += v.food || 0;
+                            dayCh[ch].drink += v.drink || 0;
+                            if (RESTAURANT_CH.some(rc => ch.includes(rc))) {
+                                dayRestSales += v.sales || 0;
+                                dayRestCount += v.count || 0;
+                            }
+                        });
+                    }
+                }
+            });
+
+            if (!dayHasData && dayFcSales === 0) return; // 未来+データなし はスキップ
+
+            const rowStyle = !dayHasData ? 'opacity:0.5;' : '';
+            const fcDisp = txv(dayFcSales);
+            const acDisp = txv(daySales);
+            const achRate = dayHasData && dayFcSales > 0 ? (daySales / dayFcSales * 100).toFixed(1) + '%' : '—';
+            const achClass = dayHasData && dayFcSales > 0 ? (daySales / dayFcSales * 100 >= 100 ? 'text-green' : 'text-red') : '';
+            const unitPrice = dayRestCount > 0 ? fmt$(Math.round(txv(dayRestSales) / dayRestCount))
+                : dayCount > 0 ? '—' : '—';
+
+            // メモ + ロープウェイバッジ
+            let memoCell = '';
+            if (dayRopeway && dayRopeway.type && dayRopeway.type !== 'none') {
+                const rwLabels = { 'full': '🚡終日運休', 'partial': '🚡一部運休', 'time': `🚡${dayRopeway.from || ''}〜${dayRopeway.to || ''}` };
+                memoCell += `<span style="display:inline-block;background:rgba(251,146,60,0.15);color:#fb923c;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-bottom:2px;">${rwLabels[dayRopeway.type] || ''}</span><br>`;
+            }
+            if (dayMemo) memoCell += `<span style="color:#aaa;font-size:11px;">${dayMemo}</span>`;
+
+            // チャネル詳細展開
+            const chEntries = Object.entries(dayCh).filter(([, v]) => v && (v.sales > 0 || v.count > 0));
+            const chDetailId = `rptch_${dateStr.replace(/-/g, '')}`;
+            let chDetail = '';
+            if (chEntries.length > 0) {
+                chDetail = `<tr id="${chDetailId}" style="display:none;"><td colspan="8" style="padding:4px 16px 8px;background:rgba(255,255,255,0.02);">
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                    ${chEntries.map(([ch, v]) => {
+                    const s = txv(v.sales || 0);
+                    const avg = v.count > 0 ? fmt$(Math.round(s / v.count)) : '';
+                    return `<div style="background:rgba(200,164,94,0.08);border:1px solid rgba(200,164,94,0.15);border-radius:6px;padding:4px 8px;font-size:11px;">
+                            <strong style="color:#c8a45e;">${ch}</strong>
+                            <span class="mono" style="color:#ccc;margin-left:4px;">${fmt$(s)}</span>
+                            ${v.count > 0 ? `<span style="color:#888;margin-left:4px;">${v.count}名</span>` : ''}
+                            ${avg ? `<span style="color:#666;margin-left:4px;">@${avg}</span>` : ''}
+                        </div>`;
+                }).join('')}
+                    </div>
+                </td></tr>`;
+            }
+
+            const rowClick = chEntries.length > 0
+                ? `onclick="const el=document.getElementById('${chDetailId}');if(el)el.style.display=el.style.display==='none'?'table-row':'none'" style="cursor:pointer;${rowStyle}"`
+                : `style="${rowStyle}"`;
+
+            html += `<tr ${rowClick}>
+                <td>${dateStr}</td>
+                <td style="color:${wdayColor};font-weight:600;">${wday}</td>
+                <td class="num" style="color:var(--blue);">${dayHasData ? '—' : fmt$(fcDisp)}</td>
+                <td class="num" style="color:var(--green);">${dayHasData ? fmt$(acDisp) : '—'}</td>
+                <td class="num ${achClass}">${achRate}</td>
+                <td class="num">${dayHasData ? dayCount : '—'}</td>
+                <td class="num">${dayHasData ? unitPrice : '—'}</td>
+                <td style="font-size:11px;max-width:200px;">${memoCell}</td>
+            </tr>${chDetail}`;
+        });
+
+        html += `</tbody></table></div></div>`;
     }
 
     // Store report data globally for export
