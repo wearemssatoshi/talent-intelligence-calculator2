@@ -526,12 +526,26 @@ function predictFromHistory(storeId, matches, weights, totalWeight) {
         return { sales: 0, count: 0, avgSpend: 0, channels: {} };
     }
 
+    // ── IQR外れ値ダウンウェイト（¥0除く売上の外れ値を0.3倍に減衰） ──
+    const salesValues = matches.map(r => r.actual_sales).filter(s => s > 0).sort((a, b) => a - b);
+    let adjustedWeights = [...weights];
+    if (salesValues.length >= 4) {
+        const q1 = salesValues[Math.floor(salesValues.length * 0.25)];
+        const q3 = salesValues[Math.floor(salesValues.length * 0.75)];
+        const iqr = q3 - q1;
+        const upperFence = q3 + 1.5 * iqr;
+        adjustedWeights = matches.map((r, i) =>
+            r.actual_sales > upperFence ? weights[i] * 0.3 : weights[i]
+        );
+    }
+    const adjTotalWeight = adjustedWeights.reduce((s, w) => s + w, 0);
+
     // ── 全体 客数 + 客単価 ──
-    const weightedCount = matches.reduce((s, r, i) => s + r.actual_count * weights[i], 0);
-    const predictedCount = Math.round(weightedCount / totalWeight);
+    const weightedCount = matches.reduce((s, r, i) => s + r.actual_count * adjustedWeights[i], 0);
+    const predictedCount = Math.round(weightedCount / adjTotalWeight);
     const spendsWithWeight = matches.map((r, i) => ({
         spend: r.actual_count > 0 ? r.actual_sales / r.actual_count : 0,
-        weight: weights[i]
+        weight: adjustedWeights[i]
     })).filter(sw => sw.spend > 0);
     const spendWeight = spendsWithWeight.reduce((s, sw) => s + sw.weight, 0);
     const predictedAvgSpend = spendWeight > 0
@@ -542,7 +556,7 @@ function predictFromHistory(storeId, matches, weights, totalWeight) {
     const channelAgg = {};
     matches.forEach((r, mi) => {
         if (!r.channels) return;
-        const w = weights[mi];
+        const w = adjustedWeights[mi];
         Object.entries(r.channels).forEach(([ch, data]) => {
             if (!channelAgg[ch]) channelAgg[ch] = { sales: 0, count: 0, food: 0, drink: 0, tent: 0, goods: 0, room: 0, flower: 0, wSum: 0 };
             channelAgg[ch].sales += (data.sales || 0) * w;
@@ -624,7 +638,19 @@ function applyFLayer(storeId, dateStr, basePrediction) {
     // ── チャネル合計から売上・客数を再計算 ──
     const channelKeys = Object.keys(channels);
     if (channelKeys.length > 0) {
-        finalSales = channelKeys.reduce((s, ch) => s + (channels[ch].sales || 0), 0);
+        const rawChannelSales = channelKeys.reduce((s, ch) => s + (channels[ch].sales || 0), 0);
+        // チャネル独立集計のsum > base予測の1.15倍 → base予測を優先してチャネルを正規化
+        if (rawChannelSales > basePrediction.sales * 1.15 && basePrediction.sales > 0) {
+            const ratio = basePrediction.sales / rawChannelSales;
+            channelKeys.forEach(ch => {
+                channels[ch].sales = Math.round((channels[ch].sales || 0) * ratio);
+                channels[ch].food = Math.round((channels[ch].food || 0) * ratio);
+                channels[ch].drink = Math.round((channels[ch].drink || 0) * ratio);
+            });
+            finalSales = basePrediction.sales;
+        } else {
+            finalSales = rawChannelSales;
+        }
         finalCount = channelKeys
             .filter(ch => !['席料', '南京錠', '花束', '室料', '展望台', '物販_食品', '物販_アパレル', '物販', 'GOODS', 'テント指定席料', 'アネックス席料'].includes(ch))
             .reduce((s, ch) => s + (channels[ch].count || 0), 0);
