@@ -331,7 +331,7 @@ function getSekki(dateStr) {
 }
 
 // ── Helpers ──
-function fmt$(v) { return v ? '¥' + v.toLocaleString() : '—'; }
+function fmt$(v) { return (v !== null && v !== undefined) ? '¥' + v.toLocaleString() : '—'; }
 function fmtK$(v) { return v >= 1000000 ? '¥' + (v / 1000000).toFixed(1) + 'M' : v >= 1000 ? '¥' + Math.round(v / 1000) + 'K' : '¥' + v; }
 
 // ── ロープウェイ式カラーシステム ──
@@ -474,12 +474,12 @@ function findHistoricalMatches(storeId, dateStr) {
     const targetWeekday = WEEKDAY_JA[targetDate.getDay()];
     const targetYear = targetDate.getFullYear();
 
-    // 同月×同曜日×actual_sales > 0 × 過去データのみ
+    // 同月×同曜日×has_data × 過去データのみ（売上0の営業日も含む）
     let matches = records.filter(r => {
         const rMonth = parseInt(r.date.slice(5, 7));
         return rMonth === targetMonth &&
             r.weekday === targetWeekday &&
-            r.actual_sales > 0 &&
+            r.has_data &&
             r.date < dateStr;
     });
 
@@ -492,7 +492,7 @@ function findHistoricalMatches(storeId, dateStr) {
             const rMonth = parseInt(r.date.slice(5, 7));
             return (rMonth === adjMonth1 || rMonth === adjMonth2) &&
                 r.weekday === targetWeekday &&
-                r.actual_sales > 0 &&
+                r.has_data &&
                 r.date < dateStr;
         });
         if (adjMatches.length > 0) {
@@ -702,7 +702,7 @@ function applyFLayer(storeId, dateStr, basePrediction) {
             const records = DATA.stores[storeId] || [];
             let ohRatioSum = 0, ohRatioCount = 0;
             records.forEach(r => {
-                if (r.actual_sales > 0 && r.onhand_at_week_prior) {
+                if (r.has_data && r.actual_sales > 0 && r.onhand_at_week_prior) {
                     const ratio = r.actual_sales / r.onhand_at_week_prior;
                     if (ratio > 0 && ratio < 5) { // 異常値除外
                         ohRatioSum += ratio;
@@ -761,7 +761,7 @@ function computeMAPE(storeId) {
 
     let totalError = 0, count = 0;
     records.forEach(r => {
-        if (r.actual_sales > 0 && r.date >= cutoffStr && r.date < todayStr) {
+        if (r.has_data && r.actual_sales > 0 && r.date >= cutoffStr && r.date < todayStr) {
             // 過去日の予測を再計算（OnHand除外のF5ベース）
             const hist = findHistoricalMatches(storeId, r.date);
             if (hist.matches.length > 0) {
@@ -981,6 +981,24 @@ async function loadDefaultJSON() {
                 await mergeHistoricalFallback();
 
                 autoCorrectChannelCounts(); // ← チャネル別客数を自動補正
+
+                // ── Load Memos from GAS ──
+                try {
+                    const memoUrl = `${GAS_BRIDGE.getUrl()}?action=loadMemo${GAS_BRIDGE.tokenParam()}`;
+                    const memoResp = await fetch(memoUrl, { redirect: 'follow' });
+                    const memoData = await memoResp.json();
+                    if (memoData.status === 'ok' && memoData.memos) {
+                        memoData.memos.forEach(m => {
+                            const storeRecords = DATA.stores[m.store];
+                            if (!storeRecords) return;
+                            const rec = storeRecords.find(r => r.date === m.date);
+                            if (rec && m.memo) rec.memo = m.memo;
+                        });
+                        console.log(`[GAS] Loaded ${memoData.total} memos`);
+                    }
+                } catch (e) {
+                    console.warn('[GAS] loadMemo failed (GAS未デプロイ?):', e.message);
+                }
                 onDataLoaded();
                 return;
             }
@@ -1036,7 +1054,7 @@ async function mergeHistoricalFallback() {
 
             // mp_data.jsonの中でGASにない日付のレコードのみ追加
             fbRecords.forEach(fbRec => {
-                if (!gasDateSet.has(fbRec.date) && fbRec.actual_sales > 0) {
+                if (!gasDateSet.has(fbRec.date) && (fbRec.has_data || fbRec.actual_sales > 0)) {
                     DATA.stores[storeId].push(fbRec);
                     merged++;
                 }
@@ -1178,8 +1196,8 @@ async function importHistoricalToGAS() {
                 continue;
             }
 
-            // actual_sales > 0 のレコードのみ
-            const activeRecords = records.filter(r => r.actual_sales > 0);
+            // has_data のレコードのみ（売上0の営業日も含む）
+            const activeRecords = records.filter(r => r.has_data || r.actual_sales > 0);
             if (activeRecords.length === 0) {
                 results.push(`⏭ ${storeId}: 実績レコードなし`);
                 continue;
@@ -1292,18 +1310,20 @@ function buildDataFromGAS(gasResult) {
                 kf1_seasonal: sekkiData.pt,
                 kf2: 0, kf3: 0,
                 mp_point: sekkiData.pt,
-                actual_sales: rec.actual_sales || 0,
-                actual_count: rec.actual_count || 0,
+                actual_sales: Number(rec.actual_sales) || 0,
+                actual_count: Number(rec.actual_count) || 0,
+                has_data: rec.actual_sales !== undefined && rec.actual_sales !== null && rec.actual_sales !== '',
                 channels,
+                memo: rec.memo || '',
                 labor: rec.labor || null,
-                ropeway: rec.ropeway || null
+                ropeway: rec.ropeway ? (typeof rec.ropeway === 'string' ? (() => { try { return JSON.parse(rec.ropeway); } catch (e) { return null; } })() : rec.ropeway) : null
             };
         });
 
         // ── Phase 2: Compute KF2/KF3 via min-max normalization ──
         // KF2 = Sales FACTOR (1.0-5.0), KF3 = Customer Count FACTOR (1.0-5.0)
-        const activeSales = baseRecords.filter(r => r.actual_sales > 0).map(r => r.actual_sales);
-        const activeCounts = baseRecords.filter(r => r.actual_count > 0).map(r => r.actual_count);
+        const activeSales = baseRecords.filter(r => r.has_data && r.actual_sales > 0).map(r => r.actual_sales);
+        const activeCounts = baseRecords.filter(r => r.has_data && r.actual_count > 0).map(r => r.actual_count);
 
         const salesMin = activeSales.length ? Math.min(...activeSales) : 0;
         const salesMax = activeSales.length ? Math.max(...activeSales) : 1;
@@ -1313,7 +1333,7 @@ function buildDataFromGAS(gasResult) {
         const countRange = countMax - countMin || 1;
 
         baseRecords.forEach(r => {
-            if (r.actual_sales > 0) {
+            if (r.has_data && r.actual_sales > 0) {
                 // Min-max normalize to 1.0-5.0 scale
                 r.kf2 = Math.round((1.0 + ((r.actual_sales - salesMin) / salesRange) * 4.0) * 100) / 100;
                 r.kf3 = r.actual_count > 0
@@ -1581,7 +1601,7 @@ function renderCommand() {
     filteredStores.forEach(sid => {
         const d = (DATA.stores[sid] || []).find(r => r.date === dateStr);
         const fc = forecastForDate(sid, dateStr);
-        const isActive = d && d.actual_sales > 0;
+        const isActive = d && d.has_data;
 
         storeCards.push({ sid, d, fc, isActive });
 
@@ -1636,7 +1656,7 @@ function renderCommand() {
         const ch = {};
         filteredStores.forEach(sid => {
             const rec = (DATA.stores[sid] || []).find(r => r.date === dStr);
-            if (rec && rec.actual_sales > 0) {
+            if (rec && rec.has_data) {
                 total += rec.actual_sales;
                 count += rec.actual_count;
                 if (rec.mp_point > 0) {
@@ -2479,7 +2499,7 @@ function renderBG() {
     if (!DATA) return;
     const bgRecords = DATA.stores['BG'] || [];
     const bgMeta = DATA.bg_meta || {};
-    const activeRecords = bgRecords.filter(r => r.actual_sales > 0);
+    const activeRecords = bgRecords.filter(r => r.has_data);
     const totalDays = activeRecords.length;
     const totalSales = activeRecords.reduce((s, r) => s + r.actual_sales, 0);
     const totalCount = activeRecords.reduce((s, r) => s + r.actual_count, 0);
@@ -2895,7 +2915,7 @@ function updateTaxDisplay() {
 
         // Per-store total in header
         const storeTotal = document.getElementById(`sf-total-${sid}`);
-        if (storeTotal) storeTotal.textContent = storeExc > 0 ? fmt$(storeExc) : '—';
+        if (storeTotal) storeTotal.textContent = fmt$(storeExc);
 
         grandInc += storeInc;
         grandExc += storeExc;
@@ -2999,7 +3019,7 @@ function updateTaxDisplay() {
 
 function setCalc(id, val) {
     const el = document.getElementById(id);
-    if (el) el.textContent = val > 0 ? fmt$(val) : '—';
+    if (el) el.textContent = (val !== null && val !== undefined) ? fmt$(val) : '—';
 }
 
 
@@ -3020,13 +3040,13 @@ function renderMonthlySummary() {
     filteredStores.forEach(sid => {
         (DATA.stores[sid] || []).forEach(r => {
             const rm = r.date.slice(0, 7);
-            if (rm === ym && r.actual_sales > 0) {
+            if (rm === ym && r.has_data) {
                 currentMonth.sales += r.actual_sales;
                 currentMonth.count += r.actual_count;
                 currentMonth.sales_8pct += (r.sales_8pct || 0);
                 currentMonth.days++;
                 actualDates.add(r.date);
-            } else if (rm === prevYm && r.actual_sales > 0) {
+            } else if (rm === prevYm && r.has_data) {
                 prevMonth.sales += r.actual_sales;
                 prevMonth.count += r.actual_count;
                 prevMonth.sales_8pct += (r.sales_8pct || 0);
@@ -3268,7 +3288,7 @@ function initReportTab() {
     const allMonths = new Set();
     Object.values(DATA.stores).forEach(records => {
         records.forEach(r => {
-            if (r.actual_sales > 0) allMonths.add(r.date.slice(0, 7));
+            if (r.has_data) allMonths.add(r.date.slice(0, 7));
         });
     });
     const sortedMonths = [...allMonths].sort();
@@ -3479,7 +3499,7 @@ function refreshReport() {
 
     storeIds.forEach(sid => {
         const records = (DATA.stores[sid] || []).filter(r =>
-            r.date >= from && r.date <= to && r.actual_sales > 0
+            r.date >= from && r.date <= to && r.has_data
         );
 
         const agg = { sales: 0, count: 0, days: records.length, channels: {}, sales_8pct: 0 };
@@ -3526,7 +3546,7 @@ function refreshReport() {
     let yoySales = 0, yoyCount = 0;
     storeIds.forEach(sid => {
         (DATA.stores[sid] || []).filter(r =>
-            r.date >= yoyFromStr && r.date <= yoyToStr && r.actual_sales > 0
+            r.date >= yoyFromStr && r.date <= yoyToStr && r.has_data
         ).forEach(r => { yoySales += r.actual_sales; yoyCount += r.actual_count; });
     });
 
@@ -3590,7 +3610,7 @@ function refreshReport() {
         // Store YoY
         let syoySales = 0;
         (DATA.stores[sid] || []).filter(r =>
-            r.date >= yoyFromStr && r.date <= yoyToStr && r.actual_sales > 0
+            r.date >= yoyFromStr && r.date <= yoyToStr && r.has_data
         ).forEach(r => { syoySales += r.actual_sales; });
         const syoyPct = syoySales > 0 ? (a.sales / syoySales * 100) : 0;
 
@@ -3744,7 +3764,7 @@ function refreshReport() {
     const monthlyAgg = {};
     storeIds.forEach(sid => {
         (DATA.stores[sid] || []).filter(r =>
-            r.date >= from && r.date <= to && r.actual_sales > 0
+            r.date >= from && r.date <= to && r.has_data
         ).forEach(r => {
             const m = r.date.slice(0, 7);
             if (!monthlyAgg[m]) monthlyAgg[m] = { sales: 0, count: 0, days: new Set(), sales_8pct: 0 };
@@ -3986,7 +4006,7 @@ function renderHeatmapInto(containerId, storeData) {
         for (let i = 0; i < fd; i++) html += '<div></div>';
         days.forEach(x => {
             const day = parseInt(x.date.slice(8));
-            const active = x.actual_sales > 0;
+            const active = x.has_data;
             const level = mpScoreLevel(x.mp_point);
             const bg = mpScoreColor(x.mp_point);
             html += `<div class="hm-cell" style="background:${bg}" title="${x.date} ${x.weekday}\n${x.sekki}（24LV/${ordinal(x.rank)}）\nMP: ${x.mp_point.toFixed(2)} → Daily ${ordinal(level)}${active ? '\n実績: ¥' + x.actual_sales.toLocaleString() : ''}">${day}</div>`;
@@ -4047,7 +4067,7 @@ function runForecast() {
                 kf3: fc.kf3,
                 mp_point: fc.mp_point,
                 predicted_sales: fc.predicted_sales,
-                is_actual: !!existingRec && existingRec.actual_sales > 0,
+                is_actual: !!existingRec && existingRec.has_data,
                 actual_sales: existingRec ? existingRec.actual_sales : 0,
                 is_holiday: fc.is_holiday,
                 holiday_note: fc.holiday_note,
@@ -4232,7 +4252,7 @@ function runForecast() {
                 <td class="num">${r.kf1.toFixed(2)}</td><td class="num">${r.kf2.toFixed(2)}</td><td class="num">${r.kf3.toFixed(2)}</td>
                 <td class="num" style="color:var(--gold);font-weight:700">${r.mp_point.toFixed(2)}</td>
                 <td class="num" style="color:var(--blue)">${predCell}</td>
-                <td class="num" style="color:var(--green)">${r.actual_sales > 0 ? fmt$(txv(r.actual_sales)) : '—'}</td>
+                <td class="num" style="color:var(--green)">${r.is_actual ? fmt$(txv(r.actual_sales)) : '—'}</td>
             </tr>`;
         });
 
@@ -4296,7 +4316,7 @@ function renderCompare() {
     stores.forEach(sid => {
         seasonMp[sid] = {};
         seasons.forEach(s => {
-            const vals = (DATA.stores[sid] || []).filter(r => r.season === s && r.actual_sales > 0).map(r => r.mp_point);
+            const vals = (DATA.stores[sid] || []).filter(r => r.season === s && r.has_data).map(r => r.mp_point);
             seasonMp[sid][s] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
         });
     });
@@ -4334,7 +4354,7 @@ function renderCompare() {
 
     stores.forEach(sid => {
         (DATA.stores[sid] || []).forEach(r => {
-            if (parseInt(r.date.slice(5, 7)) !== targetMonth || r.actual_sales <= 0) return;
+            if (parseInt(r.date.slice(5, 7)) !== targetMonth || !r.has_data) return;
             const y = r.date.slice(0, 4);
             const key = `${y} -${sid} `;
             if (!yearCards[key]) yearCards[key] = { year: y, store: sid, sales: 0, count: 0, days: 0, mpSum: 0 };
@@ -4372,7 +4392,7 @@ function renderCompare() {
 function renderKfRankings() {
     const stores = DATA.meta.stores;
     const ranks = stores.map(sid => {
-        const active = (DATA.stores[sid] || []).filter(r => r.actual_sales > 0);
+        const active = (DATA.stores[sid] || []).filter(r => r.has_data);
         const avgKf2 = active.length ? active.reduce((s, r) => s + r.kf2, 0) / active.length : 0;
         const avgKf3 = active.length ? active.reduce((s, r) => s + r.kf3, 0) / active.length : 0;
         return { sid, avgKf2, avgKf3 };
@@ -4600,16 +4620,14 @@ async function saveAllSalesEntries() {
                 section.items.forEach(item => {
                     const rawVal = gv(`sf-${store}-${item.ch}-sales`);
                     const valInc = toInc(rawVal);
-                    if (valInc > 0) {
-                        channels[item.ch] = { sales: valInc };
-                        totalSales += valInc;
-                    }
+                    channels[item.ch] = { sales: valInc };
+                    totalSales += valInc;
                 });
             }
         });
 
-        // Only save if there's data
-        if (totalSales === 0 && totalCount === 0) return;
+        // §0: 保存ボタンを押した = この拠点のデータを保存する意図がある
+        // 売上0（フォーム空 = 全フィールド0）は正常なデータ入力として扱う
 
         // Update DATA in memory
         if (!DATA.stores[store]) DATA.stores[store] = [];
@@ -4627,6 +4645,7 @@ async function saveAllSalesEntries() {
 
         record.actual_sales = totalSales;
         record.actual_count = totalCount;
+        record.has_data = true;
         record.channels = channels;
 
         // ── Labor data ──
@@ -4683,9 +4702,8 @@ async function saveAllSalesEntries() {
         totalAllSales += totalSales;
     });
 
-    if (savedCount === 0) {
-        if (!confirm('全店舗の売上が0です。保存しますか？')) return;
-    }
+    // §0: 売上0は正常なデータ入力。確認不要。
+    if (savedCount === 0) return; // フォーム未入力時のみスキップ
 
     // mp_data localStorage caching removed — always fetch fresh from server
     try {
@@ -4718,64 +4736,59 @@ async function saveAllSalesEntries() {
         };
 
         // channels → values 配列変換 (STORE_SHEETS ヘッダー順に完全準拠)
-        function channelsToGASValues(store, ch, date) {
+        function channelsToGASValues(store, ch, date, memo, ropeway) {
             const g = (sec, key) => (ch[sec] && ch[sec][key]) || 0;
+            const m = memo || '';
+            const rw = ropeway ? JSON.stringify(ropeway) : '';
             switch (store) {
                 case 'JW':
-                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, TO_Food, TO_Drink, 席料, 南京錠, 花束, 物販_食品, 物販_アパレル
                     return [date,
                         g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
                         g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
                         g('TAKEOUT', 'food'), g('TAKEOUT', 'drink'),
                         g('席料', 'sales'), g('南京錠', 'sales'), g('花束', 'sales'),
-                        0, 0 // 物販_食品, 物販_アパレル (未入力)
+                        0, 0, m, rw
                     ];
                 case 'GA':
-                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 3CH_Food, 3CH_Drink, 3CH人数, 宴会_Food, 宴会_Drink, 宴会人数, 室料, 展望台, 物販_食品, 物販_アパレル
                     return [date,
                         g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
                         g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
                         g('3CH', 'food'), g('3CH', 'drink'), g('3CH', 'count'),
                         g('BANQUET', 'food'), g('BANQUET', 'drink'), g('BANQUET', 'count'),
                         g('室料', 'sales'), g('展望台', 'sales'),
-                        0, 0 // 物販
+                        0, 0, m
                     ];
                 case 'BG':
-                    // headers: date, Food, Drink, Tent, 人数, 物販_食品, 物販_アパレル
                     return [date,
                         g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'tent'), g('ALL', 'count'),
-                        g('ALL', 'goods'), 0 // 物販_アパレル
+                        g('ALL', 'goods'), 0, m
                     ];
                 case 'NP':
-                    // headers: date, L_Food, L_Drink, L人数, D_Food, D_Drink, D人数, 室料, 花束, Event_Food, Event_Drink, Event人数, 物販_食品, 物販_アパレル
                     return [date,
                         g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
                         g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
                         g('EVENT', 'room') || 0, g('EVENT', 'flower') || 0,
                         g('EVENT', 'food'), g('EVENT', 'drink'), g('EVENT', 'count'),
-                        0, 0 // 物販
+                        0, 0, m
                     ];
                 case 'Ce':
                 case 'RP':
-                    // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
                     return [date,
                         g('CAFE', 'food'), g('CAFE', 'drink'), g('CAFE', 'count'),
-                        g('GOODS', 'sales') || 0, 0 // 物販_アパレル
+                        g('GOODS', 'sales') || 0, 0, m
                     ];
                 case 'BQ':
-                    // headers: date, L_Food, L_Drink, L人数, AT_Food, AT_Drink, AT人数, D_Food, D_Drink, D人数, 席料, 物販_食品, 物販_アパレル
                     return [date,
                         g('LUNCH', 'food'), g('LUNCH', 'drink'), g('LUNCH', 'count'),
                         g('AT', 'food'), g('AT', 'drink'), g('AT', 'count'),
                         g('DINNER', 'food'), g('DINNER', 'drink'), g('DINNER', 'count'),
                         g('席料', 'sales'),
-                        0, 0 // 物販
+                        0, 0, m
                     ];
                 case 'RYB':
-                    // headers: date, Food, Drink, 人数, 物販_食品, 物販_アパレル
                     return [date,
                         g('ALL', 'food'), g('ALL', 'drink'), g('ALL', 'count'),
-                        0, 0 // 物販
+                        0, 0, m
                     ];
                 default:
                     return null;
@@ -4786,12 +4799,12 @@ async function saveAllSalesEntries() {
         storeBlocks.forEach(block => {
             const store = block.dataset.store;
             const r = DATA.stores[store]?.find(r => r.date === date);
-            if (!r || (r.actual_sales === 0 && r.actual_count === 0)) return;
+            if (!r || !r.has_data) return;
 
             const sheetName = STORE_TO_SHEET[store];
             if (!sheetName) return;
 
-            const values = channelsToGASValues(store, r.channels || {}, date);
+            const values = channelsToGASValues(store, r.channels || {}, date, r.memo || '', r.ropeway || null);
             if (!values) return;
 
             const payload = {
@@ -4801,6 +4814,10 @@ async function saveAllSalesEntries() {
                 values: values,
                 user: 'DASHBOARD'
             };
+            // トークン認証を追加
+            if (typeof GAS_BRIDGE !== 'undefined' && GAS_BRIDGE.addToken) {
+                GAS_BRIDGE.addToken(payload);
+            }
 
             gasPromises.push(
                 fetch(GAS_BRIDGE.getUrl(), {
@@ -4833,12 +4850,44 @@ async function saveAllSalesEntries() {
                 if (stat) {
                     stat.textContent = `✅ ${okCount}店舗 GAS保存完了 ☁️ ${date} (拠点合計: ¥${totalAllSales.toLocaleString()})`;
                     stat.style.color = 'var(--green)';
-                    setTimeout(() => stat.textContent = '', 5000);
+                    setTimeout(() => stat.textContent = '', 15000);
                 }
+            }
+
+            // ── メモのGAS永続化 ──
+            const memoPromises = [];
+            storeBlocks.forEach(block => {
+                const store = block.dataset.store;
+                const r = DATA.stores[store]?.find(r => r.date === date);
+                const memo = r?.memo || '';
+                const memoPayload = {
+                    action: 'saveMemo',
+                    date: date,
+                    store: store,
+                    memo: memo,
+                    user: 'DASHBOARD'
+                };
+                if (typeof GAS_BRIDGE !== 'undefined' && GAS_BRIDGE.addToken) {
+                    GAS_BRIDGE.addToken(memoPayload);
+                }
+                memoPromises.push(
+                    fetch(GAS_BRIDGE.getUrl(), {
+                        method: 'POST',
+                        redirect: 'follow',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(memoPayload)
+                    }).then(r => r.json()).catch(e => ({ status: 'error', message: e.message }))
+                );
+            });
+            if (memoPromises.length > 0) {
+                Promise.all(memoPromises).then(results => {
+                    const saved = results.filter(r => r.status === 'ok' && r.action !== 'skipped').length;
+                    if (saved > 0) console.log(`[GAS] Memo saved: ${saved} stores`);
+                });
             }
         } else {
             if (stat) {
-                stat.textContent = `⚠️ 保存対象の店舗がありません（売上0）`;
+                stat.textContent = `⚠️ GAS保存対象の店舗がありません — ${date}`;
                 stat.style.color = 'var(--gold)';
             }
         }
@@ -4876,7 +4925,7 @@ function exportForecastCSV() {
         const storeName = getStoreName(sid);
         results.forEach(r => {
             const predTax = txv(r.predicted_sales);
-            const actTax = r.actual_sales > 0 ? txv(r.actual_sales) : 0;
+            const actTax = r.is_actual ? txv(r.actual_sales) : 0;
             const ratio = actTax > 0 && predTax > 0 ? (actTax / predTax * 100).toFixed(1) + '%' : '';
             rows.push([
                 r.date,
