@@ -1728,6 +1728,9 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+    <!-- Firebase SDK for Push Notifications -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 </head>
 
 <body>
@@ -2560,6 +2563,19 @@
                         id="profileTokens">0</span>
                     <span
                         style="font-family: 'Montserrat', sans-serif; font-size: 11px; color: var(--text-gray);">TOKEN</span>
+                </div>
+
+                <!-- Push通知セクション -->
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-gray); letter-spacing: 0.1em; margin-bottom: 10px;">
+                        🔔 プッシュ通知</div>
+                    <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 10px;">チェックアウト忘れのリマインドなどを受け取れます</div>
+                    <button id="pushNotifToggle" onclick="togglePushNotification()"
+                        style="width: 100%; padding: 12px; background: var(--light-gray); color: var(--navy); border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.3s;">
+                        🔔 通知をONにする
+                    </button>
+                    <div id="pushNotifStatus" style="font-size: 10px; color: var(--text-gray); text-align: center; margin-top: 8px;"></div>
                 </div>
 
                 <!-- PIN変更セクション -->
@@ -5076,6 +5092,162 @@
             `;
             document.body.appendChild(banner);
         }
+
+        // ============ Firebase Cloud Messaging (Push通知) ============
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBpmjdOpSsgDOSf3OD5RnptsBgQkNjYaDM",
+            authDomain: "svd-mindful.firebaseapp.com",
+            projectId: "svd-mindful",
+            storageBucket: "svd-mindful.firebasestorage.app",
+            messagingSenderId: "100333818268",
+            appId: "1:100333818268:web:6f2720ab1313968a737859"
+        };
+        const VAPID_KEY = 'BEUrFAE9ayT57pdu7EsKlFUEqAJpHAC0al70goukh-p4FYPz-oB3m-5Ey8nkDOMrgz6kJQYP5qwC51Xn7iJnRo0';
+
+        let firebaseApp = null;
+        let messaging = null;
+
+        // Firebase初期化
+        function initFirebaseMessaging() {
+            try {
+                if (typeof firebase === 'undefined') {
+                    console.log('[FCM] Firebase SDK not loaded');
+                    return;
+                }
+                firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+                messaging = firebase.messaging();
+                console.log('[FCM] Firebase initialized successfully');
+                updatePushNotifUI();
+
+                // フォアグラウンドメッセージ受信
+                messaging.onMessage((payload) => {
+                    console.log('[FCM] Foreground message:', payload);
+                    const title = payload.notification?.title || 'MINDFUL';
+                    const body = payload.notification?.body || '';
+                    // アプリ内通知バナーを表示
+                    showInAppNotification(title, body);
+                });
+            } catch (e) {
+                console.error('[FCM] Init error:', e);
+            }
+        }
+
+        // アプリ内通知バナー
+        function showInAppNotification(title, body) {
+            const banner = document.createElement('div');
+            banner.style.cssText = 'position: fixed; top: 20px; left: 20px; right: 20px; background: linear-gradient(135deg, #1F6B4A, #2d8a5e); color: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 10001; font-family: Inter, sans-serif; animation: slideDown 0.3s ease;';
+            banner.innerHTML = `
+                <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">🔔 ${escapeHtml(title)}</div>
+                <div style="font-size: 12px; opacity: 0.9;">${escapeHtml(body)}</div>
+            `;
+            banner.onclick = () => banner.remove();
+            document.body.appendChild(banner);
+            setTimeout(() => banner.remove(), 8000);
+        }
+
+        // Push通知の許可を切り替え
+        async function togglePushNotification() {
+            const btn = document.getElementById('pushNotifToggle');
+            const status = document.getElementById('pushNotifStatus');
+
+            if (!messaging) {
+                initFirebaseMessaging();
+                if (!messaging) {
+                    status.textContent = '⚠️ 通知機能を初期化できませんでした';
+                    status.style.color = 'var(--danger)';
+                    return;
+                }
+            }
+
+            try {
+                btn.disabled = true;
+                btn.textContent = '⏳ 許可を確認中...';
+
+                const permission = await Notification.requestPermission();
+                console.log('[FCM] Permission:', permission);
+
+                if (permission === 'granted') {
+                    // FCMトークンを取得
+                    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                    console.log('[FCM] Token:', token);
+
+                    if (token) {
+                        // トークンをGASバックエンドに保存
+                        await saveFcmToken(token);
+                        localStorage.setItem('mindful_fcm_token', token);
+                        localStorage.setItem('mindful_push_enabled', 'true');
+
+                        btn.textContent = '✅ 通知ON';
+                        btn.style.background = 'rgba(34, 197, 94, 0.15)';
+                        btn.style.color = 'var(--success)';
+                        btn.style.borderColor = 'var(--success)';
+                        status.textContent = 'チェックアウト忘れの通知が届きます';
+                        status.style.color = 'var(--success)';
+                    }
+                } else if (permission === 'denied') {
+                    btn.textContent = '🚫 通知がブロックされています';
+                    btn.style.color = 'var(--danger)';
+                    status.textContent = 'ブラウザの設定から通知を許可してください';
+                    status.style.color = 'var(--danger)';
+                    localStorage.setItem('mindful_push_enabled', 'false');
+                } else {
+                    btn.textContent = '🔔 通知をONにする';
+                    status.textContent = '';
+                }
+            } catch (error) {
+                console.error('[FCM] Error:', error);
+                btn.textContent = '⚠️ エラーが発生しました';
+                status.textContent = error.message;
+                status.style.color = 'var(--danger)';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // FCMトークンをGASバックエンドに保存
+        async function saveFcmToken(token) {
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
+            const base = profile.base || todayBase || 'moiwayama';
+            const url = SCRIPT_URLS[base];
+            if (!url || !profile.name || !profile.pin) return;
+
+            try {
+                const response = await fetch(
+                    `${url}?action=saveFcmToken&name=${encodeURIComponent(profile.name)}&pin=${encodeURIComponent(profile.pin)}&fcmToken=${encodeURIComponent(token)}${tokenParam()}`
+                );
+                const result = await response.json();
+                console.log('[FCM] Token saved to GAS:', result);
+            } catch (e) {
+                console.error('[FCM] Failed to save token:', e);
+            }
+        }
+
+        // Push通知UIの状態を更新
+        function updatePushNotifUI() {
+            const btn = document.getElementById('pushNotifToggle');
+            const status = document.getElementById('pushNotifStatus');
+            if (!btn || !status) return;
+
+            const isEnabled = localStorage.getItem('mindful_push_enabled') === 'true';
+            if (isEnabled && Notification.permission === 'granted') {
+                btn.textContent = '✅ 通知ON';
+                btn.style.background = 'rgba(34, 197, 94, 0.15)';
+                btn.style.color = 'var(--success)';
+                btn.style.borderColor = 'var(--success)';
+                status.textContent = 'チェックアウト忘れの通知が届きます';
+                status.style.color = 'var(--success)';
+            } else if (Notification.permission === 'denied') {
+                btn.textContent = '🚫 通知がブロックされています';
+                btn.style.color = 'var(--danger)';
+                status.textContent = 'ブラウザの設定から通知を許可してください';
+                status.style.color = 'var(--danger)';
+            }
+        }
+
+        // Firebase初期化（DOMContentLoaded後に実行）
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initFirebaseMessaging, 1000);
+        });
     </script>
 </body>
 

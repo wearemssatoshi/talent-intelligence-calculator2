@@ -1,14 +1,15 @@
-// SVD MINDFUL Service Worker v3.6
-// Purpose: Cache management with automatic updates
+// SVD MINDFUL Service Worker v4.0
+// Purpose: Cache management with automatic updates + Push Notifications
 
-const CACHE_VERSION = 'mindful-v3.6';
+const CACHE_VERSION = 'mindful-v4.0';
 const CACHE_FILES = [
     './',
     './index.html',
     './SVD_MINDFUL.html',
     './SVD_MINDFUL_Dashboard.html',
     './SVD_BRANDGUIDE_v.1.1.pdf',
-    './logo/SVD_icon_square.png'
+    './logo/SVD_icon_square.png',
+    './firebase-messaging-sw.js'
 ];
 
 // Install event - cache essential files
@@ -105,4 +106,62 @@ self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
+});
+
+// ============ Push Notification Handlers ============
+
+// Handle incoming push notifications
+self.addEventListener('push', (event) => {
+    console.log('[SW] Push notification received:', event);
+    
+    let data = {};
+    if (event.data) {
+        try {
+            data = event.data.json();
+        } catch (e) {
+            data = { notification: { title: 'MINDFUL', body: event.data.text() } };
+        }
+    }
+    
+    const title = data.notification?.title || 'MINDFUL';
+    const options = {
+        body: data.notification?.body || 'チェックアウトを忘れていませんか？🔔',
+        icon: './logo/SVD_icon_square.png',
+        badge: './logo/SVD_icon_square.png',
+        tag: 'mindful-checkout-reminder',
+        renotify: true,
+        requireInteraction: true,
+        data: {
+            url: data.data?.url || './index.html'
+        },
+        actions: [
+            { action: 'open', title: 'MINDFULを開く' },
+            { action: 'dismiss', title: '閉じる' }
+        ]
+    };
+    
+    event.waitUntil(
+        self.registration.showNotification(title, options)
+    );
+});
+
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+    console.log('[SW] Notification clicked:', event.action);
+    event.notification.close();
+    
+    if (event.action === 'dismiss') return;
+    
+    const urlToOpen = event.notification.data?.url || './index.html';
+    
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+            for (const client of clientList) {
+                if (client.url.includes('MINDFUL') || client.url.includes('index.html')) {
+                    return client.focus();
+                }
+            }
+            return clients.openWindow(urlToOpen);
+        })
+    );
 });

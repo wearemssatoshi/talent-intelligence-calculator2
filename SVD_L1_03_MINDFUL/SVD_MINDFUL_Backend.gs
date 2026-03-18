@@ -337,6 +337,14 @@ function doGet(e) {
       return getAnnouncements();
     }
     
+    // ============ FCMトークン保存 ============
+    if (action === 'saveFcmToken') {
+      const name = e?.parameter?.name || '';
+      const pin = e?.parameter?.pin || '';
+      const fcmToken = e?.parameter?.fcmToken || '';
+      return saveFcmToken(name, pin, fcmToken);
+    }
+    
     // デフォルト: ダッシュボード用データ取得
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
@@ -611,6 +619,10 @@ function getUsersSheet() {
     }
     if (!headers.includes('Profile_Image')) {
       sheet.getRange(1, lastCol + 1).setValue('Profile_Image');
+      lastCol += 1;
+    }
+    if (!headers.includes('FCM_Token')) {
+      sheet.getRange(1, lastCol + 1).setValue('FCM_Token');
     }
   }
   return sheet;
@@ -1384,5 +1396,298 @@ function callOpenClawGateway(message, userId) {
     console.error('OpenClaw Error:', e);
     return 'SATOSHIに接続できませんでした。後でお試しください。';
   }
+}
+
+// ============ Push通知 (Firebase Cloud Messaging) ============
+
+/**
+ * FCMトークンを保存
+ */
+function saveFcmToken(name, pin, fcmToken) {
+  try {
+    if (!name || !pin || !fcmToken) {
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: false, error: '名前、PIN、FCMトークンが必要です' 
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const sheet = getUsersSheet();
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    const pinHash = hashPin(pin);
+    
+    // FCM_Token列のインデックスを取得
+    let fcmColIndex = headers.indexOf('FCM_Token');
+    if (fcmColIndex === -1) {
+      // 列がなければ追加
+      fcmColIndex = headers.length;
+      sheet.getRange(1, fcmColIndex + 1).setValue('FCM_Token');
+    }
+    
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] === name && data[i][1] === pinHash) {
+        sheet.getRange(i + 1, fcmColIndex + 1).setValue(fcmToken);
+        SpreadsheetApp.flush();
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, message: 'FCMトークンを保存しました' 
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, error: 'ユーザーが見つかりません' 
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      success: false, error: error.message 
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
+ * OAuth2サービスを取得（Firebase Service Account認証）
+ * 事前にスクリプトプロパティに以下を設定:
+ *   FCM_CLIENT_EMAIL: firebase-adminsdk-xxxxx@svd-mindful.iam.gserviceaccount.com
+ *   FCM_PRIVATE_KEY: -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+ */
+function getFirebaseService() {
+  const clientEmail = PropertiesService.getScriptProperties().getProperty('FCM_CLIENT_EMAIL');
+  const privateKey = PropertiesService.getScriptProperties().getProperty('FCM_PRIVATE_KEY');
+  
+  if (!clientEmail || !privateKey) {
+    console.error('[FCM] FCM_CLIENT_EMAIL or FCM_PRIVATE_KEY not set in Script Properties');
+    return null;
+  }
+  
+  return OAuth2.createService('firebase')
+    .setTokenUrl('https://oauth2.googleapis.com/token')
+    .setPrivateKey(privateKey.replace(/\\n/g, '\n'))
+    .setIssuer(clientEmail)
+    .setPropertyStore(PropertiesService.getScriptProperties())
+    .setScope('https://www.googleapis.com/auth/firebase.messaging');
+}
+
+/**
+ * FCM HTTP v1 APIでPush通知を送信
+ * @param {string} fcmToken - 対象デバイスのFCMトークン
+ * @param {string} title - 通知タイトル
+ * @param {string} body - 通知本文
+ */
+function sendPushNotification(fcmToken, title, body) {
+  try {
+    const service = getFirebaseService();
+    if (!service) {
+      console.error('[FCM] Firebase service not configured');
+      return false;
+    }
+    
+    if (!service.hasAccess()) {
+      console.error('[FCM] OAuth2 access denied:', service.getLastError());
+      return false;
+    }
+    
+    const FCM_ENDPOINT = 'https://fcm.googleapis.com/v1/projects/svd-mindful/messages:send';
+    
+    const message = {
+      message: {
+        token: fcmToken,
+        notification: {
+          title: title,
+          body: body
+        },
+        webpush: {
+          notification: {
+            icon: 'https://wearemssatoshi.github.io/talent-intelligence-calculator2/SVD_MINDFUL/logo/SVD_icon_square.png',
+            badge: 'https://wearemssatoshi.github.io/talent-intelligence-calculator2/SVD_MINDFUL/logo/SVD_icon_square.png',
+            tag: 'mindful-checkout-reminder',
+            requireInteraction: true,
+            actions: [
+              { action: 'open', title: 'MINDFULを開く' },
+              { action: 'dismiss', title: '閉じる' }
+            ]
+          },
+          fcm_options: {
+            link: 'https://wearemssatoshi.github.io/talent-intelligence-calculator2/SVD_MINDFUL/index.html'
+          }
+        }
+      }
+    };
+    
+    const response = UrlFetchApp.fetch(FCM_ENDPOINT, {
+      method: 'post',
+      contentType: 'application/json',
+      headers: {
+        'Authorization': 'Bearer ' + service.getAccessToken()
+      },
+      payload: JSON.stringify(message),
+      muteHttpExceptions: true
+    });
+    
+    const statusCode = response.getResponseCode();
+    const responseText = response.getContentText();
+    console.log('[FCM] Send response:', statusCode, responseText);
+    
+    return statusCode === 200;
+    
+  } catch (error) {
+    console.error('[FCM] Send error:', error);
+    return false;
+  }
+}
+
+/**
+ * 未チェックアウトスタッフを検出してPush通知を送信
+ * 毎日22:00 JSTに時間トリガーで実行される
+ */
+function checkAndNotifyForgottenCheckouts() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const logSheet = ss.getSheetByName('MINDFUL_Log');
+    
+    if (!logSheet) {
+      console.log('[FCM] MINDFUL_Log sheet not found');
+      return;
+    }
+    
+    // 今日の日付を取得（JST）
+    const now = new Date();
+    const jstDate = Utilities.formatDate(now, 'Asia/Tokyo', 'yyyy-MM-dd');
+    const jstHour = parseInt(Utilities.formatDate(now, 'Asia/Tokyo', 'HH'));
+    
+    // AM3:00が日の切り替わりなので、その日のログをチェック
+    const logData = logSheet.getDataRange().getValues();
+    
+    // 今日チェックインした人を収集
+    const checkedInUsers = new Set();
+    const checkedOutUsers = new Set();
+    
+    for (let i = 1; i < logData.length; i++) {
+      const timestamp = logData[i][0];
+      const type = logData[i][1];
+      const name = logData[i][2];
+      
+      if (!timestamp || !name) continue;
+      
+      let rowDate;
+      try {
+        rowDate = Utilities.formatDate(new Date(timestamp), 'Asia/Tokyo', 'yyyy-MM-dd');
+      } catch (e) {
+        continue;
+      }
+      
+      if (rowDate === jstDate) {
+        if (type === 'checkin') {
+          checkedInUsers.add(name);
+        } else if (type === 'reflection') {
+          checkedOutUsers.add(name);
+        }
+      }
+    }
+    
+    // C/inあり & C/outなし のユーザーを抽出
+    const forgottenUsers = [];
+    checkedInUsers.forEach(name => {
+      if (!checkedOutUsers.has(name)) {
+        forgottenUsers.push(name);
+      }
+    });
+    
+    console.log('[FCM] Forgotten checkout users:', forgottenUsers);
+    
+    if (forgottenUsers.length === 0) {
+      console.log('[FCM] No forgotten checkouts today');
+      return;
+    }
+    
+    // MINDFUL_UsersからFCMトークンを取得
+    const usersSheet = getUsersSheet();
+    const usersData = usersSheet.getDataRange().getValues();
+    const headers = usersData[0];
+    const fcmColIndex = headers.indexOf('FCM_Token');
+    
+    if (fcmColIndex === -1) {
+      console.log('[FCM] FCM_Token column not found in MINDFUL_Users');
+      return;
+    }
+    
+    let sentCount = 0;
+    forgottenUsers.forEach(name => {
+      for (let i = 1; i < usersData.length; i++) {
+        if (usersData[i][0] === name && usersData[i][fcmColIndex]) {
+          const fcmToken = usersData[i][fcmColIndex];
+          const success = sendPushNotification(
+            fcmToken,
+            'MINDFUL 🔔',
+            `${name}さん、チェックアウトを忘れていませんか？今日のC/OUTをお忘れなく！`
+          );
+          if (success) sentCount++;
+          break;
+        }
+      }
+    });
+    
+    console.log(`[FCM] Sent ${sentCount} reminder(s) to ${forgottenUsers.length} user(s)`);
+    
+  } catch (error) {
+    console.error('[FCM] checkAndNotify error:', error);
+  }
+}
+
+/**
+ * 22:00 JSTの時間トリガーをセットアップ
+ * 初回のみ手動実行してください
+ */
+function setupCheckoutReminder() {
+  // 既存の同名トリガーを削除
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(trigger => {
+    if (trigger.getHandlerFunction() === 'checkAndNotifyForgottenCheckouts') {
+      ScriptApp.deleteTrigger(trigger);
+    }
+  });
+  
+  // 毎日22:00 JSTに実行するトリガーを作成
+  ScriptApp.newTrigger('checkAndNotifyForgottenCheckouts')
+    .timeBased()
+    .atHour(22)
+    .everyDays(1)
+    .inTimezone('Asia/Tokyo')
+    .create();
+  
+  console.log('[FCM] Checkout reminder trigger set for 22:00 JST daily');
+}
+
+/**
+ * テスト用: 手動でPush通知を送信
+ */
+function testPushNotification() {
+  const usersSheet = getUsersSheet();
+  const usersData = usersSheet.getDataRange().getValues();
+  const headers = usersData[0];
+  const fcmColIndex = headers.indexOf('FCM_Token');
+  
+  if (fcmColIndex === -1) {
+    console.log('[FCM] FCM_Token column not found');
+    return;
+  }
+  
+  // 最初のFCMトークンがあるユーザーにテスト送信
+  for (let i = 1; i < usersData.length; i++) {
+    if (usersData[i][fcmColIndex]) {
+      const name = usersData[i][0];
+      const token = usersData[i][fcmColIndex];
+      console.log('[FCM] Sending test to:', name);
+      const success = sendPushNotification(
+        token,
+        'MINDFUL テスト通知 📬',
+        `${name}さん、Push通知のテストです！通知が届いていれば成功です🎉`
+      );
+      console.log('[FCM] Test result:', success);
+      return;
+    }
+  }
+  
+  console.log('[FCM] No users with FCM tokens found');
 }
 

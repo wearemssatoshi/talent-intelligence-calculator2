@@ -40,3 +40,8 @@ KRMSALES/
 
 # Momentum Peaks 拠点定指数Excel
 MomentumPeaks/
+
+# node_modules — npm installで復元可能
+node_modules/
+*.tar.gz
+dotfiles_backup_*

@@ -7,6 +7,7 @@
     "background_color": "#0D1117",
     "theme_color": "#1F6B4A",
     "orientation": "portrait",
+    "permissions": ["notifications"],
     "icons": [
         {
             "src": "logo/SVD_icon_square.png",
