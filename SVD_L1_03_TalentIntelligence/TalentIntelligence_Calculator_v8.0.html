@@ -795,7 +795,12 @@
                 </div>
                 <div class="input-group">
                     <label for="user-name">お名前 (Name)</label>
-                    <input type="text" id="user-name" placeholder="MR.SAPPORO">
+                    <select id="user-name"
+                        style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit; width: 100%;"
+                        onchange="onStaffSelected(this.value)">
+                        <option value="">⏳ 読み込み中...</option>
+                    </select>
+                    <div id="lastEvalInfo" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--secondary-color); display: none;"></div>
                 </div>
                 <div class="input-group">
                     <label for="user-affiliation">所属 (Affiliation)</label>
@@ -1132,6 +1137,104 @@
                 localStorage.setItem('TI_GAS_URL', url);
                 console.log('Backend URL set:', url);
             }
+
+            // ── STAFF ROSTER LOADER ──
+            const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec';
+            let rosterData = [];
+
+            async function loadStaffRoster() {
+                const sel = document.getElementById('user-name');
+                try {
+                    const url = GAS_ENDPOINT + '?action=roster' + (SVD_API_TOKEN ? '&token=' + encodeURIComponent(SVD_API_TOKEN) : '');
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+                    if (data.result === 'success' && data.staff) {
+                        rosterData = data.staff.filter(s => s.status !== 'archived');
+                        rosterData.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ja'));
+                        sel.innerHTML = '<option value="">お名前を選んでください</option>';
+                        rosterData.forEach(s => {
+                            sel.innerHTML += `<option value="${s.staffId}">${s.name} (${s.affiliation || ''})</option>`;
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Roster load failed:', e);
+                    sel.innerHTML = '<option value="">手動入力に切替</option>';
+                }
+            }
+
+            async function onStaffSelected(staffId) {
+                if (!staffId) return;
+                const staff = rosterData.find(s => s.staffId === staffId);
+                if (!staff) return;
+
+                // 所属・役職を自動入力
+                const affSel = document.getElementById('user-affiliation');
+                if (affSel) {
+                    for (const opt of affSel.options) {
+                        if (opt.value === staff.affiliation) { affSel.value = staff.affiliation; break; }
+                    }
+                }
+                const jobSel = document.getElementById('user-job-title');
+                if (jobSel) {
+                    for (const opt of jobSel.options) {
+                        if (opt.value === staff.jobTitle) { jobSel.value = staff.jobTitle; break; }
+                    }
+                }
+
+                // 写真があれば表示
+                if (staff.photoUrl) {
+                    const img = document.getElementById('profilePhoto');
+                    const placeholder = document.getElementById('photoPlaceholder');
+                    if (img && placeholder) {
+                        img.src = staff.photoUrl;
+                        img.style.display = 'block';
+                        placeholder.style.display = 'none';
+                    }
+                }
+
+                // 前回のSelf評価を取得して自動反映
+                const infoDiv = document.getElementById('lastEvalInfo');
+                infoDiv.style.display = 'block';
+                infoDiv.textContent = '📡 前回の評価を読み込み中...';
+
+                try {
+                    const url = GAS_ENDPOINT + '?action=history&staffId=' + staffId + (SVD_API_TOKEN ? '&token=' + encodeURIComponent(SVD_API_TOKEN) : '');
+                    const resp = await fetch(url);
+                    const data = await resp.json();
+
+                    if (data.result === 'success' && data.history && data.history.length > 0) {
+                        // Self評価を探す（最新優先）
+                        const selfEval = data.history.find(h => h.evalType === 'Self');
+                        if (selfEval && selfEval.scores) {
+                            // スライダーに反映
+                            const skillKeys = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6',
+                                               'e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
+                            skillKeys.forEach(k => {
+                                const select = document.getElementById(k);
+                                if (select && selfEval.scores[k] !== undefined) {
+                                    select.value = String(selfEval.scores[k]);
+                                }
+                            });
+
+                            const evalDate = new Date(selfEval.timestamp);
+                            const dateStr = evalDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
+                            infoDiv.innerHTML = `✅ 前回 Self 評価（${dateStr}）を読み込みました。スコアをスライダーに反映済み！`;
+                        } else {
+                            infoDiv.textContent = '📝 Self評価の履歴がありません。初めての自己評価です！';
+                        }
+                    } else {
+                        infoDiv.textContent = '📝 評価履歴がありません。初めての評価です！';
+                    }
+                } catch (e) {
+                    console.warn('History load failed:', e);
+                    infoDiv.textContent = '⚠️ 履歴の読み込みに失敗しました';
+                }
+            }
+
+            // ページ読み込み時にrosterをロード
+            document.addEventListener('DOMContentLoaded', () => {
+                loadStaffRoster();
+            });
 
             // --- RULE-BASED AI ADVICE (フロントエンド版・コストフリー) ---
             const ADVICE_DATABASE = {

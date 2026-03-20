@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TALENT INTELLIGENCE — SVD People OS</title>
+    <meta name="description" content="SVD Talent Intelligence Dashboard — Staff Assessment & Shift Optimization">
+    <link rel="stylesheet" href="style.css?v=20260320h">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="ti_bridge.js"></script>
+</head>
+
+<body>
+
+    <!-- ═══ Header ═══ -->
+    <div class="header">
+        <div>
+            <h1>TALENT INTELLIGENCE</h1>
+            <div class="subtitle">People OS — Supply Intelligence</div>
+        </div>
+        <div class="header-right">
+            <span class="gas-badge" id="connectionBadge">● NOT SET</span>
+            <span class="version-tag">v3.0</span>
+        </div>
+    </div>
+
+    <!-- ═══ Navigation ═══ -->
+    <nav class="nav" id="mainNav">
+        <button class="nav-btn active" data-tab="roster">① ROSTER<span class="nav-sub">チーム一覧</span></button>
+        <button class="nav-btn" data-tab="assess">② ASSESS<span class="nav-sub">人材評価</span></button>
+        <button class="nav-btn" data-tab="growth">③ GROWTH<span class="nav-sub">成長比較</span></button>
+        <button class="nav-btn" data-tab="shift">④ SHIFT LINK<span class="nav-sub">シフト提案</span></button>
+        <button class="nav-btn" data-tab="settings">⑤ SETTINGS<span class="nav-sub">GAS設定</span></button>
+    </nav>
+
+    <!-- ═══ ① ROSTER ═══ -->
+    <div class="panel active" id="p-roster">
+        <!-- Search & Filter -->
+        <div class="filter-bar">
+            <input type="text" id="searchInput" class="search-input" placeholder="スタッフ検索...">
+            <select id="filterAffiliation" class="filter-select">
+                <option value="">全拠点</option>
+            </select>
+            <select id="filterRole" class="filter-select">
+                <option value="">全ロール</option>
+            </select>
+            <div class="roster-count" id="rosterCount">— Staff</div>
+        </div>
+
+        <!-- Staff Grid (Team-Grouped) -->
+        <div class="staff-grid" id="staffGrid">
+            <div class="loading-placeholder">
+                <div class="loading-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        style="color:var(--text-muted);">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                </div>
+                <div>GAS を接続して、チームを読み込んでください</div>
+                <div class="loading-hint">⑤ SETTINGS タブで GAS URL を設定</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ② ASSESS ═══ -->
+    <div class="panel" id="p-assess">
+        <div class="assess-container">
+            <!-- Staff Selector -->
+            <div class="card">
+                <h3>EVALUATION TARGET</h3>
+                <div class="assess-selector">
+                    <select id="assessStaff" class="filter-select full-width">
+                        <option value="">スタッフを選択...</option>
+                    </select>
+                    <span class="assess-type-label">評価タイプ:</span>
+                    <select id="assessType" class="filter-select">
+                        <option value="Manager">Manager</option>
+                        <option value="Self">Self</option>
+                        <option value="Peer">Peer</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Skill Sliders -->
+            <div class="card" id="skillCard" style="display:none;">
+                <h3><svg class="inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg> SKILL ASSESSMENT (24 Attributes)</h3>
+                <div class="category-tabs">
+                    <button class="cat-btn active" data-cat="P">P — Performance</button>
+                    <button class="cat-btn" data-cat="S">S — Service</button>
+                    <button class="cat-btn" data-cat="E">E — Expertise</button>
+                    <button class="cat-btn" data-cat="M">M — Management</button>
+                </div>
+                <div id="skillSliders"></div>
+                <div class="score-summary">
+                    <div class="total-score" id="totalScore">0</div>
+                    <div class="total-label">HAPPINESS BUILDING SKILLS</div>
+                </div>
+            </div>
+
+            <!-- Radar Chart + Memo -->
+            <div class="card" id="radarCard" style="display:none;">
+                <div class="radar-memo-grid">
+                    <div class="chart-wrap radar-wrap"><canvas id="radarChart"></canvas></div>
+                    <div>
+                        <h3><svg class="inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg> MANAGER MEMO</h3>
+                        <textarea id="assessMemo" class="memo-textarea" placeholder="成長ポイント、課題、期待値など..."></textarea>
+                        <div class="assess-evaluator">
+                            <label>評価者:</label>
+                            <input type="text" id="assessEvaluator" class="filter-select" placeholder="評価者名">
+                        </div>
+                        <button class="btn btn-gold btn-lg" id="btnSaveAssess" onclick="saveAssessment()">SAVE
+                            ASSESSMENT</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Advice -->
+            <div class="card" id="adviceCard" style="display:none;">
+                <h3><svg class="inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg> AI ADVICE</h3>
+                <div id="adviceContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ③ GROWTH ═══ -->
+    <div class="panel" id="p-growth">
+        <div class="card">
+            <h3>GROWTH COMPARISON</h3>
+            <div class="growth-controls">
+                <select id="growthStaff1" class="filter-select">
+                    <option value="">スタッフ1</option>
+                </select>
+                <select id="growthStaff2" class="filter-select">
+                    <option value="">スタッフ2 (任意)</option>
+                </select>
+                <button class="btn btn-gold" onclick="loadGrowthChart()">COMPARE</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="chart-wrap tall"><canvas id="growthChart"></canvas></div>
+        </div>
+        <div id="growthTimeline"></div>
+    </div>
+
+    <!-- ═══ ④ SHIFT LINK ═══ -->
+    <div class="panel" id="p-shift">
+        <div class="card">
+            <h3><svg class="inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg> MP × TI — SHIFT PROPOSAL</h3>
+            <div class="shift-controls">
+                <div class="control-group">
+                    <label>DATE</label>
+                    <input type="date" id="shiftDate">
+                </div>
+                <div class="control-group">
+                    <label>STORE</label>
+                    <select id="shiftStore" class="filter-select">
+                        <option value="JW">JW — The Jewels</option>
+                        <option value="NP">NP — Nouvelle Pousse</option>
+                        <option value="BQ">BQ — Banquet</option>
+                    </select>
+                </div>
+                <button class="btn btn-gold" onclick="generateShiftProposal()">GENERATE PROPOSAL</button>
+            </div>
+        </div>
+
+        <div id="shiftProposal">
+            <div class="shift-placeholder">
+                <div class="loading-icon">
+                    <span class="pulse-dot"></span>
+                </div>
+                <div>SHIFT ENGINE</div>
+                <div class="loading-hint">MP (DEMAND) × TI (SUPPLY) = ONE-BUTTON SHIFT MAKER</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ⑤ SETTINGS ═══ -->
+    <div class="panel" id="p-settings">
+        <div class="card" id="gasSettingsCard"></div>
+        <div class="card">
+            <h3>SYSTEM INFO</h3>
+            <div class="system-info">
+                <div class="info-row"><span class="info-label">Architecture</span><span class="info-value">2-Layer
+                        (Master + Staff_[ID])</span></div>
+                <div class="info-row"><span class="info-label">Max Staff</span><span class="info-value">60</span></div>
+                <div class="info-row"><span class="info-label">Key System</span><span class="info-value">StaffID
+                        (SVD-NNN)</span></div>
+                <div class="info-row"><span class="info-label">Shift Engine</span><span class="info-value">Frontend JS
+                        (Zero-Lag)</span></div>
+                <div class="info-row"><span class="info-label">Config-Driven</span><span class="info-value">LOCATIONS,
+                        ROLES, HIERARCHY</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Staff Detail Modal ═══ -->
+    <div class="modal-overlay hidden" id="staffModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">スタッフ詳細</h3>
+                <div class="modal-header-actions">
+                    <button class="btn btn--pdf" onclick="exportModalPDF()">PDF出力</button>
+                    <button class="btn" onclick="closeModal()">✕ 閉じる</button>
+                </div>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js?v=20260320j"></script>
+</body>
+
+</html>

@@ -1,3 +1,9 @@
+/*
+// ═══════════════════════════════════════════════════
+// ARCHIVED: Talent Intelligence Backend v2.0
+// Commented out for v3.0 migration — DO NOT DELETE
+// ═══════════════════════════════════════════════════
+
 /**
  * ==============================================
  * Talent Intelligence Backend v2.0
@@ -26,7 +32,7 @@ const CONFIG = {
 function verifyToken(e, isPost) {
   const TOKEN = PropertiesService.getScriptProperties().getProperty('SVD_API_TOKEN');
   if (!TOKEN) return true; // トークン未設定時はスキップ（段階的導入）
-  
+
   let provided;
   if (isPost) {
     provided = e.parameter?.token;
@@ -37,9 +43,9 @@ function verifyToken(e, isPost) {
 }
 
 function unauthorizedResponse() {
-  return ContentService.createTextOutput(JSON.stringify({ 
-    result: 'error', 
-    error: 'Unauthorized: Invalid or missing API token' 
+  return ContentService.createTextOutput(JSON.stringify({
+    result: 'error',
+    error: 'Unauthorized: Invalid or missing API token'
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -122,26 +128,26 @@ const ADVICE_DATABASE = {
 function generateAdvice(scores) {
   // カテゴリ平均を計算
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
-  
+
   const pScores = [scores.p1, scores.p2, scores.p3, scores.p4, scores.p5, scores.p6].map(Number);
   const sScores = [scores.s1, scores.s2, scores.s3, scores.s4, scores.s5, scores.s6].map(Number);
   const eScores = [scores.e1, scores.e2, scores.e3, scores.e4, scores.e5, scores.e6].map(Number);
   const mScores = [scores.m1, scores.m2, scores.m3, scores.m4, scores.m5, scores.m6].map(Number);
-  
+
   const pAvg = avg(pScores);
   const sAvg = avg(sScores);
   const eAvg = avg(eScores);
   const mAvg = avg(mScores);
-  
+
   const totalScore = parseFloat(scores.totalScore) || 0;
-  
+
   // レベル判定
   const getLevel = (score) => {
     if (score < 2.5) return 'low';
     if (score < 3.5) return 'mid';
     return 'high';
   };
-  
+
   const getOverallLevel = (total) => {
     if (total < 20) return 'beginner';
     if (total < 35) return 'developing';
@@ -149,7 +155,7 @@ function generateAdvice(scores) {
     if (total < 65) return 'expert';
     return 'master';
   };
-  
+
   // カテゴリ分析
   const categories = [
     { name: 'Performance', nameJp: 'パフォーマンス', key: 'performance', score: pAvg },
@@ -157,17 +163,17 @@ function generateAdvice(scores) {
     { name: 'Expertise', nameJp: '専門知識', key: 'expertise', score: eAvg },
     { name: 'Management', nameJp: 'マネジメント', key: 'management', score: mAvg }
   ];
-  
+
   categories.sort((a, b) => a.score - b.score);
   const weakest = categories[0];
   const strongest = categories[3];
-  
+
   // ランダムにアドバイスを選択
   const getRandomTip = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  
+
   const weakestLevel = getLevel(weakest.score);
   const strongestLevel = getLevel(strongest.score);
-  
+
   return {
     totalScore: totalScore.toFixed(2),
     overallLevel: getOverallLevel(totalScore),
@@ -209,7 +215,7 @@ function doPost(e) {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
-    
+
     // シートがなければ作成
     if (!sheet) {
       sheet = ss.insertSheet(CONFIG.SHEET_NAME);
@@ -223,21 +229,21 @@ function doPost(e) {
       ];
       sheet.appendRow(headers);
     }
-    
+
     const getParam = (name) => e.parameter[name] || '';
     const action = getParam('action') || 'save';
-    
+
     // --- ACTION: UPDATE (既存データ更新) ---
     if (action === 'update') {
       const targetName = getParam('targetName');
       const targetAffiliation = getParam('targetAffiliation');
-      
+
       if (!targetName) {
         return ContentService
           .createTextOutput(JSON.stringify({ result: 'error', error: 'targetName is required for update' }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       // 行を検索
       const rows = sheet.getDataRange().getValues();
       let targetRow = -1;
@@ -247,20 +253,20 @@ function doPost(e) {
           break;
         }
       }
-      
+
       if (targetRow === -1) {
         return ContentService
           .createTextOutput(JSON.stringify({ result: 'error', error: 'Staff not found: ' + targetName }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       // 部分更新: 指定されたフィールドのみ更新
       const COL = {
         TIMESTAMP: 1, NAME: 2, AFFILIATION: 3, JOB_TITLE: 4, TYPE_SELF: 5, TYPE_OTHER: 6,
         TOTAL_SCORE: 7, QUALIFICATIONS: 8, QUAL_SCORE: 9, MEISTER_RANK: 10, ROLES: 11, PHOTO_DATA: 12,
         SKILLS_START: 13
       };
-      
+
       // 更新可能なフィールド
       if (getParam('newAffiliation')) sheet.getRange(targetRow, COL.AFFILIATION).setValue(getParam('newAffiliation'));
       if (getParam('roles')) sheet.getRange(targetRow, COL.ROLES).setValue(getParam('roles'));
@@ -268,35 +274,35 @@ function doPost(e) {
       if (getParam('TypeOther')) sheet.getRange(targetRow, COL.TYPE_OTHER).setValue(getParam('TypeOther'));
       if (getParam('meisterRank')) sheet.getRange(targetRow, COL.MEISTER_RANK).setValue(getParam('meisterRank'));
       if (getParam('qualifications')) sheet.getRange(targetRow, COL.QUALIFICATIONS).setValue(getParam('qualifications'));
-      
+
       // スキルスコア更新
-      const skillParams = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6','e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
+      const skillParams = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 's1', 's2', 's3', 's4', 's5', 's6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6'];
       skillParams.forEach((skill, idx) => {
         if (getParam(skill)) {
           sheet.getRange(targetRow, COL.SKILLS_START + idx).setValue(getParam(skill));
         }
       });
-      
+
       // TotalScore再計算（スキルが更新された場合）
       if (getParam('totalScore')) {
         sheet.getRange(targetRow, COL.TOTAL_SCORE).setValue(getParam('totalScore'));
       }
-      
+
       // タイムスタンプ更新
       sheet.getRange(targetRow, COL.TIMESTAMP).setValue(new Date());
-      
+
       SpreadsheetApp.flush();
-      
+
       return ContentService
-        .createTextOutput(JSON.stringify({ 
-          result: 'success', 
+        .createTextOutput(JSON.stringify({
+          result: 'success',
           message: 'データを更新しました: ' + targetName,
           updatedRow: targetRow,
           version: CONFIG.VERSION
         }))
         .setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     // --- ACTION: SAVE (新規追加 - 既存動作) ---
     const nextRow = [];
     nextRow.push(new Date()); // Timestamp
@@ -311,7 +317,7 @@ function doPost(e) {
     nextRow.push(getParam('meisterRank')); // MeisterRank
     nextRow.push(getParam('roles')); // Roles (v2.1: comma-separated)
     nextRow.push(getParam('photoData')); // PhotoData (Base64)
-    
+
     // Skill Matrix Scores (p1-m6)
     const prefixes = ['p', 's', 'e', 'm'];
     prefixes.forEach(prefix => {
@@ -319,10 +325,10 @@ function doPost(e) {
         nextRow.push(getParam(`${prefix}${i}`));
       }
     });
-    
+
     sheet.appendRow(nextRow);
     SpreadsheetApp.flush();
-    
+
     // Generate AI advice
     const scores = {
       totalScore: getParam('totalScore'),
@@ -332,10 +338,10 @@ function doPost(e) {
       m1: getParam('m1'), m2: getParam('m2'), m3: getParam('m3'), m4: getParam('m4'), m5: getParam('m5'), m6: getParam('m6')
     };
     const advice = generateAdvice(scores);
-    
+
     return ContentService
-      .createTextOutput(JSON.stringify({ 
-        result: 'success', 
+      .createTextOutput(JSON.stringify({
+        result: 'success',
         message: '評価データを保存しました',
         advice: advice,
         version: CONFIG.VERSION
@@ -344,9 +350,9 @@ function doPost(e) {
 
   } catch (error) {
     return ContentService
-      .createTextOutput(JSON.stringify({ 
-        result: 'error', 
-        error: error.toString() 
+      .createTextOutput(JSON.stringify({
+        result: 'error',
+        error: error.toString()
       }))
       .setMimeType(ContentService.MimeType.JSON);
   } finally {
@@ -372,30 +378,30 @@ function doGet(e) {
     const action = e.parameter.action || 'list';
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     let sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
-    
+
     if (!sheet) {
       return ContentService
-        .createTextOutput(JSON.stringify({ 
-          result: 'error', 
-          message: 'シートが見つかりません' 
+        .createTextOutput(JSON.stringify({
+          result: 'error',
+          message: 'シートが見つかりません'
         }))
         .setMimeType(ContentService.MimeType.JSON);
     }
-    
+
     const rows = sheet.getDataRange().getValues();
     const headers = rows[0];
-    
+
     // Column indices (現在のスプレッドシート構造に合わせて調整)
     // 注: PhotoData列は存在しないため-1、スキルはK列(10)から開始
     const COL = {
-      TIMESTAMP: 0, NAME: 1, AFFILIATION: 2, JOB_TITLE: 3, 
-      TYPE_SELF: 4, TYPE_OTHER: 5, TOTAL_SCORE: 6, 
+      TIMESTAMP: 0, NAME: 1, AFFILIATION: 2, JOB_TITLE: 3,
+      TYPE_SELF: 4, TYPE_OTHER: 5, TOTAL_SCORE: 6,
       QUALIFICATIONS: 7, QUAL_SCORE: 8, MEISTER_RANK: 9, ROLES: 10, PHOTO_DATA: 11,
       SKILLS_START: 12, SKILLS_END: 35
     };
-    
+
     switch (action) {
-      
+
       // 名前一覧を取得
       case 'list': {
         const namesSet = new Set();
@@ -404,20 +410,20 @@ function doGet(e) {
           if (name) namesSet.add(name);
         }
         return ContentService
-          .createTextOutput(JSON.stringify({ 
-            result: 'success', 
+          .createTextOutput(JSON.stringify({
+            result: 'success',
             names: Array.from(namesSet).sort(),
             count: namesSet.size,
             version: CONFIG.VERSION
           }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       // 名前で検索（履歴取得）
       case 'search': {
         const searchName = e.parameter.name || '';
         const records = [];
-        
+
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
           if (row[COL.NAME] === searchName) {
@@ -435,39 +441,39 @@ function doGet(e) {
               Roles: row[COL.ROLES] || '',
               PhotoData: COL.PHOTO_DATA >= 0 ? (row[COL.PHOTO_DATA] || '') : ''
             };
-            
+
             // Add skill scores
-            const skillNames = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6','e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
+            const skillNames = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 's1', 's2', 's3', 's4', 's5', 's6', 'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6'];
             for (let j = 0; j < skillNames.length; j++) {
               record[skillNames[j]] = row[COL.SKILLS_START + j];
             }
-            
+
             records.push(record);
           }
         }
-        
+
         // Sort by timestamp descending (newest first)
         records.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
-        
+
         return ContentService
-          .createTextOutput(JSON.stringify({ 
-            result: 'success', 
+          .createTextOutput(JSON.stringify({
+            result: 'success',
             data: records,
             count: records.length,
             version: CONFIG.VERSION
           }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       // 全データ取得（ダッシュボード用） - Manager Dashboard互換エイリアス
       case 'getStaffData':
       case 'all': {
         const allData = [];
-        
+
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
           if (!row[COL.NAME]) continue;
-          
+
           allData.push({
             name: row[COL.NAME],
             affiliation: row[COL.AFFILIATION],
@@ -482,56 +488,56 @@ function doGet(e) {
             detailedScores: row.slice(COL.SKILLS_START, COL.SKILLS_END + 1)
           });
         }
-        
+
         return ContentService
-          .createTextOutput(JSON.stringify({ 
-            status: 'success', 
+          .createTextOutput(JSON.stringify({
+            status: 'success',
             data: allData,
             count: allData.length,
             version: CONFIG.VERSION
           }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       // アドバイス生成のみ
       case 'advice': {
         const scores = {
           totalScore: e.parameter.totalScore || '0',
-          p1: e.parameter.p1 || '0', p2: e.parameter.p2 || '0', p3: e.parameter.p3 || '0', 
+          p1: e.parameter.p1 || '0', p2: e.parameter.p2 || '0', p3: e.parameter.p3 || '0',
           p4: e.parameter.p4 || '0', p5: e.parameter.p5 || '0', p6: e.parameter.p6 || '0',
-          s1: e.parameter.s1 || '0', s2: e.parameter.s2 || '0', s3: e.parameter.s3 || '0', 
+          s1: e.parameter.s1 || '0', s2: e.parameter.s2 || '0', s3: e.parameter.s3 || '0',
           s4: e.parameter.s4 || '0', s5: e.parameter.s5 || '0', s6: e.parameter.s6 || '0',
-          e1: e.parameter.e1 || '0', e2: e.parameter.e2 || '0', e3: e.parameter.e3 || '0', 
+          e1: e.parameter.e1 || '0', e2: e.parameter.e2 || '0', e3: e.parameter.e3 || '0',
           e4: e.parameter.e4 || '0', e5: e.parameter.e5 || '0', e6: e.parameter.e6 || '0',
-          m1: e.parameter.m1 || '0', m2: e.parameter.m2 || '0', m3: e.parameter.m3 || '0', 
+          m1: e.parameter.m1 || '0', m2: e.parameter.m2 || '0', m3: e.parameter.m3 || '0',
           m4: e.parameter.m4 || '0', m5: e.parameter.m5 || '0', m6: e.parameter.m6 || '0'
         };
-        
+
         const advice = generateAdvice(scores);
-        
+
         return ContentService
-          .createTextOutput(JSON.stringify({ 
-            result: 'success', 
+          .createTextOutput(JSON.stringify({
+            result: 'success',
             advice: advice,
             version: CONFIG.VERSION
           }))
           .setMimeType(ContentService.MimeType.JSON);
       }
-      
+
       default:
         return ContentService
-          .createTextOutput(JSON.stringify({ 
-            result: 'error', 
-            message: 'Unknown action: ' + action 
+          .createTextOutput(JSON.stringify({
+            result: 'error',
+            message: 'Unknown action: ' + action
           }))
           .setMimeType(ContentService.MimeType.JSON);
     }
 
   } catch (error) {
     return ContentService
-      .createTextOutput(JSON.stringify({ 
-        result: 'error', 
-        error: error.toString() 
+      .createTextOutput(JSON.stringify({
+        result: 'error',
+        error: error.toString()
       }))
       .setMimeType(ContentService.MimeType.JSON);
   } finally {
@@ -550,7 +556,10 @@ function testAdvice() {
     e1: '2', e2: '2', e3: '3', e4: '2', e5: '2', e6: '3',
     m1: '3', m2: '3', m3: '4', m4: '3', m5: '3', m6: '4'
   };
-  
+
   const advice = generateAdvice(testScores);
   Logger.log(JSON.stringify(advice, null, 2));
 }
+
+// END OF ARCHIVED v2.0 CODE
+*/
