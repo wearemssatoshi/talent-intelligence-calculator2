@@ -748,6 +748,23 @@ function renderStaffGrid(staff) {
         // P/S/E/M ミニバーの高さ (0-10 → 0-100%)
         const barH = (val) => Math.min((Number(val) / 10) * 100, 100);
 
+        // シナジーポイント計算（TOTAL HBSに反映）
+        const typedMembers = team.members.filter(m => m.type);
+        let bestPairs = 0, cautionPairs = 0;
+        for (let i = 0; i < typedMembers.length; i++) {
+            for (let j = i + 1; j < typedMembers.length; j++) {
+                const a = typedMembers[i].type, b = typedMembers[j].type;
+                if (SYNERGY_DATA[a]?.best?.includes(b) || SYNERGY_DATA[b]?.best?.includes(a)) bestPairs++;
+                if (SYNERGY_DATA[a]?.caution?.includes(b) || SYNERGY_DATA[b]?.caution?.includes(a)) cautionPairs++;
+            }
+        }
+        const synergyPt = bestPairs - cautionPairs;
+        const adjustedTotal = totalCP + synergyPt;
+        const spSign = synergyPt > 0 ? '+' : '';
+        const spColor = synergyPt > 0 ? 'var(--green)' : synergyPt < 0 ? 'var(--red)' : '';
+        const synergyBadge = synergyPt !== 0 
+            ? `<span style="font-size:0.65rem;font-weight:600;color:${spColor};margin-left:2px;">(${spSign}${synergyPt})</span>` : '';
+
         // メンバーカード（Brigade順にソート: ①→⑥、同一レベル内はスコア降順）
         const LEVEL_ORDER = {'①':1,'②':2,'③':3,'④':4,'⑤':5,'⑥':6};
         const sortedMembers = [...team.members].sort((a, b) => {
@@ -772,7 +789,7 @@ function renderStaffGrid(staff) {
                     </div>
                     <div class="team-stat">
                         <span class="team-stat-label">TOTAL HBS</span>
-                        <span class="team-stat-value" style="color:${color};">${totalCP.toFixed(0)}</span>
+                        <span class="team-stat-value" style="color:${color};">${adjustedTotal.toFixed(0)}${synergyBadge}</span>
                     </div>
                     <div class="team-stat">
                         <span class="team-stat-label">AVG HBS</span>
@@ -785,27 +802,13 @@ function renderStaffGrid(staff) {
                         <div class="team-bar-wrap" title="M: ${avgM}"><div class="team-bar-fill" style="height:${barH(avgM)}%;background:#a08058;"></div><span class="team-bar-key">M</span></div>
                     </div>
                     ${(() => {
-                        // Team synergy summary
-                        const typedMembers = team.members.filter(m => m.type);
+                        // Team synergy summary (reuse outer typedMembers, bestPairs, cautionPairs)
                         if (typedMembers.length === 0) return '';
                         
-                        // Count attribute types
                         const typeCounts = {};
                         typedMembers.forEach(m => {
                             typeCounts[m.type] = (typeCounts[m.type] || 0) + 1;
                         });
-                        
-                        // Count synergy pairs
-                        let bestPairs = 0, cautionPairs = 0;
-                        for (let i = 0; i < typedMembers.length; i++) {
-                            for (let j = i + 1; j < typedMembers.length; j++) {
-                                const a = typedMembers[i].type, b = typedMembers[j].type;
-                                if (SYNERGY_DATA[a]?.best?.includes(b)) bestPairs++;
-                                if (SYNERGY_DATA[a]?.caution?.includes(b)) cautionPairs++;
-                                if (SYNERGY_DATA[b]?.best?.includes(a)) bestPairs++;
-                                if (SYNERGY_DATA[b]?.caution?.includes(a)) cautionPairs++;
-                            }
-                        }
                         
                         const typeChips = Object.entries(typeCounts).map(([t, c]) => {
                             const info = SVD_TYPES[t];
