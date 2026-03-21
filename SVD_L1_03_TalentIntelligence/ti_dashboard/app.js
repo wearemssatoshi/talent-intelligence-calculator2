@@ -550,6 +550,43 @@ function renderStaffGrid(staff) {
                         <div class="team-bar-wrap" title="E: ${avgE}"><div class="team-bar-fill" style="height:${barH(avgE)}%;background:#9a7eb8;"></div><span class="team-bar-key">E</span></div>
                         <div class="team-bar-wrap" title="M: ${avgM}"><div class="team-bar-fill" style="height:${barH(avgM)}%;background:#a08058;"></div><span class="team-bar-key">M</span></div>
                     </div>
+                    ${(() => {
+                        // Team synergy summary
+                        const typedMembers = team.members.filter(m => m.type);
+                        if (typedMembers.length === 0) return '';
+                        
+                        // Count attribute types
+                        const typeCounts = {};
+                        typedMembers.forEach(m => {
+                            typeCounts[m.type] = (typeCounts[m.type] || 0) + 1;
+                        });
+                        
+                        // Count synergy pairs
+                        let bestPairs = 0, cautionPairs = 0;
+                        for (let i = 0; i < typedMembers.length; i++) {
+                            for (let j = i + 1; j < typedMembers.length; j++) {
+                                const a = typedMembers[i].type, b = typedMembers[j].type;
+                                if (SYNERGY_DATA[a]?.best?.includes(b)) bestPairs++;
+                                if (SYNERGY_DATA[a]?.caution?.includes(b)) cautionPairs++;
+                                if (SYNERGY_DATA[b]?.best?.includes(a)) bestPairs++;
+                                if (SYNERGY_DATA[b]?.caution?.includes(a)) cautionPairs++;
+                            }
+                        }
+                        
+                        const typeChips = Object.entries(typeCounts).map(([t, c]) => {
+                            const info = SVD_TYPES[t];
+                            if (!info) return '';
+                            return `<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:${info.color}22;color:${info.color};font-weight:600;white-space:nowrap;">${info.name}${c > 1 ? ' ×'+c : ''}</span>`;
+                        }).join(' ');
+                        
+                        const synergyBadge = bestPairs > 0 || cautionPairs > 0 
+                            ? `<span style="font-size:9px;margin-left:4px;">` +
+                              (bestPairs > 0 ? `<span style="color:var(--green);">★${bestPairs}</span>` : '') +
+                              (cautionPairs > 0 ? `<span style="color:var(--red);margin-left:3px;">⚠${cautionPairs}</span>` : '') +
+                              `</span>` : '';
+                        
+                        return `<div class="team-synergy-summary" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:4px;">${typeChips}${synergyBadge}</div>`;
+                    })()}
                 </div>
                 <span class="team-toggle">▼</span>
             </div>

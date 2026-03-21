@@ -48,13 +48,16 @@ const MASTER_COL = {
   PHOTO_URL: 12,     // M
   LAST_EVALUATED: 13,// N
   EVAL_COUNT: 14,    // O
-  STATUS: 15         // P
+  STATUS: 15,        // P
+  TYPE_SELF: 16,     // Q
+  TYPE_OTHER: 17     // R
 };
 
 const MASTER_HEADERS = [
   'StaffID', 'Name', 'Affiliation', 'HierarchyRole', 'SpecialtyRoles',
   'JobTitle', 'Qualifications', 'Experience', 'CombatPower', 'CategoryScores',
-  'Positions', 'ShiftReady', 'PhotoURL', 'LastEvaluated', 'EvalCount', 'Status'
+  'Positions', 'ShiftReady', 'PhotoURL', 'LastEvaluated', 'EvalCount', 'Status',
+  'TypeSelf', 'TypeOther'
 ];
 
 // Staff sheet column indices (0-based)
@@ -354,7 +357,9 @@ function doGet(e) {
             photoUrl: row[MASTER_COL.PHOTO_URL],
             lastEvaluated: row[MASTER_COL.LAST_EVALUATED],
             evalCount: row[MASTER_COL.EVAL_COUNT],
-            status: row[MASTER_COL.STATUS] || 'active'
+            status: row[MASTER_COL.STATUS] || 'active',
+            typeSelf: row[MASTER_COL.TYPE_SELF] || '',
+            type: row[MASTER_COL.TYPE_OTHER] || ''
           });
         }
         return jsonResponse_({ result: 'success', staff: staff, count: staff.length, version: TI_CONFIG.VERSION });
@@ -389,7 +394,9 @@ function doGet(e) {
                 shiftReady: row[MASTER_COL.SHIFT_READY],
                 photoUrl: row[MASTER_COL.PHOTO_URL],
                 lastEvaluated: row[MASTER_COL.LAST_EVALUATED],
-                evalCount: row[MASTER_COL.EVAL_COUNT]
+                evalCount: row[MASTER_COL.EVAL_COUNT],
+                typeSelf: row[MASTER_COL.TYPE_SELF] || '',
+                type: row[MASTER_COL.TYPE_OTHER] || ''
               }
             });
           }
@@ -650,7 +657,9 @@ function doPost(e) {
           'qualifications': MASTER_COL.QUALIFICATIONS,
           'experience': MASTER_COL.EXPERIENCE,
           'positions': MASTER_COL.POSITIONS,
-          'shiftReady': MASTER_COL.SHIFT_READY
+          'shiftReady': MASTER_COL.SHIFT_READY,
+          'typeSelf': MASTER_COL.TYPE_SELF,
+          'type': MASTER_COL.TYPE_OTHER
         };
         
         Object.entries(fieldMap).forEach(([param, col]) => {
