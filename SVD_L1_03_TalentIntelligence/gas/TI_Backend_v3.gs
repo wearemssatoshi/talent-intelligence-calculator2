@@ -503,7 +503,14 @@ function doPost(e) {
 
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const getParam = (name) => (e.parameter && e.parameter[name]) || '';
+    // Parse JSON body if present (for large payloads like photo upload)
+    let jsonBody = {};
+    try {
+      if (e.postData && e.postData.contents) {
+        jsonBody = JSON.parse(e.postData.contents);
+      }
+    } catch (_) { /* not JSON, ignore */ }
+    const getParam = (name) => (e.parameter && e.parameter[name]) || jsonBody[name] || '';
     const action = getParam('action') || 'save';
 
     switch (action) {
@@ -692,7 +699,7 @@ function doPost(e) {
       }
 
       // ═════════════════════════════════════
-      // UPLOAD PHOTO — Google Drive保存
+      // UPLOAD PHOTO — Base64直接保存（MINDFULパターン）
       // ═════════════════════════════════════
       case 'uploadPhoto': {
         const staffId = getParam('staffId');
@@ -701,47 +708,25 @@ function doPost(e) {
           return jsonResponse_({ result: 'error', error: 'staffId and photoData are required' });
         }
         
-        // Base64デコード → Blob
-        const base64Match = photoData.match(/^data:(.+);base64,(.+)$/);
-        if (!base64Match) return jsonResponse_({ result: 'error', error: 'Invalid Base64 format' });
-        
-        const mimeType = base64Match[1];
-        const base64Content = base64Match[2];
-        const blob = Utilities.newBlob(Utilities.base64Decode(base64Content), mimeType, staffId + '_photo.jpg');
-        
-        // Drive保存
-        const folderId = getConfigValue_(ss, 'PHOTO_FOLDER_ID');
-        let folder;
-        if (folderId) {
-          folder = DriveApp.getFolderById(folderId);
-        } else {
-          // フォルダ未設定の場合、ルートに保存（初回のみ）
-          folder = DriveApp.getRootFolder();
-        }
-        
-        const file = folder.createFile(blob);
-        // 🚨 権限設定 — これを忘れるとフロントで画像がリンク切れ
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        
-        const photoUrl = 'https://drive.google.com/uc?id=' + file.getId();
-        
-        // TI_Master更新
+        // Base64 data URIをそのままPhotoURLセルに保存
         const master = ss.getSheetByName(TI_CONFIG.MASTER_SHEET);
-        if (master) {
-          const masterRow = findMasterRow_(master, staffId);
-          if (masterRow > 0) {
-            master.getRange(masterRow, MASTER_COL.PHOTO_URL + 1).setValue(photoUrl);
-          }
+        if (!master) {
+          return jsonResponse_({ result: 'error', error: 'TI_Master sheet not found' });
         }
+        const masterRow = findMasterRow_(master, staffId);
+        if (masterRow <= 0) {
+          return jsonResponse_({ result: 'error', error: 'Staff not found: ' + staffId });
+        }
+        
+        master.getRange(masterRow, MASTER_COL.PHOTO_URL + 1).setValue(photoData);
         SpreadsheetApp.flush();
         
-        auditLog_('uploadPhoto', getParam('user') || 'system', staffId, { photoUrl }, 'success');
+        auditLog_('uploadPhoto', getParam('user') || 'system', staffId, { size: photoData.length }, 'success');
         
         return jsonResponse_({
           result: 'success',
           message: '写真をアップロードしました',
           staffId: staffId,
-          photoUrl: photoUrl,
           version: TI_CONFIG.VERSION
         });
       }

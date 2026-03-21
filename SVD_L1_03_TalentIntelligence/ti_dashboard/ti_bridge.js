@@ -34,6 +34,19 @@ const TI_BRIDGE = (() => {
         return res.json();
     }
 
+    // JSON POST for large payloads (e.g. photo Base64)
+    async function fetchPostJson(action, data = {}) {
+        if (!gasUrl) throw new Error('GAS URL not set');
+        const payload = { action, ...data };
+        const res = await fetch(gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+    }
+
     return {
         // ── Config ──
         setUrl(url) {
@@ -85,7 +98,7 @@ const TI_BRIDGE = (() => {
             return fetchPost('archive', { staffId });
         },
         async uploadPhoto(staffId, base64Data) {
-            return fetchPost('uploadPhoto', { staffId, photoData: base64Data });
+            return fetchPostJson('uploadPhoto', { staffId, photoData: base64Data });
         },
         async migrate(offset = 0, batchSize = 10) {
             return fetchPost('migrate', { offset, batchSize: String(batchSize) });

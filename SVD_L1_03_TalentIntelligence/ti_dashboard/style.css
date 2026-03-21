@@ -593,8 +593,8 @@ body {
 }
 
 .card-avatar {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: 2px solid rgba(160, 120, 64, 0.15);
     background: var(--surface-3);
@@ -638,7 +638,7 @@ body {
 
 .avatar-initial {
     font-family: Menlo, Monaco, 'Courier New', monospace;
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 800;
     color: var(--gold);
     width: 100%;
@@ -2231,4 +2231,172 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .grow-menu-btn:hover {
     background: rgba(160, 120, 64, 0.12);
     color: var(--gold);
+}
+/* --- View Toggles --- */
+.view-toggles {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-body);
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.btn-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-toggle:hover {
+    color: var(--text-main);
+    background: rgba(0,0,0,0.05);
+}
+
+.btn-toggle.active {
+    background: white;
+    color: var(--gold);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- Skill Map Grid --- */
+.skill-map-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow: auto;
+    max-height: calc(100vh - 200px);
+    border: 1px solid var(--border);
+}
+
+.skill-map-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.8rem;
+}
+
+.skill-map-table th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    padding: 12px 8px;
+    font-weight: 600;
+    color: var(--text-sub);
+    border-bottom: 2px solid var(--border);
+    z-index: 10;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.skill-map-table th:first-child {
+    left: 0;
+    z-index: 20;
+    text-align: left;
+    background: white;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+}
+
+.skill-map-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    font-family: Menlo, Monaco, 'Courier New', monospace;
+    transition: background 0.2s;
+}
+
+.skill-map-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 5;
+    text-align: left;
+    font-family: inherit;
+    font-weight: 500;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.05);
+}
+
+.skill-map-table tr:hover td {
+    background: #fdfdfd;
+}
+
+.skill-map-table tr:hover td:first-child {
+    background: #fbfbfb;
+}
+
+.sm-score-box {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    min-width: 40px;
+}
+
+.sm-empty { color: var(--border); font-weight: normal; }
+
+.cat-header-P { color: #6b9a78; border-bottom: 2px solid #6b9a78 !important; }
+.cat-header-S { color: #6889a8; border-bottom: 2px solid #6889a8 !important; }
+.cat-header-E { color: #9a7eb8; border-bottom: 2px solid #9a7eb8 !important; }
+.cat-header-M { color: #a08058; border-bottom: 2px solid #a08058 !important; }
+
+/* --- Assess 2-Column Grid --- */
+.assess-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.assess-col-left {
+    position: sticky;
+    top: 20px;
+}
+
+.assess-ref-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.95));
+    border: 1px solid rgba(138, 171, 122, 0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.assess-ref-content p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+}
+.assess-ref-content strong {
+    color: var(--text-main);
+}
+
+.radar-wrap-small {
+    height: 250px;
+    margin-top: 1rem;
+}
+
+/* Inline Edit input */
+.inline-date-input {
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    color: var(--text-main);
+    background: #fff;
+    outline: none;
+    width: 100px;
+}
+
+@media (max-width: 900px) {
+    .assess-grid {
+        grid-template-columns: 1fr;
+    }
+    .assess-col-left {
+        position: static;
+    }
 }

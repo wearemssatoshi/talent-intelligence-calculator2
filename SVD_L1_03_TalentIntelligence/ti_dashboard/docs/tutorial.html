@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TI Dashboard v3.0 — チュートリアル</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #e0d6c8;
+            min-height: 100vh;
+            line-height: 1.8;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            background: linear-gradient(180deg, rgba(212,175,55,0.08) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(212,175,55,0.2);
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #d4af37;
+            text-shadow: 0 2px 12px rgba(212,175,55,0.3);
+        }
+        
+        .hero .subtitle {
+            font-size: 1rem;
+            color: #a09080;
+            margin-top: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+        
+        .hero .version {
+            display: inline-block;
+            background: rgba(212,175,55,0.15);
+            color: #d4af37;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: rgba(212,175,55,0.08);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(212,175,55,0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-num {
+            background: linear-gradient(135deg, #d4af37, #c4992a);
+            color: #1a1a2e;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .section-header h2 {
+            font-size: 1.3rem;
+            color: #d4af37;
+        }
+        
+        .section-header .tag {
+            font-size: 0.75rem;
+            color: #a09080;
+            background: rgba(255,255,255,0.05);
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+        }
+        
+        .section-body {
+            padding: 2rem;
+        }
+        
+        .section-body p {
+            margin-bottom: 1rem;
+            color: #c0b0a0;
+        }
+        
+        .section-body img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.6rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        
+        .feature-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+        }
+        
+        .highlight-box {
+            background: rgba(212,175,55,0.08);
+            border-left: 4px solid #d4af37;
+            padding: 1rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        .formula-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            font-family: 'Menlo', monospace;
+            font-size: 0.85rem;
+            color: #d4af37;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .flow-box {
+            background: rgba(212,175,55,0.1);
+            border: 1px solid rgba(212,175,55,0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #d4af37;
+        }
+        
+        .flow-arrow {
+            color: #d4af37;
+            font-size: 1.2rem;
+        }
+        
+        .coming-soon {
+            text-align: center;
+            padding: 2rem;
+            color: #a09080;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #605040;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.6rem; }
+            .section-body { padding: 1.2rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>TALENT INTELLIGENCE</h1>
+    <div class="subtitle">Dashboard Tutorial — People OS / Supply Intelligence</div>
+    <div class="version">v3.0 — 2026.03</div>
+</div>
+
+<div class="container">
+    
+    <!-- Overview -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">◎</div>
+            <div>
+                <h2>TI Dashboardとは？</h2>
+            </div>
+        </div>
+        <div class="section-body">
+            <p><strong>チームの人材力を可視化し、最適なシフトを導く</strong>ためのManager用ツールです。</p>
+            
+            <div class="flow-diagram">
+                <div class="flow-box">Calculator<br><small>評価を入力・確定</small></div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">GAS<br><small>データ保存</small></div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">Dashboard<br><small>可視化・分析</small></div>
+            </div>
+            
+            <div class="highlight-box">
+                💡 <strong>役割分離</strong>: 評価の入力はCalculator、振り返り・分析はDashboardで行います。
+            </div>
+            
+            <p><strong>Total CP（Competency Points）計算公式：</strong></p>
+            <div class="formula-box">
+                Total CP = (P平均 × S平均) + (E平均 × M平均)
+            </div>
+        </div>
+    </div>
+
+    <!-- ① ROSTER -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">①</div>
+            <div>
+                <h2>ROSTER — チーム能力可視化</h2>
+                <span class="tag">チーム一覧</span>
+            </div>
+        </div>
+        <div class="section-body">
+            <p>チーム全員の能力を<strong>CARDビュー</strong>と<strong>SKILL MAPビュー</strong>の2つの視点で一望できます。</p>
+            
+            <img src="docs/img_roster.png" alt="① ROSTER — チーム一覧ビュー">
+            
+            <ul class="feature-list">
+                <li><strong>CARDビュー</strong>: 各スタッフの名前、役職、Total CP、P/S/E/Mレーダーチャート</li>
+                <li><strong>SKILL MAPビュー</strong>: 全員×24スキルのヒートマップ。チーム全体の強み・弱みが一目瞭然</li>
+                <li><strong>フィルタ</strong>: 拠点別（JW, NP, BQ, GA…）、ロール別で絞り込み</li>
+                <li><strong>ソート</strong>: Total CP順、カテゴリ平均順で並べ替え</li>
+            </ul>
+            
+            <div class="highlight-box">
+                🎯 <strong>使い方</strong>: まず拠点を選び、チームの全体像を把握。SKILL MAPで弱いカテゴリを特定し、面談（②ASSESS）へ進みます。
+            </div>
+        </div>
+    </div>
+
+    <!-- ② ASSESS -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">②</div>
+            <div>
+                <h2>ASSESS — 自己評価リビュー</h2>
+                <span class="tag">面談ツール</span>
+            </div>
+        </div>
+        <div class="section-body">
+            <p>面談時に、過去の評価を振り返りながら<strong>今後のアプローチを確認する</strong>ためのフォーマットです。</p>
+            
+            <img src="docs/img_assess.png" alt="② ASSESS — 評価リビュー">
+            
+            <div class="highlight-box">
+                ⚠️ <strong>注意</strong>: ここでは評価の「変更・確定」はしません。評価の入力はCalculatorで行います。
+            </div>
+            
+            <ul class="feature-list">
+                <li><strong>Self / MGR 切り替え</strong>: 左パネルのボタンで、自己評価とMGR評価を瞬時に切り替え</li>
+                <li><strong>読み取り専用バー</strong>: 各スキルのスコアをゴールドのプログレスバーで視覚表示</li>
+                <li><strong>LV1〜10 目安（アコーディオン）</strong>: ▶ をクリックすると、各LVの達成基準が展開。現在のLVはゴールドでハイライト</li>
+                <li><strong>ルブリック</strong>: 各スキルの評価観点を常に表示。面談の客観的な根拠に</li>
+                <li><strong>面談メモ</strong>: 面談の記録を残せるテキストエリア</li>
+            </ul>
+            
+            <div class="highlight-box">
+                🎯 <strong>面談の流れ</strong>: スタッフ選択 → Self評価を確認 → MGRに切替えて比較 → LV目安でギャップの根拠を確認 → 面談メモに記録
+            </div>
+        </div>
+    </div>
+
+    <!-- ③ GROWTH -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">③</div>
+            <div>
+                <h2>GROWTH — 成長GAP可視化</h2>
+                <span class="tag">成長比較</span>
+            </div>
+        </div>
+        <div class="section-body">
+            <p>2つの評価時点を比較し、<strong>成長GAP</strong>（どれだけ伸びたか）と<strong>評価GAP</strong>（SelfとMGRのズレ）を可視化します。</p>
+            
+            <img src="docs/img_growth.png" alt="③ GROWTH — 成長比較">
+            
+            <ul class="feature-list">
+                <li><strong>成長GAP</strong>: 3ヶ月前と最新のMGR評価を比較 → どのスキルが伸びたか</li>
+                <li><strong>評価GAP</strong>: 最新のSelfとMGRを比較 → 自己認識とMGR認識のズレを発見</li>
+                <li><strong>重ねレーダーチャート</strong>: From（青）とTo（金）を重ねて視覚比較</li>
+                <li><strong>Diff Table</strong>: 24スキル全ての詳細スコアとGAP値を一覧表示</li>
+                <li><strong>GAP表示</strong>: プラスは🟢、マイナスは🔴で色分け。小数点第2位まで表示</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ④ SHIFT LINK -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">④</div>
+            <div>
+                <h2>SHIFT LINK — MP連動シフト提案</h2>
+                <span class="tag">Phase 2</span>
+            </div>
+        </div>
+        <div class="section-body">
+            <p>①ROSTERで可視化した人材力を、<strong>Momentum Peaks</strong>の需要予測と連動させて最適なシフトパターンを提案します。</p>
+            
+            <div class="formula-box">
+                ROSTER（人材Supply）× MP（需要Demand）= 最適シフト
+            </div>
+            
+            <div class="coming-soon">🚧 Coming Soon — ①〜③完成後に実装</div>
+        </div>
+    </div>
+
+    <!-- ⑤ SETTINGS -->
+    <div class="section">
+        <div class="section-header">
+            <div class="section-num">⑤</div>
+            <div>
+                <h2>SETTINGS — GAS接続設定</h2>
+                <span class="tag">設定</span>
+            </div>
+        </div>
+        <div class="section-body">
+            <p>GASバックエンドURLを設定し、接続を確認します。</p>
+            
+            <ul class="feature-list">
+                <li><strong>GAS URL入力</strong>: バックエンドのデプロイURLをペースト</li>
+                <li><strong>TEST接続</strong>: ボタン1つでGAS接続を確認。成功すると緑バッジに変化</li>
+                <li><strong>ローカル保存</strong>: URLはブラウザのlocalStorageに保存。毎回入力不要</li>
+            </ul>
+            
+            <div class="highlight-box">
+                💡 <strong>初回セットアップ</strong>: まず⑤SETTINGSでGAS URLを設定 → TESTで接続確認 → ①ROSTERに移動してチームデータを読み込み
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>TALENT INTELLIGENCE v3.0 — SVD People OS</p>
+    <p>Generated with Nano Banana Pro 2 🍌</p>
+</footer>
+
+</body>
+</html>

@@ -18,7 +18,7 @@ const SKILL_LABELS = {
         p4: '当事者意識/責任感', p5: '共感力/傾聴力', p6: 'SVD理念への共鳴'
     },
     S: {
-        s1: 'トータルスキル', s2: '専門スキル（料理知識）', s3: '専門スキル（ドリンク ※ワイン除く）',
+        s1: 'トータルスキル', s2: '専門スキル（料理知識）', s3: '専門スキル（ドリンク知識 ※ワイン除く）',
         s4: '専門スキル（ワイン）', s5: '顧客対応力', s6: 'テクニカル対応力'
     },
     E: {
@@ -31,8 +31,44 @@ const SKILL_LABELS = {
     }
 };
 
+// ── Skill Rubrics (Education Format) ──
+const SKILL_RUBRICS = {
+    P: {
+        p1: '新しい知識やスキルを自発的に学び、実際の業務やサービス向上に活かそうとする姿勢があるか。',
+        p2: '他のスタッフと円滑にコミュニケーションを取り、情報共有や業務のフォローアップを適切に行っているか。',
+        p3: '繁忙時やクレーム等の予測せぬトラブルに対して、感情をコントロールし冷静かつ柔軟に対応できているか。',
+        p4: '自身の役割を深く理解し、店舗の目標達成や課題解決に対して他人事ではなく「自分事」として取り組んでいるか。',
+        p5: 'お客様や仲間の状況・感情を察知し、相手の立場に立った寄り添いのある発言や行動ができているか。',
+        p6: 'SVDのブランドコンセプト（ここだけの美味しさ/エンターテインメント）を深く理解し、日々の行動で体現しているか。'
+    },
+    S: {
+        s1: '接客の基本動作（挨拶・笑顔・身だしなみ・トーン）が極めて高い水準で備わっているか。',
+        s2: '提供する料理の食材、調理法、コンセプトを正確に理解し、お客様の興味を惹きつける説明ができるか。',
+        s3: 'ビールやカクテル、ソフトドリンク等の特性を理解し、正確な知識のもと最適な状態・タイミングで提供できるか。',
+        s4: 'ワインの専門知識を持ち、料理とのペアリングやお客様の好みに合わせた最適な提案ができるか。',
+        s5: '一人ひとりのお客様の属性や利用シーン（記念日や接待など）に合わせた、個別化されたサービスが提供できるか。',
+        s6: 'POS操作、TIダッシュボード、インカム連携、予約管理システムなど、店舗のIT・メカニックツールを正確に操作できるか。'
+    },
+    E: {
+        e1: 'レストラン・飲食業界における豊富な実務経験と、そこから培われた高度な暗黙知を有しているか。',
+        e2: 'SVD（各店舗）での在籍経験を通じ、店舗独自のルールやオペレーションの歴史・背景を深く理解しているか。',
+        e3: 'ソムリエ、調理師などの国家資格・専門資格を保有し、それを現場のパフォーマンス向上に直結させているか。',
+        e4: 'PCスキル、言語能力（インバウンド対応）、事務能力など、フロア以外の場所でも組織に貢献できる汎用的スキルがあるか。',
+        e5: '役職者（責任者・キャプテン等）としての経験を持ち、権限と責任を伴う判断を適切に行うことができるか。',
+        e6: '月間MVPや売上目標達成、大会での表彰など、社内外で客観的に評価される実績を残しているか。'
+    },
+    M: {
+        m1: 'F/Lコスト（原価・人件費）や売上目標の進捗を正確に把握し、利益最大化に向けた日々の管理ができているか。',
+        m2: 'スタッフのモチベーションを高め、適材適所の配置と計画的な人材育成により強いチームを構築できているか。',
+        m3: '営業中のフロア全体を見渡し、ボトルネックの解消や人員の再配置など、的確な指示でスムーズな店舗運営を実現しているか。',
+        m4: '現状の課題を分析し、新しい企画や業務改善の仕組みを自ら立案・実行して組織を良い方向へ導いているか。',
+        m5: '自身の行動で範を示し、周囲の尊敬を集めながら、チーム全体をひとつの目標に向かって力強く牽引しているか。',
+        m6: 'リピーターの獲得や地域のインフルエンス向上など、SVDの「ブランド価値」を高め、新たな顧客・ファンを創造しているか。'
+    }
+};
+
 // ── Category Display Names ──
-const CAT_NAMES = { P: 'パーソナル力', S: 'サービススキル', E: '経験・資格', M: 'マネジメント' };
+const CAT_NAMES = { P: 'パーソル力', S: 'サービススキル', E: '経験・資格', M: 'マネジメントスキル' };
 
 // ── Store Colors & Short Names (Module Level) ──
 const STORE_COLORS = {
@@ -178,11 +214,13 @@ async function enrichWithEvalTypeScores() {
                         const latest = managerEvals.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
                         s._managerScore = Number(latest.totalScore) || 0;
                         s._managerCatScores = calcCatScoresFromHistory(latest.scores);
+                        s._latestScores = latest.scores;
                     }
                     // 最新のSelf評価
                     if (selfEvals.length > 0) {
                         const latest = selfEvals.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0];
                         s._selfScore = Number(latest.totalScore) || 0;
+                        if (!s._latestScores) s._latestScores = latest.scores;
                     }
                 }
             } catch (err) {
@@ -197,7 +235,11 @@ async function enrichWithEvalTypeScores() {
                 if (s._managerCatScores) s.categoryScores = s._managerCatScores;
             }
         });
-        renderStaffGrid(staffList);
+        if (typeof currentRosterView !== 'undefined' && currentRosterView === 'map') {
+            renderSkillMap(staffList);
+        } else {
+            renderStaffGrid(staffList);
+        }
         TI_BRIDGE.showToast('Manager評価を反映しました ✅');
     } catch (e) {
         console.warn('enrichWithEvalTypeScores failed:', e);
@@ -300,7 +342,8 @@ function renderStaffGrid(staff) {
             </div>` : ''}
             <div class="card-identity">
                 <div class="card-avatar" onclick="event.stopPropagation(); triggerPhotoUpload('${s.staffId}');">
-                    ${s.photoUrl ? `<img src="${s.photoUrl}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">` : `<span class="avatar-initial">${(s.name || '?')[0]}</span>`}
+                    ${s.photoUrl ? `<img src="${fixPhotoUrl(s.photoUrl)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='';">
+                    <span class="avatar-initial" style="display:none;">${(s.name || '?')[0]}</span>` : `<span class="avatar-initial">${(s.name || '?')[0]}</span>`}
                     <div class="avatar-upload-overlay">📷</div>
                 </div>
                 <div class="card-name">${s.name || '—'}</div>
@@ -314,7 +357,7 @@ function renderStaffGrid(staff) {
             </div>
             <div class="card-info-rows">
                 <div class="card-info-row"><span class="card-info-key">所属</span><span class="card-info-val">${s.affiliation || '—'}</span></div>
-                ${affSinceDisplay ? `<div class="card-info-row"><span class="card-info-key">配属</span><span class="card-info-val card-info-val--date">${affSinceDisplay}〜</span></div>` : ''}
+                ${affSinceDisplay ? `<div class="card-info-row"><span class="card-info-key">配属</span><span class="card-info-val card-info-val--date" style="cursor:pointer;" onclick="event.stopPropagation(); editAffiliationDate('${s.staffId}', this)" title="クリックして変更">${affSinceDisplay}〜</span></div>` : ''}
                 <div class="card-info-row"><span class="card-info-key">BEST</span><span class="card-info-val card-info-val--accent">${strongest.score > 0 ? `${strongest.name} ${strongest.score.toFixed(1)}` : '—'}</span></div>
                 <div class="card-info-row card-info-row--editable" onclick="event.stopPropagation(); editGrowFocus('${s.staffId}', this);">
                     <span class="card-info-key">GROW</span>
@@ -419,6 +462,130 @@ function renderStaffGrid(staff) {
     }).join('');
 }
 
+
+// ── View Toggles ──
+let currentRosterView = 'card';
+window.toggleRosterView = function(view) {
+    currentRosterView = view;
+    document.getElementById('btnViewCard').classList.toggle('active', view === 'card');
+    document.getElementById('btnViewMap').classList.toggle('active', view === 'map');
+    document.getElementById('staffGrid').style.display = view === 'card' ? '' : 'none';
+    document.getElementById('skillMapGrid').style.display = view === 'map' ? '' : 'none';
+    applyFilters();
+};
+
+function renderSkillMap(list) {
+    const grid = document.getElementById('skillMapGrid');
+    if (!list || list.length === 0) {
+        grid.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-muted);">対象データがありません</div>';
+        return;
+    }
+
+    const P_KEYS = ['p1','p2','p3','p4','p5','p6'];
+    const S_KEYS = ['s1','s2','s3','s4','s5','s6'];
+    const E_KEYS = ['e1','e2','e3','e4','e5','e6'];
+    const M_KEYS = ['m1','m2','m3','m4','m5','m6'];
+    
+    // Sort by Total CP desc
+    const sorted = [...list].sort((a,b) => (Number(b.combatPower)||0) - (Number(a.combatPower)||0));
+
+    let html = '<table class="skill-map-table">';
+    // Header Row
+    html += '<thead><tr>';
+    html += '<th>Staff Name</th>';
+    html += '<th>Total</th>';
+    html += '<th class="cat-header-P">P</th>'; P_KEYS.forEach(k => html += `<th title="${SKILL_LABELS.P[k]}">${k}</th>`);
+    html += '<th class="cat-header-S">S</th>'; S_KEYS.forEach(k => html += `<th title="${SKILL_LABELS.S[k]}">${k}</th>`);
+    html += '<th class="cat-header-E">E</th>'; E_KEYS.forEach(k => html += `<th title="${SKILL_LABELS.E[k]}">${k}</th>`);
+    html += '<th class="cat-header-M">M</th>'; M_KEYS.forEach(k => html += `<th title="${SKILL_LABELS.M[k]}">${k}</th>`);
+    html += '</tr></thead><tbody>';
+
+    // Body Rows
+    const bgScale = val => {
+        if (!val || val === 0) return 'transparent';
+        const v = Number(val);
+        if (v >= 8) return 'rgba(107,154,120,0.3)';
+        if (v >= 6) return 'rgba(107,154,120,0.15)';
+        if (v >= 3) return 'rgba(200,164,94,0.1)';
+        return 'transparent';
+    };
+
+    sorted.forEach(s => {
+        const cp = Number(s.combatPower)||0;
+        let cScores = {P:0,S:0,E:0,M:0};
+        try { cScores = typeof s.categoryScores==='string'?JSON.parse(s.categoryScores):s.categoryScores; } catch(e){}
+        let scores = {}; // need detailed scores. currently staffList master might not have them natively in list unless fetched by history.
+        // Try to get them from _latestScores (will add this later during load)
+        if (s._latestScores) scores = s._latestScores;
+
+        const cell = (k) => {
+            const val = scores[k];
+            if (!val) return `<td class="sm-empty">-</td>`;
+            return `<td style="background:${bgScale(val)}">${Number(val).toFixed(1)}</td>`;
+        };
+
+        html += `<tr>`;
+        html += `<td style="white-space:nowrap;font-weight:600;"><span style="font-size:0.7rem;color:var(--text-muted);margin-right:4px;">${s.affiliation||''}</span>${s.name||''}</td>`;
+        html += `<td><strong>${cp.toFixed(1)}</strong></td>`;
+        html += `<td style="font-weight:bold;color:#6b9a78;">${Number(cScores.P||0).toFixed(1)}</td>`;
+        P_KEYS.forEach(k => html += cell(k));
+        html += `<td style="font-weight:bold;color:#6889a8;">${Number(cScores.S||0).toFixed(1)}</td>`;
+        S_KEYS.forEach(k => html += cell(k));
+        html += `<td style="font-weight:bold;color:#9a7eb8;">${Number(cScores.E||0).toFixed(1)}</td>`;
+        E_KEYS.forEach(k => html += cell(k));
+        html += `<td style="font-weight:bold;color:#a08058;">${Number(cScores.M||0).toFixed(1)}</td>`;
+        M_KEYS.forEach(k => html += cell(k));
+        html += `</tr>`;
+    });
+
+    html += '</tbody></table>';
+    grid.innerHTML = html;
+}
+
+// ── Affiliation Date Editing ──
+window.editAffiliationDate = function(staffId, el) {
+    const currentText = el.textContent.replace('〜', '').trim();
+    // try parse Japanese date "2026年3月1日" -> "2026-03-01"
+    let dStr = '';
+    const m = currentText.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    if(m) {
+        dStr = `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+    } else {
+        dStr = new Date().toISOString().slice(0,10);
+    }
+    
+    el.innerHTML = `<input type="date" class="inline-date-input" value="${dStr}" onblur="saveAffiliationDate('${staffId}', this.value)" onchange="saveAffiliationDate('${staffId}', this.value)">`;
+    el.onclick = null; // disable click
+    setTimeout(() => { const input = el.querySelector('input'); if(input) input.focus(); }, 50);
+};
+
+window.saveAffiliationDate = function(staffId, dateStr) {
+    if(!dateStr) return;
+    try {
+        const storedStr = localStorage.getItem('ti_affiliation_history');
+        let records = storedStr ? JSON.parse(storedStr) : {};
+        if (!records[staffId]) records[staffId] = [];
+        // update the latest record or create one
+        let latest = null;
+        if(records[staffId].length > 0) {
+            latest = records[staffId][records[staffId].length - 1];
+            latest.from = dateStr;
+        } else {
+            const staff = staffList.find(s=>s.staffId===staffId);
+            records[staffId].push({
+                affiliation: staff.affiliation || 'Unknown',
+                role: staff.hierarchyRole || 'Unknown',
+                from: dateStr
+            });
+        }
+        localStorage.setItem('ti_affiliation_history', JSON.stringify(records));
+        renderStaffGrid(staffList); // Re-render to show updated string
+        TI_BRIDGE.showToast('配属日を更新しました');
+    } catch(e) {
+        console.error('Date update error', e);
+    }
+};
+
 function populateFilters() {
     // Search
     document.getElementById('searchInput').addEventListener('input', applyFilters);
@@ -437,7 +604,11 @@ function applyFilters() {
         if (role && !(s.hierarchyRole || '').includes(role)) return false;
         return true;
     });
-    renderStaffGrid(filtered);
+    if (typeof currentRosterView !== 'undefined' && currentRosterView === 'map') {
+        renderSkillMap(filtered);
+    } else {
+        renderStaffGrid(filtered);
+    }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -540,7 +711,16 @@ function loadGrowFocus() {
     });
 }
 
-// ── Photo Upload ──
+// ── Photo URL fix (uc?id= → thumbnail?id=) ──
+function fixPhotoUrl(url) {
+    if (!url) return '';
+    // Convert deprecated uc?id= format to thumbnail format
+    const ucMatch = url.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+    if (ucMatch) return 'https://drive.google.com/thumbnail?id=' + ucMatch[1] + '&sz=w512';
+    return url;
+}
+
+// ── Photo Upload (Base64直接保存 — MINDFULパターン) ──
 function triggerPhotoUpload(staffId) {
     const input = document.createElement('input');
     input.type = 'file';
@@ -548,32 +728,49 @@ function triggerPhotoUpload(staffId) {
     input.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            TI_BRIDGE.showToast('ファイルサイズは2MB以下にしてください');
+        if (file.size > 5 * 1024 * 1024) {
+            TI_BRIDGE.showToast('ファイルサイズは5MB以下にしてください');
             return;
         }
-        TI_BRIDGE.showToast('写真をアップロード中...');
-        const reader = new FileReader();
-        reader.onload = async () => {
-            try {
-                const base64 = reader.result.split(',')[1];
-                const res = await TI_BRIDGE.uploadPhoto(staffId, base64);
-                if (res.result === 'success') {
-                    // ローカルのstaffListを更新
-                    const staff = staffList.find(s => s.staffId === staffId);
-                    if (staff && res.photoUrl) staff.photoUrl = res.photoUrl;
-                    renderStaffGrid(staffList);
-                    TI_BRIDGE.showToast('写真をアップロードしました ✅');
-                } else {
-                    TI_BRIDGE.showToast('アップロードエラー: ' + (res.error || 'Unknown'));
-                }
-            } catch (err) {
-                TI_BRIDGE.showToast('アップロードエラー: ' + err.message);
+        TI_BRIDGE.showToast('写真をリサイズ中...');
+        try {
+            const dataUri = await resizeImage(file, 200, 200, 0.7);
+            TI_BRIDGE.showToast('写真をアップロード中...');
+            const res = await TI_BRIDGE.uploadPhoto(staffId, dataUri);
+            if (res.result === 'success') {
+                const staff = staffList.find(s => s.staffId === staffId);
+                if (staff) staff.photoUrl = dataUri; // ローカルもBase64で保持
+                renderStaffGrid(staffList);
+                TI_BRIDGE.showToast('写真をアップロードしました ✅');
+            } else {
+                TI_BRIDGE.showToast('アップロードエラー: ' + (res.error || 'Unknown'));
             }
-        };
-        reader.readAsDataURL(file);
+        } catch (err) {
+            TI_BRIDGE.showToast('アップロードエラー: ' + err.message);
+        }
     };
     input.click();
+}
+
+// Canvas resize helper (JPEG圧縮 → data URI)
+function resizeImage(file, maxW, maxH, quality) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            // Crop to square (center crop)
+            const min = Math.min(w, h);
+            const sx = (w - min) / 2, sy = (h - min) / 2;
+            canvas.width = maxW;
+            canvas.height = maxH;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, sx, sy, min, min, 0, 0, maxW, maxH);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => reject(new Error('画像の読み込みに失敗'));
+        img.src = URL.createObjectURL(file);
+    });
 }
 
 function handleDragOver(e) {
@@ -672,7 +869,10 @@ async function openStaffModal(staffId) {
     const staff = staffList.find(s => s.staffId === staffId);
     if (!staff) return;
 
-    title.textContent = `${staff.name} (${staff.staffId})`;
+    const avatarHtml = staff.photoUrl 
+        ? `<img src="${fixPhotoUrl(staff.photoUrl)}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid rgba(160,120,64,0.3);flex-shrink:0;">`
+        : `<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(145deg,rgba(160,120,64,0.15),rgba(200,164,94,0.05));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--gold);border:3px solid rgba(160,120,64,0.15);flex-shrink:0;">${(staff.name || '?')[0]}</div>`;
+    title.innerHTML = `<div style="display:flex;align-items:center;gap:12px;">${avatarHtml}<span>${staff.name} (${staff.staffId})</span></div>`;
     body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-dim);">読み込み中...</div>';
     modal.classList.remove('hidden');
 
@@ -907,6 +1107,20 @@ async function toggleRole(staffId, role, btnEl) {
 }
 
 // ═══════════════════════════════════════════════════════════
+// Tab Avatar Helper
+// ═══════════════════════════════════════════════════════════
+function updateTabAvatar(containerId, staff) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!staff) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    const src = staff.photoUrl ? fixPhotoUrl(staff.photoUrl) : '';
+    el.style.display = '';
+    el.innerHTML = src
+        ? `<img src="${src}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(160,120,64,0.25);flex-shrink:0;" onerror="this.outerHTML='<div style=\'width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,rgba(160,120,64,0.15),rgba(200,164,94,0.05));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--gold);border:2px solid rgba(160,120,64,0.15);flex-shrink:0;\'>${(staff.name||'?')[0]}</div>'">`
+        : `<div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(145deg,rgba(160,120,64,0.15),rgba(200,164,94,0.05));display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--gold);border:2px solid rgba(160,120,64,0.15);flex-shrink:0;">${(staff.name||'?')[0]}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
 // ② ASSESS
 // ═══════════════════════════════════════════════════════════
 function populateAssessSelect() {
@@ -917,39 +1131,226 @@ function populateAssessSelect() {
     });
     sel.addEventListener('change', () => {
         const show = !!sel.value;
+        const staff = show ? staffList.find(s => s.staffId === sel.value) : null;
+        // Avatar
+        updateTabAvatar('assessAvatar', staff);
         document.getElementById('skillCard').style.display = show ? '' : 'none';
         document.getElementById('radarCard').style.display = show ? '' : 'none';
+        document.getElementById('assessGrid').style.display = show ? '' : 'none';
         document.getElementById('adviceCard').style.display = 'none';
-        if (show) resetSkillScores();
+        // Calculator link
+        const calcLink = document.getElementById('assessCalcLink');
+        if (calcLink) {
+            calcLink.style.display = show ? '' : 'none';
+            if (show) {
+                const staff = staffList.find(s => s.staffId === sel.value);
+                calcLink.href = '../TalentIntelligence_Calculator_v8.0.html' + (staff ? '?name=' + encodeURIComponent(staff.name) : '');
+            }
+        }
+        if (show) {
+            renderSelfReferenceChart(sel.value);
+        } else {
+            renderSelfReferenceChart(null);
+        }
     });
 }
+
+    // Load self-reference chart function above
+
+let assessRefRadarChart = null;
+let cachedAssessHistory = [];
+let currentRefType = 'Self';
+
+function switchRefType(type) {
+    currentRefType = type;
+    document.getElementById('refSelf').classList.toggle('active', type === 'Self');
+    document.getElementById('refMgr').classList.toggle('active', type === 'Manager');
+    if (cachedAssessHistory.length === 0) return;
+    // Find record of this type from cache
+    let ref = cachedAssessHistory.find(e => e.evalType === type);
+    if (!ref) {
+        const content = document.getElementById('assessRefContent');
+        content.innerHTML = `<div style="color:var(--text-dim);font-size:0.85rem;padding:1rem;">${type} の評価データがありません。</div>`;
+        return;
+    }
+    displayRefData(ref, type === 'Self' ? 'Self (自己評価)' : 'Manager (MGR評価)');
+}
+
+function displayRefData(latestRef, refType) {
+    const content = document.getElementById('assessRefContent');
+    const chartWrap = document.querySelector('.radar-wrap-small');
+
+    content.innerHTML = `
+        <div style="font-size:0.85rem; margin-top:8px;">
+            <p style="margin:4px 0;"><strong>参照:</strong> <span style="color:${latestRef.evalType==='Self'?'#6889a8':'#a08058'};">${refType}</span></p>
+            <p style="margin:4px 0;"><strong>日付:</strong> ${new Date(latestRef.timestamp).toLocaleDateString()}</p>
+            <p style="margin:4px 0;"><strong>Total CP:</strong> ${latestRef.totalScore}</p>
+        </div>
+    `;
+
+    chartWrap.style.display = '';
+
+    const ctx = document.getElementById('assessRefRadar');
+    const calcAvg = (scores, prefix) => {
+        let sum = 0, count = 0;
+        for(let i=1; i<=6; i++) {
+            const v = Number(scores[prefix+i]);
+            if(!isNaN(v)) { sum+=v; count++; }
+        }
+        return count > 0 ? sum/count : 0;
+    };
+    const rData = [
+        calcAvg(latestRef.scores, 'p'),
+        calcAvg(latestRef.scores, 's'),
+        calcAvg(latestRef.scores, 'e'),
+        calcAvg(latestRef.scores, 'm')
+    ];
+
+    if (assessRefRadarChart) assessRefRadarChart.destroy();
+    assessRefRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [CAT_NAMES.P, CAT_NAMES.S, CAT_NAMES.E, CAT_NAMES.M],
+            datasets: [{
+                label: refType,
+                data: rData,
+                backgroundColor: latestRef.evalType === 'Self' ? 'rgba(96, 165, 250, 0.15)' : 'rgba(200, 164, 94, 0.15)',
+                borderColor: latestRef.evalType === 'Self' ? '#6889a8' : '#a08058',
+                borderWidth: 2,
+                pointBackgroundColor: latestRef.evalType === 'Self' ? '#6889a8' : '#a08058',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, display: false }, pointLabels: { font: { size: 10, family: "Menlo, Monaco, monospace" } } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Set skill values from this ref
+    const rawScores = latestRef.scores;
+    Object.keys(rawScores).forEach(k => {
+        const v = rawScores[k];
+        if(v !== '' && v !== null && v !== undefined) skillScores[k] = parseFloat(v) || 0;
+    });
+    updateSkillDisplay();
+}
+
+async function renderSelfReferenceChart(staffId, preferredType) {
+    const content = document.getElementById('assessRefContent');
+    const chartWrap = document.querySelector('.radar-wrap-small');
+    if (!staffId) {
+        content.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem;">自己評価データが読み込まれます<br>（未提出の場合は過去のManager評価）</div>';
+        if (assessRefRadarChart) { assessRefRadarChart.destroy(); assessRefRadarChart = null; }
+        return;
+    }
+
+    content.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:0.85rem;">履歴取得中...</div>';
+    
+    try {
+        const h = await TI_BRIDGE.loadHistory(staffId);
+        if (h.result !== 'success' || h.history.length === 0) {
+            content.innerHTML = '<div style="color:var(--text-dim);font-size:0.85rem;padding:1rem;">過去の評価データがありません。<br>今回が最初の評価になります。</div>';
+            resetSkillScores();
+            if (assessRefRadarChart) { assessRefRadarChart.destroy(); assessRefRadarChart = null; }
+            chartWrap.style.display = 'none';
+            return;
+        }
+
+        const sorted = h.history.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        cachedAssessHistory = sorted;
+        const refPref = preferredType || currentRefType || 'Self';
+        let latestRef = sorted.find(e => e.evalType === refPref);
+        let refType = refPref === 'Self' ? 'Self (自己評価)' : 'Manager (MGR評価)';
+        if (!latestRef) {
+            const fallback = refPref === 'Self' ? 'Manager' : 'Self';
+            latestRef = sorted.find(e => e.evalType === fallback || (!e.evalType && fallback === 'Manager'));
+            refType = fallback === 'Self' ? 'Self (自己評価)' : 'Manager (MGR評価)';
+        }
+
+        if (!latestRef) {
+            content.innerHTML = '<div style="color:var(--text-dim);font-size:0.85rem;padding:1rem;">利用可能な参照データがありません。</div>';
+            resetSkillScores();
+            if (assessRefRadarChart) { assessRefRadarChart.destroy(); assessRefRadarChart = null; }
+            chartWrap.style.display = 'none';
+            return;
+        }
+
+        displayRefData(latestRef, refType);
+
+    } catch (e) {
+        content.innerHTML = '<div style="color:var(--red);font-size:0.85rem;">データ取得エラー</div>';
+        console.error(e);
+        resetSkillScores();
+    }
+}
+// ── LV Guide (exact original text from Calculator v8.0) ──
+const SKILL_LV_GUIDE = {
+    p1: ['指示された業務を覚えることに集中している','自身の業務範囲内で、分からないことを自ら質問できる','自身のスキルアップのために、マニュアルを読み返したり、先輩の技術を観察したりしている','上位者から与えられた課題やフィードバックに対し、素直に受け止め、改善しようと努力している','自身の業務範囲外の知識やスキル（例: 他部門の業務、業界のトレンド）にも興味を持ち、情報収集している','自身の弱みを克服するため、または強みを伸ばすために、具体的な目標を設定し、学習計画を立てて実行している（例: 書籍購入、セミナー参加）','習得した知識やスキルを、自身の業務改善やチームへの貢献に活かしている','チームや店舗の目標達成に必要な新しい知識やスキルを特定し、チーム全体の学習を促進する活動（例: 勉強会の企画）を主導できる','業界の枠を超えた幅広い分野から学び、SVDの既存のやり方にとらわれない新しいアイデアや視点をもたらすことができる','常に自己変革を続け、その姿勢が周囲の模範となっている。組織全体の「学習する文化」を醸成し、牽引している'],
+    p2: ['自身の業務を滞りなく行い、チームに迷惑をかけないように努めている','チームメンバーからの依頼に対し、快く協力できる','チーム内のコミュニケーションを円滑にするため、積極的に挨拶や声かけを行っている','自身の意見を伝えつつ、チームの決定には従い、協力して業務を遂行できる','チーム内の課題や目標に対し、自身の役割を理解し、積極的に貢献しようと努めている','チームメンバーの強みや弱みを理解し、互いに補完し合えるような関係性を築ける','チーム内の意見の対立や衝突があった際に、中立的な立場で調整し、建設的な解決に導ける','チームの目標達成のために、部門や役割の垣根を越えて他チームと連携し、協力体制を構築できる','チーム全体のパフォーマンスを最大化するため、メンバーのモチベーション向上や、新しいチームワークの仕組みを提案・実行できる','SVD全体の組織目標達成のため、複数のチームや部門を横断するプロジェクトを主導し、全社的な協調体制を構築・推進できる'],
+    p3: ['予期せぬ出来事やプレッシャーを感じると、業務に集中しづらくなることがある','プレッシャーを感じつつも、指示された業務は最後まで遂行できる','業務の優先順位が変更された際、戸惑いつつも対応できる','繁忙時や予期せぬトラブルが発生した際も、冷静さを保ち、自身の業務を遂行できる','業務内容や役割の変更に対し、前向きに受け入れ、適応しようと努力できる','ストレスを感じた際に、自身の感情をコントロールし、適切な対処法（例: 休憩、相談）を見つけられる','チームメンバーがストレスを感じている状況を察知し、サポートや声かけができる','複数の困難な状況や変化が同時に発生しても、冷静に状況を分析し、優先順位を付けて対応できる','組織全体の大きな変革や困難なプロジェクトにおいて、その変化を前向きに捉え、チームを鼓舞し、適応を促せる','どのような逆境や未曾有の事態においても、常に冷静沈着で、変化を成長の機会と捉え、組織全体を力強く牽引できる'],
+    p4: ['指示された業務を、決められた手順通りに遂行する','自身の業務において、ミスなく完了させる責任感を持っている','自身の業務範囲で発生した問題に対し、他責にせず、自身の問題として捉えることができる','自身の業務を「作業」としてではなく、「目的」を理解した上で遂行できる','自身の役割や業務が、チームや店舗全体の目標にどう貢献するかを理解し、行動している','担当業務の範囲を超えて、店舗全体の課題や問題点を「自分ごと」として捉え、改善策を提案できる','チームやプロジェクトのリーダーとして、その成果に対して全責任を負う覚悟を持っている','チームや店舗で発生した失敗やクレームに対し、自らが矢面に立ち、責任者として対応できる','店舗や事業の成功を自身の成功と捉え、その達成のためにあらゆる困難を引き受け、最後までやり遂げる','SVD全体の成功と発展を自身の使命と捉え、いかなる役割や立場であっても、組織全体の課題を「自分ごと」として解決に導く'],
+    p5: ['相手の話を遮らずに聞くことができる','相手の表情や声のトーンから、感情を読み取ろうと努めている','相手の話の内容を理解し、適切に相槌を打つことができる','相手の言葉の裏にある意図や感情を推測し、共感的な返答ができる','顧客や同僚の抱える問題に対し、相手の立場に立って考え、寄り添うことができる','相手が本当に伝えたいこと（ニーズ、不満、期待）を、言葉だけでなく非言語情報からも深く理解できる','チーム内の意見の対立や顧客のクレームに対し、双方の感情や背景を深く理解し、共感を示しながら解決の糸口を見つけられる','顧客や同僚の潜在的なニーズや、まだ言語化されていない感情を察知し、先回りして行動できる','異なる文化や価値観を持つ人々に対しても、深い共感と理解を示し、信頼関係を構築できる','SVDの顧客や従業員、パートナー企業など、あらゆるステークホルダーの感情やニーズを深く理解し、それらをSVDのサービスや戦略に反映させることで、組織全体の共感力を高める'],
+    p6: ['SVDの理念や行動指針について、説明を聞いたことがある','SVDのブランドコンセプト「ここだけの美味しさ。ここだけのエンターテインメント。」を理解し、説明できる','自身の業務において、SVDの理念を意識して行動しようと努めている','自身の行動や判断が、SVDのブランドイメージにどう影響するかを考えている','SVDの理念やビジョンを自身の言葉で語り、後輩に伝えることができる','SVDの理念を体現するような、新しいサービスや改善案を自ら提案できる','チームや店舗の目標を、SVDの理念と結びつけて設定し、メンバーの共感を呼ぶことができる','SVDの理念に反するような事象や慣習を発見した際に、それを改善するための具体的な行動を起こせる','SVDの理念やブランド価値を、社外のパートナーや顧客に対しても魅力的に伝え、ファンを増やすことができる','SVDの理念そのものを時代に合わせて発展させ、組織の未来を創り出す。SVDの「生きる理念」そのものである'],
+    s1: ['指示された業務を、指導を受けながら遂行できる（研修生レベル）','基本的な業務（配膳、バッシング等）を、監督下で一人で遂行できる','小規模な担当範囲（1〜2テーブル）を、一人で責任を持って担当できる','担当範囲の顧客の基本的なニーズを先読みし、プロアクティブに動ける','標準的な担当範囲（3〜4テーブル）を、効率的かつ安定して管理できる','繁忙時や広範囲のセクションでも、冷静に優先順位を判断し、高い品質を維持できる','後輩スタッフへの実地指導（OJT）を行い、チーム全体のサービス品質向上に貢献できる','フロアリーダーとして、予期せぬトラブルやクレームにも一次対応し、解決に導ける','サービス全体の流れを俯瞰し、フロア全体のオペレーションを円滑に管理・指揮できる','既存のサービスフローの課題を発見し、改善策を提案・実行することで、店舗全体の顧客体験を革新できる'],
+    s2: ['料理名を正確に覚えている','主な食材が何かを答えることができる','簡単な調理法（焼く、煮るなど）を説明できる','食材の産地や特徴、こだわりのポイントを説明できる','一般的なアレルギーに関する質問に、正確に回答・確認ができる','料理の風味、食感、味わいの構成を、自身の言葉で表現豊かに説明できる','顧客の好みや状況（量、気分、予算）をヒアリングし、最適な料理を提案できる','シェフの料理哲学や、コース全体のストーリーを理解し、顧客に伝えることができる','専門知識を持つ顧客と、調理技術や食材について対等に会話ができる','顧客からのフィードバックを的確に収集・分析し、キッチンに建設的な意見としてフィードバックできる'],
+    s3: ['ドリンクメニューの品目を覚えている','標準的なソフトドリンク、ビール、スピリッツの注文を正確に受けられる','簡単なミックスドリンク（ハイボール等）を作成できる','提供しているビールやスピリッツの種類と、その特徴を説明できる','料理に合わせたノンアルコールドリンクのペアリングを提案できる','定番カクテル（ジントニック、モスコミュール等）をレシピ通りに作成できる','プレミアムスピリッツの背景（蒸留所、製法）を語り、その価値を伝えることができる','顧客の好みに合わせて、メニューにないカスタムカクテルを作成・提案できる','バーの在庫管理に関わり、新しいドリンクメニューの導入を提案できる','店舗のコンセプトを体現する、シグネチャーカクテルを開発できる'],
+    s4: ['赤・白・泡の基本的な違いを理解している','指示通りにワインの抜栓・提供ができる','主要なブドウ品種（カベルネ、シャルドネ等）の特徴を簡単に説明できる','グラスワインリストの各ワインの味わいや特徴を説明できる','顧客の簡単な好み（重い、軽い等）に応じて、ボトルワインを数種類提案できる','主要なワイン産地（仏、伊、米等）の特色を理解し、説明できる','デキャンタージュや、古酒の取り扱いを適切に行うことができる','コース料理全体を通して、ワインペアリングを自信を持って提案できる','ワインセラーの一部管理を任され、仕入れや在庫管理に関与する','ソムリエとして、ワインリスト全体の構築、ペアリングコースの開発、仕入れ戦略の策定を担う'],
+    s5: ['笑顔で挨拶し、基本的な接客用語を正しく使える','顧客からの簡単な依頼（水、おしぼり等）に、丁寧かつ迅速に対応できる','顧客の名前を覚え、自然な形で会話に取り入れることができる','顧客との会話の中で、相手の興味や背景を察し、適切な話題を提供できる','顧客のニーズを先回りして察知し、言われる前にサービスを提供できる','軽微なクレームや要望に対し、冷静かつ共感的に対応し、顧客の不満を解消できる','顧客との間に信頼関係を築き、再来店に繋がる「ファン」を作ることができる','VIPや特別な配慮が必要な顧客に対し、常に落ち着いて、期待を超えるサービスを提供できる','重大なクレームや予期せぬ事態に対し、機転を利かせた対応で、逆に顧客の感動を呼ぶ経験を創出できる','店舗のブランドアンバサダーとして、自身の立ち居振る舞いそのもので、店の格を体現できる'],
+    s6: ['POSシステムの基本的な画面構成を理解している','正確に注文を入力し、会計処理（現金、クレジット）を一人で行える','割引、分割会計、注文取消しなど、特殊な会計処理をマニュアルを見ずに対応できる','予約システムの基本操作（新規予約、変更、キャンセル）を正確に行える','POSやプリンターの軽微なトラブル（ロール紙交換、再起動等）を自己解決できる','POSから日次・月次の基本的な売上レポートを出力し、内容を理解できる','新人スタッフに対し、POSや予約システムの操作方法を分かりやすく指導できる','予約システムのテーブル管理機能を使い、最適な配席や在庫管理を行える','システムから得られるデータを分析し、オペレーション上の課題や改善点を指摘できる','外部業者と連携し、システムの導入やアップデート、カスタマイズを主導できる'],
+    e1: ['業界経験1年未満','業界経験1年','業界経験2年','業界経験3年','業界経験5年','業界経験7年','業界経験10年','業界経験15年','業界経験20年','業界経験25年以上'],
+    e2: ['在籍1年未満','在籍1年','在籍2年','在籍3年。SVDの理念や文化を深く理解している','在籍5年。または、2つ以上のSVD店舗での勤務経験がある','在籍7年。または、異なる業態のSVDブランドでの勤務経験がある','在籍10年。SVDの歴史や各店舗の背景を理解し、自身の言葉で語ることができる','新規開店やリニューアルプロジェクトの立ち上げメンバーとしての経験がある','複数店舗の運営に横断的に関わった経験がある（例: エリアマネジャー、ブランドマネジャー）','SVDの経営層として、全社の意思決定に関与した経験がある'],
+    e3: ['専門資格なし','専門分野に関する基礎的な知識を習得中','専門分野に関する基礎的な資格を1つ保有（例: ワイン検定ブロンズクラス）','専門分野に関する基礎的な資格を複数保有。または、中級資格を1つ保有（例: ワイン検定シルバークラス）','ホテル・レストラン・サービス技能士2級、J.S.A. ワインエキスパート、利き酒師など、主要な専門資格を1つ保有','バーテンダー呼称技能認定、調理師免許、製菓衛生師など、より業務に直結する主要な専門資格を保有','複数の主要な専門資格を保有。または、ホテル・レストラン・サービス技能士1級を保有。','J.S.A. ソムリエ呼称資格を保有','J.S.A. ソムリエ・エクセレンス（旧シニアソムリエ）の資格を保有。または、国内の主要なコンクールでの表彰など、それに準ずる実績がある','国際的な専門資格（例: WSET Level 3以上）を保有。または、国内外のコンクールで顕著な実績がある'],
+    e4: ['基本的なPC操作ができる','文書作成ソフトや表計算ソフトの基本的な操作ができる','TableCheckの基本操作（予約入力、顧客情報確認）ができる','Illustratorの基本操作ができ、簡単なメニューやPOPの作成・修正ができる','表計算ソフトの高度な機能を用いて、業務効率化に繋がるデータ分析や管理表を作成できる','TableCheckの応用操作（テーブル管理、在庫設定、顧客メモの活用）ができる','Illustratorの応用操作ができ、新規メニューブックのデザインや、後輩への指導ができる','TableCheckの管理者として、店舗の設定変更やスタッフへの指導ができる','動画編集ツールを用いて、SNS投稿用や社内研修用のショート動画を作成・編集できる','社内の業務システム全体の課題を特定し、外部業者と連携して要件定義や改善を主導できる'],
+    e5: ['役職経験なし','特定の業務リーダーの経験がある','シフトリーダーやセクションリーダーの経験がある','キャプテンまたはアシスタントマネジャーとして、上位者の補佐やチーム管理の経験がある','マネジャーまたは副支配人として、特定部門や小規模店舗の責任者経験がある','支配人として、一つの店舗全体の運営責任者としての経験がある','エリア支配人として、複数店舗を統括した経験がある','上級エリア支配人またはブランドマネジャーとして、より広域なエリアやブランド全体の運営戦略を担った経験がある','統括支配人として、複数のエリアやブランドを横断する大規模な戦略や組織運営を担った経験がある','総支配人（GM）として、SVDの運営チームの中核を担い、事業全体を推進した経験がある'],
+    e6: ['特筆すべき実績や表彰なし','チーム内での小さな貢献が認められた経験がある','店舗内での表彰（例: 月間MVP）を受けた経験がある','顧客からの感謝状や、SNSでの高評価など、外部からの具体的な評価を得た経験がある','SVDグループ内での表彰（例: 年間優秀社員賞）を受けた経験がある','業務改善プロジェクトを主導し、具体的な成果を出した経験がある','業界団体主催のコンクールやイベントで入賞・入選した経験がある','SVDのブランド価値向上に大きく貢献するプロジェクトを主導し、顕著な実績を上げた経験がある','国内外の主要なコンクールで上位入賞、または社外で広く認知されるような高い評価を獲得した経験がある','業界最高峰の目標達成に向けて、常に具体的な計画と情熱を持ち、チームを牽引している'],
+    m1: ['店舗の基本的な営業数値に関心を持っている','自身の行動がコストにどう影響するかを意識して業務にあたる','日報や基本的なレポートを読み、前日・前週との数値の差異を説明できる','担当カテゴリーの原価計算ができ、原価率を理解している','FLコストの概念を理解し、日々のオペレーションにおいて、その最適化を意識した行動が取れる','月次PLの主要項目を理解し、自店舗の数値を他店舗や予算と比較して説明できる','PLの数値変動から、店舗が抱える経営上の課題を特定し、具体的な改善アクションを複数提案できる','競合や市場の動向、過去のデータを基に、月単位での売上・利益の着地予測を立て、その達成に向けた具体的な計画を策定できる','投資対効果（ROI）の観点から、新規設備投資や大規模な販促企画の妥当性を評価・判断し、事業計画を策定できる','複数店舗やブランド全体の財務データを横断的に分析し、SVD全体の経営戦略に対し、財務的観点から提言・貢献できる'],
+    m2: ['チームの一員として、他のスタッフと協力的に業務を遂行できる','新人や後輩に対し、自身の担当業務について手本を見せ、基本的な手順を教えることができる','チーム内の良好な雰囲気作りに貢献し、ポジティブな声がけや挨拶を率先して行える','後輩の小さな成長や変化に気づき、具体的に褒めたり、悩みに寄り添ったりすることができる','担当範囲において、後輩へのタスクの割り振りや、簡単なOJTを計画・実行できる','スタッフ一人ひとりの特性を理解し、個々に合わせた指導や動機付けができる','チームの目標を設定し、メンバーの役割を明確にし、目標達成に向けてチームを一つにまとめることができる','スタッフのキャリアプランについて相談に乗り、成長の機会を設計・提供できる。チーム内の対立を仲裁し、解決に導く','店舗の理念やビジョンに基づいた採用計画を策定し、将来のリーダー候補を発掘・育成する仕組みを構築・運用できる','SVD全体の組織文化を醸成する。ブランドや店舗の垣根を越えた人材の交流・育成や、次世代の経営幹部候補を育成するサクセッションプランを設計・実行する'],
+    m3: ['サービスの一連の流れを学ぶ。指示された持ち場の準備や片付けを正確に行える。','担当セクションの基本的な維持管理を、シェフ・ド・ランの指示のもとで遂行できる。','シェフ・ド・ランを完全に補助し、料理やドリンクの提供、バッシングを迅速かつ静かに行える。','小規模なセクションの責任者として、簡単なオーダーテイクや料理説明ができる。','標準的なセクションの責任者として、オーダーテイクから会計までの一連のサービスを一人で完結できる。','コミ・ド・ランを効果的に指導・管理しながら、自身のセクションで高いサービス品質と効率を両立できる。','ダイニングの特定エリアを統括し、複数のシェフ・ド・ランの動きを監督・調整する。','メートル・ド・テルを補佐する副責任者として、ダイニング運営の中核を担う。','ダイニング全体の最高責任者として、全サービスの指揮、スタッフの採用・教育、顧客満足度の管理に責任を持つ。','レストラン全体の総支配人として、サービス・キッチンと連携し、店舗全体の経営に責任を持つ。'],
+    m4: ['問題を発見し、5W1Hを用いて正確に状況を報告できる','発生した問題に対し、根本原因分析の初歩的な手法を用いて、直接的な原因を特定できる','自身の担当業務やチームのタスクにおいて、特定された課題に対し、PDCAサイクルを適用し、改善策を立案・実行できる','繰り返し発生する問題に対し、特性要因図を用いて、考えられる原因を構造的に洗い出せる','担当セクションや特定サービスに対し、SWOT分析を行い、具体的な改善アクションプランを立案できる','3C分析を用いて競合や市場の状況を分析し、4P/4Cの観点から具体的な販促企画やマーケティングプランを立案・提案できる','店舗の中期計画策定において、PEST分析やファイブフォース分析を用い、外部環境を評価し、戦略に反映させることができる','ビジネスモデルキャンバスを用いて、新規事業や大規模な店舗改善の計画を策定する。OKRを設定し、店舗全体の戦略実行を管理する','ブルー・オーシャン戦略などの思考フレームに基づき、既存の競争を抜け出す革新的な事業コンセプトやサービスを立案する。','SVD全体の経営課題に対し、複数の事業部門を横断する複雑な問題を構造化し、持続的な企業価値向上に繋がる全社戦略を策定・提言する'],
+    m5: ['チームの目標や指示を理解し、自身の役割を果たすことで貢献できる','チームの規範やルールを遵守し、他のメンバーに良い影響を与える行動ができる','自身の意見やアイデアを建設的に発信し、チームの議論に貢献できる','チーム内の課題やメンバーの困り事を察知し、積極的にサポートや提案ができる','チームの目標達成に向けて、メンバーを巻き込み、協調性を生み出すことができる','困難な状況や変化の局面において、自身の役割を明確にし、チームを鼓舞し、前向きな行動を促せる','店舗のビジョンや目標を明確に言語化し、メンバーに浸透させることで、自律的な行動を引き出せる','チームの多様性を尊重し、異なる意見や価値観を統合しながら、より良い意思決定を導き出せる','自身の行動や言動を通じて、SVDの理念や文化を体現し、店舗内外のステークホルダーから信頼と尊敬を集めることができる','SVD全体の未来を構想し、そのビジョンを内外に発信することで、組織全体を牽引し、業界に新たな価値を創造できる'],
+    m6: ['店舗のブランドコンセプトやターゲット顧客を理解し、自身の言葉で説明できる','店舗のSNSアカウントで、ブランドイメージに沿った基本的な情報発信ができる','お客様の声を収集し、ポジティブ/ネガティブな意見を要約してチームに共有できる','店舗の販促物のデザインや文言について、ブランドコンセプトに基づいた改善案を提案できる','小規模なイベントやキャンペーンの企画から実行、結果報告までを担当できる','プレスリリースのドラフト作成や、メディア向け資料の準備ができる。地域のメディアやインフルエンサーとの関係を構築する','CRMツール等を活用して顧客データを分析し、リピート率向上のための施策を立案・実行できる','店舗の年間マーケティングプランと予算を策定し、実行を管理し、施策の効果測定（ROI）までを責任を持って行うことができる','異業種コラボレーションや大型タイアップ企画など、ブランドの認知度を飛躍的に高めるための戦略的なPR・マーケティング活動を主導する','SVD全体のブランド戦略を策定する。SVDを業界や社会における一つの「文化」として確立させるための活動を牽引する']
+};
 
 function initSkillSliders() {
     const container = document.getElementById('skillSliders');
     if (!container) return;
 
     // Category tab switching
-    document.querySelectorAll('.cat-btn').forEach(btn => {
+    document.querySelectorAll('.cat-btn[data-cat]').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.cat-btn[data-cat]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             document.querySelectorAll('.skill-group').forEach(g => g.classList.remove('active'));
-            document.getElementById('skills-' + btn.dataset.cat).classList.add('active');
+            const el = document.getElementById('skills-' + btn.dataset.cat);
+            if (el) el.classList.add('active');
         });
     });
 
-    // Create sliders
+    // Create read-only skill display
     let html = '';
     ['P', 'S', 'E', 'M'].forEach(cat => {
         html += `<div class="skill-group ${cat === 'P' ? 'active' : ''}" id="skills-${cat}">`;
         Object.entries(SKILL_LABELS[cat]).forEach(([key, label]) => {
-            skillScores[key] = 5.0;
+            skillScores[key] = 0;
+            const rubric = SKILL_RUBRICS[cat][key];
             html += `
-            <div class="skill-row">
-                <span class="skill-label">${label}</span>
-                <input type="range" class="skill-slider" min="1" max="10" value="5" 
-                       id="slider-${key}" oninput="updateSkill('${key}', this.value)">
-                <span class="skill-value" id="val-${key}">5.0</span>
+            <div class="skill-row" style="flex-direction: column; align-items: stretch; gap: 0.3rem; padding: 0.8rem 1rem; border-bottom: 1px solid var(--border-light);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span class="skill-label" style="font-weight: 600; font-size: 0.9rem; flex: 1;">${label}</span>
+                    <span class="skill-value" id="val-${key}" style="font-weight: 700; font-size: 1.1rem; min-width: 2.5rem; text-align: right; color: var(--gold);">—</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;">
+                    <div id="bar-${key}" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold)); border-radius: 3px; transition: width 0.4s ease;"></div>
+                </div>
+                <div style="font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; padding-left: 0.5rem; border-left: 3px solid var(--gold-dark); margin-top: 0.2rem;">
+                    ${rubric}
+                </div>
+                <details style="margin-top: 0.15rem;">
+                    <summary style="cursor: pointer; font-size: 0.72rem; color: var(--text-muted); user-select: none;">▶ LV1〜10 目安</summary>
+                    <div id="lv-${key}" style="font-size: 0.7rem; color: var(--text-dim); padding: 0.3rem 0 0 0.5rem; line-height: 1.7;"></div>
+                </details>
             </div>`;
         });
         html += '</div>';
@@ -959,26 +1360,49 @@ function initSkillSliders() {
 
 function resetSkillScores() {
     Object.keys(skillScores).forEach(k => {
-        skillScores[k] = 5;
-        const slider = document.getElementById('slider-' + k);
+        skillScores[k] = 0;
         const val = document.getElementById('val-' + k);
-        if (slider) slider.value = 5;
-        if (val) val.textContent = '5.0';
+        const bar = document.getElementById('bar-' + k);
+        if (val) val.textContent = '—';
+        if (bar) bar.style.width = '0%';
     });
     updateTotalScore();
     updateRadarChart();
 }
 
-function updateSkill(key, value) {
-    skillScores[key] = parseInt(value);
-    document.getElementById('val-' + key).textContent = Number(value).toFixed(1);
+function updateSkillDisplay() {
+    Object.keys(skillScores).forEach(k => {
+        const v = skillScores[k];
+        const val = document.getElementById('val-' + k);
+        const bar = document.getElementById('bar-' + k);
+        if (val) val.textContent = v > 0 ? Number(v).toFixed(0) : '—';
+        if (bar) bar.style.width = v > 0 ? (v * 10) + '%' : '0%';
+        // Highlight current LV in accordion
+        const lvContainer = document.getElementById('lv-' + k);
+        if (lvContainer && SKILL_LV_GUIDE[k]) {
+            let lvHtml = '';
+            SKILL_LV_GUIDE[k].forEach((desc, idx) => {
+                const lv = idx + 1;
+                const isCurrent = Math.round(v) === lv;
+                lvHtml += `<div style="padding: 2px 4px; ${isCurrent ? 'background: rgba(212,175,55,0.15); border-radius: 3px; color: var(--gold); font-weight: 600;' : ''}">LV${lv}: ${desc}</div>`;
+            });
+            lvContainer.innerHTML = lvHtml;
+        }
+    });
     updateTotalScore();
     updateRadarChart();
 }
 
 function updateTotalScore() {
-    const total = Object.values(skillScores).reduce((s, v) => s + v, 0);
-    document.getElementById('totalScore').textContent = total;
+    // Calculator公式: (P平均 × S平均) + (E平均 × M平均)
+    const avg = (prefix) => {
+        let sum = 0;
+        for (let i = 1; i <= 6; i++) sum += (skillScores[prefix + i] || 0);
+        return sum / 6;
+    };
+    const pAvg = avg('p'), sAvg = avg('s'), eAvg = avg('e'), mAvg = avg('m');
+    const total = (pAvg * sAvg) + (eAvg * mAvg);
+    document.getElementById('totalScore').textContent = total.toFixed(2);
 }
 
 function updateRadarChart() {
@@ -1059,126 +1483,190 @@ async function saveAssessment() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// ③ GROWTH
+// ③ GROWTH (Point-in-Time Comparison)
 // ═══════════════════════════════════════════════════════════
+let currentGrowthHistory = [];
+
 function populateGrowthSelects() {
-    ['growthStaff1', 'growthStaff2'].forEach(id => {
-        const sel = document.getElementById(id);
-        const placeholder = id === 'growthStaff1' ? 'スタッフ1' : 'スタッフ2 (任意)';
-        sel.innerHTML = `<option value="">${placeholder}</option>`;
-        staffList.forEach(s => {
-            sel.innerHTML += `<option value="${s.staffId}">${s.name}</option>`;
-        });
+    const sel = document.getElementById('growthStaff1');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">対象スタッフを選択...</option>';
+    staffList.forEach(s => {
+        sel.innerHTML += `<option value="${s.staffId}">${s.name}</option>`;
     });
+    sel.addEventListener('change', () => onGrowthStaffSelected(sel.value));
 }
 
-// ── Growth chart helper: calc category avg from individual scores ──
-function calcGrowthCatAvg(scores, prefix) {
-    if (!scores) return 0;
-    const keys = [1, 2, 3, 4, 5, 6].map(n => prefix + n);
-    const vals = keys.map(k => Number(scores[k] || 0));
-    return vals.reduce((a, b) => a + b, 0) / vals.length;
-}
+async function onGrowthStaffSelected(staffId) {
+    const selA = document.getElementById('growthHistoryA');
+    const selB = document.getElementById('growthHistoryB');
+    const btn = document.getElementById('btnGrowthAnalyze');
+    const staff = staffId ? staffList.find(s => s.staffId === staffId) : null;
+    updateTabAvatar('growthAvatar', staff);
+    
+    selA.innerHTML = '<option value="">比較元 (From) を選択</option>';
+    selB.innerHTML = '<option value="">比較先 (To) を選択</option>';
+    selA.disabled = true;
+    selB.disabled = true;
+    btn.disabled = true;
+    currentGrowthHistory = [];
 
-async function loadGrowthChart() {
-    const id1 = document.getElementById('growthStaff1').value;
-    const id2 = document.getElementById('growthStaff2').value;
-    if (!id1) { TI_BRIDGE.showToast('スタッフ1を選択してください'); return; }
+    if (!staffId) {
+        const calcLink = document.getElementById('growthCalcLink');
+        if (calcLink) calcLink.style.display = 'none';
+        return;
+    }
+    // Calculator link
+    const growthCalcLink = document.getElementById('growthCalcLink');
+    if (growthCalcLink) {
+        growthCalcLink.style.display = '';
+        const staff = staffList.find(s => s.staffId === staffId);
+        growthCalcLink.href = '../TalentIntelligence_Calculator_v8.0.html' + (staff ? '?name=' + encodeURIComponent(staff.name) : '');
+    }
 
     try {
-        const h1 = await TI_BRIDGE.loadHistory(id1);
-        const datasets = [];
-        const labels = [];
-        const staff1 = staffList.find(s => s.staffId === id1);
-        const name1 = staff1?.name || id1;
-
-        if (h1.result === 'success' && h1.history.length > 0) {
-            const sorted1 = h1.history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-            sorted1.forEach(h => labels.push(new Date(h.timestamp).toLocaleDateString('ja-JP')));
-
-            // Total Score line (dashed, left Y-axis)
-            datasets.push({
-                label: `${name1} — Total`,
-                data: sorted1.map(h => Number(h.totalScore) || 0),
-                borderColor: 'rgba(200, 164, 94, 0.5)',
-                backgroundColor: 'rgba(200, 164, 94, 0.05)',
-                borderWidth: 2, borderDash: [6, 3],
-                pointRadius: 4, pointBackgroundColor: '#a08058',
-                tension: 0.3, fill: true,
-                yAxisID: 'yTotal'
+        selA.innerHTML = '<option value="">読込中...</option>';
+        const h = await TI_BRIDGE.loadHistory(staffId);
+        if (h.result === 'success' && h.history.length > 0) {
+            currentGrowthHistory = h.history.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp)); // Newest first
+            
+            selA.innerHTML = '<option value="">比較元 (From) を選択</option>';
+            selB.innerHTML = '<option value="">比較先 (To) を選択</option>';
+            
+            currentGrowthHistory.forEach((record, index) => {
+                const dateStr = new Date(record.timestamp).toLocaleDateString('ja-JP');
+                const typeStr = record.evalType || 'Manager';
+                // index points to the currentGrowthHistory array element
+                selA.innerHTML += `<option value="${index}">${dateStr} - ${typeStr} (CP:${record.totalScore})</option>`;
+                selB.innerHTML += `<option value="${index}">${dateStr} - ${typeStr} (CP:${record.totalScore})</option>`;
             });
-
-            // Category breakdown lines (right Y-axis)
-            const catMeta = [
-                { prefix: 'p', label: 'P (' + CAT_NAMES.P + ')', color: '#6b9a78' },
-                { prefix: 's', label: 'S (' + CAT_NAMES.S + ')', color: '#6889a8' },
-                { prefix: 'e', label: 'E (' + CAT_NAMES.E + ')', color: '#9a7eb8' },
-                { prefix: 'm', label: 'M (' + CAT_NAMES.M + ')', color: '#a08058' }
-            ];
-            catMeta.forEach(cat => {
-                datasets.push({
-                    label: `${name1} — ${cat.label}`,
-                    data: sorted1.map(h => calcGrowthCatAvg(h.scores, cat.prefix)),
-                    borderColor: cat.color,
-                    backgroundColor: cat.color,
-                    borderWidth: 2, pointRadius: 3,
-                    pointBackgroundColor: cat.color,
-                    tension: 0.3, fill: false,
-                    yAxisID: 'yCat'
-                });
-            });
+            
+            selA.disabled = false;
+            selB.disabled = false;
+            btn.disabled = false;
+        } else {
+            selA.innerHTML = '<option value="">履歴がありません</option>';
         }
-
-        // Staff 2 comparison (total score only)
-        if (id2) {
-            const h2 = await TI_BRIDGE.loadHistory(id2);
-            if (h2.result === 'success' && h2.history.length > 0) {
-                const sorted2 = h2.history.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-                const staff2 = staffList.find(s => s.staffId === id2);
-                datasets.push({
-                    label: `${staff2?.name || id2} — Total`,
-                    data: sorted2.map(h => Number(h.totalScore) || 0),
-                    borderColor: 'rgba(96, 165, 250, 0.5)',
-                    backgroundColor: 'rgba(96, 165, 250, 0.05)',
-                    borderWidth: 2, borderDash: [6, 3],
-                    pointRadius: 4, pointBackgroundColor: '#6889a8',
-                    tension: 0.3, fill: true,
-                    yAxisID: 'yTotal'
-                });
-            }
-        }
-
-        if (growthChart) growthChart.destroy();
-        growthChart = new Chart(document.getElementById('growthChart'), {
-            type: 'line',
-            data: { labels, datasets },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                scales: {
-                    yCat: {
-                        type: 'linear', position: 'left', min: 0, max: 10,
-                        title: { display: true, text: 'Category Avg (0-10)', color: '#8a8278', font: { size: 10, family: "Menlo, Monaco, 'Courier New', monospace" } },
-                        grid: { color: 'rgba(200, 190, 175, 0.2)' },
-                        ticks: { stepSize: 2, color: '#8a8278', font: { family: "Menlo, Monaco, 'Courier New', monospace" } }
-                    },
-                    yTotal: {
-                        type: 'linear', position: 'right', min: 0, max: 240,
-                        title: { display: true, text: 'Total (0-240)', color: '#8a8278', font: { size: 10, family: "Menlo, Monaco, 'Courier New', monospace" } },
-                        grid: { drawOnChartArea: false },
-                        ticks: { color: '#8a8278', font: { family: "Menlo, Monaco, 'Courier New', monospace" } }
-                    },
-                    x: { grid: { display: false }, ticks: { color: '#8a8278', font: { size: 10 } } }
-                },
-                plugins: {
-                    legend: { labels: { color: '#5a5248', font: { family: "Menlo, Monaco, 'Courier New', monospace", size: 11 }, usePointStyle: true } }
-                }
-            }
-        });
     } catch (e) {
-        TI_BRIDGE.showToast('履歴取得エラー: ' + e.message);
+        selA.innerHTML = '<option value="">エラー発生</option>';
+        console.error(e);
     }
+}
+
+function renderGrowthDiff() {
+    const idxA = document.getElementById('growthHistoryA').value;
+    const idxB = document.getElementById('growthHistoryB').value;
+    const tableDiv = document.getElementById('growthDiffTable');
+    
+    if (idxA === '' || idxB === '') {
+        TI_BRIDGE.showToast('比較する2つの履歴を選択してください');
+        return;
+    }
+    
+    const recA = currentGrowthHistory[idxA];
+    const recB = currentGrowthHistory[idxB];
+    
+    // 1. Radar Chart
+    const ctx = document.getElementById('growthChart');
+    const calcAvg = (scores, prefix) => {
+        let sum = 0, count = 0;
+        for(let i=1; i<=6; i++) {
+            const v = Number(scores[prefix+i]);
+            if(!isNaN(v)) { sum+=v; count++; }
+        }
+        return count > 0 ? sum/count : 0;
+    };
+    
+    const rDataA = [calcAvg(recA.scores, 'p'), calcAvg(recA.scores, 's'), calcAvg(recA.scores, 'e'), calcAvg(recA.scores, 'm')];
+    const rDataB = [calcAvg(recB.scores, 'p'), calcAvg(recB.scores, 's'), calcAvg(recB.scores, 'e'), calcAvg(recB.scores, 'm')];
+    
+    if (growthChart) growthChart.destroy();
+    growthChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: [CAT_NAMES.P, CAT_NAMES.S, CAT_NAMES.E, CAT_NAMES.M],
+            datasets: [
+                {
+                    label: `From: ${new Date(recA.timestamp).toLocaleDateString('ja-JP')} (${recA.evalType||'Manager'})`,
+                    data: rDataA,
+                    backgroundColor: 'rgba(160, 120, 64, 0.1)',
+                    borderColor: 'rgba(160, 120, 64, 0.5)',
+                    borderDash: [5, 5],
+                    borderWidth: 2, pointRadius: 3
+                },
+                {
+                    label: `To: ${new Date(recB.timestamp).toLocaleDateString('ja-JP')} (${recB.evalType||'Manager'})`,
+                    data: rDataB,
+                    backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                    borderColor: '#6889a8',
+                    borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#6889a8'
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, backdropColor: 'transparent', font: { size: 10, family: "Menlo, Monaco, monospace" } }, pointLabels: { font: { size: 11, family: "Menlo, Monaco, monospace" } } } },
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: "Menlo, Monaco, monospace" }, usePointStyle: true } } }
+        }
+    });
+
+    // 2. Diff Table (24 Skills)
+    let html = `<table style="width:100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">`;
+    html += `<tr style="border-bottom: 2px solid var(--border); color: var(--text-sub);">
+                <th style="padding: 8px;">Skill</th>
+                <th style="padding: 8px; width: 60px;">From</th>
+                <th style="padding: 8px; width: 60px;">To</th>
+                <th style="padding: 8px; width: 60px;">Gap</th>
+             </tr>`;
+             
+    ['P', 'S', 'E', 'M'].forEach(cat => {
+        html += `<tr style="background: rgba(160,120,64,0.05);"><td colspan="4" style="padding: 6px 8px; font-weight: bold; color: var(--gold); border-bottom: 1px solid var(--border-light);">${CAT_NAMES[cat]}</td></tr>`;
+        Object.entries(SKILL_LABELS[cat]).forEach(([key, label]) => {
+            const valA = Number(recA.scores[key]) || 0;
+            const valB = Number(recB.scores[key]) || 0;
+            const diff = Math.round((valB - valA) * 100) / 100;
+            let diffColor = 'var(--text-dim)';
+            let diffSign = (diff > 0) ? '+' : '';
+            if (diff > 0) diffColor = 'var(--blue)';
+            if (diff < 0) diffColor = 'var(--red)';
+            const rubric = SKILL_RUBRICS[cat][key];
+            
+            html += `<tr style="border-bottom: 1px solid rgba(200, 190, 175, 0.15);">
+                        <td style="padding: 6px 8px;">
+                            <div style="font-weight: 600;">${label}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-dim); line-height: 1.3; margin-top: 2px;">${rubric}</div>
+                            ${SKILL_LV_GUIDE[key] ? `<details style="margin-top: 4px;">
+                                <summary style="cursor: pointer; font-size: 0.7rem; color: var(--text-muted); user-select: none;">▶ LV1〜10 目安</summary>
+                                <div style="font-size: 0.68rem; color: var(--text-dim); padding: 3px 0 0 6px; line-height: 1.7;">
+                                    ${SKILL_LV_GUIDE[key].map((desc, idx) => {
+                                        const lv = idx + 1;
+                                        const isFrom = Math.round(valA) === lv;
+                                        const isTo = Math.round(valB) === lv;
+                                        let style = '';
+                                        if (isTo) style = 'background: rgba(212,175,55,0.15); color: var(--gold); font-weight: 600; border-radius: 3px;';
+                                        else if (isFrom) style = 'background: rgba(160,120,64,0.1); color: #c0a060; border-radius: 3px;';
+                                        return `<div style="padding: 2px 4px; ${style}">LV${lv}: ${desc}${isFrom ? ' ◀ From' : ''}${isTo ? ' ◀ To' : ''}</div>`;
+                                    }).join('')}
+                                </div>
+                            </details>` : ''}
+                        </td>
+                        <td style="padding: 6px 8px; font-family: monospace; vertical-align: top;">${valA.toFixed(2)}</td>
+                        <td style="padding: 6px 8px; font-family: monospace; font-weight: bold; vertical-align: top;">${valB.toFixed(2)}</td>
+                        <td style="padding: 6px 8px; font-family: monospace; color: ${diffColor}; font-weight: bold; vertical-align: top;">${diffSign}${diff.toFixed(2)}</td>
+                     </tr>`;
+        });
+    });
+    html += `</table>`;
+    
+    // GAP summary
+    const cpDiff = Math.round((Number(recB.totalScore) - Number(recA.totalScore)) * 100) / 100;
+    const cpColor = cpDiff > 0 ? 'var(--blue)' : (cpDiff < 0 ? 'var(--red)' : 'var(--text-dim)');
+    html += `<div style="margin-top: 1rem; padding: 1rem; background: var(--surface-2); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-weight:bold; font-size: 1rem;">GAP</span>
+                <span style="font-family: monospace; font-size: 1.2rem; font-weight: bold; color: ${cpColor};">${cpDiff > 0 ? '+' : ''}${cpDiff.toFixed(2)}</span>
+             </div>`;
+             
+    tableDiv.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════════
