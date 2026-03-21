@@ -262,42 +262,60 @@ function renderAttributeTab() {
     }
     
     const descriptions = {
-        'Balance': '安定感と調和を重視。チームの基盤を支える落ち着いた存在。',
-        'Flare': '華やかな存在感を放つ。お客様の記憶に残る演出力が武器。',
-        'Flow': '場の空気を読み、スムーズなサービスの流れを生み出す。',
-        'Ground': '地に足のついた堅実さ。確実な仕事で信頼を積み上げる。',
-        'Emperor': 'カリスマ的な統率力。チームを導くリーダーシップの象徴。',
-        'Phantom': '裏方の達人。目立たないが確実にチームを支える黒子。',
-        'Spiral': '成長と変化の渦。常に進化し続ける向上心の塊。',
-        'Prism': '多彩な才能を持つ万能型。状況に応じて輝き方を変える。',
-        'Echo': '共感力の高さが武器。お客様の声に寄り添う傾聴の達人。',
-        'Fortress': '堅牢な守りの要。トラブルに動じない鉄壁のメンタル。',
-        'Blaze': '情熱と行動力の塊。チームに活力を与える起爆剤。',
-        'Mirage': '神秘的な魅力。予測不能な発想でサプライズを生む。',
-        'Tide': '空気を変える力。場のムードを一気に好転させる触媒。',
-        'Crown': '王道を行く気品。高い品格でプレミアムな空間を演出。',
-        'Needle': '繊細な観察力と精密さ。細部にこだわる職人気質。',
-        'Wings': '自由な発想と行動力で新しい風を吹き込む開拓者。',
-        'Anchor': 'チームの精神的支柱。困難な時こそ頼れる安定の要。',
-        'Lens': '物事の本質を見抜く洞察力。冷静な分析で最適解を導く。'
+        'Balance':     { emoji: '⚖️', summary: '汎用・適応', detail: 'どんな状況にも対応できる万能型。突出した弱点がなく、チームのバランサーとして機能する。新しい環境やポジションにも素早く適応し、周囲との調和を保ちながら安定的なパフォーマンスを発揮。チーム編成の「穴を埋める」存在として重宝される。' },
+        'Flare':       { emoji: '🔥', summary: '情熱・突破', detail: 'お客様の記憶に残る圧倒的な存在感と情熱を持つ。困難な状況を突破するエネルギーの源泉。パフォーマンスのピーク時には周囲を巻き込む力を持つが、エネルギーの波が大きい傾向も。チームの起爆剤として、停滞した空気を一気に変える力がある。' },
+        'Flow':        { emoji: '🌊', summary: '柔軟・浸透', detail: '場の空気を読み、自然にサービスの流れを生み出す。水のように柔軟に形を変え、どんな状況にも浸透していく適応力が武器。固定観念にとらわれず、新しいやり方を自然に取り入れる。ゲストの空気感を察知し、シームレスなホスピタリティを提供する。' },
+        'Bloom':       { emoji: '🌸', summary: '育成・調和', detail: '後輩の成長を自分のことのように喜べる育成者。チーム内の人間関係の調和を保ち、温かい雰囲気を作り出す。花のように周囲を明るくし、一緒に働く人の可能性を引き出す。長期的なチーム力向上に欠かせない存在。' },
+        'Spark':       { emoji: '⚡', summary: '閃き・革新', detail: '常識にとらわれない発想力で新しいアイデアを生み出す革新者。「こうすればもっと良くなる」という閃きが次々と湧き出る。変化を恐れず、新しい挑戦を楽しむ姿勢がチームに刺激を与える。既存の枠を壊し、進化のきっかけを作る。' },
+        'Crystal':     { emoji: '💎', summary: '緻密・冷静', detail: '冷静な分析力と緻密さを持つ知性派。感情に流されず、データや事実に基づいた判断ができる。複雑な状況でも本質を見抜き、最適解を導き出す。品質管理やオペレーション改善において抜群の能力を発揮する。' },
+        'Striker':     { emoji: '🎯', summary: '実直・技術', detail: '確かな技術力と実直さで勝負する職人気質。言葉よりも行動で示し、一つ一つの仕事に妥協しない。料理、ワイン、サービスなど専門分野で高い技術力を発揮。チームの技術的な柱として信頼を集める。' },
+        'Rogue':       { emoji: '🗡️', summary: '改革・本質', detail: '既存のルールや慣習に疑問を投げかけ、本質を追求する改革者。時として周囲と摩擦を生むこともあるが、組織の停滞を打ち破る重要な役割を果たす。「なぜそうするのか」を常に問い続け、より良い方法を追求する。' },
+        'Ground':      { emoji: '🌍', summary: '安定・土台', detail: 'チームの土台となる堅実さと安定感。派手さはないが、どんな状況でも変わらないクオリティを提供する信頼の柱。新人が安心して働ける環境を作り、ベテランのパフォーマンスを下支えする。この人がいるだけでチームが安定する、まさに「大地」のような存在。' },
+        'Wing':        { emoji: '🦅', summary: '自由・俯瞰', detail: '高い視点から全体を俯瞰できる戦略的思考の持ち主。組織の枠にとらわれず、自由な発想で新しい可能性を切り開く。他のチームやプロジェクトとの橋渡し役としても活躍。鳥の翼のように広い視野でチームを導く。' },
+        'Seraph':      { emoji: '👁️', summary: '洞察・予知', detail: 'まだ表面化していない問題や可能性を見抜く洞察力の持ち主。お客様が言葉にする前にニーズを感じ取り、先回りしたサービスを提供する。チーム内の人間関係の微妙な変化にも敏感で、トラブルが大きくなる前に対処できる「予知能力」を持つ。' },
+        'Craft':       { emoji: '🔧', summary: '改善・適応', detail: '日々の業務を少しずつ良くしていく改善の達人。大きな変革ではなく、小さな工夫の積み重ねでチームの効率を高める。環境の変化にも素早く適応し、新しいツールや方法を自分のものにする柔軟性を持つ。カイゼンの精神を体現する存在。' },
+        'Solid':       { emoji: '🏛️', summary: '信念・伝統', detail: 'ブレない信念と守るべき伝統への深い理解を持つ。流行に右往左往せず、お店の根幹となる価値観を守り続ける。長年培われたサービスの様式美やおもてなしの心を次世代に伝える役割。チームに「軸」を提供する存在。' },
+        'Shade':       { emoji: '🌑', summary: '献身・黒子', detail: '表舞台に立つことなく、裏方としてチームを支える献身の達人。目立たないが、この人がいないとチームが回らない。他者を輝かせることに喜びを感じ、縁の下の力持ちとして黙々と働く。チームへの深い愛情が原動力。' },
+        'Emperor':     { emoji: '👑', summary: '統率・圧倒', detail: 'カリスマ的な統率力でチームを導く天性のリーダー。「この人についていきたい」と思わせるオーラを持ち、チーム全体のパフォーマンスを引き上げる。強い決断力と責任感でプレッシャーの大きい場面でも動じない。組織の顔として内外から信頼される。' },
+        'Night Shift': { emoji: '🌙', summary: '危機・実利', detail: '危機的状況で真価を発揮する実利主義者。平時は目立たないが、トラブルやクレーム対応など、本当に困った時に頼れる存在。感情論ではなく、現実的な解決策を冷静に導き出す。「夜の番人」のように、チームの安全を守る最後の砦。' },
+        'Iron':        { emoji: '🛡️', summary: '鉄壁・規律', detail: '強い規律意識と鉄壁のメンタルで、基準の維持を徹底する番人。ルールや手順の遵守に妥協がなく、チームの品質基準を守り抜く。プレッシャーやイレギュラーにも動じない精神力を持つ。組織の規律と秩序を体現する鉄の意志の持ち主。' },
+        'Bliss':       { emoji: '✨', summary: '愛嬌・浄化', detail: '天性の愛嬌とポジティブなエネルギーで、場の空気を浄化する太陽のような存在。この人がいるだけで雰囲気が明るくなり、お客様も笑顔になる。チーム内の緊張やストレスを自然に和らげる力を持つ。ホスピタリティの原点である「笑顔」の体現者。' }
     };
     
     grid.innerHTML = Object.entries(SVD_TYPES).map(([key, info]) => {
         const members = typeCounts[key] || [];
-        const desc = descriptions[key] || '';
+        const d = descriptions[key] || { emoji: '🔹', summary: info.desc || '', detail: '' };
+        const synergy = SYNERGY_DATA[key] || {};
+        
+        // ベストマッチ & 注意ペア
+        const bestChips = (synergy.best || []).map(b => {
+            const bInfo = SVD_TYPES[b];
+            return bInfo ? `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(76,175,80,0.15);color:#4caf50;font-weight:600;">★ ${bInfo.nameJp}</span>` : '';
+        }).join(' ');
+        const cautionChips = (synergy.caution || []).map(c => {
+            const cInfo = SVD_TYPES[c];
+            return cInfo ? `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(244,67,54,0.12);color:#f44336;font-weight:600;">⚠ ${cInfo.nameJp}</span>` : '';
+        }).join(' ');
+        
         const memberChips = members.map(m =>
             `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--bg-dark);color:var(--text-main);">${m.name}</span>`
         ).join(' ');
         
         return `<div class="card" style="border-left:3px solid ${info.color};">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <span style="font-size:20px;">${info.emoji || '🔹'}</span>
-                <span style="font-size:1.1rem;font-weight:700;color:${info.color};">${info.name}</span>
-                <span style="font-size:0.8rem;color:var(--text-dim);">${key}</span>
-                <span style="margin-left:auto;font-size:0.8rem;font-weight:600;color:var(--text-sub);">${members.length}名</span>
+                <span style="font-size:22px;">${d.emoji}</span>
+                <div>
+                    <span style="font-size:1.1rem;font-weight:700;color:${info.color};">${info.nameJp}</span>
+                    <span style="font-size:0.8rem;color:var(--text-dim);margin-left:4px;">${key}</span>
+                    <div style="font-size:0.75rem;color:${info.color};font-weight:600;letter-spacing:0.5px;">${d.summary}</div>
+                </div>
+                <span style="margin-left:auto;font-size:0.85rem;font-weight:700;color:var(--text-sub);">${members.length}名</span>
             </div>
-            <p style="font-size:0.82rem;color:var(--text-sub);margin:0 0 8px 0;">${desc}</p>
-            ${members.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;">${memberChips}</div>` : '<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">該当スタッフなし</div>'}
+            <p style="font-size:0.82rem;color:var(--text-sub);margin:0 0 10px 0;line-height:1.5;">${d.detail}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px;">
+                ${bestChips}${cautionChips ? ' ' + cautionChips : ''}
+            </div>
+            ${members.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;padding-top:6px;border-top:1px solid var(--border-light);">${memberChips}</div>` : '<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;padding-top:6px;border-top:1px solid var(--border-light);">該当スタッフなし</div>'}
         </div>`;
     }).join('');
 }
