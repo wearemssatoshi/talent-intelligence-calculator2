@@ -1200,25 +1200,16 @@ function buildDirectory() {
 // ═══════════════════════════════════════════════════════════
 // BACKFILL: 旧 StaffData → TI_Master に TypeSelf/TypeOther を転写
 // ═══════════════════════════════════════════════════════════
-// GASエディタのメニューから手動実行 or スクリプトエディタで Run
 function backfillAttributes() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   
-  // 旧 StaffData シート
   const oldSheet = ss.getSheetByName('StaffData');
-  if (!oldSheet) {
-    SpreadsheetApp.getUi().alert('❌ StaffData シートが見つかりません');
-    return;
-  }
+  if (!oldSheet) { Logger.log('❌ StaffData not found'); return; }
   
-  // TI_Master シート
   const master = ss.getSheetByName(TI_CONFIG.MASTER_SHEET);
-  if (!master) {
-    SpreadsheetApp.getUi().alert('❌ TI_Master シートが見つかりません');
-    return;
-  }
+  if (!master) { Logger.log('❌ TI_Master not found'); return; }
   
-  // ヘッダー確認 — Q1/R1 に TypeSelf/TypeOther がなければ追加
+  // ヘッダー確認 — Q1/R1
   const headerRange = master.getRange(1, MASTER_COL.TYPE_SELF + 1, 1, 2);
   const headers = headerRange.getValues()[0];
   if (headers[0] !== 'TypeSelf' || headers[1] !== 'TypeOther') {
@@ -1226,49 +1217,84 @@ function backfillAttributes() {
     headerRange.setFontWeight('bold');
   }
   
-  // 旧 StaffData 全行読み込み
-  // ヘッダー: 0:Timestamp, 1:Name, 2:Affiliation, 3:JobTitle, 4:TypeSelf, 5:TypeOther, ...
-  const oldRows = oldSheet.getDataRange().getValues();
+  // ── 名前正規化: スペース除去、全角→半角、「評価）」プレフィックス除去 ──
+  const normalize = (name) => {
+    if (!name) return '';
+    return String(name)
+      .replace(/[\s　]+/g, '')        // 全角・半角スペース除去
+      .replace(/^評価[）\)]/g, '')    // 「評価）」プレフィックス除去
+      .toLowerCase()
+      .trim();
+  };
   
-  // 名前 → 最新の TypeSelf/TypeOther をマッピング（最新行優先）
-  const typeMap = {};  // { name: { typeSelf, typeOther } }
+  // ── 旧 StaffData 読み込み → 正規化名でマッピング ──
+  const oldRows = oldSheet.getDataRange().getValues();
+  const typeMap = {};       // normalizedName → { typeSelf, typeOther, originalName }
+  const rawTypeMap = {};    // originalName → { typeSelf, typeOther }
+  
   for (let i = 1; i < oldRows.length; i++) {
-    const name = oldRows[i][1];
+    const rawName = oldRows[i][1];
     const typeSelf = oldRows[i][4] || '';
     const typeOther = oldRows[i][5] || '';
-    if (name && (typeSelf || typeOther)) {
-      typeMap[name] = { typeSelf, typeOther };  // 後の行で上書き = 最新優先
-    }
+    if (!rawName || (!typeSelf && !typeOther)) continue;
+    
+    const nName = normalize(rawName);
+    typeMap[nName] = { typeSelf, typeOther, originalName: rawName };
+    rawTypeMap[rawName] = { typeSelf, typeOther };
   }
   
-  // TI_Master を走査して名前マッチでバックフィル
+  Logger.log('📦 旧StaffData: ' + Object.keys(typeMap).length + '名の属性データ');
+  Logger.log('   正規化キー: ' + Object.keys(typeMap).join(', '));
+  
+  // ── TI_Master を走査してマッチ ──
   const masterRows = master.getDataRange().getValues();
-  let filled = 0;
-  let skipped = 0;
+  let filled = 0, skipped = 0, noMatch = 0;
+  const unmatched = [];
+  const matched = [];
+  
   for (let i = 1; i < masterRows.length; i++) {
-    const name = masterRows[i][MASTER_COL.NAME];
-    const existing = masterRows[i][MASTER_COL.TYPE_SELF] || masterRows[i][MASTER_COL.TYPE_OTHER];
+    const masterName = masterRows[i][MASTER_COL.NAME];
+    const staffId = masterRows[i][MASTER_COL.STAFF_ID];
+    if (!masterName || masterRows[i][MASTER_COL.STATUS] === 'archived') continue;
     
-    if (existing) {
-      skipped++;  // 既にデータがあればスキップ
-      continue;
+    // ① 完全一致 → ② 正規化マッチ
+    let found = rawTypeMap[masterName];
+    let matchType = 'exact';
+    
+    if (!found) {
+      const nMasterName = normalize(masterName);
+      const entry = typeMap[nMasterName];
+      if (entry) {
+        found = entry;
+        matchType = 'normalized';
+      }
     }
     
-    if (typeMap[name]) {
-      const { typeSelf, typeOther } = typeMap[name];
-      master.getRange(i + 1, MASTER_COL.TYPE_SELF + 1).setValue(typeSelf);
-      master.getRange(i + 1, MASTER_COL.TYPE_OTHER + 1).setValue(typeOther);
+    if (found) {
+      // 強制上書き（既存データがあっても上書き）
+      master.getRange(i + 1, MASTER_COL.TYPE_SELF + 1).setValue(found.typeSelf);
+      master.getRange(i + 1, MASTER_COL.TYPE_OTHER + 1).setValue(found.typeOther);
       filled++;
+      matched.push(staffId + ' ' + masterName + ' → ' + (found.typeOther || found.typeSelf) + ' (' + matchType + ')');
+    } else {
+      noMatch++;
+      unmatched.push(staffId + ' ' + masterName);
     }
   }
   
   SpreadsheetApp.flush();
-  auditLog_('backfillAttributes', 'system', '', { filled, skipped, totalInMap: Object.keys(typeMap).length }, 'success');
+  auditLog_('backfillAttributes', 'system', '', { filled, skipped, noMatch }, 'success');
   
-  SpreadsheetApp.getUi().alert(
-    '✅ 属性バックフィル完了\n\n' +
-    '旧データから抽出: ' + Object.keys(typeMap).length + '名分\n' +
-    'TI_Masterに転写: ' + filled + '名\n' +
-    'スキップ（既存データあり）: ' + skipped + '名'
-  );
+  Logger.log('\n✅ バックフィル完了');
+  Logger.log('   転写: ' + filled + '名');
+  Logger.log('   マッチなし: ' + noMatch + '名');
+  
+  if (matched.length > 0) {
+    Logger.log('\n✅ マッチ成功:');
+    matched.forEach(m => Logger.log('   ' + m));
+  }
+  if (unmatched.length > 0) {
+    Logger.log('\n⚠️ マッチなし:');
+    unmatched.forEach(u => Logger.log('   ' + u));
+  }
 }

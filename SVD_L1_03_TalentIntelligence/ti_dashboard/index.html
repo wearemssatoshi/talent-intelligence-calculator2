@@ -32,6 +32,8 @@
         <button class="nav-btn" data-tab="growth">③ GROWTH<span class="nav-sub">成長比較</span></button>
         <button class="nav-btn" data-tab="shift">④ SHIFT LINK<span class="nav-sub">シフト提案</span></button>
         <button class="nav-btn" data-tab="settings">⑤ SETTINGS<span class="nav-sub">GAS設定</span></button>
+        <button class="nav-btn" data-tab="attributes">⑥ ATTRIBUTE<span class="nav-sub">属性の傾向</span></button>
+        <button class="nav-btn" data-tab="synergy">⑦ SYNERGY<span class="nav-sub">相性解説</span></button>
     </nav>
 
     <!-- ═══ ① ROSTER ═══ -->
@@ -249,6 +251,25 @@
                         ROLES, HIERARCHY</span></div>
             </div>
         </div>
+    </div>
+
+    <!-- ═══ ⑥ ATTRIBUTE ═══ -->
+    <div class="panel" id="p-attributes">
+        <div class="card">
+            <h3>🔮 SVD 18 ATTRIBUTES — 属性の傾向</h3>
+            <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:1rem;">SVDが定義する18の属性タイプ。各スタッフの個性と強みを可視化し、チーム編成の指針とする。</p>
+        </div>
+        <div id="attributeGrid" class="attribute-grid"></div>
+    </div>
+
+    <!-- ═══ ⑦ SYNERGY ═══ -->
+    <div class="panel" id="p-synergy">
+        <div class="card">
+            <h3>⚡ SYNERGY GUIDE — 相性解説</h3>
+            <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:1rem;">属性間の相性がチームの結束力に影響する。ベストマッチは+1pt、注意ペアは-1ptとしてチームシナジーポイントを算出。</p>
+        </div>
+        <div id="synergyMatrix" class="synergy-matrix-container"></div>
+        <div id="teamChemistry" class="team-chemistry-container" style="margin-top:1rem;"></div>
     </div>
 
     <!-- ═══ Staff Detail Modal ═══ -->

@@ -236,8 +236,241 @@ function initNavigation() {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById('p-' + tab).classList.add('active');
             currentTab = tab;
+            // Lazy render for ⑥ and ⑦
+            if (tab === 'attributes') renderAttributeTab();
+            if (tab === 'synergy') renderSynergyTab();
         });
     });
+}
+
+// ═══════════════════════════════════════════════════════════
+// ⑥ ATTRIBUTE TAB — 18属性の傾向
+// ═══════════════════════════════════════════════════════════
+function renderAttributeTab() {
+    const grid = document.getElementById('attributeGrid');
+    if (!grid) return;
+    
+    // 各属性のメンバーをカウント
+    const typeCounts = {};
+    if (window.__staffData) {
+        window.__staffData.forEach(s => {
+            if (s.type && s.status !== 'archived') {
+                if (!typeCounts[s.type]) typeCounts[s.type] = [];
+                typeCounts[s.type].push(s);
+            }
+        });
+    }
+    
+    const descriptions = {
+        'Balance': '安定感と調和を重視。チームの基盤を支える落ち着いた存在。',
+        'Flare': '華やかな存在感を放つ。お客様の記憶に残る演出力が武器。',
+        'Flow': '場の空気を読み、スムーズなサービスの流れを生み出す。',
+        'Ground': '地に足のついた堅実さ。確実な仕事で信頼を積み上げる。',
+        'Emperor': 'カリスマ的な統率力。チームを導くリーダーシップの象徴。',
+        'Phantom': '裏方の達人。目立たないが確実にチームを支える黒子。',
+        'Spiral': '成長と変化の渦。常に進化し続ける向上心の塊。',
+        'Prism': '多彩な才能を持つ万能型。状況に応じて輝き方を変える。',
+        'Echo': '共感力の高さが武器。お客様の声に寄り添う傾聴の達人。',
+        'Fortress': '堅牢な守りの要。トラブルに動じない鉄壁のメンタル。',
+        'Blaze': '情熱と行動力の塊。チームに活力を与える起爆剤。',
+        'Mirage': '神秘的な魅力。予測不能な発想でサプライズを生む。',
+        'Tide': '空気を変える力。場のムードを一気に好転させる触媒。',
+        'Crown': '王道を行く気品。高い品格でプレミアムな空間を演出。',
+        'Needle': '繊細な観察力と精密さ。細部にこだわる職人気質。',
+        'Wings': '自由な発想と行動力で新しい風を吹き込む開拓者。',
+        'Anchor': 'チームの精神的支柱。困難な時こそ頼れる安定の要。',
+        'Lens': '物事の本質を見抜く洞察力。冷静な分析で最適解を導く。'
+    };
+    
+    grid.innerHTML = Object.entries(SVD_TYPES).map(([key, info]) => {
+        const members = typeCounts[key] || [];
+        const desc = descriptions[key] || '';
+        const memberChips = members.map(m =>
+            `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--bg-dark);color:var(--text-main);">${m.name}</span>`
+        ).join(' ');
+        
+        return `<div class="card" style="border-left:3px solid ${info.color};">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <span style="font-size:20px;">${info.emoji || '🔹'}</span>
+                <span style="font-size:1.1rem;font-weight:700;color:${info.color};">${info.name}</span>
+                <span style="font-size:0.8rem;color:var(--text-dim);">${key}</span>
+                <span style="margin-left:auto;font-size:0.8rem;font-weight:600;color:var(--text-sub);">${members.length}名</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-sub);margin:0 0 8px 0;">${desc}</p>
+            ${members.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:4px;">${memberChips}</div>` : '<div style="font-size:0.8rem;color:var(--text-muted);font-style:italic;">該当スタッフなし</div>'}
+        </div>`;
+    }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// ⑦ SYNERGY TAB — 相性解説 + チームポイント
+// ═══════════════════════════════════════════════════════════
+function renderSynergyTab() {
+    renderSynergyMatrix();
+    renderTeamChemistry();
+}
+
+function renderSynergyMatrix() {
+    const container = document.getElementById('synergyMatrix');
+    if (!container) return;
+    
+    const types = Object.keys(SYNERGY_DATA);
+    
+    let html = '<div class="card"><h3>💎 相性マトリクス</h3>';
+    html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center;">';
+    
+    // Header
+    html += '<tr><th style="padding:4px;border:1px solid var(--border-light);background:var(--bg-dark);"></th>';
+    types.forEach(t => {
+        const info = SVD_TYPES[t];
+        html += `<th style="padding:4px;border:1px solid var(--border-light);background:var(--bg-dark);color:${info?.color || 'inherit'};writing-mode:vertical-rl;font-size:9px;">${t}</th>`;
+    });
+    html += '</tr>';
+    
+    // Rows
+    types.forEach(rowType => {
+        const info = SVD_TYPES[rowType];
+        const synergy = SYNERGY_DATA[rowType] || {};
+        html += `<tr><td style="padding:4px;border:1px solid var(--border-light);background:var(--bg-dark);color:${info?.color || 'inherit'};font-weight:600;font-size:9px;white-space:nowrap;">${rowType}</td>`;
+        
+        types.forEach(colType => {
+            let bg = 'transparent', symbol = '';
+            if (rowType === colType) {
+                bg = 'var(--bg-dark)'; symbol = '—';
+            } else if (synergy.best?.includes(colType)) {
+                bg = 'rgba(76,175,80,0.15)'; symbol = '★';
+            } else if (synergy.caution?.includes(colType)) {
+                bg = 'rgba(244,67,54,0.12)'; symbol = '⚠';
+            }
+            html += `<td style="padding:4px;border:1px solid var(--border-light);background:${bg};font-size:10px;">${symbol}</td>`;
+        });
+        html += '</tr>';
+    });
+    
+    html += '</table></div>';
+    html += '<div style="margin-top:8px;font-size:0.8rem;color:var(--text-sub);">★ = ベストマッチ (+1pt) &nbsp;&nbsp; ⚠ = 注意ペア (-1pt)</div>';
+    html += '</div>';
+    
+    // 全ペアの解説
+    html += '<div class="card" style="margin-top:1rem;"><h3>📖 全ペア相性一覧</h3>';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">';
+    
+    types.forEach(t => {
+        const synergy = SYNERGY_DATA[t];
+        const info = SVD_TYPES[t];
+        if (!synergy) return;
+        
+        let pairs = '';
+        if (synergy.best?.length > 0) {
+            pairs += synergy.best.map(b => {
+                const bInfo = SVD_TYPES[b];
+                return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(76,175,80,0.15);color:#4caf50;">★ ${bInfo?.name || b}</span>`;
+            }).join(' ');
+        }
+        if (synergy.caution?.length > 0) {
+            pairs += ' ' + synergy.caution.map(c => {
+                const cInfo = SVD_TYPES[c];
+                return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(244,67,54,0.12);color:#f44336;">⚠ ${cInfo?.name || c}</span>`;
+            }).join(' ');
+        }
+        
+        html += `<div style="padding:6px;border-left:3px solid ${info?.color || '#888'};background:var(--bg-card);border-radius:4px;">
+            <span style="font-weight:600;color:${info?.color || 'inherit'};font-size:0.85rem;">${info?.name || t}</span>
+            <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;">${pairs}</div>
+        </div>`;
+    });
+    
+    html += '</div></div>';
+    container.innerHTML = html;
+}
+
+function renderTeamChemistry() {
+    const container = document.getElementById('teamChemistry');
+    if (!container || !window.__staffData) return;
+    
+    // チームごとにグループ化
+    const teams = {};
+    window.__staffData.forEach(s => {
+        if (s.status === 'archived' || !s.affiliation) return;
+        if (!teams[s.affiliation]) teams[s.affiliation] = { short: s.affiliation, members: [] };
+        teams[s.affiliation].members.push(s);
+    });
+    
+    let html = '<div class="card"><h3>🧬 TEAM CHEMISTRY — チーム相性スコア</h3>';
+    html += '<p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:12px;">各チームの属性分布とシナジーポイント。★ベストマッチ +1pt、⚠注意ペア -1pt で算出。</p>';
+    
+    const storeOrder = Object.keys(STORE_COLORS);
+    const sortedTeams = Object.values(teams).sort((a, b) => {
+        const ia = storeOrder.indexOf(a.short);
+        const ib = storeOrder.indexOf(b.short);
+        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+    });
+    
+    sortedTeams.forEach(team => {
+        const color = STORE_COLORS[team.short] || 'var(--text-sub)';
+        const typedMembers = team.members.filter(m => m.type);
+        
+        if (typedMembers.length === 0) {
+            html += `<div style="padding:8px;margin-bottom:8px;border-left:3px solid ${color};border-radius:4px;background:var(--bg-card);">
+                <span style="font-weight:700;color:${color};">${team.short}</span>
+                <span style="font-size:0.8rem;color:var(--text-muted);margin-left:8px;">属性データなし</span>
+            </div>`;
+            return;
+        }
+        
+        // シナジーポイント計算
+        let bestPairs = 0, cautionPairs = 0;
+        const pairDetails = { best: [], caution: [] };
+        
+        for (let i = 0; i < typedMembers.length; i++) {
+            for (let j = i + 1; j < typedMembers.length; j++) {
+                const a = typedMembers[i], b = typedMembers[j];
+                const aType = a.type, bType = b.type;
+                
+                // 双方向チェック
+                if (SYNERGY_DATA[aType]?.best?.includes(bType) || SYNERGY_DATA[bType]?.best?.includes(aType)) {
+                    bestPairs++;
+                    pairDetails.best.push(`${a.name}×${b.name}`);
+                }
+                if (SYNERGY_DATA[aType]?.caution?.includes(bType) || SYNERGY_DATA[bType]?.caution?.includes(aType)) {
+                    cautionPairs++;
+                    pairDetails.caution.push(`${a.name}×${b.name}`);
+                }
+            }
+        }
+        
+        const synergyPoint = bestPairs - cautionPairs;
+        const spColor = synergyPoint > 0 ? 'var(--green)' : synergyPoint < 0 ? 'var(--red)' : 'var(--text-sub)';
+        const spSign = synergyPoint > 0 ? '+' : '';
+        
+        // 属性構成
+        const typeCounts = {};
+        typedMembers.forEach(m => { typeCounts[m.type] = (typeCounts[m.type] || 0) + 1; });
+        const typeChips = Object.entries(typeCounts).map(([t, c]) => {
+            const info = SVD_TYPES[t];
+            if (!info) return '';
+            return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${info.color}22;color:${info.color};font-weight:600;">${info.name}${c > 1 ? ' ×'+c : ''}</span>`;
+        }).join(' ');
+        
+        // ペア詳細
+        const bestHtml = pairDetails.best.length > 0 
+            ? `<div style="margin-top:4px;"><span style="font-size:10px;color:#4caf50;font-weight:600;">★ BEST:</span> <span style="font-size:10px;color:var(--text-sub);">${pairDetails.best.join(', ')}</span></div>` : '';
+        const cautionHtml = pairDetails.caution.length > 0
+            ? `<div style="margin-top:2px;"><span style="font-size:10px;color:#f44336;font-weight:600;">⚠ CAUTION:</span> <span style="font-size:10px;color:var(--text-sub);">${pairDetails.caution.join(', ')}</span></div>` : '';
+        
+        html += `<div style="padding:10px;margin-bottom:8px;border-left:3px solid ${color};border-radius:4px;background:var(--bg-card);">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-weight:700;color:${color};font-size:1rem;">${team.short}</span>
+                <span style="font-size:0.8rem;color:var(--text-dim);">${typedMembers.length}/${team.members.length}名</span>
+                <span style="margin-left:auto;font-size:1.1rem;font-weight:800;color:${spColor};">${spSign}${synergyPoint}pt</span>
+            </div>
+            <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">${typeChips}</div>
+            ${bestHtml}${cautionHtml}
+        </div>`;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
 }
 
 async function updateConnectionBadge() {
@@ -271,6 +504,7 @@ async function loadRoster() {
         if (data.result !== 'success') throw new Error(data.error);
 
         staffList = data.staff;
+        window.__staffData = data.staff;  // ⑥⑦タブ用グローバル参照
         renderStaffGrid(staffList);
         populateFilters();
         populateAssessSelect();
