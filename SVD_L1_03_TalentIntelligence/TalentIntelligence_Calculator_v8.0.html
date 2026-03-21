@@ -797,9 +797,19 @@
                     <label for="user-name">お名前 (Name)</label>
                     <select id="user-name"
                         style="padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit; width: 100%;"
-                        onchange="onStaffSelected(this.value)">
+                        onchange="onNameSelectChange(this.value)">
                         <option value="">⏳ 読み込み中...</option>
                     </select>
+                    <div id="manual-name-wrapper" style="display: none; margin-top: 0.5rem;">
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <input type="text" id="manual-name-input"
+                                placeholder="お名前を入力してください"
+                                style="flex: 1; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 1rem; font-family: inherit;">
+                            <button type="button" onclick="switchToDropdown()"
+                                style="background: none; border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 0.75rem; cursor: pointer; font-size: 0.85rem; white-space: nowrap;">← 一覧に戻る</button>
+                        </div>
+                        <p style="margin: 0.4rem 0 0; font-size: 0.75rem; color: var(--light-text-color);">※ 初めての方はお名前を入力後、所属を選択して評価を進めてください</p>
+                    </div>
                     <div id="lastEvalInfo" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--secondary-color); display: none;"></div>
                 </div>
                 <div class="input-group">
@@ -1141,6 +1151,7 @@
             // ── STAFF ROSTER LOADER ──
             const GAS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwv76VOC8FxpVr0MzoC_6Xi8QrQ4evsUtPBZhDR3EZtxQcs52ieqynGjHRSoCSi5F7G/exec';
             let rosterData = [];
+            let isManualNameMode = false;
 
             async function loadStaffRoster() {
                 const sel = document.getElementById('user-name');
@@ -1155,11 +1166,59 @@
                         rosterData.forEach(s => {
                             sel.innerHTML += `<option value="${s.staffId}">${s.name} (${s.affiliation || ''})</option>`;
                         });
+                        // 手入力オプションを末尾に追加
+                        sel.innerHTML += '<option value="__manual__">✏️ リストにない（手入力）</option>';
                     }
                 } catch (e) {
                     console.warn('Roster load failed:', e);
-                    sel.innerHTML = '<option value="">手動入力に切替</option>';
+                    sel.innerHTML = '<option value="">お名前を選んでください</option><option value="__manual__">✏️ リストにない（手入力）</option>';
                 }
+            }
+
+            // ドロップダウン変更ハンドラー
+            function onNameSelectChange(value) {
+                const manualWrapper = document.getElementById('manual-name-wrapper');
+                if (value === '__manual__') {
+                    // 手入力モードに切替
+                    isManualNameMode = true;
+                    manualWrapper.style.display = 'block';
+                    document.getElementById('manual-name-input').focus();
+                    // 前回評価情報をクリア
+                    const infoDiv = document.getElementById('lastEvalInfo');
+                    infoDiv.style.display = 'block';
+                    infoDiv.textContent = '🆕 初めての評価です。お名前と所属を入力して評価を進めてください。';
+                } else {
+                    // 既存スタッフ選択モード
+                    isManualNameMode = false;
+                    manualWrapper.style.display = 'none';
+                    if (value) {
+                        onStaffSelected(value);
+                    }
+                }
+            }
+
+            // 一覧に戻るボタン
+            function switchToDropdown() {
+                isManualNameMode = false;
+                document.getElementById('manual-name-wrapper').style.display = 'none';
+                document.getElementById('user-name').value = '';
+                document.getElementById('manual-name-input').value = '';
+                const infoDiv = document.getElementById('lastEvalInfo');
+                infoDiv.style.display = 'none';
+            }
+
+            // ユーザー名取得ヘルパー（dropdown/手入力の両方に対応）
+            function getCurrentUserName() {
+                if (isManualNameMode) {
+                    return (document.getElementById('manual-name-input')?.value || '').trim() || '診断者';
+                }
+                const sel = document.getElementById('user-name');
+                if (sel && sel.value && sel.value !== '__manual__') {
+                    // ドロップダウンの表示テキスト（「名前 (所属)」→ 名前だけ）
+                    const text = sel.options[sel.selectedIndex]?.text || '';
+                    return text.replace(/\s*\(.*\)$/, '') || '診断者';
+                }
+                return '診断者';
             }
 
             async function onStaffSelected(staffId) {
@@ -1203,24 +1262,30 @@
                     const data = await resp.json();
 
                     if (data.result === 'success' && data.history && data.history.length > 0) {
-                        // Self評価を探す（最新優先）
-                        const selfEval = data.history.find(h => h.evalType === 'Self');
-                        if (selfEval && selfEval.scores) {
+                        // Self評価を探す（最新優先）、なければ最新の評価をフォールバック
+                        let targetEval = data.history.find(h => h.evalType === 'Self');
+                        let evalLabel = 'Self 評価';
+                        if (!targetEval) {
+                            // 過去の保存データがevalType未設定（Manager扱い）の場合に対応
+                            targetEval = data.history[0]; // 最新の評価（history はtimestamp降順）
+                            evalLabel = '前回評価（' + (targetEval.evalType || '不明') + '）';
+                        }
+                        if (targetEval && targetEval.scores) {
                             // スライダーに反映
                             const skillKeys = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6',
                                                'e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
                             skillKeys.forEach(k => {
                                 const select = document.getElementById(k);
-                                if (select && selfEval.scores[k] !== undefined) {
-                                    select.value = String(selfEval.scores[k]);
+                                if (select && targetEval.scores[k] !== undefined) {
+                                    select.value = String(targetEval.scores[k]);
                                 }
                             });
 
-                            const evalDate = new Date(selfEval.timestamp);
+                            const evalDate = new Date(targetEval.timestamp);
                             const dateStr = evalDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
-                            infoDiv.innerHTML = `✅ 前回 Self 評価（${dateStr}）を読み込みました。スコアをスライダーに反映済み！`;
+                            infoDiv.innerHTML = `✅ ${evalLabel}（${dateStr}）を読み込みました。スコアをスライダーに反映済み！`;
                         } else {
-                            infoDiv.textContent = '📝 Self評価の履歴がありません。初めての自己評価です！';
+                            infoDiv.textContent = '📝 評価履歴がありません。初めての評価です！';
                         }
                     } else {
                         infoDiv.textContent = '📝 評価履歴がありません。初めての評価です！';
@@ -1388,9 +1453,54 @@
                 saveBtn.disabled = true;
 
                 try {
+                    let staffId = '';
+                    let staffName = '';
+
+                    if (isManualNameMode) {
+                        // ── 手入力モード: 新規スタッフを作成してから保存 ──
+                        staffName = (document.getElementById('manual-name-input')?.value || '').trim();
+                        if (!staffName) {
+                            throw new Error('お名前を入力してください');
+                        }
+                        const affiliation = document.getElementById('user-affiliation')?.value || '';
+
+                        // GAS に新規スタッフ作成リクエスト
+                        saveBtn.textContent = '🆕 スタッフ登録中...';
+                        const createParams = new URLSearchParams();
+                        createParams.append('action', 'create');
+                        createParams.append('name', staffName);
+                        createParams.append('affiliation', affiliation);
+                        createParams.append('jobTitle', document.getElementById('user-job-title')?.value || '');
+
+                        const createResp = await fetch(GAS_ENDPOINT + '?token=' + encodeURIComponent(SVD_API_TOKEN || ''), {
+                            method: 'POST',
+                            body: createParams
+                        });
+                        const createResult = await createResp.json();
+                        if (createResult.result !== 'success') {
+                            throw new Error(createResult.error || 'スタッフ登録に失敗しました');
+                        }
+                        staffId = createResult.staffId;
+                        console.log('New staff created:', staffId, staffName);
+                        saveBtn.textContent = '💾 評価を保存中...';
+                    } else {
+                        // ── ドロップダウンモード: 既存スタッフ ──
+                        staffId = document.getElementById('user-name')?.value || '';
+                        if (!staffId || staffId === '__manual__') {
+                            throw new Error('スタッフを選択してください');
+                        }
+                        const staffInfo = rosterData.find(s => s.staffId === staffId);
+                        staffName = staffInfo ? staffInfo.name : staffId;
+                    }
+
                     // 入力データを収集
                     const formData = new FormData();
-                    formData.append('user-name', document.getElementById('user-name')?.value || '');
+                    // ★ GASバックエンド必須パラメータ
+                    formData.append('action', 'save');
+                    formData.append('staffId', staffId);
+                    formData.append('evalType', 'Self');  // カルキュレーターからは常にSelf評価
+                    formData.append('evaluator', staffName);  // 自己評価なので本人の名前
+
                     formData.append('user-affiliation', document.getElementById('user-affiliation')?.value || '');
                     formData.append('user-job-title', document.getElementById('user-job-title')?.value || '');
                     formData.append('TypeSelf', document.getElementById('user-type-self')?.value || '');
@@ -1425,14 +1535,14 @@
                         }
                     });
 
-                    // バックエンドに送信
-                    if (BACKEND_CONFIG.GAS_URL) {
+                    // バックエンドに送信（GAS_ENDPOINTを統一使用）
+                    {
                         const params = new URLSearchParams();
                         for (const [key, value] of formData.entries()) {
                             params.append(key, value);
                         }
 
-                        const response = await fetch(BACKEND_CONFIG.GAS_URL + '?token=' + encodeURIComponent(SVD_API_TOKEN || ''), {
+                        const response = await fetch(GAS_ENDPOINT + '?token=' + encodeURIComponent(SVD_API_TOKEN || ''), {
                             method: 'POST',
                             body: params
                         });
@@ -1453,23 +1563,6 @@
                         } else {
                             throw new Error(result.error || '保存に失敗しました');
                         }
-                    } else {
-                        // バックエンドURLが設定されていない場合はローカル保存のみ
-                        const localData = {};
-                        for (const [key, value] of formData.entries()) {
-                            localData[key] = value;
-                        }
-                        localData.timestamp = new Date().toISOString();
-
-                        const savedEvaluations = JSON.parse(localStorage.getItem('TI_saved_evaluations') || '[]');
-                        savedEvaluations.unshift(localData);
-                        localStorage.setItem('TI_saved_evaluations', JSON.stringify(savedEvaluations.slice(0, 50)));
-
-                        saveBtn.textContent = '✅ ローカル保存完了';
-                        setTimeout(() => {
-                            saveBtn.textContent = originalText;
-                            saveBtn.disabled = false;
-                        }, 2000);
                     }
                 } catch (error) {
                     console.error('Save error:', error);
@@ -2289,7 +2382,7 @@
                 const originalBtnText = calculateBtn.innerHTML;
 
                 formData.append('Timestamp', new Date().toLocaleString('ja-JP'));
-                formData.append('user-name', document.getElementById('user-name').value);
+                formData.append('user-name', getCurrentUserName());
                 formData.append('user-affiliation', document.getElementById('user-affiliation').value);
                 formData.append('user-job-title', document.getElementById('user-job-title').value);
                 formData.append('TypeSelf', document.getElementById('user-type-self').value);
@@ -2389,7 +2482,7 @@
 
             function calculateAndDraw() {
                 try {
-                    const userName = document.getElementById('user-name').value || '診断者';
+                    const userName = getCurrentUserName();
 
                     document.getElementById('result-name').textContent = `${userName}さんの診断結果`;
 
@@ -2915,7 +3008,7 @@
                         }
                     }
 
-                    const userName = document.getElementById('user-name').value || '診断者';
+                    const userName = getCurrentUserName();
                     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
 
                     pdf.save(`${userName}_SVD_TI_${dateStr}.pdf`);
