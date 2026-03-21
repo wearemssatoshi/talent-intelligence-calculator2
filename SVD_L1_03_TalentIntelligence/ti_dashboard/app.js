@@ -77,6 +77,105 @@ const STORE_COLORS = {
     CL: '#e0a050', POP: '#b0c860'
 };
 
+// ── SVD 18 Attributes (Types) ──
+const SVD_TYPES = {
+    "Balance":     { name: "Balance",     nameJp: "バランス",       desc: "汎用・適応",   color: '#B8995C' },
+    "Flare":       { name: "Flare",       nameJp: "フレア",         desc: "情熱・突破",   color: '#E53935' },
+    "Flow":        { name: "Flow",        nameJp: "フロー",         desc: "柔軟・浸透",   color: '#FB8C00' },
+    "Bloom":       { name: "Bloom",       nameJp: "ブルーム",       desc: "育成・調和",   color: '#FB8C00' },
+    "Spark":       { name: "Spark",       nameJp: "スパーク",       desc: "閃き・革新",   color: '#E53935' },
+    "Crystal":     { name: "Crystal",     nameJp: "クリスタル",     desc: "緻密・冷静",   color: '#039BE5' },
+    "Striker":     { name: "Striker",     nameJp: "ストライカー",   desc: "実直・技術",   color: '#8E24AA' },
+    "Rogue":       { name: "Rogue",       nameJp: "ローグ",         desc: "改革・本質",   color: '#8E24AA' },
+    "Ground":      { name: "Ground",      nameJp: "グラウンド",     desc: "安定・土台",   color: '#43A047' },
+    "Wing":        { name: "Wing",        nameJp: "ウィング",       desc: "自由・俯瞰",   color: '#039BE5' },
+    "Seraph":      { name: "Seraph",      nameJp: "セラフ",         desc: "洞察・予知",   color: '#039BE5' },
+    "Craft":       { name: "Craft",       nameJp: "クラフト",       desc: "改善・適応",   color: '#43A047' },
+    "Solid":       { name: "Solid",       nameJp: "ソリッド",       desc: "信念・伝統",   color: '#43A047' },
+    "Shade":       { name: "Shade",       nameJp: "シェード",       desc: "献身・黒子",   color: '#455A64' },
+    "Emperor":     { name: "Emperor",     nameJp: "エンペラー",     desc: "統率・圧倒",   color: '#E53935' },
+    "Night Shift": { name: "Night Shift", nameJp: "ナイトシフト",   desc: "危機・実利",   color: '#8E24AA' },
+    "Iron":        { name: "Iron",        nameJp: "アイアン",       desc: "鉄壁・規律",   color: '#43A047' },
+    "Bliss":       { name: "Bliss",       nameJp: "ブリス",         desc: "愛嬌・浄化",   color: '#FB8C00' }
+};
+
+// ── Synergy Data (Best Match & Caution Match) ──
+const SYNERGY_DATA = {
+    "Balance":     { best: ["Flare", "Emperor"],       caution: [] },
+    "Flare":       { best: ["Flow", "Ground"],         caution: ["Flare"] },
+    "Flow":        { best: ["Flare", "Spark"],         caution: ["Solid"] },
+    "Bloom":       { best: ["Flare", "Ground"],        caution: ["Rogue", "Night Shift"] },
+    "Spark":       { best: ["Flow", "Wing"],           caution: ["Ground"] },
+    "Crystal":     { best: ["Flare", "Striker"],       caution: ["Spark"] },
+    "Striker":     { best: ["Seraph", "Bloom"],        caution: ["Wing"] },
+    "Rogue":       { best: ["Seraph", "Ground"],       caution: ["Bloom", "Bliss"] },
+    "Ground":      { best: ["Spark", "Flare"],         caution: ["Flow", "Wing"] },
+    "Wing":        { best: ["Spark", "Ground"],        caution: ["Striker", "Iron"] },
+    "Seraph":      { best: ["Striker", "Rogue"],       caution: ["Night Shift", "Craft"] },
+    "Craft":       { best: ["Bloom", "Iron"],          caution: ["Flare", "Wing"] },
+    "Solid":       { best: ["Striker", "Ground"],      caution: ["Flow", "Spark"] },
+    "Shade":       { best: ["Emperor", "Seraph"],      caution: ["Night Shift"] },
+    "Emperor":     { best: ["Bliss", "Shade"],         caution: ["Bliss", "Crystal"] },
+    "Night Shift": { best: ["Rogue", "Striker"],       caution: ["Bloom", "Bliss"] },
+    "Iron":        { best: ["Crystal", "Striker"],     caution: ["Flare", "Rogue"] },
+    "Bliss":       { best: ["Emperor", "Iron"],        caution: ["Rogue", "Night Shift"] }
+};
+
+function getAttributeBadgeHtml(typeStr) {
+    if (!typeStr) return '';
+    const info = SVD_TYPES[typeStr];
+    if (!info) return '';
+    return `<span class="card-attribute-badge" style="--attr-color:${info.color};">${info.name}</span>`;
+}
+
+function getSynergyHtml(typeStr, context) {
+    if (!typeStr || !SYNERGY_DATA[typeStr]) return '';
+    const info = SVD_TYPES[typeStr];
+    const syn = SYNERGY_DATA[typeStr];
+    const bestHtml = syn.best.map(t => {
+        const ti = SVD_TYPES[t];
+        return ti ? `<span class="synergy-chip synergy-chip--best">${ti.name}</span>` : '';
+    }).join('');
+    const cautionHtml = syn.caution.map(t => {
+        const ti = SVD_TYPES[t];
+        return ti ? `<span class="synergy-chip synergy-chip--caution">${ti.name}</span>` : '';
+    }).join('');
+
+    // Find teammates with matching synergy
+    let teammateHtml = '';
+    if (context && context.teammates) {
+        const bestMatches = context.teammates.filter(m => m.type && syn.best.includes(m.type));
+        const cautionMatches = context.teammates.filter(m => m.type && syn.caution.includes(m.type));
+        if (bestMatches.length > 0) {
+            teammateHtml += `<div class="synergy-teammates"><span class="synergy-teammates-label">★ 好相性の同僚:</span> ${bestMatches.map(m => `<span class="synergy-teammate-name synergy-teammate--best">${m.name} (${SVD_TYPES[m.type]?.name || m.type})</span>`).join('')}</div>`;
+        }
+        if (cautionMatches.length > 0) {
+            teammateHtml += `<div class="synergy-teammates"><span class="synergy-teammates-label">⚠ 注意の同僚:</span> ${cautionMatches.map(m => `<span class="synergy-teammate-name synergy-teammate--caution">${m.name} (${SVD_TYPES[m.type]?.name || m.type})</span>`).join('')}</div>`;
+        }
+    }
+
+    return `
+        <div class="modal-synergy-section">
+            <div class="modal-synergy-header">ATTRIBUTE & SYNERGY</div>
+            <div class="modal-synergy-type">
+                <span class="modal-synergy-badge" style="background:${info.color};">${info.name}</span>
+                <span class="modal-synergy-desc">${info.nameJp} — ${info.desc}</span>
+            </div>
+            <div class="modal-synergy-matches">
+                <div class="modal-synergy-row">
+                    <span class="modal-synergy-label modal-synergy-label--best">★ ベストマッチ</span>
+                    <div class="modal-synergy-chips">${bestHtml || '<span class="synergy-chip synergy-chip--none">—</span>'}</div>
+                </div>
+                <div class="modal-synergy-row">
+                    <span class="modal-synergy-label modal-synergy-label--caution">⚠ 注意</span>
+                    <div class="modal-synergy-chips">${cautionHtml || '<span class="synergy-chip synergy-chip--none">—</span>'}</div>
+                </div>
+            </div>
+            ${teammateHtml}
+        </div>
+    `;
+}
+
 function shortName(aff) {
     const map = {
         'THE JEWELS': 'JW', 'NOUVELLE POUSSE OKURAYAMA': 'NP',
@@ -347,6 +446,7 @@ function renderStaffGrid(staff) {
                     <div class="avatar-upload-overlay">📷</div>
                 </div>
                 <div class="card-name">${s.name || '—'}</div>
+                ${getAttributeBadgeHtml(s.type)}
                 <div class="card-chips">
                     ${(() => {
                         const b = getBrigadeInfo(s);
@@ -904,6 +1004,15 @@ async function openStaffModal(staffId) {
                 <div class="info-row"><span class="info-label">資格</span><span class="info-value">${staff.qualifications || '—'}</span></div>
                 <div class="info-row"><span class="info-label">CP</span><span class="info-value" style="color:var(--gold);font-weight:800;font-size:16px;">${cp.toFixed(1)}</span></div>
                 <div class="info-row"><span class="info-label">評価回数</span><span class="info-value">${staff.evalCount || 0}回</span></div>
+            </div>
+
+            ${(() => {
+                const attrType = staff.type || staff.typeSelf || '';
+                const teammates = staffList.filter(m => m.staffId !== staff.staffId && m.affiliation === staff.affiliation);
+                return getSynergyHtml(attrType, { teammates });
+            })()}
+
+            <div>
             </div>
 
             <div class="modal-cat-scores">

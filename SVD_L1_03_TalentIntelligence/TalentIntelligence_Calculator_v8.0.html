@@ -980,6 +980,27 @@
                     <p id="advice-text" style="display: none;"></p>
                 </div>
             </div>
+
+            <!-- Attribute & Synergy Card -->
+            <div class="card" id="attribute-synergy-card" style="display:none; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 12px; padding: 1.5rem;">
+                <h3 style="font-family:'Montserrat',sans-serif; font-size:0.9rem; letter-spacing:2px; color:#D4AF37; margin-bottom:1rem;">🔮 ATTRIBUTE & SYNERGY</h3>
+                <div id="attribute-info-content">
+                    <div id="attribute-type-display" style="display:flex; align-items:center; gap:12px; margin-bottom:1rem;">
+                        <span id="attribute-badge" style="font-family:'Montserrat',sans-serif; font-size:0.85rem; font-weight:700; padding:6px 16px; border-radius:8px; color:#fff; letter-spacing:1px;"></span>
+                        <span id="attribute-desc" style="font-size:0.9rem; color:rgba(255,255,255,0.7);"></span>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                        <div style="padding:0.8rem; background:rgba(16,185,129,0.15); border-radius:8px; border-left:3px solid #10b981;">
+                            <div style="font-size:0.75rem; color:#10b981; font-weight:600; margin-bottom:0.4rem;">★ ベストマッチ</div>
+                            <div id="synergy-best-list" style="font-size:0.85rem;"></div>
+                        </div>
+                        <div style="padding:0.8rem; background:rgba(239,68,68,0.15); border-radius:8px; border-left:3px solid #ef4444;">
+                            <div style="font-size:0.75rem; color:#ef4444; font-weight:600; margin-bottom:0.4rem;">⚠ 注意</div>
+                            <div id="synergy-caution-list" style="font-size:0.85rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="result-grid" id="chart-grid">
                 <!-- Radar charts will be inserted here -->
             </div>
@@ -1862,7 +1883,65 @@
 
                 ;
 
+            // ── Synergy Data ──
+            const synergyData = {
+                "Balance":     { best: ["Flare", "Emperor"],       caution: [] },
+                "Flare":       { best: ["Flow", "Ground"],         caution: ["Flare"] },
+                "Flow":        { best: ["Flare", "Spark"],         caution: ["Solid"] },
+                "Bloom":       { best: ["Flare", "Ground"],        caution: ["Rogue", "Night Shift"] },
+                "Spark":       { best: ["Flow", "Wing"],           caution: ["Ground"] },
+                "Crystal":     { best: ["Flare", "Striker"],       caution: ["Spark"] },
+                "Striker":     { best: ["Seraph", "Bloom"],        caution: ["Wing"] },
+                "Rogue":       { best: ["Seraph", "Ground"],       caution: ["Bloom", "Bliss"] },
+                "Ground":      { best: ["Spark", "Flare"],         caution: ["Flow", "Wing"] },
+                "Wing":        { best: ["Spark", "Ground"],        caution: ["Striker", "Iron"] },
+                "Seraph":      { best: ["Striker", "Rogue"],       caution: ["Night Shift", "Craft"] },
+                "Craft":       { best: ["Bloom", "Iron"],          caution: ["Flare", "Wing"] },
+                "Solid":       { best: ["Striker", "Ground"],      caution: ["Flow", "Spark"] },
+                "Shade":       { best: ["Emperor", "Seraph"],      caution: ["Night Shift"] },
+                "Emperor":     { best: ["Bliss", "Shade"],         caution: ["Bliss", "Crystal"] },
+                "Night Shift": { best: ["Rogue", "Striker"],       caution: ["Bloom", "Bliss"] },
+                "Iron":        { best: ["Crystal", "Striker"],     caution: ["Flare", "Rogue"] },
+                "Bliss":       { best: ["Emperor", "Iron"],        caution: ["Rogue", "Night Shift"] }
+            };
 
+            // ── Display Attribute & Synergy in Results ──
+            function displayAttributeInResults() {
+                const typeSelf = document.getElementById('user-type-self')?.value || '';
+                const typeOther = document.getElementById('user-type-other')?.value || '';
+                const attrType = typeOther || typeSelf;
+                const card = document.getElementById('attribute-synergy-card');
+                if (!attrType || !svdTypes[attrType]) {
+                    if (card) card.style.display = 'none';
+                    return;
+                }
+                const info = svdTypes[attrType];
+                const syn = synergyData[attrType];
+                
+                const colorMap = { Balance:'#B8995C', Flare:'#E53935', Flow:'#FB8C00', Bloom:'#FB8C00', Spark:'#E53935', Crystal:'#039BE5', Striker:'#8E24AA', Rogue:'#8E24AA', Ground:'#43A047', Wing:'#039BE5', Seraph:'#039BE5', Craft:'#43A047', Solid:'#43A047', Shade:'#455A64', Emperor:'#E53935', 'Night Shift':'#8E24AA', Iron:'#43A047', Bliss:'#FB8C00' };
+                const badge = document.getElementById('attribute-badge');
+                if (badge) {
+                    badge.textContent = info.name;
+                    badge.style.background = colorMap[attrType] || '#B8995C';
+                }
+                const descEl = document.getElementById('attribute-desc');
+                if (descEl) descEl.textContent = info.desc;
+
+                const bestEl = document.getElementById('synergy-best-list');
+                const cautionEl = document.getElementById('synergy-caution-list');
+                if (bestEl && syn) {
+                    bestEl.innerHTML = syn.best.length > 0 
+                        ? syn.best.map(t => `<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;background:rgba(16,185,129,0.2);font-size:0.8rem;">${svdTypes[t]?.name || t}</span>`).join('')
+                        : '<span style="color:rgba(255,255,255,0.4);">—</span>';
+                }
+                if (cautionEl && syn) {
+                    cautionEl.innerHTML = syn.caution.length > 0 
+                        ? syn.caution.map(t => `<span style="display:inline-block;padding:2px 8px;margin:2px;border-radius:4px;background:rgba(239,68,68,0.2);font-size:0.8rem;">${svdTypes[t]?.name || t}</span>`).join('')
+                        : '<span style="color:rgba(255,255,255,0.4);">—</span>';
+                }
+
+                if (card) card.style.display = 'block';
+            }
 
             const diagnosisQuestions = [{
                 id: 1, type: "Balance", text: "どんなタイプのお客様やスタッフとも、自然と波長を合わせることができますか？"
@@ -2655,6 +2734,13 @@
                         displayAdvice(advice);
                     } catch (adviceError) {
                         console.warn('AIアドバイス生成中にエラー:', adviceError);
+                    }
+
+                    // v8.x: 属性 & 相性を結果画面に表示
+                    try {
+                        displayAttributeInResults();
+                    } catch (attrError) {
+                        console.warn('属性表示エラー:', attrError);
                     }
 
                     // Submit data to Google Sheet
