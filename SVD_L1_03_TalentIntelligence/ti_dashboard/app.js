@@ -1520,11 +1520,11 @@ async function openStaffModal(staffId) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent' }, grid: { color: 'rgba(200, 190, 175, 0.3)' }, pointLabels: { color: '#5a5248', font: { size: 11, family: "'JetBrains Mono', monospace" } } } },
+                    scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent' }, grid: { color: 'rgba(200, 190, 175, 0.3)' }, pointLabels: { color: '#5a5248', font: { size: 11, family: "'Outfit', sans-serif" } } } },
                     plugins: {
                         legend: {
                             display: datasets.length > 1,
-                            labels: { color: '#5a5248', font: { size: 11, family: "'JetBrains Mono', monospace" }, usePointStyle: true }
+                            labels: { color: '#5a5248', font: { size: 11, family: "'Outfit', sans-serif" }, usePointStyle: true }
                         }
                     }
                 }
@@ -1705,7 +1705,7 @@ function displayRefData(latestRef, refType) {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, display: false }, pointLabels: { font: { size: 10, family: "JetBrains Mono, monospace" } } } },
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, display: false }, pointLabels: { font: { size: 10, family: "Outfit, sans-serif" } } } },
             plugins: { legend: { display: false } }
         }
     });
@@ -1921,7 +1921,7 @@ function updateRadarChart() {
                     min: 0, max: 10,
                     ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent', font: { size: 10 } },
                     grid: { color: 'rgba(37, 37, 72, 0.5)' },
-                    pointLabels: { color: '#5a5248', font: { size: 12, family: "'JetBrains Mono', monospace" } }
+                    pointLabels: { color: '#5a5248', font: { size: 12, family: "'Outfit', sans-serif" } }
                 }
             },
             plugins: { legend: { display: false } }
@@ -2087,8 +2087,8 @@ function renderGrowthDiff() {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, backdropColor: 'transparent', font: { size: 10, family: "JetBrains Mono, monospace" } }, pointLabels: { font: { size: 11, family: "JetBrains Mono, monospace" } } } },
-            plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: "JetBrains Mono, monospace" }, usePointStyle: true } } }
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, backdropColor: 'transparent', font: { size: 10, family: "Outfit, sans-serif" } }, pointLabels: { font: { size: 11, family: "Outfit, sans-serif" } } } },
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: "Outfit, sans-serif" }, usePointStyle: true } } }
         }
     });
 
@@ -2181,7 +2181,7 @@ async function generateShiftProposal() {
                     <span class="${result.valid ? 'shift-valid' : 'shift-invalid'}">
                         ${result.valid ? 'VALID — リーダー配置済み' : 'INVALID — リーダー不足'}
                     </span>
-                    <span style="margin-left:12px;font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--text-dim);">
+                    <span style="margin-left:12px;font-family:'Outfit', sans-serif;font-size:12px;color:var(--text-dim);">
                         配置: ${result.totalAssigned}名
                     </span>
                 </div>
@@ -2193,7 +2193,7 @@ async function generateShiftProposal() {
                                 <div class="shift-assigned">
                                     <span style="color:var(--gold);">${s.hierarchy}</span>
                                     <span>${s.name}</span>
-                                    <span style="margin-left:auto;font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--text-dim);">CP ${s.cp}</span>
+                                    <span style="margin-left:auto;font-family:'Outfit', sans-serif;font-size:12px;color:var(--text-dim);">CP ${s.cp}</span>
                                 </div>
                             `).join('')}
                             ${p.shortage > 0 ? `<div class="shift-shortage">不足: ${p.shortage}名 → Timee で補完</div>` : ''}
@@ -2535,7 +2535,7 @@ function renderAIAnalysisTab() {
                     </div>
                     <div style="display:flex;gap:8px;max-width:400px;margin:0 auto;">
                         <input type="password" id="geminiKeyInput" placeholder="AIza..." 
-                               style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface-2);color:var(--text);">
+                               style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-family:'Outfit',sans-serif;font-size:12px;background:var(--surface-2);color:var(--text);">
                         <button class="btn" onclick="saveGeminiKey()" style="padding:8px 16px;">保存</button>
                     </div>
                 </div>`
@@ -3114,7 +3114,7 @@ function renderAI_TeamRadarCharts(staff) {
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, family: "JetBrains Mono, monospace" } } } },
+                scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, family: "Outfit, sans-serif" } } } },
                 plugins: { legend: { display: false } }
             }
         });

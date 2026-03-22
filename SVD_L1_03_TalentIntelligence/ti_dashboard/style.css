@@ -3,7 +3,7 @@
    "World-Class People OS"
    ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
 
 /* ── Tokens ── */
 :root {
@@ -81,7 +81,7 @@ body {
 }
 
 .mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* ── Premium Scrollbar ── */
@@ -139,7 +139,7 @@ body {
 }
 
 .header h1 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 24px;
     font-weight: 800;
     letter-spacing: 5px;
@@ -163,7 +163,7 @@ body {
 }
 
 .version-tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     color: var(--text-muted);
     letter-spacing: 1px;
@@ -196,7 +196,7 @@ body {
 
 .nav-btn {
     padding: 16px 20px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 1.2px;
@@ -295,7 +295,7 @@ body {
 }
 
 .card h3 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -321,7 +321,7 @@ body {
 }
 
 .search-input {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     background: rgba(235, 229, 217, 0.6);
     color: var(--text);
@@ -346,7 +346,7 @@ body {
 }
 
 .filter-select {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     background: var(--surface-2);
     color: var(--text);
@@ -375,7 +375,7 @@ body {
 }
 
 .roster-count {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     color: var(--text-dim);
     white-space: nowrap;
@@ -534,7 +534,7 @@ body {
 }
 
 .cp-rect-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 8px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -543,7 +543,7 @@ body {
 }
 
 .cp-rect-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
@@ -567,7 +567,7 @@ body {
 }
 
 .card-self-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 7px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -575,7 +575,7 @@ body {
 }
 
 .card-self-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 700;
     color: var(--blue);
@@ -637,7 +637,7 @@ body {
 }
 
 .avatar-initial {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 18px;
     font-weight: 800;
     color: var(--gold);
@@ -666,7 +666,7 @@ body {
 }
 
 .card-chip {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 600;
     padding: 3px 8px;
@@ -683,7 +683,7 @@ body {
 }
 
 .specialty-chip {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 600;
     padding: 3px 8px;
@@ -712,7 +712,7 @@ body {
 }
 
 .card-info-key {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     color: var(--text-dim);
@@ -751,7 +751,7 @@ body {
 }
 
 .card-psem-key {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 800;
     width: 12px;
@@ -780,7 +780,7 @@ body {
 }
 
 .card-psem-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 600;
     color: var(--text-sub);
@@ -794,7 +794,7 @@ body {
    ═══════════════════════════════════════════════════ */
 .card-attribute-badge {
     display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 700;
     letter-spacing: 0.8px;
@@ -819,7 +819,7 @@ body {
 }
 
 .modal-synergy-header {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -838,7 +838,7 @@ body {
 }
 
 .modal-synergy-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -867,7 +867,7 @@ body {
 }
 
 .modal-synergy-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     white-space: nowrap;
@@ -884,7 +884,7 @@ body {
 }
 
 .synergy-chip {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 600;
     padding: 3px 10px;
@@ -920,7 +920,7 @@ body {
 }
 
 .synergy-teammates-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     color: var(--text-dim);
@@ -1026,7 +1026,7 @@ body {
 }
 
 .cat-btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.8px;
@@ -1110,7 +1110,7 @@ body {
 }
 
 .skill-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 800;
     color: var(--gold);
@@ -1129,7 +1129,7 @@ body {
 }
 
 .total-score {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 64px;
     font-weight: 900;
     background: var(--gold-shine);
@@ -1141,7 +1141,7 @@ body {
 }
 
 .total-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     color: var(--text-dim);
     letter-spacing: 4px;
@@ -1234,11 +1234,11 @@ body {
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 input[type="date"] {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     background: var(--surface-2);
     color: var(--text);
@@ -1279,7 +1279,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .shift-position-card h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     font-weight: 700;
     color: var(--gold);
@@ -1302,7 +1302,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .shift-shortage {
     color: var(--red);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     margin-top: 10px;
 }
@@ -1321,7 +1321,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
    BUTTONS — Premium
    ═══════════════════════════════════════════════════ */
 .btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 1.2px;
@@ -1396,7 +1396,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .info-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     color: var(--text-sub);
     font-variant-numeric: tabular-nums;
@@ -1416,7 +1416,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--gold);
     margin: 0 0 20px 0;
     font-size: 16px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     letter-spacing: 2px;
 }
 
@@ -1444,7 +1444,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 10px 14px;
     border-radius: 8px;
     font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     outline: none;
     transition: all var(--transition);
 }
@@ -1462,7 +1462,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     transition: all var(--transition);
     letter-spacing: 0.5px;
 }
@@ -1496,7 +1496,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: inline-block;
     padding: 3px 10px;
     border-radius: 6px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: bold;
     letter-spacing: 0.5px;
@@ -1674,7 +1674,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .modal-header h3 {
     color: var(--gold);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -1716,7 +1716,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .modal-cat-score {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 28px;
     font-weight: 800;
     line-height: 1;
@@ -1724,7 +1724,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .modal-cat-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     letter-spacing: 1.5px;
     margin-top: 8px;
@@ -1743,7 +1743,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* ── Modal Skill Detail Blocks ── */
 .modal-skill-section-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-sub);
@@ -1768,7 +1768,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .modal-skill-cat-header {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1.5px;
@@ -1840,7 +1840,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .modal-skill-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     min-width: 32px;
@@ -1850,7 +1850,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* ── Modal History ── */
 .modal-history-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-sub);
@@ -1886,7 +1886,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .modal-history-score {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 700;
     color: var(--gold);
@@ -1917,7 +1917,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .advice-box h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     color: var(--gold);
     margin-bottom: 10px;
@@ -2049,7 +2049,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .team-code {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 900;
     letter-spacing: 2px;
@@ -2074,7 +2074,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .team-stat-label {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 500;
     letter-spacing: 1.5px;
@@ -2083,7 +2083,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .team-stat-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 18px;
     font-weight: 800;
     color: var(--text);
@@ -2134,7 +2134,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     bottom: -16px;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 8px;
     font-weight: 700;
     color: var(--text-muted);
@@ -2307,7 +2307,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     letter-spacing: 1px;
     color: rgba(160, 120, 64, 0.4);
@@ -2386,7 +2386,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border: none;
     padding: 6px 10px;
     text-align: left;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     color: var(--text);
     cursor: pointer;
@@ -2476,7 +2476,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 10px 8px;
     border-bottom: 1px solid var(--border);
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     transition: background 0.2s;
 }
 
@@ -2612,7 +2612,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     backdrop-filter: blur(8px);
 }
 .ai-report-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -2620,7 +2620,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-transform: uppercase;
 }
 .ai-report-timestamp {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     color: var(--text-dim);
 }
@@ -2658,7 +2658,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 18px;
 }
 .ai-module-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -2700,7 +2700,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     flex-shrink: 0;
 }
 .ai-rank-name {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 700;
 }
@@ -2724,7 +2724,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     text-align: right;
     min-width: 60px;
     flex-shrink: 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* Heatmap Table — Skill Gap */
@@ -2735,7 +2735,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .ai-heatmap-table th {
     padding: 8px 10px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -2767,7 +2767,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-bottom: 1px solid rgba(160,120,64,0.06);
 }
 .ai-growth-rank {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 800;
     color: var(--gold);
@@ -2806,7 +2806,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-bottom: 1px solid rgba(160,120,64,0.06);
 }
 .ai-optimize-rank {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 800;
     color: var(--gold);
@@ -2821,10 +2821,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .ai-optimize-detail {
     flex-shrink: 0;
     min-width: 160px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 .ai-optimize-gain {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 800;
     color: var(--green);
@@ -2864,7 +2864,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     flex-shrink: 0;
 }
 .ai-alert-area {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 700;
     color: var(--text-dim);
@@ -2902,7 +2902,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 .ai-exec-kpi-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 28px;
     font-weight: 900;
     color: var(--text);
@@ -2927,7 +2927,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-bottom: 16px;
 }
 .ai-exec-insight h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: var(--gold);
@@ -2941,7 +2941,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     line-height: 1.8;
 }
 .ai-exec-brigade h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: var(--text-sub);
@@ -3016,7 +3016,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     padding: 10px 16px;
     background: linear-gradient(135deg, rgba(160,120,64,0.08), transparent);
     border-bottom: 1px solid rgba(160,120,64,0.1);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -3030,7 +3030,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-bottom: none;
 }
 .gemini-section-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 800;
     color: var(--gold);
