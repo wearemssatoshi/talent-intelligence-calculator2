@@ -99,27 +99,87 @@ const SVD_TYPES = {
     "Bliss":       { name: "Bliss",       nameJp: "ブリス",         desc: "愛嬌・浄化",   color: '#FB8C00' }
 };
 
-// ── Synergy Data (Best Match & Caution Match) ──
+// ── Synergy Data (4-Tier: Best/Better/Caution/Warning) ──
+// BEST ×1.10 | BETTER ×1.05 | CAUTION ×0.90 | WARNING ×0.80
 const SYNERGY_DATA = {
-    "Balance":     { best: ["Flare", "Emperor"],       caution: [] },
-    "Flare":       { best: ["Flow", "Ground"],         caution: ["Flare"] },
-    "Flow":        { best: ["Flare", "Spark"],         caution: ["Solid"] },
-    "Bloom":       { best: ["Flare", "Ground"],        caution: ["Rogue", "Night Shift"] },
-    "Spark":       { best: ["Flow", "Wing"],           caution: ["Ground"] },
-    "Crystal":     { best: ["Flare", "Striker"],       caution: ["Spark"] },
-    "Striker":     { best: ["Seraph", "Bloom"],        caution: ["Wing"] },
-    "Rogue":       { best: ["Seraph", "Ground"],       caution: ["Bloom", "Bliss"] },
-    "Ground":      { best: ["Spark", "Flare"],         caution: ["Flow", "Wing"] },
-    "Wing":        { best: ["Spark", "Ground"],        caution: ["Striker", "Iron"] },
-    "Seraph":      { best: ["Striker", "Rogue"],       caution: ["Night Shift", "Craft"] },
-    "Craft":       { best: ["Bloom", "Iron"],          caution: ["Flare", "Wing"] },
-    "Solid":       { best: ["Striker", "Ground"],      caution: ["Flow", "Spark"] },
-    "Shade":       { best: ["Emperor", "Seraph"],      caution: ["Night Shift"] },
-    "Emperor":     { best: ["Bliss", "Shade"],         caution: ["Bliss", "Crystal"] },
-    "Night Shift": { best: ["Rogue", "Striker"],       caution: ["Bloom", "Bliss"] },
-    "Iron":        { best: ["Crystal", "Striker"],     caution: ["Flare", "Rogue"] },
-    "Bliss":       { best: ["Emperor", "Iron"],        caution: ["Rogue", "Night Shift"] }
+    "Balance":     { best: ["Flare", "Emperor"],       better: ["Ground", "Bloom"],                caution: [],                            warning: [] },
+    "Flare":       { best: ["Flow", "Ground"],         better: ["Balance", "Spark"],               caution: ["Flare"],                     warning: [] },
+    "Flow":        { best: ["Flare", "Spark"],         better: ["Bloom", "Wing"],                  caution: ["Solid"],                     warning: [] },
+    "Bloom":       { best: ["Flare", "Ground"],        better: ["Shade", "Bliss"],                 caution: ["Rogue"],                     warning: ["Night Shift"] },
+    "Spark":       { best: ["Flow", "Wing"],           better: ["Crystal", "Rogue"],               caution: ["Ground"],                    warning: [] },
+    "Crystal":     { best: ["Flare", "Striker"],       better: ["Seraph", "Iron"],                 caution: ["Spark"],                     warning: [] },
+    "Striker":     { best: ["Seraph", "Bloom"],        better: ["Crystal", "Iron"],                caution: ["Wing"],                      warning: [] },
+    "Rogue":       { best: ["Seraph", "Ground"],       better: ["Spark", "Night Shift"],           caution: ["Bloom"],                     warning: ["Bliss"] },
+    "Ground":      { best: ["Spark", "Flare"],         better: ["Balance", "Solid"],               caution: ["Flow"],                      warning: ["Wing"] },
+    "Wing":        { best: ["Spark", "Ground"],        better: ["Flow", "Seraph"],                 caution: ["Striker"],                   warning: ["Iron"] },
+    "Seraph":      { best: ["Striker", "Rogue"],       better: ["Wing", "Crystal"],                caution: ["Craft"],                     warning: ["Night Shift"] },
+    "Craft":       { best: ["Bloom", "Iron"],          better: ["Ground", "Solid"],                caution: ["Flare"],                     warning: ["Wing"] },
+    "Solid":       { best: ["Striker", "Ground"],      better: ["Iron", "Craft"],                  caution: ["Flow"],                      warning: ["Spark"] },
+    "Shade":       { best: ["Emperor", "Seraph"],      better: ["Bloom", "Ground"],                caution: ["Night Shift"],               warning: [] },
+    "Emperor":     { best: ["Bliss", "Shade"],         better: ["Balance", "Ground"],              caution: ["Crystal"],                   warning: ["Bliss"] },
+    "Night Shift": { best: ["Rogue", "Striker"],       better: ["Crystal", "Iron"],                caution: ["Bloom"],                     warning: ["Bliss"] },
+    "Iron":        { best: ["Crystal", "Striker"],     better: ["Solid", "Ground"],                caution: ["Flare"],                     warning: ["Rogue"] },
+    "Bliss":       { best: ["Emperor", "Iron"],        better: ["Bloom", "Shade"],                 caution: ["Rogue"],                     warning: ["Night Shift"] }
 };
+
+// ── Synergy Multiplier Constants ──
+const SYNERGY_MULTIPLIERS = {
+    best:    1.10,
+    better:  1.05,
+    caution: 0.90,
+    warning: 0.80
+};
+
+/**
+ * calcTeamSynergy — 4ティア倍率方式
+ * マイナスを先にかけてから、プラスをかける
+ * @returns {{ multiplier, breakdown, pairDetails }}
+ */
+function calcTeamSynergy(typedMembers) {
+    const pairDetails = { best: [], better: [], caution: [], warning: [] };
+    let bestCount = 0, betterCount = 0, cautionCount = 0, warningCount = 0;
+
+    for (let i = 0; i < typedMembers.length; i++) {
+        for (let j = i + 1; j < typedMembers.length; j++) {
+            const a = typedMembers[i], b = typedMembers[j];
+            const aType = a.type, bType = b.type;
+            const pairLabel = `${a.name}×${b.name}`;
+
+            // Check bidirectional — use highest tier match found
+            let tierFound = null;
+            if (SYNERGY_DATA[aType]?.best?.includes(bType) || SYNERGY_DATA[bType]?.best?.includes(aType)) {
+                tierFound = 'best';
+            } else if (SYNERGY_DATA[aType]?.better?.includes(bType) || SYNERGY_DATA[bType]?.better?.includes(aType)) {
+                tierFound = 'better';
+            }
+
+            let negativeTier = null;
+            if (SYNERGY_DATA[aType]?.warning?.includes(bType) || SYNERGY_DATA[bType]?.warning?.includes(aType)) {
+                negativeTier = 'warning';
+            } else if (SYNERGY_DATA[aType]?.caution?.includes(bType) || SYNERGY_DATA[bType]?.caution?.includes(aType)) {
+                negativeTier = 'caution';
+            }
+
+            if (tierFound === 'best') { bestCount++; pairDetails.best.push(pairLabel); }
+            else if (tierFound === 'better') { betterCount++; pairDetails.better.push(pairLabel); }
+            if (negativeTier === 'warning') { warningCount++; pairDetails.warning.push(pairLabel); }
+            else if (negativeTier === 'caution') { cautionCount++; pairDetails.caution.push(pairLabel); }
+        }
+    }
+
+    // マイナスを先にかけてからプラスをかける
+    let multiplier = 1.0;
+    for (let w = 0; w < warningCount; w++) multiplier *= SYNERGY_MULTIPLIERS.warning;
+    for (let c = 0; c < cautionCount; c++) multiplier *= SYNERGY_MULTIPLIERS.caution;
+    for (let b = 0; b < betterCount; b++) multiplier *= SYNERGY_MULTIPLIERS.better;
+    for (let s = 0; s < bestCount; s++)   multiplier *= SYNERGY_MULTIPLIERS.best;
+
+    return {
+        multiplier,
+        breakdown: { bestCount, betterCount, cautionCount, warningCount },
+        pairDetails
+    };
+}
 
 function getAttributeBadgeHtml(typeStr) {
     if (!typeStr) return '';
@@ -236,9 +296,10 @@ function initNavigation() {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById('p-' + tab).classList.add('active');
             currentTab = tab;
-            // Lazy render for ⑥ and ⑦
+            // Lazy render for ⑥, ⑦, ⑧
             if (tab === 'attributes') renderAttributeTab();
             if (tab === 'synergy') renderSynergyTab();
+            if (tab === 'ai') renderAIAnalysisTab();
         });
     });
 }
@@ -279,7 +340,7 @@ function renderAttributeTab() {
         'Emperor':     { emoji: '👑', summary: '統率・圧倒', detail: 'カリスマ的な統率力でチームを導く天性のリーダー。「この人についていきたい」と思わせるオーラを持ち、チーム全体のパフォーマンスを引き上げる。強い決断力と責任感でプレッシャーの大きい場面でも動じない。組織の顔として内外から信頼される。' },
         'Night Shift': { emoji: '🌙', summary: '危機・実利', detail: '危機的状況で真価を発揮する実利主義者。平時は目立たないが、トラブルやクレーム対応など、本当に困った時に頼れる存在。感情論ではなく、現実的な解決策を冷静に導き出す。「夜の番人」のように、チームの安全を守る最後の砦。' },
         'Iron':        { emoji: '🛡️', summary: '鉄壁・規律', detail: '強い規律意識と鉄壁のメンタルで、基準の維持を徹底する番人。ルールや手順の遵守に妥協がなく、チームの品質基準を守り抜く。プレッシャーやイレギュラーにも動じない精神力を持つ。組織の規律と秩序を体現する鉄の意志の持ち主。' },
-        'Bliss':       { emoji: '✨', summary: '愛嬌・浄化', detail: '天性の愛嬌とポジティブなエネルギーで、場の空気を浄化する太陽のような存在。この人がいるだけで雰囲気が明るくなり、お客様も笑顔になる。チーム内の緊張やストレスを自然に和らげる力を持つ。ホスピタリティの原点である「笑顔」の体現者。' }
+        'Bliss':       { emoji: '', summary: '愛嬌・浄化', detail: '天性の愛嬌とポジティブなエネルギーで、場の空気を浄化する太陽のような存在。この人がいるだけで雰囲気が明るくなり、お客様も笑顔になる。チーム内の緊張やストレスを自然に和らげる力を持つ。ホスピタリティの原点である「笑顔」の体現者。' }
     };
     
     grid.innerHTML = Object.entries(SVD_TYPES).map(([key, info]) => {
@@ -334,7 +395,7 @@ function renderSynergyMatrix() {
     
     const types = Object.keys(SYNERGY_DATA);
     
-    let html = '<div class="card"><h3>💎 相性マトリクス</h3>';
+    let html = '<div class="card"><h3>相性マトリクス — 4ティア倍率方式</h3>';
     html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center;">';
     
     // Header
@@ -345,7 +406,7 @@ function renderSynergyMatrix() {
     });
     html += '</tr>';
     
-    // Rows
+    // Rows — 4-tier color coding
     types.forEach(rowType => {
         const info = SVD_TYPES[rowType];
         const synergy = SYNERGY_DATA[rowType] || {};
@@ -356,9 +417,13 @@ function renderSynergyMatrix() {
             if (rowType === colType) {
                 bg = 'var(--bg-dark)'; symbol = '—';
             } else if (synergy.best?.includes(colType)) {
+                bg = 'rgba(212,175,55,0.20)'; symbol = '★★';
+            } else if (synergy.better?.includes(colType)) {
                 bg = 'rgba(76,175,80,0.15)'; symbol = '★';
+            } else if (synergy.warning?.includes(colType)) {
+                bg = 'rgba(244,67,54,0.18)'; symbol = '⚠⚠';
             } else if (synergy.caution?.includes(colType)) {
-                bg = 'rgba(244,67,54,0.12)'; symbol = '⚠';
+                bg = 'rgba(255,152,0,0.12)'; symbol = '⚠';
             }
             html += `<td style="padding:4px;border:1px solid var(--border-light);background:${bg};font-size:10px;">${symbol}</td>`;
         });
@@ -366,11 +431,17 @@ function renderSynergyMatrix() {
     });
     
     html += '</table></div>';
-    html += '<div style="margin-top:8px;font-size:0.8rem;color:var(--text-sub);">★ = ベストマッチ (+1pt) &nbsp;&nbsp; ⚠ = 注意ペア (-1pt)</div>';
+    html += `<div style="margin-top:8px;font-size:0.8rem;color:var(--text-sub);display:flex;gap:12px;flex-wrap:wrap;">
+        <span>★★ BEST <span style="color:var(--gold);font-weight:700;">×1.10</span></span>
+        <span>★ BETTER <span style="color:var(--green);font-weight:700;">×1.05</span></span>
+        <span>⚠ 注意 <span style="color:var(--orange);font-weight:700;">×0.90</span></span>
+        <span>⚠⚠ 警告 <span style="color:var(--red);font-weight:700;">×0.80</span></span>
+        <span style="color:var(--text-dim);font-style:italic;">※マイナス→プラスの順に適用</span>
+    </div>`;
     html += '</div>';
     
-    // 全ペアの解説
-    html += '<div class="card" style="margin-top:1rem;"><h3>📖 全ペア相性一覧</h3>';
+    // 全ペアの解説 — 4-tier
+    html += '<div class="card" style="margin-top:1rem;"><h3>全ペア相性一覧</h3>';
     html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;">';
     
     types.forEach(t => {
@@ -382,13 +453,25 @@ function renderSynergyMatrix() {
         if (synergy.best?.length > 0) {
             pairs += synergy.best.map(b => {
                 const bInfo = SVD_TYPES[b];
-                return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(76,175,80,0.15);color:#4caf50;">★ ${bInfo?.name || b}</span>`;
+                return `<span class="synergy-tier-chip synergy-tier--best">★★ ${bInfo?.name || b}</span>`;
+            }).join(' ');
+        }
+        if (synergy.better?.length > 0) {
+            pairs += ' ' + synergy.better.map(b => {
+                const bInfo = SVD_TYPES[b];
+                return `<span class="synergy-tier-chip synergy-tier--better">★ ${bInfo?.name || b}</span>`;
             }).join(' ');
         }
         if (synergy.caution?.length > 0) {
             pairs += ' ' + synergy.caution.map(c => {
                 const cInfo = SVD_TYPES[c];
-                return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(244,67,54,0.12);color:#f44336;">⚠ ${cInfo?.name || c}</span>`;
+                return `<span class="synergy-tier-chip synergy-tier--caution">⚠ ${cInfo?.name || c}</span>`;
+            }).join(' ');
+        }
+        if (synergy.warning?.length > 0) {
+            pairs += ' ' + synergy.warning.map(w => {
+                const wInfo = SVD_TYPES[w];
+                return `<span class="synergy-tier-chip synergy-tier--warning">⚠⚠ ${wInfo?.name || w}</span>`;
             }).join(' ');
         }
         
@@ -414,8 +497,13 @@ function renderTeamChemistry() {
         teams[s.affiliation].members.push(s);
     });
     
-    let html = '<div class="card"><h3>🧬 TEAM CHEMISTRY — チーム相性スコア</h3>';
-    html += '<p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:12px;">各チームの属性分布とシナジーポイント。★ベストマッチ +1pt、⚠注意ペア -1pt で算出。</p>';
+    let html = '<div class="card"><h3>TEAM CHEMISTRY — 倍率方式シナジースコア</h3>';
+    html += `<p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:12px;">各チームの属性分布とシナジー倍率。
+        <span style="color:var(--gold);font-weight:600;">★★BEST ×1.10</span>&nbsp;
+        <span style="color:var(--green);font-weight:600;">★BETTER ×1.05</span>&nbsp;
+        <span style="color:var(--orange);font-weight:600;">⚠注意 ×0.90</span>&nbsp;
+        <span style="color:var(--red);font-weight:600;">⚠⚠警告 ×0.80</span>&nbsp;
+        <span style="color:var(--text-dim);">(マイナス→プラス順適用)</span></p>`;
     
     const storeOrder = Object.keys(STORE_COLORS);
     const sortedTeams = Object.values(teams).sort((a, b) => {
@@ -436,30 +524,14 @@ function renderTeamChemistry() {
             return;
         }
         
-        // シナジーポイント計算
-        let bestPairs = 0, cautionPairs = 0;
-        const pairDetails = { best: [], caution: [] };
+        // ── 4ティア倍率計算 ──
+        const synergy = calcTeamSynergy(typedMembers);
+        const { multiplier, breakdown, pairDetails } = synergy;
+        const totalCP = team.members.reduce((s, m) => s + (Number(m.combatPower) || 0), 0);
+        const adjustedCP = totalCP * multiplier;
         
-        for (let i = 0; i < typedMembers.length; i++) {
-            for (let j = i + 1; j < typedMembers.length; j++) {
-                const a = typedMembers[i], b = typedMembers[j];
-                const aType = a.type, bType = b.type;
-                
-                // 双方向チェック
-                if (SYNERGY_DATA[aType]?.best?.includes(bType) || SYNERGY_DATA[bType]?.best?.includes(aType)) {
-                    bestPairs++;
-                    pairDetails.best.push(`${a.name}×${b.name}`);
-                }
-                if (SYNERGY_DATA[aType]?.caution?.includes(bType) || SYNERGY_DATA[bType]?.caution?.includes(aType)) {
-                    cautionPairs++;
-                    pairDetails.caution.push(`${a.name}×${b.name}`);
-                }
-            }
-        }
-        
-        const synergyPoint = bestPairs - cautionPairs;
-        const spColor = synergyPoint > 0 ? 'var(--green)' : synergyPoint < 0 ? 'var(--red)' : 'var(--text-sub)';
-        const spSign = synergyPoint > 0 ? '+' : '';
+        const multColor = multiplier >= 1.0 ? 'var(--green)' : 'var(--red)';
+        const multStr = multiplier >= 1.0 ? `×${multiplier.toFixed(3)}` : `×${multiplier.toFixed(3)}`;
         
         // 属性構成
         const typeCounts = {};
@@ -470,20 +542,35 @@ function renderTeamChemistry() {
             return `<span style="font-size:10px;padding:2px 6px;border-radius:3px;background:${info.color}22;color:${info.color};font-weight:600;">${info.name}${c > 1 ? ' ×'+c : ''}</span>`;
         }).join(' ');
         
-        // ペア詳細
-        const bestHtml = pairDetails.best.length > 0 
-            ? `<div style="margin-top:4px;"><span style="font-size:10px;color:#4caf50;font-weight:600;">★ BEST:</span> <span style="font-size:10px;color:var(--text-sub);">${pairDetails.best.join(', ')}</span></div>` : '';
-        const cautionHtml = pairDetails.caution.length > 0
-            ? `<div style="margin-top:2px;"><span style="font-size:10px;color:#f44336;font-weight:600;">⚠ CAUTION:</span> <span style="font-size:10px;color:var(--text-sub);">${pairDetails.caution.join(', ')}</span></div>` : '';
+        // ── ペア詳細（4ティア）──
+        const tierHtmls = [
+            { key: 'best', label: '★★ BEST', color: '#c8a45e', data: pairDetails.best },
+            { key: 'better', label: '★ BETTER', color: '#4caf50', data: pairDetails.better },
+            { key: 'caution', label: '⚠ CAUTION', color: '#ff9800', data: pairDetails.caution },
+            { key: 'warning', label: '⚠⚠ WARNING', color: '#f44336', data: pairDetails.warning }
+        ].filter(t => t.data.length > 0).map(t =>
+            `<div style="margin-top:3px;"><span style="font-size:10px;color:${t.color};font-weight:600;">${t.label}:</span> <span style="font-size:10px;color:var(--text-sub);">${t.data.join(', ')}</span></div>`
+        ).join('');
+        
+        // Breakdown badge
+        const bdParts = [];
+        if (breakdown.bestCount > 0) bdParts.push(`<span style="color:var(--gold);">★★${breakdown.bestCount}</span>`);
+        if (breakdown.betterCount > 0) bdParts.push(`<span style="color:var(--green);">★${breakdown.betterCount}</span>`);
+        if (breakdown.cautionCount > 0) bdParts.push(`<span style="color:var(--orange);">⚠${breakdown.cautionCount}</span>`);
+        if (breakdown.warningCount > 0) bdParts.push(`<span style="color:var(--red);">⚠⚠${breakdown.warningCount}</span>`);
+        const breakdownHtml = bdParts.length > 0 ? `<span style="font-size:9px;margin-left:4px;">${bdParts.join(' ')}</span>` : '';
         
         html += `<div style="padding:10px;margin-bottom:8px;border-left:3px solid ${color};border-radius:4px;background:var(--bg-card);">
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <span style="font-weight:700;color:${color};font-size:1rem;">${team.short}</span>
                 <span style="font-size:0.8rem;color:var(--text-dim);">${typedMembers.length}/${team.members.length}名</span>
-                <span style="margin-left:auto;font-size:1.1rem;font-weight:800;color:${spColor};">${spSign}${synergyPoint}pt</span>
+                <div style="margin-left:auto;text-align:right;">
+                    <div style="font-size:1.1rem;font-weight:800;color:${multColor};">${multStr}${breakdownHtml}</div>
+                    <div style="font-size:0.7rem;color:var(--text-dim);">CP: ${totalCP.toFixed(0)} → <span style="font-weight:700;color:${multColor};">${adjustedCP.toFixed(0)}</span></div>
+                </div>
             </div>
             <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;">${typeChips}</div>
-            ${bestHtml}${cautionHtml}
+            ${tierHtmls}
         </div>`;
     });
     
@@ -766,22 +853,15 @@ function renderStaffGrid(staff) {
         // P/S/E/M ミニバーの高さ (0-10 → 0-100%)
         const barH = (val) => Math.min((Number(val) / 10) * 100, 100);
 
-        // シナジーポイント計算（TOTAL HBSに反映）
+        // シナジー倍率計算（TOTAL HBSに反映 — 4ティア倍率方式）
         const typedMembers = team.members.filter(m => m.type);
-        let bestPairs = 0, cautionPairs = 0;
-        for (let i = 0; i < typedMembers.length; i++) {
-            for (let j = i + 1; j < typedMembers.length; j++) {
-                const a = typedMembers[i].type, b = typedMembers[j].type;
-                if (SYNERGY_DATA[a]?.best?.includes(b) || SYNERGY_DATA[b]?.best?.includes(a)) bestPairs++;
-                if (SYNERGY_DATA[a]?.caution?.includes(b) || SYNERGY_DATA[b]?.caution?.includes(a)) cautionPairs++;
-            }
-        }
-        const synergyPt = bestPairs - cautionPairs;
-        const adjustedTotal = totalCP + synergyPt;
-        const spSign = synergyPt > 0 ? '+' : '';
-        const spColor = synergyPt > 0 ? 'var(--green)' : synergyPt < 0 ? 'var(--red)' : '';
-        const synergyBadge = synergyPt !== 0 
-            ? `<span style="font-size:0.65rem;font-weight:600;color:${spColor};margin-left:2px;">(${spSign}${synergyPt})</span>` : '';
+        const teamSynergy = calcTeamSynergy(typedMembers);
+        const adjustedTotal = totalCP * teamSynergy.multiplier;
+        const multDisplay = teamSynergy.multiplier !== 1.0;
+        const multColor = teamSynergy.multiplier >= 1.0 ? 'var(--green)' : 'var(--red)';
+        const synergyBadge = multDisplay
+            ? `<span style="font-size:0.65rem;font-weight:600;color:${multColor};margin-left:2px;">(×${teamSynergy.multiplier.toFixed(2)})</span>` : '';
+        const { bestCount: bestPairs, cautionCount: cautionPairs, betterCount, warningCount } = teamSynergy.breakdown;
 
         // メンバーカード（Brigade順にソート: ①→⑥、同一レベル内はスコア降順）
         const LEVEL_ORDER = {'①':1,'②':2,'③':3,'④':4,'⑤':5,'⑥':6};
@@ -820,7 +900,7 @@ function renderStaffGrid(staff) {
                         <div class="team-bar-wrap" title="M: ${avgM}"><div class="team-bar-fill" style="height:${barH(avgM)}%;background:#a08058;"></div><span class="team-bar-key">M</span></div>
                     </div>
                     ${(() => {
-                        // Team synergy summary (reuse outer typedMembers, bestPairs, cautionPairs)
+                        // Team synergy summary — 4-tier badges
                         if (typedMembers.length === 0) return '';
                         
                         const typeCounts = {};
@@ -834,13 +914,14 @@ function renderStaffGrid(staff) {
                             return `<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:${info.color}22;color:${info.color};font-weight:600;white-space:nowrap;">${info.name}${c > 1 ? ' ×'+c : ''}</span>`;
                         }).join(' ');
                         
-                        const synergyBadge = bestPairs > 0 || cautionPairs > 0 
-                            ? `<span style="font-size:9px;margin-left:4px;">` +
-                              (bestPairs > 0 ? `<span style="color:var(--green);">★${bestPairs}</span>` : '') +
-                              (cautionPairs > 0 ? `<span style="color:var(--red);margin-left:3px;">⚠${cautionPairs}</span>` : '') +
-                              `</span>` : '';
+                        const bdParts = [];
+                        if (bestPairs > 0) bdParts.push(`<span style="color:var(--gold);">★★${bestPairs}</span>`);
+                        if (betterCount > 0) bdParts.push(`<span style="color:var(--green);">★${betterCount}</span>`);
+                        if (cautionPairs > 0) bdParts.push(`<span style="color:var(--orange);">⚠${cautionPairs}</span>`);
+                        if (warningCount > 0) bdParts.push(`<span style="color:var(--red);">⚠⚠${warningCount}</span>`);
+                        const synBadge = bdParts.length > 0 ? `<span style="font-size:9px;margin-left:4px;">${bdParts.join(' ')}</span>` : '';
                         
-                        return `<div class="team-synergy-summary" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:4px;">${typeChips}${synergyBadge}</div>`;
+                        return `<div class="team-synergy-summary" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-top:4px;">${typeChips}${synBadge}</div>`;
                     })()}
                 </div>
                 <span class="team-toggle">▼</span>
@@ -1041,7 +1122,7 @@ function editGrowFocus(staffId, rowEl) {
         { key: 'S', label: 'サービススキル' },
         { key: 'E', label: '経験・資格' },
         { key: 'M', label: 'マネジメント' },
-        { key: '', label: '🔄 自動に戻す' }
+        { key: '', label: ' 自動に戻す' }
     ];
 
     options.forEach(opt => {
@@ -1206,7 +1287,7 @@ function handleDrop(e) {
     // Re-render with updated data
     renderStaffGrid(staffList);
 
-    TI_BRIDGE.showToast(`🔄 ${staff.name} → ${targetTeamShort} に移動中...`);
+    TI_BRIDGE.showToast(` ${staff.name} → ${targetTeamShort} に移動中...`);
 
     // Persist to backend (GAS)
     TI_BRIDGE.updateProfile(staffId, { affiliation: targetTeamName })
@@ -1214,7 +1295,7 @@ function handleDrop(e) {
             if (res.result === 'success') {
                 TI_BRIDGE.showToast(`✅ ${staff.name} → ${targetTeamShort} 保存完了`);
             } else {
-                TI_BRIDGE.showToast(`⚠️ 保存失敗: ${res.error || '不明なエラー'}`);
+                TI_BRIDGE.showToast(`▲ 保存失敗: ${res.error || '不明なエラー'}`);
             }
         })
         .catch(err => {
@@ -1439,11 +1520,11 @@ async function openStaffModal(staffId) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent' }, grid: { color: 'rgba(200, 190, 175, 0.3)' }, pointLabels: { color: '#5a5248', font: { size: 11, family: "Menlo, Monaco, 'Courier New', monospace" } } } },
+                    scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent' }, grid: { color: 'rgba(200, 190, 175, 0.3)' }, pointLabels: { color: '#5a5248', font: { size: 11, family: "'JetBrains Mono', monospace" } } } },
                     plugins: {
                         legend: {
                             display: datasets.length > 1,
-                            labels: { color: '#5a5248', font: { size: 11, family: "Menlo, Monaco, 'Courier New', monospace" }, usePointStyle: true }
+                            labels: { color: '#5a5248', font: { size: 11, family: "'JetBrains Mono', monospace" }, usePointStyle: true }
                         }
                     }
                 }
@@ -1624,7 +1705,7 @@ function displayRefData(latestRef, refType) {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, display: false }, pointLabels: { font: { size: 10, family: "Menlo, Monaco, monospace" } } } },
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, display: false }, pointLabels: { font: { size: 10, family: "JetBrains Mono, monospace" } } } },
             plugins: { legend: { display: false } }
         }
     });
@@ -1840,7 +1921,7 @@ function updateRadarChart() {
                     min: 0, max: 10,
                     ticks: { stepSize: 2, color: '#8a8278', backdropColor: 'transparent', font: { size: 10 } },
                     grid: { color: 'rgba(37, 37, 72, 0.5)' },
-                    pointLabels: { color: '#5a5248', font: { size: 12, family: "Menlo, Monaco, 'Courier New', monospace" } }
+                    pointLabels: { color: '#5a5248', font: { size: 12, family: "'JetBrains Mono', monospace" } }
                 }
             },
             plugins: { legend: { display: false } }
@@ -2006,8 +2087,8 @@ function renderGrowthDiff() {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, backdropColor: 'transparent', font: { size: 10, family: "Menlo, Monaco, monospace" } }, pointLabels: { font: { size: 11, family: "Menlo, Monaco, monospace" } } } },
-            plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: "Menlo, Monaco, monospace" }, usePointStyle: true } } }
+            scales: { r: { min: 0, max: 10, ticks: { stepSize: 2, backdropColor: 'transparent', font: { size: 10, family: "JetBrains Mono, monospace" } }, pointLabels: { font: { size: 11, family: "JetBrains Mono, monospace" } } } },
+            plugins: { legend: { position: 'bottom', labels: { font: { size: 11, family: "JetBrains Mono, monospace" }, usePointStyle: true } } }
         }
     });
 
@@ -2100,7 +2181,7 @@ async function generateShiftProposal() {
                     <span class="${result.valid ? 'shift-valid' : 'shift-invalid'}">
                         ${result.valid ? 'VALID — リーダー配置済み' : 'INVALID — リーダー不足'}
                     </span>
-                    <span style="margin-left:12px;font-family:Menlo, Monaco, 'Courier New';font-size:12px;color:var(--text-dim);">
+                    <span style="margin-left:12px;font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--text-dim);">
                         配置: ${result.totalAssigned}名
                     </span>
                 </div>
@@ -2112,7 +2193,7 @@ async function generateShiftProposal() {
                                 <div class="shift-assigned">
                                     <span style="color:var(--gold);">${s.hierarchy}</span>
                                     <span>${s.name}</span>
-                                    <span style="margin-left:auto;font-family:Menlo, Monaco, 'Courier New';font-size:12px;color:var(--text-dim);">CP ${s.cp}</span>
+                                    <span style="margin-left:auto;font-family:'JetBrains Mono', monospace;font-size:12px;color:var(--text-dim);">CP ${s.cp}</span>
                                 </div>
                             `).join('')}
                             ${p.shortage > 0 ? `<div class="shift-shortage">不足: ${p.shortage}名 → Timee で補完</div>` : ''}
@@ -2272,4 +2353,770 @@ async function exportModalPDF() {
     } finally {
         btn.disabled = false;
     }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ⑧ AI ANALYSIS — Gemini Intelligence Engine
+// ═══════════════════════════════════════════════════════════
+
+// ── Gemini API Helper ──
+async function callGeminiAPI(prompt) {
+    const apiKey = localStorage.getItem('ti_gemini_api_key');
+    if (!apiKey) throw new Error('NO_KEY');
+    
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.7, maxOutputTokens: 4096 }
+        })
+    });
+    
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `API Error ${res.status}`);
+    }
+    
+    const data = await res.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '(空の応答)';
+}
+
+// ── Build analysis prompt ──
+function buildGeminiPrompt(staff) {
+    // Aggregate team data
+    const teams = {};
+    staff.forEach(s => {
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { short, members: [], totalCP: 0, catTotals: { P: 0, S: 0, E: 0, M: 0 }, count: 0, typed: 0, types: {} };
+        teams[short].members.push(s);
+        teams[short].totalCP += Number(s.combatPower) || 0;
+        teams[short].count++;
+        if (s.type) {
+            teams[short].typed++;
+            teams[short].types[s.type] = (teams[short].types[s.type] || 0) + 1;
+        }
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (raw) {
+                teams[short].catTotals.P += Number(raw.P) || 0;
+                teams[short].catTotals.S += Number(raw.S) || 0;
+                teams[short].catTotals.E += Number(raw.E) || 0;
+                teams[short].catTotals.M += Number(raw.M) || 0;
+            }
+        } catch (e) {}
+    });
+
+    // Synergy data per team
+    const teamSynergies = {};
+    Object.values(teams).forEach(t => {
+        const typedMembers = t.members.filter(m => m.type);
+        if (typedMembers.length >= 2) {
+            teamSynergies[t.short] = calcTeamSynergy(typedMembers);
+        }
+    });
+
+    const teamSummary = Object.values(teams).map(t => {
+        const avgCP = t.count > 0 ? (t.totalCP / t.count).toFixed(1) : '0';
+        const avgP = t.count > 0 ? (t.catTotals.P / t.count).toFixed(1) : '0';
+        const avgS = t.count > 0 ? (t.catTotals.S / t.count).toFixed(1) : '0';
+        const avgE = t.count > 0 ? (t.catTotals.E / t.count).toFixed(1) : '0';
+        const avgM = t.count > 0 ? (t.catTotals.M / t.count).toFixed(1) : '0';
+        const syn = teamSynergies[t.short];
+        const synStr = syn ? `倍率=${syn.multiplier.toFixed(3)},BEST=${syn.breakdown.bestCount},BETTER=${syn.breakdown.betterCount},CAUTION=${syn.breakdown.cautionCount},WARNING=${syn.breakdown.warningCount}` : '未算出';
+        return `${t.short}: ${t.count}名, 平均CP=${avgCP}, P=${avgP}/S=${avgS}/E=${avgE}/M=${avgM}, 属性カバー=${t.typed}/${t.count}, 属性分布=${JSON.stringify(t.types)}, シナジー(${synStr})`;
+    }).join('\n');
+
+    // Top/Bottom individuals
+    const evaluated = staff.filter(s => Number(s.combatPower) > 0).sort((a, b) => Number(b.combatPower) - Number(a.combatPower));
+    const top5 = evaluated.slice(0, 5).map(s => `${s.name}(${shortName(s.affiliation)}) CP=${s.combatPower} 属性=${s.type||'未設定'}`).join(', ');
+    const bottom5 = evaluated.slice(-5).map(s => `${s.name}(${shortName(s.affiliation)}) CP=${s.combatPower}`).join(', ');
+
+    return `あなたはSVD（SAPPORO VIEWTIFUL DINING）の「AI参謀」です。
+SVDは札幌で4つの高級レストラン（JW=The Jewels, NP=ヌーベルプース大倉山, GA=ザ ガーデン サッポロ, BQ=ラ・ブリック）を運営し、「アジアベストレストラン TOP100」入りを目指しています。
+
+以下の人材データを分析し、経営者向けの戦略レポートを作成してください。
+
+## 組織データ
+- 総スタッフ: ${staff.length}名
+- 評価済み: ${evaluated.length}名
+
+## チーム別データ
+${teamSummary}
+
+## 上位5名
+${top5}
+
+## 下位5名（育成対象）
+${bottom5}
+
+## 属性シナジーシステム
+BESTペア=×1.10倍, BETTERペア=×1.05倍, CAUTIONペア=×0.90倍, WARNINGペア=×0.80倍
+計算方式: マイナス倍率（CAUTION/WARNING）を先に適用→プラス倍率（BEST/BETTER）を後に適用
+
+## レポート要件
+以下の6セクションで出力してください（マークダウン不要、プレーンテキストで）。各セクションは【】で囲んでください。
+
+【組織の健康度】2-3行で組織全体の強み・弱みを要約
+
+【チーム別診断】各チームの特徴と改善ポイントを簡潔に（各チーム1-2行）
+
+【最重要アクション TOP3】今すぐ取るべき具体的なアクション3つ（具体的な人名やチーム名を含めること）
+
+【シナジー戦略】シナジー倍率を最大化するための具体的な配置提案（可能であれば）
+
+【育成優先リスト】特に育成効果が高いスタッフと、その理由・推奨育成方法
+
+【30日後の目標】30日以内に達成すべき具体的KPIを3つ提案
+
+簡潔に、しかし具体的に。一般論は不要、SVDのデータに基づいた分析のみ。`;
+}
+
+// ── Render Gemini Report ──
+function renderGeminiReport(text) {
+    const sections = text.split(/【(.+?)】/).filter(s => s.trim());
+    let html = '';
+    for (let i = 0; i < sections.length; i += 2) {
+        const title = sections[i];
+        const body = (sections[i + 1] || '').trim();
+        html += `<div class="gemini-section">
+            <div class="gemini-section-title">【${title}】</div>
+            <div class="gemini-section-body">${body.replace(/\n/g, '<br>')}</div>
+        </div>`;
+    }
+    return html || `<div class="gemini-section"><div class="gemini-section-body">${text.replace(/\n/g, '<br>')}</div></div>`;
+}
+
+function renderAIAnalysisTab() {
+    const container = document.getElementById('aiAnalysisContent');
+    if (!container) return;
+    
+    if (!window.__staffData || window.__staffData.length === 0) {
+        container.innerHTML = `<div class="ai-empty-state">
+            <div style="font-size:48px;opacity:0.3;"></div>
+            <div style="font-size:1rem;color:var(--text-dim);margin-top:8px;">GASを接続してデータを読み込んでください</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">① ROSTERタブでデータを読み込み後、AI分析が自動生成されます</div>
+        </div>`;
+        return;
+    }
+
+    const staff = window.__staffData.filter(s => s.status !== 'archived');
+    const timestamp = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    const hasApiKey = !!localStorage.getItem('ti_gemini_api_key');
+
+    let html = `<div class="ai-report-header">
+        <div class="ai-report-badge">AI INTELLIGENCE ENGINE</div>
+        <div class="ai-report-timestamp">Generated: ${timestamp}</div>
+    </div>`;
+
+    // ── Gemini AI Report Section ──
+    html += `<div class="ai-module ai-module--gemini">
+        <div class="ai-module-header" style="background:linear-gradient(135deg,rgba(160,120,64,0.12),rgba(200,164,94,0.06));">
+            
+            <span class="ai-module-title">AI COUNSELOR REPORT</span>
+            <span class="ai-module-desc">Gemini 3.1 Flash × SVD Organization Data</span>
+        </div>
+        <div class="ai-module-body">
+            ${hasApiKey
+                ? `<div id="geminiReportArea">
+                    <button class="btn gemini-generate-btn" onclick="generateGeminiReport()">
+                        AI参謀レポートを生成
+                    </button>
+                    <div style="font-size:0.75rem;color:var(--text-dim);margin-top:8px;text-align:center;">
+                        Gemini 3.1 Flash（無料枠）がSVDデータを分析し、戦略レポートを生成します
+                    </div>
+                </div>`
+                : `<div class="gemini-setup-prompt">
+                    <div style="font-size:32px;opacity:0.5;margin-bottom:8px;"></div>
+                    <div style="font-weight:600;color:var(--text-sub);margin-bottom:6px;">Gemini API Key を設定してください</div>
+                    <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:12px;">
+                        <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);">Google AI Studio</a> 
+                        で無料のAPIキーを取得
+                    </div>
+                    <div style="display:flex;gap:8px;max-width:400px;margin:0 auto;">
+                        <input type="password" id="geminiKeyInput" placeholder="AIza..." 
+                               style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--surface-2);color:var(--text);">
+                        <button class="btn" onclick="saveGeminiKey()" style="padding:8px 16px;">保存</button>
+                    </div>
+                </div>`
+            }
+        </div>
+    </div>`;
+
+    // ── Rule-based modules (always shown) ──
+    html += renderAI_TeamPowerIndex(staff);
+    html += renderAI_SkillGapRadar(staff);
+    html += renderAI_GrowthPotential(staff);
+    html += renderAI_SynergyOptimizer(staff);
+    html += renderAI_RiskAlerts(staff);
+    html += renderAI_ExecutiveSummary(staff);
+
+    container.innerHTML = html;
+    
+    // Render charts after DOM update
+    setTimeout(() => {
+        renderAI_TeamRadarCharts(staff);
+    }, 100);
+}
+
+// ── Gemini Key Management ──
+function saveGeminiKey() {
+    const input = document.getElementById('geminiKeyInput');
+    if (!input || !input.value.trim()) return;
+    localStorage.setItem('ti_gemini_api_key', input.value.trim());
+    renderAIAnalysisTab(); // Re-render with key
+}
+
+// ── Generate Gemini Report ──
+async function generateGeminiReport() {
+    const area = document.getElementById('geminiReportArea');
+    if (!area) return;
+    
+    area.innerHTML = `<div style="text-align:center;padding:24px;">
+        <div class="gemini-loading-spinner"></div>
+        <div style="font-size:0.85rem;color:var(--gold);margin-top:12px;font-weight:600;">AI参謀が分析中...</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Gemini 3.1 Flash × SVD Organization Data</div>
+    </div>`;
+
+    try {
+        const staff = window.__staffData.filter(s => s.status !== 'archived');
+        const prompt = buildGeminiPrompt(staff);
+        const response = await callGeminiAPI(prompt);
+        
+        area.innerHTML = `<div class="gemini-report-output">
+            <div class="gemini-report-header-bar">
+                <span>AI COUNSELOR REPORT</span>
+                <button class="btn" onclick="generateGeminiReport()" style="padding:4px 12px;font-size:10px;"> 再生成</button>
+            </div>
+            ${renderGeminiReport(response)}
+        </div>`;
+    } catch (e) {
+        let errorMsg = 'API呼び出しに失敗しました';
+        if (e.message === 'NO_KEY') {
+            errorMsg = 'APIキーが設定されていません。⑤設定タブで設定してください。';
+        } else if (e.message.includes('API_KEY_INVALID')) {
+            errorMsg = 'APIキーが無効です。正しいキーを再設定してください。';
+            localStorage.removeItem('ti_gemini_api_key');
+        }
+        area.innerHTML = `<div style="text-align:center;padding:24px;">
+            <div style="font-size:32px;opacity:0.5;">▲</div>
+            <div style="color:var(--red);margin-top:8px;font-weight:600;">${errorMsg}</div>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">${e.message !== 'NO_KEY' ? e.message : ''}</div>
+            <button class="btn" onclick="generateGeminiReport()" style="margin-top:12px;">再試行</button>
+        </div>`;
+    }
+}
+
+// ── Module 1: TEAM POWER INDEX ──
+function renderAI_TeamPowerIndex(staff) {
+    const teams = {};
+    staff.forEach(s => {
+        if (!s.affiliation) return;
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { name: s.affiliation, short, members: [], totalCP: 0 };
+        teams[short].members.push(s);
+        teams[short].totalCP += Number(s.combatPower) || 0;
+    });
+
+    const ranked = Object.values(teams).map(t => {
+        const typedMembers = t.members.filter(m => m.type);
+        const synergy = calcTeamSynergy(typedMembers);
+        const adjustedCP = t.totalCP * synergy.multiplier;
+        const avgCP = t.members.length > 0 ? t.totalCP / t.members.length : 0;
+        return { ...t, synergy, adjustedCP, avgCP };
+    }).sort((a, b) => b.adjustedCP - a.adjustedCP);
+
+    let html = `<div class="ai-module">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">TEAM POWER INDEX</span>
+            <span class="ai-module-desc">シナジー倍率適用後のチーム総合力ランキング</span>
+        </div>
+        <div class="ai-module-body">`;
+
+    ranked.forEach((t, idx) => {
+        const color = STORE_COLORS[t.short] || 'var(--text-sub)';
+        const medal = idx === 0 ? '01' : idx === 1 ? '02' : idx === 2 ? '03' : `#${idx + 1}`;
+        const multColor = t.synergy.multiplier >= 1.0 ? 'var(--green)' : 'var(--red)';
+        const barPct = ranked[0].adjustedCP > 0 ? (t.adjustedCP / ranked[0].adjustedCP * 100) : 0;
+
+        html += `<div class="ai-rank-row">
+            <div class="ai-rank-medal">${medal}</div>
+            <div class="ai-rank-info">
+                <div class="ai-rank-name" style="color:${color};">${t.short}</div>
+                <div class="ai-rank-sub">${t.members.length}名 ┃ AVG ${t.avgCP.toFixed(1)}</div>
+            </div>
+            <div class="ai-rank-bar-wrap"><div class="ai-rank-bar" style="width:${barPct}%;background:${color};"></div></div>
+            <div class="ai-rank-score">
+                <div style="font-weight:800;font-size:1.1rem;">${t.adjustedCP.toFixed(0)}</div>
+                <div style="font-size:0.7rem;color:${multColor};">×${t.synergy.multiplier.toFixed(3)}</div>
+            </div>
+        </div>`;
+    });
+
+    html += `<div class="ai-team-radar-charts" id="aiTeamRadarCharts"></div>`;
+    html += '</div></div>';
+    return html;
+}
+
+// ── Module 2: SKILL GAP RADAR ──
+function renderAI_SkillGapRadar(staff) {
+    const teams = {};
+    staff.forEach(s => {
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { short, catTotals: { P: 0, S: 0, E: 0, M: 0 }, count: 0 };
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (raw) {
+                teams[short].catTotals.P += Number(raw.P) || 0;
+                teams[short].catTotals.S += Number(raw.S) || 0;
+                teams[short].catTotals.E += Number(raw.E) || 0;
+                teams[short].catTotals.M += Number(raw.M) || 0;
+            }
+        } catch (e) {}
+        teams[short].count++;
+    });
+
+    let html = `<div class="ai-module">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">SKILL GAP HEATMAP</span>
+            <span class="ai-module-desc">チーム別 P/S/E/M 弱点マッピング</span>
+        </div>
+        <div class="ai-module-body">
+        <table class="ai-heatmap-table">
+            <thead><tr><th>Team</th><th>P パーソル</th><th>S サービス</th><th>E 経験</th><th>M 管理</th><th>弱点</th></tr></thead>
+            <tbody>`;
+
+    Object.values(teams).forEach(t => {
+        const avg = {
+            P: t.count > 0 ? t.catTotals.P / t.count : 0,
+            S: t.count > 0 ? t.catTotals.S / t.count : 0,
+            E: t.count > 0 ? t.catTotals.E / t.count : 0,
+            M: t.count > 0 ? t.catTotals.M / t.count : 0
+        };
+        const color = STORE_COLORS[t.short] || 'var(--text-sub)';
+        const entries = Object.entries(avg).sort((a, b) => a[1] - b[1]);
+        const weakest = entries[0];
+        const heatColor = (v) => {
+            if (v >= 6) return 'rgba(107,154,120,0.25)';
+            if (v >= 4) return 'rgba(212,175,55,0.15)';
+            if (v >= 2) return 'rgba(255,152,0,0.15)';
+            return 'rgba(244,67,54,0.15)';
+        };
+
+        html += `<tr>
+            <td style="font-weight:700;color:${color};">${t.short}</td>
+            ${['P','S','E','M'].map(k => `<td style="background:${heatColor(avg[k])};font-family:monospace;font-weight:600;">${avg[k].toFixed(1)}</td>`).join('')}
+            <td><span class="ai-weakness-badge">${CAT_NAMES[weakest[0]]} (${weakest[1].toFixed(1)})</span></td>
+        </tr>`;
+    });
+
+    html += '</tbody></table></div></div>';
+    return html;
+}
+
+// ── Module 3: GROWTH POTENTIAL TOP10 ──
+function renderAI_GrowthPotential(staff) {
+    // Growth potential = gap between current score and max possible (200)
+    const candidates = staff.map(s => {
+        const cp = Number(s.combatPower) || 0;
+        const potential = 200 - cp;
+        const potentialPct = (potential / 200 * 100);
+        let catScores = { P: 0, S: 0, E: 0, M: 0 };
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (raw) catScores = { P: Number(raw.P) || 0, S: Number(raw.S) || 0, E: Number(raw.E) || 0, M: Number(raw.M) || 0 };
+        } catch (e) {}
+        const entries = Object.entries(catScores).sort((a, b) => a[1] - b[1]);
+        const weakest = entries[0];
+        const strongest = entries[entries.length - 1];
+        const growth_score = potential * (1 + (strongest[1] - weakest[1]) / 10); // High balance gap = high potential
+        return { ...s, cp, potential, potentialPct, weakest, strongest, growth_score, catScores };
+    }).filter(s => s.cp > 0)
+      .sort((a, b) => b.growth_score - a.growth_score)
+      .slice(0, 10);
+
+    let html = `<div class="ai-module">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">GROWTH POTENTIAL — TOP 10</span>
+            <span class="ai-module-desc">成長ポテンシャルの高いスタッフ (CP + カテゴリギャップ)</span>
+        </div>
+        <div class="ai-module-body">`;
+
+    candidates.forEach((s, idx) => {
+        const color = STORE_COLORS[shortName(s.affiliation)] || 'var(--text-sub)';
+        html += `<div class="ai-growth-row">
+            <div class="ai-growth-rank">${idx + 1}</div>
+            <div class="ai-growth-info">
+                <div style="font-weight:700;">${s.name}</div>
+                <div style="font-size:0.75rem;color:${color};">${shortName(s.affiliation)} ┃ CP ${s.cp.toFixed(1)}</div>
+            </div>
+            <div class="ai-growth-detail">
+                <div style="font-size:0.75rem;color:var(--green);">✦ ${CAT_NAMES[s.strongest[0]]} ${s.strongest[1].toFixed(1)}</div>
+                <div style="font-size:0.75rem;color:var(--orange);">↑ ${CAT_NAMES[s.weakest[0]]} ${s.weakest[1].toFixed(1)}</div>
+            </div>
+            <div class="ai-growth-bar-wrap">
+                <div class="ai-growth-bar" style="width:${Math.min(s.growth_score / 3, 100)}%;"></div>
+            </div>
+        </div>`;
+    });
+
+    html += '</div></div>';
+    return html;
+}
+
+// ── Module 4: SYNERGY OPTIMIZER ──
+function renderAI_SynergyOptimizer(staff) {
+    // Find top beneficial transfers
+    const teams = {};
+    staff.forEach(s => {
+        if (!s.affiliation || !s.type) return;
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { short, members: [] };
+        teams[short].members.push(s);
+    });
+
+    const suggestions = [];
+    const teamKeys = Object.keys(teams);
+
+    // For each staff with type, simulate moving to another team
+    staff.filter(s => s.type && s.affiliation).forEach(s => {
+        const fromShort = shortName(s.affiliation);
+        const fromTeam = teams[fromShort];
+        if (!fromTeam || fromTeam.members.length <= 1) return;
+
+        teamKeys.forEach(toKey => {
+            if (toKey === fromShort) return;
+            const toTeam = teams[toKey];
+            if (!toTeam) return;
+
+            // Current synergy
+            const currentFrom = calcTeamSynergy(fromTeam.members.filter(m => m.type));
+            const currentTo = calcTeamSynergy(toTeam.members.filter(m => m.type));
+
+            // After transfer
+            const newFromMembers = fromTeam.members.filter(m => m.staffId !== s.staffId && m.type);
+            const newToMembers = [...toTeam.members.filter(m => m.type), s];
+            const newFrom = calcTeamSynergy(newFromMembers);
+            const newTo = calcTeamSynergy(newToMembers);
+
+            const currentTotal = currentFrom.multiplier + currentTo.multiplier;
+            const newTotal = newFrom.multiplier + newTo.multiplier;
+            const gain = newTotal - currentTotal;
+
+            if (gain > 0.02) {
+                suggestions.push({
+                    staff: s,
+                    from: fromShort,
+                    to: toKey,
+                    gain,
+                    fromMultBefore: currentFrom.multiplier,
+                    fromMultAfter: newFrom.multiplier,
+                    toMultBefore: currentTo.multiplier,
+                    toMultAfter: newTo.multiplier
+                });
+            }
+        });
+    });
+
+    suggestions.sort((a, b) => b.gain - a.gain);
+    const top = suggestions.slice(0, 5);
+
+    let html = `<div class="ai-module">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">SYNERGY OPTIMIZER</span>
+            <span class="ai-module-desc">配置転換シミュレーション — シナジー倍率が改善する移動候補</span>
+        </div>
+        <div class="ai-module-body">`;
+
+    if (top.length === 0) {
+        html += '<div style="padding:16px;text-align:center;color:var(--text-dim);font-size:0.85rem;">現在の配置は最適化されています。大幅な改善候補はありません。 </div>';
+    } else {
+        top.forEach((s, idx) => {
+            const fromColor = STORE_COLORS[s.from] || 'var(--text-sub)';
+            const toColor = STORE_COLORS[s.to] || 'var(--text-sub)';
+            const typeInfo = SVD_TYPES[s.staff.type];
+            html += `<div class="ai-optimize-row">
+                <div class="ai-optimize-rank">${idx + 1}</div>
+                <div class="ai-optimize-main">
+                    <div style="font-weight:700;">${s.staff.name} <span class="card-attribute-badge" style="--attr-color:${typeInfo?.color || '#888'};font-size:9px;">${s.staff.type}</span></div>
+                    <div style="font-size:0.8rem;display:flex;gap:8px;align-items:center;margin-top:4px;">
+                        <span style="color:${fromColor};font-weight:600;">${s.from}</span>
+                        <span style="color:var(--text-dim);">→</span>
+                        <span style="color:${toColor};font-weight:600;">${s.to}</span>
+                    </div>
+                </div>
+                <div class="ai-optimize-detail">
+                    <div style="font-size:0.7rem;color:var(--text-dim);">
+                        ${s.from}: ×${s.fromMultBefore.toFixed(3)} → ×${s.fromMultAfter.toFixed(3)}<br>
+                        ${s.to}: ×${s.toMultBefore.toFixed(3)} → ×${s.toMultAfter.toFixed(3)}
+                    </div>
+                </div>
+                <div class="ai-optimize-gain">+${(s.gain).toFixed(3)}</div>
+            </div>`;
+        });
+    }
+
+    html += '</div></div>';
+    return html;
+}
+
+// ── Module 5: RISK ALERTS ──
+function renderAI_RiskAlerts(staff) {
+    const alerts = [];
+    
+    // 1. Teams with no typed members
+    const teams = {};
+    staff.forEach(s => {
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { short, total: 0, typed: 0, members: [] };
+        teams[short].total++;
+        teams[short].members.push(s);
+        if (s.type) teams[short].typed++;
+    });
+
+    Object.values(teams).forEach(t => {
+        if (t.typed === 0 && t.total > 0) {
+            alerts.push({ severity: 'critical', icon: '●', msg: `${t.short}: 属性データが未設定（${t.total}名）`, area: '属性' });
+        }
+        if (t.typed > 0 && t.typed < t.total * 0.5) {
+            alerts.push({ severity: 'warning', icon: '●', msg: `${t.short}: 属性カバー率 ${((t.typed/t.total)*100).toFixed(0)}%（${t.typed}/${t.total}名）`, area: '属性' });
+        }
+    });
+
+    // 2. Attribute concentration risk
+    Object.values(teams).forEach(t => {
+        const typedMembers = t.members.filter(m => m.type);
+        if (typedMembers.length < 3) return;
+        const typeCounts = {};
+        typedMembers.forEach(m => { typeCounts[m.type] = (typeCounts[m.type] || 0) + 1; });
+        Object.entries(typeCounts).forEach(([type, count]) => {
+            if (count >= 3) {
+                alerts.push({ severity: 'warning', icon: '●', msg: `${t.short}: ${SVD_TYPES[type]?.nameJp || type}が${count}名集中 — 多様性リスク`, area: 'バランス' });
+            }
+        });
+    });
+
+    // 3. No evaluation data
+    const noEvalCount = staff.filter(s => !Number(s.combatPower)).length;
+    if (noEvalCount > 0) {
+        alerts.push({ severity: 'info', icon: '●', msg: `${noEvalCount}名が未評価（CP=0）`, area: '評価' });
+    }
+
+    // 4. P/S/E/M extreme imbalance
+    staff.forEach(s => {
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (!raw) return;
+            const scores = [Number(raw.P)||0, Number(raw.S)||0, Number(raw.E)||0, Number(raw.M)||0];
+            const max = Math.max(...scores);
+            const min = Math.min(...scores);
+            if (max - min > 5 && max > 0) {
+                alerts.push({ severity: 'info', icon: '◆', msg: `${s.name}: カテゴリ間格差 ${(max-min).toFixed(1)}pt — 育成フォーカス推奨`, area: 'スキル' });
+            }
+        } catch (e) {}
+    });
+
+    // 5. Warning-tier synergy count
+    Object.values(teams).forEach(t => {
+        const typedMembers = t.members.filter(m => m.type);
+        if (typedMembers.length < 2) return;
+        const synergy = calcTeamSynergy(typedMembers);
+        if (synergy.breakdown.warningCount >= 2) {
+            alerts.push({ severity: 'critical', icon: '▲', msg: `${t.short}: 警告シナジー${synergy.breakdown.warningCount}組 — チーム摩擦リスク高`, area: 'シナジー' });
+        }
+    });
+
+    alerts.sort((a, b) => {
+        const order = { critical: 0, warning: 1, info: 2 };
+        return (order[a.severity] || 3) - (order[b.severity] || 3);
+    });
+
+    let html = `<div class="ai-module">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">RISK ALERTS</span>
+            <span class="ai-module-desc">自動検出された組織リスクと改善ポイント</span>
+        </div>
+        <div class="ai-module-body">`;
+
+    if (alerts.length === 0) {
+        html += '<div style="padding:16px;text-align:center;color:var(--green);font-size:0.9rem;">✅ リスクアラートはありません — 組織状態は良好です</div>';
+    } else {
+        alerts.slice(0, 12).forEach(a => {
+            const bgClass = a.severity === 'critical' ? 'ai-alert--critical' : a.severity === 'warning' ? 'ai-alert--warning' : 'ai-alert--info';
+            html += `<div class="ai-alert-row ${bgClass}">
+                <span class="ai-alert-icon">${a.icon}</span>
+                <span class="ai-alert-area">${a.area}</span>
+                <span class="ai-alert-msg">${a.msg}</span>
+            </div>`;
+        });
+        if (alerts.length > 12) {
+            html += `<div style="padding:8px;text-align:center;color:var(--text-dim);font-size:0.8rem;">他 ${alerts.length - 12} 件のアラート</div>`;
+        }
+    }
+
+    html += '</div></div>';
+    return html;
+}
+
+// ── Module 6: EXECUTIVE SUMMARY ──
+function renderAI_ExecutiveSummary(staff) {
+    const totalStaff = staff.length;
+    const evaluatedStaff = staff.filter(s => Number(s.combatPower) > 0).length;
+    const avgCP = evaluatedStaff > 0 ? staff.reduce((s, m) => s + (Number(m.combatPower) || 0), 0) / evaluatedStaff : 0;
+    const typedStaff = staff.filter(s => s.type).length;
+    const typeCoverage = totalStaff > 0 ? (typedStaff / totalStaff * 100) : 0;
+
+    // Category averages
+    let catTotals = { P: 0, S: 0, E: 0, M: 0 };
+    let catCount = 0;
+    staff.forEach(s => {
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (raw && (Number(raw.P) || Number(raw.S) || Number(raw.E) || Number(raw.M))) {
+                catTotals.P += Number(raw.P) || 0;
+                catTotals.S += Number(raw.S) || 0;
+                catTotals.E += Number(raw.E) || 0;
+                catTotals.M += Number(raw.M) || 0;
+                catCount++;
+            }
+        } catch (e) {}
+    });
+    const catAvg = {
+        P: catCount > 0 ? catTotals.P / catCount : 0,
+        S: catCount > 0 ? catTotals.S / catCount : 0,
+        E: catCount > 0 ? catTotals.E / catCount : 0,
+        M: catCount > 0 ? catTotals.M / catCount : 0
+    };
+    const catEntries = Object.entries(catAvg).sort((a, b) => b[1] - a[1]);
+    const strongest = catEntries[0];
+    const weakest = catEntries[catEntries.length - 1];
+
+    // Unique types
+    const typeSet = new Set(staff.filter(s => s.type).map(s => s.type));
+
+    // Brigade distribution
+    const brigadeCount = {};
+    staff.forEach(s => {
+        const b = getBrigadeInfo(s);
+        brigadeCount[b.level] = (brigadeCount[b.level] || 0) + 1;
+    });
+
+    let html = `<div class="ai-module ai-module--executive">
+        <div class="ai-module-header">
+            
+            <span class="ai-module-title">EXECUTIVE SUMMARY</span>
+            <span class="ai-module-desc">経営報告向け — 組織の全体像</span>
+        </div>
+        <div class="ai-module-body">
+            <div class="ai-exec-grid">
+                <div class="ai-exec-kpi">
+                    <div class="ai-exec-kpi-value">${totalStaff}</div>
+                    <div class="ai-exec-kpi-label">総スタッフ数</div>
+                </div>
+                <div class="ai-exec-kpi">
+                    <div class="ai-exec-kpi-value">${evaluatedStaff}<span class="ai-exec-kpi-sub">/${totalStaff}</span></div>
+                    <div class="ai-exec-kpi-label">評価完了</div>
+                </div>
+                <div class="ai-exec-kpi">
+                    <div class="ai-exec-kpi-value" style="color:var(--gold);">${avgCP.toFixed(1)}</div>
+                    <div class="ai-exec-kpi-label">AVG Combat Power</div>
+                </div>
+                <div class="ai-exec-kpi">
+                    <div class="ai-exec-kpi-value">${typeCoverage.toFixed(0)}%</div>
+                    <div class="ai-exec-kpi-label">属性カバー率</div>
+                </div>
+                <div class="ai-exec-kpi">
+                    <div class="ai-exec-kpi-value">${typeSet.size}/18</div>
+                    <div class="ai-exec-kpi-label">属性多様性</div>
+                </div>
+            </div>
+            
+            <div class="ai-exec-insight">
+                <h4>AI INSIGHT</h4>
+                <ul>
+                    <li>組織全体の<strong style="color:var(--green);">最強カテゴリ</strong>は <strong>${CAT_NAMES[strongest[0]]}</strong>（AVG ${strongest[1].toFixed(1)}）</li>
+                    <li><strong style="color:var(--orange);">成長課題</strong>は <strong>${CAT_NAMES[weakest[0]]}</strong>（AVG ${weakest[1].toFixed(1)}）— 研修優先度を上げることを推奨</li>
+                    <li>属性カバー率 ${typeCoverage.toFixed(0)}% — ${typeCoverage < 80 ? '<span style="color:var(--orange);">未設定スタッフの属性診断を推奨</span>' : '<span style="color:var(--green);">良好</span>'}</li>
+                    <li>活用属性数 ${typeSet.size}/18 — ${typeSet.size < 10 ? '<span style="color:var(--orange);">属性の偏りあり。多様な採用を検討</span>' : '<span style="color:var(--green);">多様性は良好</span>'}</li>
+                </ul>
+            </div>
+
+            <div class="ai-exec-brigade">
+                <h4>階級分布</h4>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    ${Object.entries(brigadeCount).sort().map(([level, count]) => 
+                        `<div class="ai-brigade-chip"><span style="color:var(--gold);font-weight:700;">${level}</span> <span>${count}名</span></div>`
+                    ).join('')}
+                </div>
+            </div>
+        </div>
+    </div>`;
+    return html;
+}
+
+// ── AI Team Radar Charts ──
+function renderAI_TeamRadarCharts(staff) {
+    const container = document.getElementById('aiTeamRadarCharts');
+    if (!container) return;
+
+    const teams = {};
+    staff.forEach(s => {
+        const short = shortName(s.affiliation);
+        if (!teams[short]) teams[short] = { short, catTotals: { P: 0, S: 0, E: 0, M: 0 }, count: 0 };
+        try {
+            const raw = typeof s.categoryScores === 'string' ? JSON.parse(s.categoryScores) : s.categoryScores;
+            if (raw) {
+                teams[short].catTotals.P += Number(raw.P) || 0;
+                teams[short].catTotals.S += Number(raw.S) || 0;
+                teams[short].catTotals.E += Number(raw.E) || 0;
+                teams[short].catTotals.M += Number(raw.M) || 0;
+            }
+        } catch (e) {}
+        teams[short].count++;
+    });
+
+    const teamList = Object.values(teams).filter(t => t.count > 0);
+    if (teamList.length === 0) return;
+
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px;">';
+    teamList.forEach(t => {
+        const id = `ai-radar-${t.short}`;
+        const color = STORE_COLORS[t.short] || '#888';
+        html += `<div style="text-align:center;">
+            <div style="font-weight:700;font-size:0.8rem;color:${color};margin-bottom:4px;">${t.short}</div>
+            <div style="height:160px;"><canvas id="${id}"></canvas></div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+
+    // Render each mini radar
+    teamList.forEach(t => {
+        const ctx = document.getElementById(`ai-radar-${t.short}`);
+        if (!ctx) return;
+        const color = STORE_COLORS[t.short] || '#888';
+        const data = [
+            t.count > 0 ? t.catTotals.P / t.count : 0,
+            t.count > 0 ? t.catTotals.S / t.count : 0,
+            t.count > 0 ? t.catTotals.E / t.count : 0,
+            t.count > 0 ? t.catTotals.M / t.count : 0
+        ];
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['P', 'S', 'E', 'M'],
+                datasets: [{ data, backgroundColor: color + '22', borderColor: color, borderWidth: 2, pointRadius: 3, pointBackgroundColor: color }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { r: { min: 0, max: 10, ticks: { display: false }, pointLabels: { font: { size: 10, family: "JetBrains Mono, monospace" } } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
 }
