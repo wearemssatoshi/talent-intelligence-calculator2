@@ -245,8 +245,8 @@ function shortName(aff) {
         'THE JEWELS': 'JW', 'NOUVELLE POUSSE OKURAYAMA': 'NP',
         'THE GARDEN SAPPORO HOKKAIDO GRILLE': 'GA',
         'LA BRIQUE SAPPORO Akarenga Terrace': 'BQ', 'Rusutsu Yotei Buta by BQ': 'RYB',
-        'Sapporo TV Tower BEER GARDEN': 'BG', 'OKURAYAMA CAFE': 'Ce',
-        'Restaurant Project': 'RP', 'CL': 'CL', 'POP UP': 'POP',
+        'Sapporo TV Tower BEER GARDEN': 'BG', 'OKURAYAMA S\u00e9l\u00e9ste': 'Ce',
+        'Repos': 'RP', 'POP UP': 'POP',
         [RESERVE_NAME]: 'RSV'
     };
     return map[aff] || (aff || '').substring(0, 4);
@@ -747,17 +747,14 @@ function renderStaffGrid(staff) {
         'LA BRIQUE SAPPORO Akarenga Terrace': 'BQ',
         'Rusutsu Yotei Buta by BQ': 'RYB',
         'Sapporo TV Tower BEER GARDEN': 'BG',
-        'OKURAYAMA CAFE': 'Ce',
-        'Restaurant Project': 'RP',
-        'CL': 'CL',
+        'OKURAYAMA S\u00e9l\u00e9ste': 'Ce',
+        'Repos': 'RP',
         'POP UP': 'POP'
     };
     const teams = {};
-    // 全店舗を空で初期化
     Object.entries(ALL_STORES).forEach(([name, short]) => {
         teams[short] = { name, short, members: [] };
     });
-    // RESERVE も常時表示
     teams['RSV'] = { name: RESERVE_NAME, short: 'RSV', members: [] };
 
     // スタッフを振り分け
@@ -766,6 +763,17 @@ function renderStaffGrid(staff) {
         const key = shortName(aff);
         if (!teams[key]) teams[key] = { name: aff, short: key, members: [] };
         teams[key].members.push(s);
+    });
+
+    // ── ソート: 人がいるセクションを上、空を下、RSVは常に最下部 ──
+    const sortedKeys = Object.keys(teams).sort((a, b) => {
+        if (a === 'RSV') return 1;
+        if (b === 'RSV') return -1;
+        const ma = teams[a].members.length;
+        const mb = teams[b].members.length;
+        if (ma === 0 && mb > 0) return 1;
+        if (mb === 0 && ma > 0) return -1;
+        return mb - ma; // 人数降順
     });
 
     // ── ヘルパー: 個別スタッフカードHTML生成（既存ロジック維持） ──
@@ -861,16 +869,9 @@ function renderStaffGrid(staff) {
         </div>`;
     };
 
-    // ── 2. チームごとにセクション生成 ──
-    // ソート: STORE_COLORS の定義順 (JW, NP, GA, BQ, ...) を優先
-    const storeOrder = Object.keys(STORE_COLORS);
-    const sortedTeams = Object.values(teams).sort((a, b) => {
-        const ia = storeOrder.indexOf(a.short);
-        const ib = storeOrder.indexOf(b.short);
-        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
-    });
-
-    grid.innerHTML = sortedTeams.map(team => {
+    // ── 2. チームごとにセクション生成（sortedKeys順）──
+    grid.innerHTML = sortedKeys.map(key => {
+        const team = teams[key];
         const color = STORE_COLORS[team.short] || 'var(--text-sub)';
         const count = team.members.length;
 
