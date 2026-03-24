@@ -2240,6 +2240,7 @@ async function generateShiftProposal() {
 // ═══════════════════════════════════════════════════════════
 async function exportModalPDF() {
     const btn = document.querySelector('.btn--pdf');
+    if (!btn) return;
     const originalText = btn.textContent;
     btn.textContent = '生成中...';
     btn.disabled = true;
@@ -2271,53 +2272,66 @@ async function exportModalPDF() {
         modalContent.classList.add('pdf-capture-mode');
 
         // Wait a tick for styles to apply 
-        await new Promise(r => setTimeout(r, 150));
+        await new Promise(r => setTimeout(r, 200));
 
         const canvas = await html2canvas(modalContent, {
-            scale: 3,
+            scale: 2,
             useCORS: true,
+            allowTaint: true,
             backgroundColor: '#f0ebe0',
             logging: false,
             windowWidth: modalContent.scrollWidth,
             windowHeight: modalContent.scrollHeight,
             onclone: (doc) => {
-                // Force solid colors in cloned document
                 const clonedModal = doc.querySelector('.modal-content');
-                if (clonedModal) {
-                    clonedModal.style.background = '#f0ebe0';
-                    clonedModal.style.boxShadow = 'none';
-                    // Force all cards/sections to have opaque backgrounds
-                    clonedModal.querySelectorAll('.card, .modal-info-grid > div, .modal-cat-score, [class*="modal-"]').forEach(el => {
-                        const bg = getComputedStyle(el).backgroundColor;
-                        if (bg && bg.includes('rgba')) {
-                            // Convert rgba to solid by blending with background
-                            const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)\)/);
-                            if (match) {
-                                const [, r, g, b, a] = match;
-                                const alpha = a ? parseFloat(a) : 1;
-                                const bgR = 240, bgG = 235, bgB = 224; // #f0ebe0
-                                const sr = Math.round(parseInt(r) * alpha + bgR * (1 - alpha));
-                                const sg = Math.round(parseInt(g) * alpha + bgG * (1 - alpha));
-                                const sb = Math.round(parseInt(b) * alpha + bgB * (1 - alpha));
-                                el.style.backgroundColor = `rgb(${sr}, ${sg}, ${sb})`;
+                if (!clonedModal) return;
+
+                clonedModal.style.background = '#f0ebe0';
+                clonedModal.style.boxShadow = 'none';
+
+                // ── CORS対策: 外部画像（Google Drive等）をイニシャルに差し替え ──
+                clonedModal.querySelectorAll('img').forEach(img => {
+                    const src = img.src || '';
+                    if (src.includes('googleusercontent.com') || src.includes('drive.google.com') || src.startsWith('http')) {
+                        // 画像を非表示、隣のイニシャル文字を表示
+                        img.style.display = 'none';
+                        const next = img.nextElementSibling;
+                        if (next && next.classList.contains('avatar-initial')) {
+                            next.style.display = '';
+                        }
+                    }
+                });
+
+                // Force all cards/sections to have opaque backgrounds
+                clonedModal.querySelectorAll('.card, .modal-info-grid > div, .modal-cat-score, [class*="modal-"]').forEach(el => {
+                    const bg = getComputedStyle(el).backgroundColor;
+                    if (bg && bg.includes('rgba')) {
+                        const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)\)/);
+                        if (match) {
+                            const [, r, g, b, a] = match;
+                            const alpha = a ? parseFloat(a) : 1;
+                            const bgR = 240, bgG = 235, bgB = 224;
+                            const sr = Math.round(parseInt(r) * alpha + bgR * (1 - alpha));
+                            const sg = Math.round(parseInt(g) * alpha + bgG * (1 - alpha));
+                            const sb = Math.round(parseInt(b) * alpha + bgB * (1 - alpha));
+                            el.style.backgroundColor = `rgb(${sr}, ${sg}, ${sb})`;
+                        }
+                    }
+                });
+                // Force text colors to be strong
+                clonedModal.querySelectorAll('*').forEach(el => {
+                    const color = getComputedStyle(el).color;
+                    if (color && color.includes('rgba')) {
+                        const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)\)/);
+                        if (match) {
+                            const [, r, g, b, a] = match;
+                            const alpha = a ? parseFloat(a) : 1;
+                            if (alpha < 0.6) {
+                                el.style.color = `rgba(${r}, ${g}, ${b}, ${Math.min(alpha + 0.3, 1)})`;
                             }
                         }
-                    });
-                    // Force text colors to be strong
-                    clonedModal.querySelectorAll('*').forEach(el => {
-                        const color = getComputedStyle(el).color;
-                        if (color && color.includes('rgba')) {
-                            const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)\)/);
-                            if (match) {
-                                const [, r, g, b, a] = match;
-                                const alpha = a ? parseFloat(a) : 1;
-                                if (alpha < 0.6) {
-                                    el.style.color = `rgba(${r}, ${g}, ${b}, ${Math.min(alpha + 0.3, 1)})`;
-                                }
-                            }
-                        }
-                    });
-                }
+                    }
+                });
             }
         });
 
@@ -2378,7 +2392,8 @@ async function exportModalPDF() {
     } catch (e) {
         console.error('PDF export error:', e);
         btn.textContent = 'エラー';
-        setTimeout(() => { btn.textContent = originalText; }, 2000);
+        TI_BRIDGE.showToast(`❌ PDF生成失敗: ${e.message}`);
+        setTimeout(() => { btn.textContent = originalText; }, 3000);
     } finally {
         btn.disabled = false;
     }
