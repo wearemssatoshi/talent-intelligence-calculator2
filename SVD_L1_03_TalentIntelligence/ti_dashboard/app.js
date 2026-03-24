@@ -3174,14 +3174,12 @@ function renderAI_TeamRadarCharts(staff) {
 let careerTabInitialized = false;
 
 function renderCareerTab() {
-    if (careerTabInitialized) return;
-    careerTabInitialized = true;
-
     const sel = document.getElementById('careerStaff');
     if (!sel) return;
 
-    // Populate staff dropdown
+    // ドロップダウンは毎回更新（staffListが後からロードされるケース対応）
     const sorted = [...(window.__staffData || staffList)].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ja'));
+    const currentVal = sel.value; // 選択中の値を保持
     sel.innerHTML = '<option value="">スタッフを選択...</option>';
     sorted.forEach(s => {
         if (s.status === 'archived') return;
@@ -3190,14 +3188,19 @@ function renderCareerTab() {
         opt.textContent = `${s.name} (${getStoreShort(s.affiliation)})`;
         sel.appendChild(opt);
     });
+    if (currentVal) sel.value = currentVal; // 選択復元
 
-    sel.addEventListener('change', () => {
-        const sid = sel.value;
-        document.getElementById('btnAddCareer').style.display = sid ? '' : 'none';
-        hideCareerForm();
-        if (sid) loadCareerTimeline(sid);
-        else document.getElementById('careerTimeline').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.9rem;">スタッフを選択すると、キャリアタイムラインが表示されます</div>';
-    });
+    // イベントリスナーは一度だけ登録
+    if (!careerTabInitialized) {
+        careerTabInitialized = true;
+        sel.addEventListener('change', () => {
+            const sid = sel.value;
+            document.getElementById('btnAddCareer').style.display = sid ? '' : 'none';
+            hideCareerForm();
+            if (sid) loadCareerTimeline(sid);
+            else document.getElementById('careerTimeline').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.9rem;">スタッフを選択すると、キャリアタイムラインが表示されます</div>';
+        });
+    }
 }
 
 async function loadCareerTimeline(staffId) {
