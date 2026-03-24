@@ -739,17 +739,34 @@ function renderStaffGrid(staff) {
         return;
     }
 
-    // ── 1. Staff を affiliation でグループ化（RESERVE 含む）──
+    // ── 1. 全既知店舗を初期化（0人でも常時表示）──
+    const ALL_STORES = {
+        'THE JEWELS': 'JW',
+        'NOUVELLE POUSSE OKURAYAMA': 'NP',
+        'THE GARDEN SAPPORO HOKKAIDO GRILLE': 'GA',
+        'LA BRIQUE SAPPORO Akarenga Terrace': 'BQ',
+        'Rusutsu Yotei Buta by BQ': 'RYB',
+        'Sapporo TV Tower BEER GARDEN': 'BG',
+        'OKURAYAMA CAFE': 'Ce',
+        'Restaurant Project': 'RP',
+        'CL': 'CL',
+        'POP UP': 'POP'
+    };
     const teams = {};
+    // 全店舗を空で初期化
+    Object.entries(ALL_STORES).forEach(([name, short]) => {
+        teams[short] = { name, short, members: [] };
+    });
+    // RESERVE も常時表示
+    teams['RSV'] = { name: RESERVE_NAME, short: 'RSV', members: [] };
+
+    // スタッフを振り分け
     staff.forEach(s => {
         const aff = s.affiliation || RESERVE_NAME;
         const key = shortName(aff);
         if (!teams[key]) teams[key] = { name: aff, short: key, members: [] };
         teams[key].members.push(s);
     });
-
-    // RESERVE が無い場合でも空のドロップゾーンとして表示
-    if (!teams['RSV']) teams['RSV'] = { name: RESERVE_NAME, short: 'RSV', members: [] };
 
     // ── ヘルパー: 個別スタッフカードHTML生成（既存ロジック維持） ──
     const buildStaffCard = (s) => {
