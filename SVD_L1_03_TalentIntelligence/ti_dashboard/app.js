@@ -3168,7 +3168,7 @@ function renderCareerTab() {
         if (s.status === 'archived') return;
         const opt = document.createElement('option');
         opt.value = s.staffId;
-        opt.textContent = `${s.name} (${getStoreShort(s.affiliation)})`;
+        opt.textContent = `${s.name} (${shortName(s.affiliation)})`;
         sel.appendChild(opt);
     });
     if (currentVal) sel.value = currentVal; // 選択復元
