@@ -11,8 +11,8 @@ let skillScores = {};
 let radarChart = null;
 let growthChart = null;
 
-// ── Skill Labels（GAS評価シート準拠）──
-const SKILL_LABELS = {
+// ── Skill Labels（Config-Driven: GASから上書き可能）──
+let SKILL_LABELS = {
     P: {
         p1: '自己成長/学習意欲', p2: '協調性/チームワーク', p3: 'ストレス耐性/柔軟性',
         p4: '当事者意識/責任感', p5: '共感力/傾聴力', p6: 'SVD理念への共鳴'
@@ -31,8 +31,8 @@ const SKILL_LABELS = {
     }
 };
 
-// ── Skill Rubrics (Education Format) ──
-const SKILL_RUBRICS = {
+// ── Skill Rubrics (Config-Driven: GASから上書き可能) ──
+let SKILL_RUBRICS = {
     P: {
         p1: '新しい知識やスキルを自発的に学び、実際の業務やサービス向上に活かそうとする姿勢があるか。',
         p2: '他のスタッフと円滑にコミュニケーションを取り、情報共有や業務のフォローアップを適切に行っているか。',
@@ -67,18 +67,19 @@ const SKILL_RUBRICS = {
     }
 };
 
-// ── Category Display Names ──
-const CAT_NAMES = { P: 'パーソル力', S: 'サービススキル', E: '経験・資格', M: 'マネジメントスキル' };
+// ── Category Display Names (Config-Driven) ──
+let CAT_NAMES = { P: 'パーソル力', S: 'サービススキル', E: '経験・資格', M: 'マネジメントスキル' };
 
-// ── Store Colors & Short Names (Module Level) ──
-const STORE_COLORS = {
+// ── Store Colors & Short Names (Config-Driven) ──
+let STORE_COLORS = {
     JW: '#b8965c', NP: '#8aab7a', BQ: '#a990c0', GA: '#7ea3b8',
     BG: '#6ab5b0', RYB: '#c49060', Ce: '#a090b0', RP: '#c0808a',
-    CL: '#e0a050', POP: '#b0c860'
+    CL: '#e0a050', POP: '#b0c860',
+    RSV: '#708090'
 };
 
-// ── SVD 18 Attributes (Types) ──
-const SVD_TYPES = {
+// ── SVD 18 Attributes (Config-Driven) ──
+let SVD_TYPES = {
     "Balance":     { name: "Balance",     nameJp: "バランス",       desc: "汎用・適応",   color: '#B8995C' },
     "Flare":       { name: "Flare",       nameJp: "フレア",         desc: "情熱・突破",   color: '#E53935' },
     "Flow":        { name: "Flow",        nameJp: "フロー",         desc: "柔軟・浸透",   color: '#FB8C00' },
@@ -99,9 +100,9 @@ const SVD_TYPES = {
     "Bliss":       { name: "Bliss",       nameJp: "ブリス",         desc: "愛嬌・浄化",   color: '#FB8C00' }
 };
 
-// ── Synergy Data (4-Tier: Best/Better/Caution/Warning) ──
+// ── Synergy Data (Config-Driven) ──
 // BEST ×1.10 | BETTER ×1.05 | CAUTION ×0.90 | WARNING ×0.80
-const SYNERGY_DATA = {
+let SYNERGY_DATA = {
     "Balance":     { best: ["Flare", "Emperor"],       better: ["Ground", "Bloom"],                caution: [],                            warning: [] },
     "Flare":       { best: ["Flow", "Ground"],         better: ["Balance", "Spark"],               caution: ["Flare"],                     warning: [] },
     "Flow":        { best: ["Flare", "Spark"],         better: ["Bloom", "Wing"],                  caution: ["Solid"],                     warning: [] },
@@ -122,8 +123,8 @@ const SYNERGY_DATA = {
     "Bliss":       { best: ["Emperor", "Iron"],        better: ["Bloom", "Shade"],                 caution: ["Rogue"],                     warning: ["Night Shift"] }
 };
 
-// ── Synergy Multiplier Constants ──
-const SYNERGY_MULTIPLIERS = {
+// ── Synergy Multiplier Constants (Config-Driven) ──
+let SYNERGY_MULTIPLIERS = {
     best:    1.10,
     better:  1.05,
     caution: 0.90,
@@ -236,19 +237,23 @@ function getSynergyHtml(typeStr, context) {
     `;
 }
 
+// RESERVE カテゴリー名
+const RESERVE_NAME = 'RESERVE — BACK OFFICE & STANDBY';
+
 function shortName(aff) {
     const map = {
         'THE JEWELS': 'JW', 'NOUVELLE POUSSE OKURAYAMA': 'NP',
         'THE GARDEN SAPPORO HOKKAIDO GRILLE': 'GA',
         'LA BRIQUE SAPPORO Akarenga Terrace': 'BQ', 'Rusutsu Yotei Buta by BQ': 'RYB',
         'Sapporo TV Tower BEER GARDEN': 'BG', 'OKURAYAMA CAFE': 'Ce',
-        'Restaurant Project': 'RP', 'CL': 'CL', 'POP UP': 'POP'
+        'Restaurant Project': 'RP', 'CL': 'CL', 'POP UP': 'POP',
+        [RESERVE_NAME]: 'RSV'
     };
     return map[aff] || (aff || '').substring(0, 4);
 }
 
-// ── Brigade Hierarchy: jobTitle → Level Mapping ──
-const BRIGADE_MAP = {
+// ── Brigade Hierarchy (Config-Driven) ──
+let BRIGADE_MAP = {
     'ゼネラルマネジャー・総支配人': { level: '①', fr: 'Directeur', en: 'Director' },
     'ディビジョン支配人':           { level: '①', fr: 'Directeur', en: 'Director' },
     'チーフマネジャー・支配人':     { level: '②', fr: "Maître d'hôtel", en: 'Manager' },
@@ -275,7 +280,7 @@ function getBrigadeInfo(staff) {
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
     initSkillSliders();
     TI_BRIDGE.renderSettingsPanel('gasSettingsCard');
@@ -283,6 +288,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-connect if URL exists
     if (TI_BRIDGE.getUrl()) {
+        // Config-Driven: マスターデータをGASから取得して上書き
+        try {
+            const cfgRes = await TI_BRIDGE.loadConfig();
+            if (cfgRes && cfgRes.result === 'success' && cfgRes.config) {
+                const c = cfgRes.config;
+                if (c.SKILL_LABELS)        SKILL_LABELS = c.SKILL_LABELS;
+                if (c.SKILL_RUBRICS)        SKILL_RUBRICS = c.SKILL_RUBRICS;
+                if (c.CAT_NAMES)            CAT_NAMES = c.CAT_NAMES;
+                if (c.STORE_COLORS)         STORE_COLORS = c.STORE_COLORS;
+                if (c.SVD_TYPES)            SVD_TYPES = c.SVD_TYPES;
+                if (c.SYNERGY_DATA)         SYNERGY_DATA = c.SYNERGY_DATA;
+                if (c.SYNERGY_MULTIPLIERS)  SYNERGY_MULTIPLIERS = c.SYNERGY_MULTIPLIERS;
+                if (c.BRIGADE_MAP)          BRIGADE_MAP = c.BRIGADE_MAP;
+                if (c.ATTRIBUTE_DESC)       window.__ATTRIBUTE_DESC = c.ATTRIBUTE_DESC;
+                if (c.CAREER_CATEGORIES)    window.__CAREER_CATEGORIES = c.CAREER_CATEGORIES;
+                console.log('✅ Config-Driven: マスターデータをGASから取得しました');
+            }
+        } catch (e) {
+            console.warn('⚠️ Config読み込みスキップ（フォールバック使用）:', e);
+        }
         loadRoster();
     }
 });
@@ -296,10 +321,11 @@ function initNavigation() {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById('p-' + tab).classList.add('active');
             currentTab = tab;
-            // Lazy render for ⑥, ⑦, ⑧
+            // Lazy render for ⑥, ⑦, ⑧, ⑨
             if (tab === 'attributes') renderAttributeTab();
             if (tab === 'synergy') renderSynergyTab();
             if (tab === 'ai') renderAIAnalysisTab();
+            if (tab === 'career') renderCareerTab();
         });
     });
 }
@@ -713,13 +739,17 @@ function renderStaffGrid(staff) {
         return;
     }
 
-    // ── 1. Staff を affiliation でグループ化 ──
+    // ── 1. Staff を affiliation でグループ化（RESERVE 含む）──
     const teams = {};
     staff.forEach(s => {
-        const key = shortName(s.affiliation);
-        if (!teams[key]) teams[key] = { name: s.affiliation, short: key, members: [] };
+        const aff = s.affiliation || RESERVE_NAME;
+        const key = shortName(aff);
+        if (!teams[key]) teams[key] = { name: aff, short: key, members: [] };
         teams[key].members.push(s);
     });
+
+    // RESERVE が無い場合でも空のドロップゾーンとして表示
+    if (!teams['RSV']) teams['RSV'] = { name: RESERVE_NAME, short: 'RSV', members: [] };
 
     // ── ヘルパー: 個別スタッフカードHTML生成（既存ロジック維持） ──
     const buildStaffCard = (s) => {
@@ -759,10 +789,8 @@ function renderStaffGrid(staff) {
 
         return `
         <div class="staff-card" data-staff-id="${s.staffId}"
-             onclick="openStaffModal('${s.staffId}')">
-            <div class="card-drag-handle" draggable="true" title="ドラッグして配属変更"
-                 ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)"
-                 onclick="event.stopPropagation();">⠿</div>
+             onclick="openStaffModal('${s.staffId}')"
+             draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)">
             <div class="card-cp-rect">
                 <svg viewBox="0 0 120 30" class="cp-rect-ring">
                     <rect x="1.5" y="1.5" width="117" height="27" rx="3" ry="3" fill="none" stroke="rgba(200,190,175,0.25)" stroke-width="2" />
@@ -1090,19 +1118,20 @@ function applyFilters() {
 let draggedStaffId = null;
 
 function handleDragStart(e) {
-    // ドラッグハンドルからスタッフカードを特定
-    const card = e.currentTarget.closest('.staff-card');
+    // カード全体からドラッグ開始
+    const card = e.currentTarget.closest('.staff-card') || e.currentTarget;
     draggedStaffId = card ? card.dataset.staffId : null;
     if (!draggedStaffId) return;
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', draggedStaffId);
-    if (card) card.classList.add('staff-card--dragging');
+    // micro-delay to let browser snapshot card before opacity change
+    setTimeout(() => { if (card) card.classList.add('staff-card--dragging'); }, 0);
     // Show all drop zones
     document.querySelectorAll('.team-members').forEach(z => z.classList.add('drop-zone--ready'));
 }
 
 function handleDragEnd(e) {
-    const card = e.currentTarget.closest('.staff-card');
+    const card = e.currentTarget.closest('.staff-card') || e.currentTarget;
     if (card) card.classList.remove('staff-card--dragging');
     document.querySelectorAll('.team-members').forEach(z => {
         z.classList.remove('drop-zone--ready', 'drop-zone--over');
@@ -3119,4 +3148,214 @@ function renderAI_TeamRadarCharts(staff) {
             }
         });
     });
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// ⑨ CAREER TIMELINE
+// ═══════════════════════════════════════════════════════════
+let careerTabInitialized = false;
+
+function renderCareerTab() {
+    if (careerTabInitialized) return;
+    careerTabInitialized = true;
+
+    const sel = document.getElementById('careerStaff');
+    if (!sel) return;
+
+    // Populate staff dropdown
+    const sorted = [...(window.__staffData || staffList)].sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ja'));
+    sel.innerHTML = '<option value="">スタッフを選択...</option>';
+    sorted.forEach(s => {
+        if (s.status === 'archived') return;
+        const opt = document.createElement('option');
+        opt.value = s.staffId;
+        opt.textContent = `${s.name} (${getStoreShort(s.affiliation)})`;
+        sel.appendChild(opt);
+    });
+
+    sel.addEventListener('change', () => {
+        const sid = sel.value;
+        document.getElementById('btnAddCareer').style.display = sid ? '' : 'none';
+        hideCareerForm();
+        if (sid) loadCareerTimeline(sid);
+        else document.getElementById('careerTimeline').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.9rem;">スタッフを選択すると、キャリアタイムラインが表示されます</div>';
+    });
+}
+
+async function loadCareerTimeline(staffId) {
+    const container = document.getElementById('careerTimeline');
+    container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-dim);">読み込み中...</div>';
+
+    const cats = window.__CAREER_CATEGORIES || {
+        join: { emoji: '🏢', label: '入社', color: '#43A047' },
+        transfer: { emoji: '🔀', label: '配属/異動', color: '#039BE5' },
+        promotion: { emoji: '📋', label: '昇格/役職変更', color: '#B8995C' },
+        cert: { emoji: '🏅', label: '資格取得', color: '#8E24AA' },
+        achievement: { emoji: '🏆', label: '成果/表彰', color: '#E53935' },
+        memo: { emoji: '📝', label: 'メモ/その他', color: '#455A64' }
+    };
+
+    // Fetch career events + TI history in parallel
+    let careerEvents = [];
+    let tiHistory = [];
+    try {
+        const [cRes, hRes] = await Promise.all([
+            TI_BRIDGE.loadCareer(staffId),
+            TI_BRIDGE.loadHistory(staffId)
+        ]);
+        if (cRes && cRes.result === 'success') careerEvents = cRes.events || [];
+        if (hRes && hRes.result === 'success') tiHistory = hRes.history || [];
+    } catch (e) {
+        container.innerHTML = '<div style="text-align:center;padding:2rem;color:#f44336;">データ取得エラー: ' + e.message + '</div>';
+        return;
+    }
+
+    // Merge into unified timeline
+    const timeline = [];
+    careerEvents.forEach(ev => {
+        timeline.push({
+            date: ev.eventDate || ev.timestamp,
+            type: 'career',
+            category: ev.category,
+            title: ev.title,
+            detail: ev.detail,
+            location: ev.location,
+            rowIndex: ev.rowIndex,
+            catInfo: cats[ev.category] || cats.memo
+        });
+    });
+    tiHistory.forEach(h => {
+        const catScores = {};
+        ['P', 'S', 'E', 'M'].forEach(cat => {
+            const keys = Object.keys(SKILL_LABELS[cat] || {});
+            const vals = keys.map(k => Number(h.scores?.[k] || 0));
+            catScores[cat] = vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(1) : '0.0';
+        });
+        timeline.push({
+            date: h.timestamp,
+            type: 'evaluation',
+            title: `TI評価 ${h.totalScore || 0}pt`,
+            detail: `(${h.evalType || 'N/A'}) P:${catScores.P} S:${catScores.S} E:${catScores.E} M:${catScores.M}`,
+            evaluator: h.evaluator,
+            memo: h.memo
+        });
+    });
+
+    // Sort by date descending
+    timeline.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (timeline.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.9rem;">キャリアイベントがまだ登録されていません</div>';
+        return;
+    }
+
+    // Render timeline
+    let html = '<div class="timeline-wrapper">';
+    timeline.forEach((item, idx) => {
+        const d = new Date(item.date);
+        const dateStr = isNaN(d.getTime()) ? '日付不明' : `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+        const isCareer = item.type === 'career';
+        const dotClass = isCareer ? 'timeline-dot-career' : 'timeline-dot-eval';
+        const catColor = isCareer ? (item.catInfo?.color || '#455A64') : '#b8965c';
+        const emoji = isCareer ? (item.catInfo?.emoji || '📝') : '📊';
+        const catLabel = isCareer ? (item.catInfo?.label || 'メモ') : 'TI評価';
+
+        html += `<div class="timeline-item ${isCareer ? '' : 'timeline-item-eval'}">
+            <div class="timeline-dot ${dotClass}" style="border-color:${catColor};"></div>
+            <div class="timeline-content">
+                <div class="timeline-date">${dateStr}</div>
+                <div class="timeline-header">
+                    <span class="timeline-emoji">${emoji}</span>
+                    <span class="timeline-cat" style="color:${catColor};">${catLabel}</span>
+                    <span class="timeline-title">${item.title || ''}</span>
+                </div>
+                ${item.detail ? `<div class="timeline-detail">${item.detail}</div>` : ''}
+                ${item.memo ? `<div class="timeline-memo">📎 ${item.memo}</div>` : ''}
+                ${isCareer ? `<div class="timeline-actions">
+                    <button class="btn-sm" onclick="editCareerEvent(${item.rowIndex}, '${(item.category || '').replace(/'/g, "\\'")}', '${(item.title || '').replace(/'/g, "\\'")}', '${(item.detail || '').replace(/'/g, "\\'")}', '${item.date}')">✏️</button>
+                    <button class="btn-sm btn-danger" onclick="deleteCareerEvent(${item.rowIndex})">🗑️</button>
+                </div>` : ''}
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function showCareerForm(editRow, category, title, detail, eventDate) {
+    const card = document.getElementById('careerFormCard');
+    card.style.display = '';
+    document.getElementById('careerFormTitle').textContent = editRow ? 'キャリアイベント編集' : 'キャリアイベント追加';
+    document.getElementById('careerEditRow').value = editRow || '';
+    document.getElementById('careerCategory').value = category || 'join';
+    document.getElementById('careerTitle').value = title || '';
+    document.getElementById('careerDetail').value = detail || '';
+    document.getElementById('careerDate').value = eventDate ? eventDate.substring(0, 10) : new Date().toISOString().substring(0, 10);
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideCareerForm() {
+    document.getElementById('careerFormCard').style.display = 'none';
+    document.getElementById('careerEditRow').value = '';
+    document.getElementById('careerTitle').value = '';
+    document.getElementById('careerDetail').value = '';
+}
+
+function editCareerEvent(rowIndex, category, title, detail, eventDate) {
+    showCareerForm(rowIndex, category, title, detail, eventDate);
+}
+
+async function saveCareerEvent() {
+    const staffId = document.getElementById('careerStaff').value;
+    if (!staffId) { TI_BRIDGE.showToast('スタッフを選択してください'); return; }
+
+    const editRow = document.getElementById('careerEditRow').value;
+    const eventData = {
+        category: document.getElementById('careerCategory').value,
+        title: document.getElementById('careerTitle').value,
+        detail: document.getElementById('careerDetail').value,
+        eventDate: document.getElementById('careerDate').value
+    };
+
+    if (!eventData.title) { TI_BRIDGE.showToast('タイトルを入力してください'); return; }
+
+    document.getElementById('btnSaveCareer').disabled = true;
+    try {
+        let res;
+        if (editRow) {
+            res = await TI_BRIDGE.updateCareerEvent(staffId, parseInt(editRow, 10), eventData);
+        } else {
+            res = await TI_BRIDGE.addCareerEvent(staffId, eventData);
+        }
+        if (res && res.result === 'success') {
+            TI_BRIDGE.showToast(editRow ? 'イベントを更新しました' : 'イベントを追加しました');
+            hideCareerForm();
+            loadCareerTimeline(staffId);
+        } else {
+            TI_BRIDGE.showToast('エラー: ' + (res?.error || '不明なエラー'));
+        }
+    } catch (e) {
+        TI_BRIDGE.showToast('通信エラー: ' + e.message);
+    } finally {
+        document.getElementById('btnSaveCareer').disabled = false;
+    }
+}
+
+async function deleteCareerEvent(rowIndex) {
+    if (!confirm('このイベントを削除しますか？')) return;
+    const staffId = document.getElementById('careerStaff').value;
+    if (!staffId) return;
+
+    try {
+        const res = await TI_BRIDGE.deleteCareerEvent(staffId, rowIndex);
+        if (res && res.result === 'success') {
+            TI_BRIDGE.showToast('イベントを削除しました');
+            loadCareerTimeline(staffId);
+        } else {
+            TI_BRIDGE.showToast('エラー: ' + (res?.error || '不明なエラー'));
+        }
+    } catch (e) {
+        TI_BRIDGE.showToast('通信エラー: ' + e.message);
+    }
 }

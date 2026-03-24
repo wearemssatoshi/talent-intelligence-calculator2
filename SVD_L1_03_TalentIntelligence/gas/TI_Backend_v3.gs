@@ -28,7 +28,8 @@ const TI_CONFIG = {
   CONFIG_SHEET: 'TI_Config',
   AUDIT_SHEET: 'TI_AuditLog',
   STAFF_PREFIX: 'Staff_',
-  VERSION: '3.0'
+  CAREER_PREFIX: 'Career_',
+  VERSION: '3.1'
 };
 
 // Master sheet column indices (0-based)
@@ -83,6 +84,8 @@ const STAFF_HEADERS = [
 ];
 
 const AUDIT_HEADERS = ['Timestamp', 'Action', 'User', 'StaffID', 'Detail', 'Result'];
+
+const CAREER_HEADERS = ['Timestamp', 'EventDate', 'Category', 'Title', 'Detail', 'Location'];
 
 
 // ═══════════════════════════════════════════════════════════
@@ -468,17 +471,54 @@ function doGet(e) {
         return jsonResponse_({ result: 'success', supply: supply, count: supply.length, version: TI_CONFIG.VERSION });
       }
 
-      // ── 組織マスタ Config ──
+      // ── 組織マスタ Config (Config-Driven完全化: JSON値を自動パース) ──
       case 'config': {
         const configSheet = ss.getSheetByName(TI_CONFIG.CONFIG_SHEET);
         if (!configSheet) return jsonResponse_({ result: 'error', error: 'TI_Config not found' });
         
         const data = configSheet.getDataRange().getValues();
         const config = {};
+        const JSON_KEYS = ['SKILL_LABELS', 'SKILL_RUBRICS', 'CAT_NAMES', 'STORE_COLORS',
+                           'SVD_TYPES', 'SYNERGY_DATA', 'SYNERGY_MULTIPLIERS', 'BRIGADE_MAP',
+                           'ATTRIBUTE_DESC', 'CAREER_CATEGORIES'];
         for (let i = 1; i < data.length; i++) {
-          if (data[i][0]) config[data[i][0]] = data[i][1];
+          const key = data[i][0];
+          const val = data[i][1];
+          if (!key) continue;
+          if (JSON_KEYS.includes(key)) {
+            try { config[key] = JSON.parse(val); } catch (_) { config[key] = val; }
+          } else {
+            config[key] = val;
+          }
         }
         return jsonResponse_({ result: 'success', config: config, version: TI_CONFIG.VERSION });
+      }
+
+      // ── キャリアタイムライン取得 ──
+      case 'career': {
+        const staffId = e.parameter.staffId;
+        if (!staffId) return jsonResponse_({ result: 'error', error: 'staffId is required' });
+        
+        const careerSheet = findCareerSheet_(ss, staffId);
+        if (!careerSheet) return jsonResponse_({ result: 'success', events: [], count: 0, version: TI_CONFIG.VERSION });
+        
+        const rows = careerSheet.getDataRange().getValues();
+        const events = [];
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (!row[0]) continue;
+          events.push({
+            rowIndex: i + 1,
+            timestamp: row[0],
+            eventDate: row[1],
+            category: row[2],
+            title: row[3],
+            detail: row[4],
+            location: row[5] || ''
+          });
+        }
+        events.sort((a, b) => new Date(b.eventDate || b.timestamp) - new Date(a.eventDate || a.timestamp));
+        return jsonResponse_({ result: 'success', events: events, count: events.length, version: TI_CONFIG.VERSION });
       }
 
       default:
@@ -540,6 +580,12 @@ function doPost(e) {
         const staffSheet = ss.insertSheet(sheetName);
         staffSheet.appendRow(STAFF_HEADERS);
         staffSheet.getRange(1, 1, 1, STAFF_HEADERS.length).setFontWeight('bold');
+        
+        // キャリアシート作成
+        const careerSheetName = TI_CONFIG.CAREER_PREFIX + staffId;
+        const careerSheet = ss.insertSheet(careerSheetName);
+        careerSheet.appendRow(CAREER_HEADERS);
+        careerSheet.getRange(1, 1, 1, CAREER_HEADERS.length).setFontWeight('bold');
         
         // TI_Master に追加
         const master = getOrCreateSheet_(ss, TI_CONFIG.MASTER_SHEET, MASTER_HEADERS);
@@ -860,6 +906,102 @@ function doPost(e) {
         });
       }
 
+      // ═════════════════════════════════════
+      // ADD CAREER EVENT — キャリアイベント追加
+      // ═════════════════════════════════════
+      case 'addCareerEvent': {
+        const staffId = getParam('staffId');
+        if (!staffId) return jsonResponse_({ result: 'error', error: 'staffId is required' });
+        
+        let careerSheet = findCareerSheet_(ss, staffId);
+        if (!careerSheet) {
+          const careerSheetName = TI_CONFIG.CAREER_PREFIX + staffId;
+          careerSheet = ss.insertSheet(careerSheetName);
+          careerSheet.appendRow(CAREER_HEADERS);
+          careerSheet.getRange(1, 1, 1, CAREER_HEADERS.length).setFontWeight('bold');
+        }
+        
+        const eventRow = [
+          jstNow_(),
+          getParam('eventDate') || jstNow_(),
+          getParam('category') || 'memo',
+          getParam('title') || '',
+          getParam('detail') || '',
+          getParam('location') || ''
+        ];
+        careerSheet.appendRow(eventRow);
+        SpreadsheetApp.flush();
+        
+        auditLog_('addCareerEvent', getParam('user') || 'system', staffId,
+          { category: getParam('category'), title: getParam('title') }, 'success');
+        
+        return jsonResponse_({
+          result: 'success',
+          message: 'キャリアイベントを追加しました',
+          staffId: staffId,
+          version: TI_CONFIG.VERSION
+        });
+      }
+
+      // ═════════════════════════════════════
+      // UPDATE CAREER EVENT — キャリアイベント編集
+      // ═════════════════════════════════════
+      case 'updateCareerEvent': {
+        const staffId = getParam('staffId');
+        const rowIndex = parseInt(getParam('rowIndex'), 10);
+        if (!staffId || !rowIndex) return jsonResponse_({ result: 'error', error: 'staffId and rowIndex are required' });
+        
+        const careerSheet = findCareerSheet_(ss, staffId);
+        if (!careerSheet) return jsonResponse_({ result: 'error', error: 'Career sheet not found for: ' + staffId });
+        
+        if (getParam('eventDate')) careerSheet.getRange(rowIndex, 2).setValue(getParam('eventDate'));
+        if (getParam('category'))  careerSheet.getRange(rowIndex, 3).setValue(getParam('category'));
+        if (getParam('title'))     careerSheet.getRange(rowIndex, 4).setValue(getParam('title'));
+        if (getParam('detail'))    careerSheet.getRange(rowIndex, 5).setValue(getParam('detail'));
+        if (getParam('location'))  careerSheet.getRange(rowIndex, 6).setValue(getParam('location'));
+        careerSheet.getRange(rowIndex, 1).setValue(jstNow_());
+        SpreadsheetApp.flush();
+        
+        auditLog_('updateCareerEvent', getParam('user') || 'system', staffId,
+          { rowIndex, title: getParam('title') }, 'success');
+        
+        return jsonResponse_({
+          result: 'success',
+          message: 'キャリアイベントを更新しました',
+          staffId: staffId,
+          version: TI_CONFIG.VERSION
+        });
+      }
+
+      // ═════════════════════════════════════
+      // DELETE CAREER EVENT — キャリアイベント削除
+      // ═════════════════════════════════════
+      case 'deleteCareerEvent': {
+        const staffId = getParam('staffId');
+        const rowIndex = parseInt(getParam('rowIndex'), 10);
+        if (!staffId || !rowIndex) return jsonResponse_({ result: 'error', error: 'staffId and rowIndex are required' });
+        
+        const careerSheet = findCareerSheet_(ss, staffId);
+        if (!careerSheet) return jsonResponse_({ result: 'error', error: 'Career sheet not found for: ' + staffId });
+        
+        if (rowIndex < 2 || rowIndex > careerSheet.getLastRow()) {
+          return jsonResponse_({ result: 'error', error: 'Invalid rowIndex: ' + rowIndex });
+        }
+        
+        careerSheet.deleteRow(rowIndex);
+        SpreadsheetApp.flush();
+        
+        auditLog_('deleteCareerEvent', getParam('user') || 'system', staffId,
+          { rowIndex }, 'success');
+        
+        return jsonResponse_({
+          result: 'success',
+          message: 'キャリアイベントを削除しました',
+          staffId: staffId,
+          version: TI_CONFIG.VERSION
+        });
+      }
+
       default:
         return jsonResponse_({ result: 'error', error: 'Unknown action: ' + action });
     }
@@ -885,7 +1027,7 @@ function setupTIv3() {
   // TI_Config
   const configSheet = getOrCreateSheet_(ss, TI_CONFIG.CONFIG_SHEET, ['Key', 'Value', 'Description']);
   const defaults = [
-    ['VERSION', '3.0', 'Backend version'],
+    ['VERSION', '3.1', 'Backend version'],
     ['MAX_STAFF', '60', 'Maximum staff count'],
     ['NEXT_ID', 'SVD-001', 'Next auto-assigned ID'],
     ['ID_PREFIX', 'SVD', 'ID prefix (change for other orgs)'],
@@ -902,10 +1044,165 @@ function setupTIv3() {
     }
   });
   
+  // ── Config-Driven マスターデータ初期投入 ──
+  seedConfigMasterData_(ss);
+  
   // TI_AuditLog
   getOrCreateSheet_(ss, TI_CONFIG.AUDIT_SHEET, AUDIT_HEADERS);
   
-  Logger.log('TI v3.0 setup complete! Sheets created: TI_Master, TI_Config, TI_AuditLog');
+  Logger.log('TI v3.1 setup complete! Sheets created: TI_Master, TI_Config, TI_AuditLog');
+}
+
+/**
+ * Career シート検索（Career_SVD-001 形式）
+ */
+function findCareerSheet_(ss, staffId) {
+  const name = TI_CONFIG.CAREER_PREFIX + staffId;
+  return ss.getSheetByName(name);
+}
+
+/**
+ * Config-Driven: 9種のマスターデータを TI_Config に初期投入
+ * 既に存在するキーはスキップ（上書きしない）
+ */
+function seedConfigMasterData_(ss) {
+  const configSheet = ss.getSheetByName(TI_CONFIG.CONFIG_SHEET);
+  if (!configSheet) return;
+  
+  const masterData = [
+    ['SKILL_LABELS', JSON.stringify({
+      P: { p1: '自己成長/学習意欲', p2: '協調性/チームワーク', p3: 'ストレス耐性/柔軟性', p4: '当事者意識/責任感', p5: '共感力/傾聴力', p6: 'SVD理念への共鳴' },
+      S: { s1: 'トータルスキル', s2: '専門スキル（料理知識）', s3: '専門スキル（ドリンク知識 ※ワイン除く）', s4: '専門スキル（ワイン）', s5: '顧客対応力', s6: 'テクニカル対応力' },
+      E: { e1: '業界経験年数', e2: 'SVD在籍経験', e3: '専門資格保有', e4: '汎用実務スキル', e5: '役職経験', e6: '実績/表彰' },
+      M: { m1: '計数管理能力', m2: 'チームビルディング/育成力', m3: 'オペレーション管理能力', m4: '戦略立案/課題解決力', m5: 'リーダーシップ', m6: '顧客創造/ブランド構築力' }
+    }), '24スキル項目名'],
+    ['CAT_NAMES', JSON.stringify({ P: 'パーソル力', S: 'サービススキル', E: '経験・資格', M: 'マネジメントスキル' }), '4カテゴリ表示名'],
+    ['STORE_COLORS', JSON.stringify({
+      JW: '#b8965c', NP: '#8aab7a', BQ: '#a990c0', GA: '#7ea3b8',
+      BG: '#6ab5b0', RYB: '#c49060', Ce: '#a090b0', RP: '#c0808a', CL: '#e0a050', POP: '#b0c860'
+    }), '拠点別カラーコード'],
+    ['SVD_TYPES', JSON.stringify({
+      Balance:     { name: 'Balance',     nameJp: 'バランス',       desc: '汎用・適応',   color: '#B8995C' },
+      Flare:       { name: 'Flare',       nameJp: 'フレア',         desc: '情熱・突破',   color: '#E53935' },
+      Flow:        { name: 'Flow',        nameJp: 'フロー',         desc: '柔軟・浸透',   color: '#FB8C00' },
+      Bloom:       { name: 'Bloom',       nameJp: 'ブルーム',       desc: '育成・調和',   color: '#FB8C00' },
+      Spark:       { name: 'Spark',       nameJp: 'スパーク',       desc: '閃き・革新',   color: '#E53935' },
+      Crystal:     { name: 'Crystal',     nameJp: 'クリスタル',     desc: '緻密・冷静',   color: '#039BE5' },
+      Striker:     { name: 'Striker',     nameJp: 'ストライカー',   desc: '実直・技術',   color: '#8E24AA' },
+      Rogue:       { name: 'Rogue',       nameJp: 'ローグ',         desc: '改革・本質',   color: '#8E24AA' },
+      Ground:      { name: 'Ground',      nameJp: 'グラウンド',     desc: '安定・土台',   color: '#43A047' },
+      Wing:        { name: 'Wing',        nameJp: 'ウィング',       desc: '自由・俯瞰',   color: '#039BE5' },
+      Seraph:      { name: 'Seraph',      nameJp: 'セラフ',         desc: '洞察・予知',   color: '#039BE5' },
+      Craft:       { name: 'Craft',       nameJp: 'クラフト',       desc: '改善・適応',   color: '#43A047' },
+      Solid:       { name: 'Solid',       nameJp: 'ソリッド',       desc: '信念・伝統',   color: '#43A047' },
+      Shade:       { name: 'Shade',       nameJp: 'シェード',       desc: '献身・黒子',   color: '#455A64' },
+      Emperor:     { name: 'Emperor',     nameJp: 'エンペラー',     desc: '統率・圧倒',   color: '#E53935' },
+      'Night Shift': { name: 'Night Shift', nameJp: 'ナイトシフト', desc: '危機・実利',   color: '#8E24AA' },
+      Iron:        { name: 'Iron',        nameJp: 'アイアン',       desc: '鉄壁・規律',   color: '#43A047' },
+      Bliss:       { name: 'Bliss',       nameJp: 'ブリス',         desc: '愛嬌・浄化',   color: '#FB8C00' }
+    }), '18属性定義'],
+    ['SYNERGY_DATA', JSON.stringify({
+      Balance:     { best: ['Flare', 'Emperor'],     better: ['Ground', 'Bloom'],          caution: [],                warning: [] },
+      Flare:       { best: ['Flow', 'Ground'],       better: ['Balance', 'Spark'],         caution: ['Flare'],         warning: [] },
+      Flow:        { best: ['Flare', 'Spark'],       better: ['Bloom', 'Wing'],            caution: ['Solid'],         warning: [] },
+      Bloom:       { best: ['Flare', 'Ground'],      better: ['Shade', 'Bliss'],           caution: ['Rogue'],         warning: ['Night Shift'] },
+      Spark:       { best: ['Flow', 'Wing'],         better: ['Crystal', 'Rogue'],         caution: ['Ground'],        warning: [] },
+      Crystal:     { best: ['Flare', 'Striker'],     better: ['Seraph', 'Iron'],           caution: ['Spark'],         warning: [] },
+      Striker:     { best: ['Seraph', 'Bloom'],      better: ['Crystal', 'Iron'],          caution: ['Wing'],          warning: [] },
+      Rogue:       { best: ['Seraph', 'Ground'],     better: ['Spark', 'Night Shift'],     caution: ['Bloom'],         warning: ['Bliss'] },
+      Ground:      { best: ['Spark', 'Flare'],       better: ['Balance', 'Solid'],         caution: ['Flow'],          warning: ['Wing'] },
+      Wing:        { best: ['Spark', 'Ground'],      better: ['Flow', 'Seraph'],           caution: ['Striker'],       warning: ['Iron'] },
+      Seraph:      { best: ['Striker', 'Rogue'],     better: ['Wing', 'Crystal'],          caution: ['Craft'],         warning: ['Night Shift'] },
+      Craft:       { best: ['Bloom', 'Iron'],        better: ['Ground', 'Solid'],          caution: ['Flare'],         warning: ['Wing'] },
+      Solid:       { best: ['Striker', 'Ground'],    better: ['Iron', 'Craft'],            caution: ['Flow'],          warning: ['Spark'] },
+      Shade:       { best: ['Emperor', 'Seraph'],    better: ['Bloom', 'Ground'],          caution: ['Night Shift'],   warning: [] },
+      Emperor:     { best: ['Bliss', 'Shade'],       better: ['Balance', 'Ground'],        caution: ['Crystal'],       warning: ['Bliss'] },
+      'Night Shift': { best: ['Rogue', 'Striker'],   better: ['Crystal', 'Iron'],          caution: ['Bloom'],         warning: ['Bliss'] },
+      Iron:        { best: ['Crystal', 'Striker'],   better: ['Solid', 'Ground'],          caution: ['Flare'],         warning: ['Rogue'] },
+      Bliss:       { best: ['Emperor', 'Iron'],      better: ['Bloom', 'Shade'],           caution: ['Rogue'],         warning: ['Night Shift'] }
+    }), '属性間シナジーマトリクス'],
+    ['SYNERGY_MULTIPLIERS', JSON.stringify({ best: 1.10, better: 1.05, caution: 0.90, warning: 0.80 }), 'シナジー倍率定数'],
+    ['BRIGADE_MAP', JSON.stringify({
+      'ゼネラルマネジャー・総支配人': { level: '①', fr: 'Directeur', en: 'Director' },
+      'ディビジョン支配人':           { level: '①', fr: 'Directeur', en: 'Director' },
+      'チーフマネジャー・支配人':     { level: '②', fr: "Maître d'hôtel", en: 'Manager' },
+      'マネジャーまたは副支配人':     { level: '②', fr: "Maître d'hôtel", en: 'Manager' },
+      'キャプテン':                   { level: '③', fr: 'Chef de Rang 1', en: 'Asst. Manager' },
+      'アシスタントマネジャー':       { level: '③', fr: 'Chef de Rang 1', en: 'Asst. Manager' },
+      'アシスタントキャプテン':       { level: '④', fr: 'Chef de Rang 2', en: 'Captain' },
+      '一般':                         { level: '⑤', fr: 'Commis', en: 'Staff' }
+    }), '役職ヒエラルキー'],
+    ['ATTRIBUTE_DESC', JSON.stringify({
+      Balance:     { emoji: '⚖️', summary: '汎用・適応', detail: 'どんな状況にも対応できる万能型。突出した弱点がなく、チームのバランサーとして機能する。' },
+      Flare:       { emoji: '🔥', summary: '情熱・突破', detail: 'お客様の記憶に残る圧倒的な存在感と情熱を持つ。困難な状況を突破するエネルギーの源泉。' },
+      Flow:        { emoji: '🌊', summary: '柔軟・浸透', detail: '場の空気を読み、自然にサービスの流れを生み出す。水のように柔軟に形を変え、浸透していく適応力が武器。' },
+      Bloom:       { emoji: '🌸', summary: '育成・調和', detail: '後輩の成長を自分のことのように喜べる育成者。チーム内の人間関係の調和を保ち、温かい雰囲気を作り出す。' },
+      Spark:       { emoji: '⚡', summary: '閃き・革新', detail: '常識にとらわれない発想力で新しいアイデアを生み出す革新者。変化を恐れず、新しい挑戦を楽しむ。' },
+      Crystal:     { emoji: '💎', summary: '緻密・冷静', detail: '冷静な分析力と緻密さを持つ知性派。データや事実に基づいた判断ができる。' },
+      Striker:     { emoji: '🎯', summary: '実直・技術', detail: '確かな技術力と実直さで勝負する職人気質。専門分野で高い技術力を発揮。' },
+      Rogue:       { emoji: '🗡️', summary: '改革・本質', detail: '既存のルールや慣習に疑問を投げかけ、本質を追求する改革者。' },
+      Ground:      { emoji: '🌍', summary: '安定・土台', detail: 'チームの土台となる堅実さと安定感。この人がいるだけでチームが安定する「大地」のような存在。' },
+      Wing:        { emoji: '🦅', summary: '自由・俯瞰', detail: '高い視点から全体を俯瞰できる戦略的思考の持ち主。広い視野でチームを導く。' },
+      Seraph:      { emoji: '👁️', summary: '洞察・予知', detail: 'まだ表面化していない問題や可能性を見抜く洞察力の持ち主。先回りしたサービスを提供する。' },
+      Craft:       { emoji: '🔧', summary: '改善・適応', detail: '日々の業務を少しずつ良くしていく改善の達人。カイゼンの精神を体現する存在。' },
+      Solid:       { emoji: '🏛️', summary: '信念・伝統', detail: 'ブレない信念と守るべき伝統への深い理解を持つ。チームに「軸」を提供する存在。' },
+      Shade:       { emoji: '🌑', summary: '献身・黒子', detail: '表舞台に立つことなく、裏方としてチームを支える献身の達人。縁の下の力持ち。' },
+      Emperor:     { emoji: '👑', summary: '統率・圧倒', detail: 'カリスマ的な統率力でチームを導く天性のリーダー。組織の顔として内外から信頼される。' },
+      'Night Shift': { emoji: '🌙', summary: '危機・実利', detail: '危機的状況で真価を発揮する実利主義者。トラブル対応の最後の砦。' },
+      Iron:        { emoji: '🛡️', summary: '鉄壁・規律', detail: '強い規律意識と鉄壁のメンタルで、基準の維持を徹底する番人。' },
+      Bliss:       { emoji: '😊', summary: '愛嬌・浄化', detail: '天性の愛嬌とポジティブなエネルギーで、場の空気を浄化する太陽のような存在。' }
+    }), '18属性詳細解説'],
+    ['CAREER_CATEGORIES', JSON.stringify({
+      join:       { emoji: '🏢', label: '入社',        color: '#43A047' },
+      transfer:   { emoji: '🔀', label: '配属/異動',   color: '#039BE5' },
+      promotion:  { emoji: '📋', label: '昇格/役職変更', color: '#B8995C' },
+      cert:       { emoji: '🏅', label: '資格取得',    color: '#8E24AA' },
+      achievement:{ emoji: '🏆', label: '成果/表彰',   color: '#E53935' },
+      memo:       { emoji: '📝', label: 'メモ/その他', color: '#455A64' }
+    }), 'キャリアイベントカテゴリ'],
+    ['SKILL_RUBRICS', JSON.stringify({
+      P: {
+        p1: '新しい知識やスキルを自発的に学び、実際の業務やサービス向上に活かそうとする姿勢があるか。',
+        p2: '他のスタッフと円滑にコミュニケーションを取り、情報共有や業務のフォローアップを適切に行っているか。',
+        p3: '繁忙時やクレーム等の予測せぬトラブルに対して、感情をコントロールし冷静かつ柔軟に対応できているか。',
+        p4: '自身の役割を深く理解し、店舗の目標達成や課題解決に対して「自分事」として取り組んでいるか。',
+        p5: 'お客様や仲間の状況・感情を察知し、相手の立場に立った寄り添いのある発言や行動ができているか。',
+        p6: 'SVDのブランドコンセプトを深く理解し、日々の行動で体現しているか。'
+      },
+      S: {
+        s1: '接客の基本動作（挨拶・笑顔・身だしなみ・トーン）が極めて高い水準で備わっているか。',
+        s2: '提供する料理の食材、調理法、コンセプトを正確に理解し、説明ができるか。',
+        s3: 'ビールやカクテル等の特性を理解し、正確な知識のもと最適な状態で提供できるか。',
+        s4: 'ワインの専門知識を持ち、料理とのペアリングやお客様の好みに合わせた提案ができるか。',
+        s5: 'お客様の属性や利用シーンに合わせた、個別化されたサービスが提供できるか。',
+        s6: 'POS操作、予約管理システムなど、店舗のIT・メカニックツールを正確に操作できるか。'
+      },
+      E: {
+        e1: '飲食業界における豊富な実務経験と、そこから培われた高度な暗黙知を有しているか。',
+        e2: 'SVDでの在籍経験を通じ、店舗独自のルールやオペレーションの歴史を深く理解しているか。',
+        e3: 'ソムリエ、調理師などの専門資格を保有し、現場のパフォーマンス向上に直結させているか。',
+        e4: 'PCスキル、言語能力など、フロア以外の場所でも組織に貢献できる汎用的スキルがあるか。',
+        e5: '役職者としての経験を持ち、権限と責任を伴う判断を適切に行うことができるか。',
+        e6: '月間MVPや売上目標達成など、社内外で客観的に評価される実績を残しているか。'
+      },
+      M: {
+        m1: 'F/Lコストや売上目標の進捗を正確に把握し、利益最大化に向けた日々の管理ができているか。',
+        m2: 'スタッフのモチベーションを高め、適材適所の配置と計画的な人材育成ができているか。',
+        m3: '営業中のフロア全体を見渡し、的確な指示でスムーズな店舗運営を実現しているか。',
+        m4: '課題を分析し、新しい企画や業務改善の仕組みを立案・実行して組織を導いているか。',
+        m5: '自身の行動で範を示し、チーム全体を目標に向かって牽引しているか。',
+        m6: 'リピーターの獲得やインフルエンス向上など、ブランド価値を高め新たな顧客を創造しているか。'
+      }
+    }), '24スキル評価基準']
+  ];
+  
+  masterData.forEach(row => {
+    if (!getConfigValue_(ss, row[0])) {
+      configSheet.appendRow(row);
+    }
+  });
+  
+  Logger.log('✅ Config-Driven master data seeded: ' + masterData.length + ' keys');
 }
 
 

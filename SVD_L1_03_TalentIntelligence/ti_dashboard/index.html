@@ -38,6 +38,7 @@
         <button class="nav-btn" data-tab="attributes">⑥ ATTRIBUTE<span class="nav-sub">属性の傾向</span></button>
         <button class="nav-btn" data-tab="synergy">⑦ SYNERGY<span class="nav-sub">相性解説</span></button>
         <button class="nav-btn" data-tab="ai">⑧ AI ANALYSIS<span class="nav-sub">AI分析</span></button>
+        <button class="nav-btn" data-tab="career">⑨ CAREER<span class="nav-sub">キャリア</span></button>
     </nav>
 
     <!-- ═══ ① ROSTER ═══ -->
@@ -301,6 +302,61 @@
             <p style="font-size:0.85rem;color:var(--text-sub);margin-bottom:0;">Gemini 3.1 Flash × 組織データによるAI参謀レポート。ルールベース分析モジュール＋自然言語レポート生成。</p>
         </div>
         <div id="aiAnalysisContent"></div>
+    </div>
+
+    <!-- ═══ ⑨ CAREER ═══ -->
+    <div class="panel" id="p-career">
+        <div class="card">
+            <h3><svg class="inline-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg> CAREER TIMELINE</h3>
+            <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+                <select id="careerStaff" class="filter-select" style="flex:1;min-width:200px;">
+                    <option value="">スタッフを選択...</option>
+                </select>
+                <button class="btn btn-gold" onclick="showCareerForm()" id="btnAddCareer" style="display:none;">+ イベント追加</button>
+            </div>
+        </div>
+
+        <!-- Career Event Form (Initially Hidden) -->
+        <div class="card" id="careerFormCard" style="display:none;">
+            <h3 id="careerFormTitle">キャリアイベント追加</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+                <div>
+                    <label style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">カテゴリ</label>
+                    <select id="careerCategory" class="filter-select" style="width:100%;">
+                        <option value="join">🏢 入社</option>
+                        <option value="transfer">🔀 配属/異動</option>
+                        <option value="promotion">📋 昇格/役職変更</option>
+                        <option value="cert">🏅 資格取得</option>
+                        <option value="achievement">🏆 成果/表彰</option>
+                        <option value="memo">📝 メモ/その他</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">日付</label>
+                    <input type="date" id="careerDate" class="filter-select" style="width:100%;">
+                </div>
+            </div>
+            <div style="margin-top:0.75rem;">
+                <label style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">タイトル</label>
+                <input type="text" id="careerTitle" class="search-input" placeholder="例: ソムリエ資格取得" style="width:100%;">
+            </div>
+            <div style="margin-top:0.75rem;">
+                <label style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">詳細メモ</label>
+                <textarea id="careerDetail" class="memo-textarea" placeholder="詳細な説明、背景など..." rows="3"></textarea>
+            </div>
+            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;justify-content:flex-end;">
+                <button class="btn" onclick="hideCareerForm()">キャンセル</button>
+                <button class="btn btn-gold" onclick="saveCareerEvent()" id="btnSaveCareer">保存</button>
+            </div>
+            <input type="hidden" id="careerEditRow" value="">
+        </div>
+
+        <!-- Timeline Container -->
+        <div id="careerTimeline" class="career-timeline">
+            <div style="text-align:center;padding:3rem;color:var(--text-muted);font-size:0.9rem;">
+                スタッフを選択すると、キャリアタイムラインが表示されます
+            </div>
+        </div>
     </div>
 
     <!-- ═══ Staff Detail Modal ═══ -->

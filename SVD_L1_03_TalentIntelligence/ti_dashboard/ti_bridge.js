@@ -104,6 +104,18 @@ const TI_BRIDGE = (() => {
             return fetchPost('migrate', { offset, batchSize: String(batchSize) });
         },
 
+        // ── Career Timeline ──
+        async loadCareer(staffId) { return fetchGet('career', { staffId }); },
+        async addCareerEvent(staffId, eventData) {
+            return fetchPost('addCareerEvent', { staffId, ...eventData });
+        },
+        async updateCareerEvent(staffId, rowIndex, eventData) {
+            return fetchPost('updateCareerEvent', { staffId, rowIndex: String(rowIndex), ...eventData });
+        },
+        async deleteCareerEvent(staffId, rowIndex) {
+            return fetchPost('deleteCareerEvent', { staffId, rowIndex: String(rowIndex) });
+        },
+
         // ── UI Helpers ──
         showToast(msg, duration = 3000) {
             let toast = document.getElementById('ti-toast');
