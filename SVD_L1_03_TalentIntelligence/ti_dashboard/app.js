@@ -80,24 +80,24 @@ let STORE_COLORS = {
 
 // ── SVD 18 Attributes (Config-Driven) ──
 let SVD_TYPES = {
-    "Balance":     { name: "Balance",     nameJp: "バランス",       desc: "汎用・適応",   color: '#B8995C' },
-    "Flare":       { name: "Flare",       nameJp: "フレア",         desc: "情熱・突破",   color: '#E53935' },
-    "Flow":        { name: "Flow",        nameJp: "フロー",         desc: "柔軟・浸透",   color: '#FB8C00' },
-    "Bloom":       { name: "Bloom",       nameJp: "ブルーム",       desc: "育成・調和",   color: '#FB8C00' },
-    "Spark":       { name: "Spark",       nameJp: "スパーク",       desc: "閃き・革新",   color: '#E53935' },
-    "Crystal":     { name: "Crystal",     nameJp: "クリスタル",     desc: "緻密・冷静",   color: '#039BE5' },
-    "Striker":     { name: "Striker",     nameJp: "ストライカー",   desc: "実直・技術",   color: '#8E24AA' },
-    "Rogue":       { name: "Rogue",       nameJp: "ローグ",         desc: "改革・本質",   color: '#8E24AA' },
-    "Ground":      { name: "Ground",      nameJp: "グラウンド",     desc: "安定・土台",   color: '#43A047' },
-    "Wing":        { name: "Wing",        nameJp: "ウィング",       desc: "自由・俯瞰",   color: '#039BE5' },
-    "Seraph":      { name: "Seraph",      nameJp: "セラフ",         desc: "洞察・予知",   color: '#039BE5' },
-    "Craft":       { name: "Craft",       nameJp: "クラフト",       desc: "改善・適応",   color: '#43A047' },
-    "Solid":       { name: "Solid",       nameJp: "ソリッド",       desc: "信念・伝統",   color: '#43A047' },
-    "Shade":       { name: "Shade",       nameJp: "シェード",       desc: "献身・黒子",   color: '#455A64' },
-    "Emperor":     { name: "Emperor",     nameJp: "エンペラー",     desc: "統率・圧倒",   color: '#E53935' },
-    "Night Shift": { name: "Night Shift", nameJp: "ナイトシフト",   desc: "危機・実利",   color: '#8E24AA' },
-    "Iron":        { name: "Iron",        nameJp: "アイアン",       desc: "鉄壁・規律",   color: '#43A047' },
-    "Bliss":       { name: "Bliss",       nameJp: "ブリス",         desc: "愛嬌・浄化",   color: '#FB8C00' }
+    "Balance":     { name: "Balance",     nameJp: "バランス",       desc: "汎用・適応",   color: '#b8995c' },
+    "Flare":       { name: "Flare",       nameJp: "フレア",         desc: "情熱・突破",   color: '#b87a6a' },
+    "Flow":        { name: "Flow",        nameJp: "フロー",         desc: "柔軟・浸透",   color: '#c49a60' },
+    "Bloom":       { name: "Bloom",       nameJp: "ブルーム",       desc: "育成・調和",   color: '#8aab7a' },
+    "Spark":       { name: "Spark",       nameJp: "スパーク",       desc: "閃き・革新",   color: '#c08a6a' },
+    "Crystal":     { name: "Crystal",     nameJp: "クリスタル",     desc: "緻密・冷静",   color: '#7ea3b8' },
+    "Striker":     { name: "Striker",     nameJp: "ストライカー",   desc: "実直・技術",   color: '#a090b0' },
+    "Rogue":       { name: "Rogue",       nameJp: "ローグ",         desc: "改革・本質",   color: '#9a80a0' },
+    "Ground":      { name: "Ground",      nameJp: "グラウンド",     desc: "安定・土台",   color: '#7a9a78' },
+    "Wing":        { name: "Wing",        nameJp: "ウィング",       desc: "自由・俯瞰",   color: '#7898a8' },
+    "Seraph":      { name: "Seraph",      nameJp: "セラフ",         desc: "洞察・予知",   color: '#6889a8' },
+    "Craft":       { name: "Craft",       nameJp: "クラフト",       desc: "改善・適応",   color: '#8a9a7a' },
+    "Solid":       { name: "Solid",       nameJp: "ソリッド",       desc: "信念・伝統",   color: '#6a8a6a' },
+    "Shade":       { name: "Shade",       nameJp: "シェード",       desc: "献身・黒子",   color: '#7a8a8a' },
+    "Emperor":     { name: "Emperor",     nameJp: "エンペラー",     desc: "統率・圧倒",   color: '#a07858' },
+    "Night Shift": { name: "Night Shift", nameJp: "ナイトシフト",   desc: "危機・実利",   color: '#8a7898' },
+    "Iron":        { name: "Iron",        nameJp: "アイアン",       desc: "鉄壁・規律",   color: '#7a8a7a' },
+    "Bliss":       { name: "Bliss",       nameJp: "ブリス",         desc: "愛嬌・浄化",   color: '#c4a570' }
 };
 
 // ── Synergy Data (Config-Driven) ──
@@ -352,12 +352,33 @@ function renderAttributeTab() {
         });
     }
     
-    // 属性解説: Config-Driven（GAS TI_Configから取得、フォールバックはSVD_TYPESのdescのみ）
+    // 属性解説: Config-Driven（GAS TI_Configから取得、フォールバック付き）
+    const ATTR_DETAIL_FALLBACK = {
+        "Balance":     { emoji: '⚖️', summary: '全方位バランス型', detail: '特定の強みに偏らず、どの場面でも安定したパフォーマンスを発揮する。チームの潤滑油として機能し、欠員時のバックアップにも対応できる汎用性が武器。' },
+        "Flare":       { emoji: '🔥', summary: '情熱で突破する炎', detail: '圧倒的な熱量とエネルギーで周囲を巻き込み、停滞した状況を打破する力を持つ。モチベーターとしてチームの士気を高める存在。' },
+        "Flow":        { emoji: '🌊', summary: '柔軟に浸透する水', detail: '状況の変化に素早く適応し、自然体で周囲に溶け込む。固定概念にとらわれず、新しいやり方を柔軟に取り入れられるタイプ。' },
+        "Bloom":       { emoji: '🌸', summary: '育成と調和の花', detail: '後輩や新人の成長を促し、チーム全体の調和を大切にする。温かさと包容力で安心感のある環境を作り出す。' },
+        "Spark":       { emoji: '⚡', summary: '閃きと革新の雷', detail: '既存のやり方に疑問を投げかけ、斬新なアイデアで革新を起こす。クリエイティブな発想力と実行力を兼ね備える。' },
+        "Crystal":     { emoji: '💎', summary: '緻密で冷静な結晶', detail: '感情に左右されず、論理的・客観的に状況を分析できる。データに基づいた判断と精密な仕事ぶりが特徴。' },
+        "Striker":     { emoji: '🎯', summary: '実直な技術者', detail: '自分の技術に真摯に向き合い、コツコツと磨き上げる職人気質。確実な仕事で信頼を積み重ねるタイプ。' },
+        "Rogue":       { emoji: '🗡️', summary: '改革者の刃', detail: '本質を見抜く鋭い洞察力で、組織の課題に切り込む。既存の常識に挑戦し、必要な変革を恐れない。' },
+        "Ground":      { emoji: '🏔️', summary: '不動の土台', detail: 'どんな状況でも揺るがない安定感でチームを支える。信頼性が高く、周囲が安心して頼れる存在。' },
+        "Wing":        { emoji: '🦅', summary: '自由に俯瞰する翼', detail: '高い視点から全体を見渡し、チームや組織の方向性を見定める。自由な発想と広い視野が強み。' },
+        "Seraph":      { emoji: '👁️', summary: '先を見通す眼', detail: 'トレンドや変化の兆しをいち早く察知し、未来を予見する能力に長ける。戦略的思考でチームを導く。' },
+        "Craft":       { emoji: '🛠️', summary: 'カイゼンの匠', detail: '日々の業務の中から改善点を見つけ出し、少しずつ確実に良くしていく。PDCAサイクルの実践者。' },
+        "Solid":       { emoji: '🪨', summary: '信念を貫く岩', detail: '確立された方法や伝統を重んじ、ブレない軸を持つ。一貫性のある行動でチームに安心感を与える。' },
+        "Shade":       { emoji: '🌑', summary: '影で支える黒子', detail: '表舞台には立たないが、裏方として献身的にチームを支える。縁の下の力持ちとして欠かせない存在。' },
+        "Emperor":     { emoji: '👑', summary: '圧倒的統率力', detail: '強いリーダーシップでチームを率い、明確なビジョンを示す。決断力と実行力で組織を前進させる。' },
+        "Night Shift": { emoji: '🌙', summary: '危機対応の夜番', detail: 'トラブルや緊急事態に冷静に対処し、実利的な解決策を見出す。プレッシャー下でこそ真価を発揮する。' },
+        "Iron":        { emoji: '🛡️', summary: '鉄壁の規律', detail: 'ルールと規律を徹底的に守り、組織の秩序を維持する。品質基準やオペレーションの番人。' },
+        "Bliss":       { emoji: '😊', summary: '場を明るくする太陽', detail: '愛嬌と明るさで職場の雰囲気を浄化する。自然体のコミュニケーション力でゲストにもチームにも笑顔をもたらす。' }
+    };
     const descriptions = window.__ATTRIBUTE_DESC || {};
     
     grid.innerHTML = Object.entries(SVD_TYPES).map(([key, info]) => {
         const members = typeCounts[key] || [];
-        const d = descriptions[key] || { emoji: '🔹', summary: info.desc || '', detail: '' };
+        const fb = ATTR_DETAIL_FALLBACK[key] || {};
+        const d = descriptions[key] || { emoji: fb.emoji || '🔹', summary: fb.summary || info.desc || '', detail: fb.detail || '' };
         const synergy = SYNERGY_DATA[key] || {};
         
         // ベストマッチ & 注意ペア
@@ -804,7 +825,7 @@ function renderStaffGrid(staff) {
 
         return `
         <div class="staff-card" data-staff-id="${s.staffId}"
-             onclick="openStaffModal('${s.staffId}')"
+             onclick="if(!isDragging) openStaffModal('${s.staffId}')"
              draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)"
              style="${attrBgStyle}">
             <div class="card-cp-rect" style="${showMgrScores ? '' : 'display:none;'}">
@@ -1133,11 +1154,20 @@ function applyFilters() {
 // ═══════════════════════════════════════════════════════════
 let draggedStaffId = null;
 
+// ── D&D Click Guard ──
+// Prevent onclick from firing after a drag operation
+let isDragging = false;
+let dragStartPos = null;
+
 function handleDragStart(e) {
+    isDragging = true;
     // カード全体からドラッグ開始
     const card = e.currentTarget.closest('.staff-card') || e.currentTarget;
     draggedStaffId = card ? card.dataset.staffId : null;
-    if (!draggedStaffId) return;
+    if (!draggedStaffId) {
+        isDragging = false;
+        return;
+    }
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', draggedStaffId);
     // micro-delay to let browser snapshot card before opacity change
@@ -1152,6 +1182,8 @@ function handleDragEnd(e) {
     document.querySelectorAll('.team-members').forEach(z => {
         z.classList.remove('drop-zone--ready', 'drop-zone--over');
     });
+    // Reset drag state after a short delay to prevent click from firing
+    setTimeout(() => { isDragging = false; }, 100);
     draggedStaffId = null;
 }
 
