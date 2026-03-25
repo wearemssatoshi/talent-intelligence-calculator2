@@ -2462,7 +2462,7 @@ async function callGeminiAPI(prompt) {
     const apiKey = localStorage.getItem('ti_gemini_api_key');
     if (!apiKey) throw new Error('NO_KEY');
     
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash:generateContent?key=${apiKey}`, {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -2612,7 +2612,7 @@ function renderAIAnalysisTab() {
         <div class="ai-module-header" style="background:linear-gradient(135deg,rgba(160,120,64,0.12),rgba(200,164,94,0.06));">
             
             <span class="ai-module-title">AI COUNSELOR REPORT</span>
-            <span class="ai-module-desc">Gemini 3.1 Flash × SVD Organization Data</span>
+            <span class="ai-module-desc">Gemini 2.5 Flash × SVD Organization Data</span>
         </div>
         <div class="ai-module-body">
             ${hasApiKey
@@ -2621,7 +2621,7 @@ function renderAIAnalysisTab() {
                         AI参謀レポートを生成
                     </button>
                     <div style="font-size:0.75rem;color:var(--text-dim);margin-top:8px;text-align:center;">
-                        Gemini 3.1 Flash（無料枠）がSVDデータを分析し、戦略レポートを生成します
+                        Gemini 2.5 Flash（無料枠）がSVDデータを分析し、戦略レポートを生成します
                     </div>
                 </div>`
                 : `<div class="gemini-setup-prompt">
@@ -2673,7 +2673,7 @@ async function generateGeminiReport() {
     area.innerHTML = `<div style="text-align:center;padding:24px;">
         <div class="gemini-loading-spinner"></div>
         <div style="font-size:0.85rem;color:var(--gold);margin-top:12px;font-weight:600;">AI参謀が分析中...</div>
-        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Gemini 3.1 Flash × SVD Organization Data</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Gemini 2.5 Flash × SVD Organization Data</div>
     </div>`;
 
     try {
