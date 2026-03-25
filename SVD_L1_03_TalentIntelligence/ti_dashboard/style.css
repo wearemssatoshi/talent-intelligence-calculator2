@@ -805,6 +805,15 @@ body {
     border: 1px solid color-mix(in srgb, var(--attr-color, var(--gold)) 20%, transparent);
     white-space: nowrap;
     margin-top: 2px;
+    cursor: help;
+}
+
+.card-attribute-desc {
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-left: 4px;
+    letter-spacing: 0.3px;
 }
 
 /* ═══════════════════════════════════════════════════

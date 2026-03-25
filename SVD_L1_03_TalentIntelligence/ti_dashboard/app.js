@@ -182,11 +182,15 @@ function calcTeamSynergy(typedMembers) {
     };
 }
 
+// ── MGR Score Toggle State ──
+let showMgrScores = false;
+
 function getAttributeBadgeHtml(typeStr) {
     if (!typeStr) return '';
     const info = SVD_TYPES[typeStr];
     if (!info) return '';
-    return `<span class="card-attribute-badge" style="--attr-color:${info.color};">${info.name}</span>`;
+    return `<span class="card-attribute-badge" style="--attr-color:${info.color};" title="${info.nameJp}: ${info.desc}">${info.name}</span>
+            <span class="card-attribute-desc">${info.desc}</span>`;
 }
 
 function getSynergyHtml(typeStr, context) {
@@ -794,11 +798,16 @@ function renderStaffGrid(staff) {
         const affSince = currentAff ? currentAff.from : '';
         const affSinceDisplay = affSince ? new Date(affSince).toLocaleDateString('ja-JP', { year: 'numeric', month: 'short', day: 'numeric' }) : '';
 
+        const attrInfo = s.type ? SVD_TYPES[s.type] : null;
+        const attrBorderColor = attrInfo ? attrInfo.color : 'transparent';
+        const attrBgStyle = attrInfo ? `border-top: 3px solid ${attrInfo.color}; background: linear-gradient(180deg, ${attrInfo.color}08 0%, transparent 40%);` : '';
+
         return `
         <div class="staff-card" data-staff-id="${s.staffId}"
              onclick="openStaffModal('${s.staffId}')"
-             draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)">
-            <div class="card-cp-rect">
+             draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)"
+             style="${attrBgStyle}">
+            <div class="card-cp-rect" style="${showMgrScores ? '' : 'display:none;'}">
                 <svg viewBox="0 0 120 30" class="cp-rect-ring">
                     <rect x="1.5" y="1.5" width="117" height="27" rx="3" ry="3" fill="none" stroke="rgba(200,190,175,0.25)" stroke-width="2" />
                     <rect x="1.5" y="1.5" width="117" height="27" rx="3" ry="3" fill="none" stroke="${mgrColor}" stroke-width="2.5"
@@ -972,6 +981,13 @@ window.toggleRosterView = function(view) {
     document.getElementById('btnViewMap').classList.toggle('active', view === 'map');
     document.getElementById('staffGrid').style.display = view === 'card' ? '' : 'none';
     document.getElementById('skillMapGrid').style.display = view === 'map' ? '' : 'none';
+    applyFilters();
+};
+
+window.toggleMgrScores = function() {
+    showMgrScores = !showMgrScores;
+    const btn = document.getElementById('btnMgrToggle');
+    if (btn) btn.classList.toggle('active', showMgrScores);
     applyFilters();
 };
 
