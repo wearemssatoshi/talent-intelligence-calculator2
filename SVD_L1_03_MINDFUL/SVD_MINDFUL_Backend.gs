@@ -345,6 +345,15 @@ function doGet(e) {
       return saveFcmToken(name, pin, fcmToken);
     }
     
+    // ============ Push通知アナウンスメント送信 ============
+    if (action === 'sendAnnouncementPush') {
+      const title = e?.parameter?.title || '';
+      const body = e?.parameter?.body || '';
+      const senderName = e?.parameter?.senderName || '';
+      const senderPin = e?.parameter?.senderPin || '';
+      return sendAnnouncementPush(title, body, senderName, senderPin);
+    }
+    
     // デフォルト: ダッシュボード用データ取得
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName('MINDFUL_Log');
@@ -706,6 +715,92 @@ function loginUser(name, pin) {
           goalsThisYear: JSON.parse(goalsThisYear),
           goalsFuture: JSON.parse(goalsFuture),
           profileImage: profileImage
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // マイグレーション済みユーザー: PinHashが空 → 初回PIN設定
+      if (data[i][0] === name && (!data[i][1] || data[i][1] === '')) {
+        console.log('[Migration] First login PIN setup for: ' + name);
+        sheet.getRange(i + 1, 2).setValue(pinHash);  // PinHash設定
+        sheet.getRange(i + 1, 7).setValue(new Date().toISOString()); // LastLogin
+        
+        const tokenBalance = data[i][3] || 0;
+        const checkoutDates = data[i][4] || '[]';
+        const goalsThisYear = data[i][7] || '[]';
+        const goalsFuture = data[i][8] || '[]';
+        const profileImage = data[i][9] || '';
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          name: name,
+          base: data[i][2] || '',
+          tokenBalance: tokenBalance,
+          checkoutDates: JSON.parse(checkoutDates),
+          goalsThisYear: JSON.parse(goalsThisYear),
+          goalsFuture: JSON.parse(goalsFuture),
+          profileImage: profileImage,
+          pinSetup: true
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    // ============ MINDFUL_Log フォールバック（レガシーユーザー自動マイグレーション） ============
+    // MINDFUL_Users に見つからなかった場合、MINDFUL_Log に存在するかチェック
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const logSheet = ss.getSheetByName('MINDFUL_Log');
+    if (logSheet) {
+      const logData = logSheet.getDataRange().getValues();
+      let foundInLog = false;
+      let checkoutDatesFromLog = [];
+      let userBase = '';
+      
+      for (let i = 1; i < logData.length; i++) {
+        // MINDFUL_Log: [0]=Timestamp, [1]=Type, [2]=Name, [3]=Base
+        if (logData[i][2] === name) {
+          foundInLog = true;
+          // ベース情報を取得（最新のログから）
+          if (logData[i][3]) userBase = String(logData[i][3]);
+          // チェックアウト日を収集
+          if (logData[i][1] && String(logData[i][1]).includes('C/OUT')) {
+            const dateStr = logData[i][0]; // Timestamp列
+            if (dateStr) {
+              const d = new Date(dateStr);
+              const formatted = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+              if (!checkoutDatesFromLog.includes(formatted)) {
+                checkoutDatesFromLog.push(formatted);
+              }
+            }
+          }
+        }
+      }
+      
+      if (foundInLog) {
+        // レガシーユーザーを MINDFUL_Users に自動マイグレーション
+        console.log('[Migration] Auto-migrating legacy user: ' + name);
+        const headers = data[0];
+        const newRow = new Array(headers.length).fill('');
+        newRow[0] = name;                               // Name
+        newRow[1] = pinHash;                            // PinHash
+        newRow[2] = userBase;                           // Base
+        newRow[3] = checkoutDatesFromLog.length;        // TokenBalance（C/OUT回数 = トークン数）
+        newRow[4] = JSON.stringify(checkoutDatesFromLog); // CheckoutDates
+        newRow[5] = new Date().toISOString();            // RegisteredAt
+        newRow[6] = new Date().toISOString();            // LastLogin
+        newRow[7] = '[]';                               // GoalsThisYear
+        newRow[8] = '[]';                               // GoalsFuture
+        
+        sheet.appendRow(newRow);
+        
+        return ContentService.createTextOutput(JSON.stringify({ 
+          success: true, 
+          name: name,
+          base: userBase,
+          tokenBalance: 0,
+          checkoutDates: checkoutDatesFromLog,
+          goalsThisYear: [],
+          goalsFuture: [],
+          profileImage: '',
+          migrated: true
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
@@ -1647,15 +1742,16 @@ function setupCheckoutReminder() {
     }
   });
   
-  // 毎日22:00 JSTに実行するトリガーを作成
+  // 毎日22:30 JSTに実行するトリガーを作成
   ScriptApp.newTrigger('checkAndNotifyForgottenCheckouts')
     .timeBased()
     .atHour(22)
+    .nearMinute(30)
     .everyDays(1)
     .inTimezone('Asia/Tokyo')
     .create();
   
-  console.log('[FCM] Checkout reminder trigger set for 22:00 JST daily');
+  console.log('[FCM] Checkout reminder trigger set for 22:30 JST daily');
 }
 
 /**
@@ -1689,5 +1785,186 @@ function testPushNotification() {
   }
   
   console.log('[FCM] No users with FCM tokens found');
+}
+
+/**
+ * ダイレクトテスト: 既知のFCMトークンに直接送信
+ */
+function testDirectPush() {
+  const directToken = 'ef_wWyAPGRGTPanFyGbav7:APA91bFvACOqTuy0TT9yVleTiYH-ZML_axqZdZGQ3U9xvSCOLp9mkbdbw6MUDfHDn8VJf4ZqaK7lCytz0hoBc9imffAapDWeUZhpeglSpIrcZFGrBaX41uk';
+  console.log('[FCM] Direct test to SAT token');
+  const success = sendPushNotification(
+    directToken,
+    'MINDFUL ダイレクトテスト 🔔',
+    '伊賀智史さん、この通知が届いていれば完全成功です！🎉'
+  );
+  console.log('[FCM] Direct test result:', success);
+}
+
+/**
+ * トークン残高修正: MINDFUL_LogのToken Earned列から正確な残高を算出してMINDFUL_Usersを更新
+ */
+function fixTokenBalances() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const logSheet = ss.getSheetByName('MINDFUL_Log');
+  const usersSheet = getUsersSheet();
+  
+  if (!logSheet) { console.log('MINDFUL_Log not found'); return; }
+  
+  const logData = logSheet.getDataRange().getValues();
+  const usersData = usersSheet.getDataRange().getValues();
+  
+  // LogからユーザーごとのToken Earned合計を算出
+  const tokenSums = {};
+  for (let i = 1; i < logData.length; i++) {
+    const name = logData[i][2];
+    const tokenEarned = Number(logData[i][19]) || 0;
+    const tokenBalance = Number(logData[i][20]) || 0;
+    if (!name) continue;
+    if (!tokenSums[name]) tokenSums[name] = { earned: 0, lastBalance: 0 };
+    tokenSums[name].earned += tokenEarned;
+    if (tokenBalance > 0) tokenSums[name].lastBalance = tokenBalance;
+  }
+  
+  // MINDFUL_Usersの各ユーザーを更新
+  let updated = 0;
+  for (let i = 1; i < usersData.length; i++) {
+    const name = usersData[i][0];
+    if (name && tokenSums[name]) {
+      const tokens = Math.max(tokenSums[name].earned, tokenSums[name].lastBalance);
+      usersSheet.getRange(i + 1, 4).setValue(tokens);
+      console.log('[Fix] ' + name + ' → ' + tokens + ' tokens (earned:' + tokenSums[name].earned + ' last:' + tokenSums[name].lastBalance + ')');
+      updated++;
+    }
+  }
+  console.log('[Fix] Complete: ' + updated + ' users updated');
+}
+
+/**
+ * 強制マイグレーション: MINDFUL_Logの全ユニークユーザーをMINDFUL_Usersに追加
+ */
+function forceMigrateAllLegacyUsers() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const logSheet = ss.getSheetByName('MINDFUL_Log');
+  const usersSheet = getUsersSheet();
+  
+  if (!logSheet) { console.log('MINDFUL_Log not found'); return; }
+  
+  const logData = logSheet.getDataRange().getValues();
+  const usersData = usersSheet.getDataRange().getValues();
+  
+  // 既にMINDFUL_Usersにいるユーザー名を収集
+  const existingUsers = new Set();
+  for (let i = 1; i < usersData.length; i++) {
+    if (usersData[i][0]) existingUsers.add(usersData[i][0]);
+  }
+  
+  // MINDFUL_Logからユニークユーザーを収集
+  const logUsers = {};
+  for (let i = 1; i < logData.length; i++) {
+    const name = logData[i][2]; // Name列
+    const type = String(logData[i][1]);
+    const base = String(logData[i][3]);
+    const timestamp = logData[i][0];
+    
+    if (!name || existingUsers.has(name)) continue;
+    
+    if (!logUsers[name]) {
+      logUsers[name] = { base: base, checkoutDates: [] };
+    }
+    if (base) logUsers[name].base = base;
+    
+    // C/OUTの日付を収集
+    if (type.includes('C/OUT') || type.includes('checkout') || type.includes('reflection')) {
+      const d = new Date(timestamp);
+      const formatted = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+      if (!logUsers[name].checkoutDates.includes(formatted)) {
+        logUsers[name].checkoutDates.push(formatted);
+      }
+    }
+  }
+  
+  // マイグレーション実行
+  const headers = usersData[0];
+  let migratedCount = 0;
+  
+  for (const [name, info] of Object.entries(logUsers)) {
+    const newRow = new Array(headers.length).fill('');
+    newRow[0] = name;                                    // Name
+    newRow[1] = '';                                       // PinHash（空 = 次回ログイン時に設定）
+    newRow[2] = info.base;                               // Base
+    newRow[3] = info.checkoutDates.length;               // TokenBalance
+    newRow[4] = JSON.stringify(info.checkoutDates);      // CheckoutDates
+    newRow[5] = new Date().toISOString();                // RegisteredAt
+    newRow[6] = '';                                       // LastLogin
+    newRow[7] = '[]';                                    // GoalsThisYear
+    newRow[8] = '[]';                                    // GoalsFuture
+    
+    usersSheet.appendRow(newRow);
+    migratedCount++;
+    console.log('[Migration] ' + name + ' (tokens: ' + info.checkoutDates.length + ')');
+  }
+  
+  console.log('[Migration] Complete: ' + migratedCount + ' users migrated');
+}
+
+/**
+ * 運営アナウンスメント: 全ユーザーにPush通知を一斉送信
+ */
+function sendAnnouncementPush(title, body, senderName, senderPin) {
+  try {
+    if (!title || !body) {
+      return jsonResponse({ success: false, error: 'タイトルと本文を入力してください' });
+    }
+    
+    // 送信者の認証チェック
+    if (senderName && senderPin) {
+      const usersSheet = getUsersSheet();
+      const usersData = usersSheet.getDataRange().getValues();
+      const pinHash = hashPin(senderPin);
+      let authenticated = false;
+      for (let i = 1; i < usersData.length; i++) {
+        if (usersData[i][0] === senderName && usersData[i][1] === pinHash) {
+          authenticated = true;
+          break;
+        }
+      }
+      if (!authenticated) {
+        return jsonResponse({ success: false, error: '認証に失敗しました' });
+      }
+    }
+    
+    // 全ユーザーのFCMトークンを収集
+    const usersSheet = getUsersSheet();
+    const usersData = usersSheet.getDataRange().getValues();
+    const headers = usersData[0];
+    const fcmColIndex = headers.indexOf('FCM_Token');
+    
+    if (fcmColIndex === -1) {
+      return jsonResponse({ success: false, error: 'FCM_Tokenカラムが見つかりません' });
+    }
+    
+    let sentCount = 0;
+    let failCount = 0;
+    const fullTitle = '📢 ' + title;
+    
+    for (let i = 1; i < usersData.length; i++) {
+      const token = usersData[i][fcmColIndex];
+      if (token) {
+        const success = sendPushNotification(token, fullTitle, body);
+        if (success) {
+          sentCount++;
+        } else {
+          failCount++;
+        }
+      }
+    }
+    
+    console.log('[FCM] Announcement sent: ' + sentCount + ' succeeded, ' + failCount + ' failed');
+    return jsonResponse({ success: true, message: sentCount + '名に送信しました', sentCount: sentCount, failCount: failCount });
+  } catch (error) {
+    console.error('[FCM] Announcement error:', error);
+    return jsonResponse({ success: false, error: error.message });
+  }
 }
 

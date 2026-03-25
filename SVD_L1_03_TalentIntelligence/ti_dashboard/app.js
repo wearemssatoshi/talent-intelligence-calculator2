@@ -251,9 +251,13 @@ function shortName(aff) {
         'LA BRIQUE SAPPORO Akarenga Terrace': 'BQ', 'Rusutsu Yotei Buta by BQ': 'RYB',
         'Sapporo TV Tower BEER GARDEN': 'BG', 'OKURAYAMA S\u00e9l\u00e9ste': 'Ce',
         'Repos': 'RP', 'POP UP': 'POP',
-        [RESERVE_NAME]: 'RSV'
+        [RESERVE_NAME]: 'RSV',
+        'RESERVE': 'RSV'
     };
-    return map[aff] || (aff || '').substring(0, 4);
+    // Exact match first, then partial match for RESERVE variants
+    if (map[aff]) return map[aff];
+    if (aff && aff.toUpperCase().includes('RESERVE')) return 'RSV';
+    return (aff || '').substring(0, 4);
 }
 
 // ── Brigade Hierarchy (Config-Driven) ──
@@ -1364,7 +1368,7 @@ function handleDrop(e) {
     // Re-render with updated data
     renderStaffGrid(staffList);
 
-    TI_BRIDGE.showToast(` ${staff.name} → ${targetTeamShort} に移動中...`);
+    TI_BRIDGE.showToast(`🔄 ${staff.name} → ${targetTeamShort} に移動中...`);
 
     // Persist to backend (GAS)
     TI_BRIDGE.updateProfile(staffId, { affiliation: targetTeamName })
@@ -1372,14 +1376,16 @@ function handleDrop(e) {
             if (res.result === 'success') {
                 TI_BRIDGE.showToast(`✅ ${staff.name} → ${targetTeamShort} 保存完了`);
             } else {
-                TI_BRIDGE.showToast(`▲ 保存失敗: ${res.error || '不明なエラー'}`);
+                // Backend returned error but keep the local move
+                TI_BRIDGE.showToast(`⚠️ ${staff.name}: サーバー保存失敗 (${res.error || '不明'}). ローカルでは移動済み — ページ更新で反映確認してください`, 5000);
+                console.warn('D&D save failed:', res);
             }
         })
         .catch(err => {
-            TI_BRIDGE.showToast(`❌ 保存エラー: ${err.message}`);
-            // Revert on failure
-            staff.affiliation = oldAffiliation;
-            renderStaffGrid(staffList);
+            // Network error — keep the local move, don't revert silently
+            console.error('D&D save error:', err);
+            TI_BRIDGE.showToast(`⚠️ ${staff.name}: 通信エラー — ローカルでは移動済み. GAS接続を確認してください`, 5000);
+            // Do NOT revert automatically — the user sees the move and can retry manually
         });
 }
 

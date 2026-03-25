@@ -112,27 +112,34 @@ self.addEventListener('message', (event) => {
 
 // Handle incoming push notifications
 self.addEventListener('push', (event) => {
-    console.log('[SW] Push notification received:', event);
+    console.log('[SW] Push notification received');
     
-    let data = {};
+    let title = 'MINDFUL';
+    let body = 'チェックアウトを忘れていませんか？🔔';
+    
     if (event.data) {
         try {
-            data = event.data.json();
+            const data = event.data.json();
+            console.log('[SW] Push data:', JSON.stringify(data));
+            // FCM HTTP v1 APIのペイロード構造に対応
+            title = data.notification?.title || data.title || title;
+            body = data.notification?.body || data.body || body;
         } catch (e) {
-            data = { notification: { title: 'MINDFUL', body: event.data.text() } };
+            console.log('[SW] Push data as text:', event.data.text());
+            body = event.data.text() || body;
         }
     }
     
-    const title = data.notification?.title || 'MINDFUL';
+    console.log('[SW] Showing notification:', title, body);
     const options = {
-        body: data.notification?.body || 'チェックアウトを忘れていませんか？🔔',
+        body: body,
         icon: './logo/SVD_icon_square.png',
         badge: './logo/SVD_icon_square.png',
-        tag: 'mindful-checkout-reminder',
+        tag: 'mindful-notification-' + Date.now(),
         renotify: true,
         requireInteraction: true,
         data: {
-            url: data.data?.url || './index.html'
+            url: './index.html'
         },
         actions: [
             { action: 'open', title: 'MINDFULを開く' },
@@ -142,6 +149,8 @@ self.addEventListener('push', (event) => {
     
     event.waitUntil(
         self.registration.showNotification(title, options)
+            .then(() => console.log('[SW] Notification shown successfully'))
+            .catch(err => console.error('[SW] Notification show error:', err))
     );
 });
 

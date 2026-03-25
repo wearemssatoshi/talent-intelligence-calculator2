@@ -23,7 +23,15 @@ const STORE_SHEETS = {
   'OKURAYAMA_Ce':  { headers: ['date','Food','Drink','人数','物販_食品','物販_アパレル','memo'] },
   'OKURAYAMA_RP':  { headers: ['date','Food','Drink','人数','物販_食品','物販_アパレル','memo'] },
   'AKARENGA_BQ':   { headers: ['date','L_Food','L_Drink','L人数','AT_Food','AT_Drink','AT人数','D_Food','D_Drink','D人数','席料','物販_食品','物販_アパレル','memo'] },
-  'AKARENGA_RYB':  { headers: ['date','Food','Drink','人数','物販_食品','物販_アパレル','memo'] }
+  'AKARENGA_RYB':  { headers: ['date','Food','Drink','人数','TO_Sales','TO人数','物販_食品','物販_アパレル','memo'] }
+};
+
+// ── 来場者数シート定義 (KF3) ──
+const VISITOR_SHEETS = {
+  'VISITOR_MOIWAYAMA':  { headers: ['date','ropeway','minicable','total','memo'], type: 'daily' },
+  'VISITOR_OKURAYAMA':  { headers: ['date','jump_site','total','memo'], type: 'daily' },
+  'VISITOR_TVTOWER':    { headers: ['month','observatory','total','memo'], type: 'monthly' },
+  'VISITOR_AKARENGA':   { headers: ['month','total','memo'], type: 'monthly' }
 };
 
 // ── ベース→店舗マッピング ──
@@ -155,7 +163,7 @@ function getStoreSheet(sheetName) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
-    const config = STORE_SHEETS[sheetName];
+    const config = STORE_SHEETS[sheetName] || VISITOR_SHEETS[sheetName];
     if (!config) return null;
     sheet = ss.insertSheet(sheetName);
     sheet.appendRow(config.headers);
@@ -202,8 +210,20 @@ function handleSetupSheets() {
     config.setFrozenRows(1);
     created.push(SHEET_CONFIG);
   }
+  // ── 来場者数シート (KF3) ──
+  Object.keys(VISITOR_SHEETS).forEach(sheetName => {
+    let sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName);
+      const headers = VISITOR_SHEETS[sheetName].headers;
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+      created.push(sheetName);
+    }
+  });
 
-  return { status: 'ok', action: 'setupSheets', created: created, total_sheets: Object.keys(STORE_SHEETS).length };
+  return { status: 'ok', action: 'setupSheets', created: created, total_sheets: Object.keys(STORE_SHEETS).length + Object.keys(VISITOR_SHEETS).length };
 }
 
 // ═══════════════════════════════════════
@@ -266,9 +286,46 @@ function handleLoadAll(e) {
     totalRecords += records.length;
   });
 
+  // ── 来場者数データ (KF3) ──
+  const visitors = {};
+  Object.entries(VISITOR_SHEETS).forEach(([sheetName, config]) => {
+    const ss2 = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss2.getSheetByName(sheetName);
+    if (!sheet) return;
+    const data = sheet.getDataRange().getValues();
+    if (data.length <= 1) return;
+    const headers = data[0];
+    const records = [];
+    for (let row = 1; row < data.length; row++) {
+      const record = { type: config.type };
+      for (let col = 0; col < headers.length; col++) {
+        const key = headers[col];
+        let val = data[row][col];
+        if (key === 'date') val = jstDateStr(val);
+        if (key === 'month' && val instanceof Date) val = Utilities.formatDate(val, 'Asia/Tokyo', 'yyyy-MM');
+        record[key] = val;
+      }
+      // total自動計算（未設定時）
+      if (!record.total || record.total === 0) {
+        let sum = 0;
+        headers.forEach((h, i) => {
+          if (h !== 'date' && h !== 'month' && h !== 'memo' && h !== 'total') {
+            sum += Number(data[row][i]) || 0;
+          }
+        });
+        record.total = sum;
+      }
+      records.push(record);
+    }
+    // シート名から拠点ID抽出 (VISITOR_MOIWAYAMA → MOIWAYAMA)
+    const baseId = sheetName.replace('VISITOR_', '');
+    visitors[baseId] = records;
+  });
+
   return {
     status: 'ok',
     stores: stores,
+    visitors: visitors,
     meta: {
       total: totalRecords,
       stores: Object.keys(stores).sort(),
@@ -391,7 +448,7 @@ function handleSave(params) {
   if (!sheet) return { status: 'error', message: 'Unknown sheet: ' + sheetName };
 
   // ── ヘッダー自動同期（列追加時に自動反映） ──
-  const config = STORE_SHEETS[sheetName];
+  const config = STORE_SHEETS[sheetName] || VISITOR_SHEETS[sheetName];
   if (config) {
     const currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     if (currentHeaders.length !== config.headers.length || currentHeaders[currentHeaders.length - 1] !== config.headers[config.headers.length - 1]) {

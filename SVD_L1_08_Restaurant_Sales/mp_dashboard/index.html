@@ -135,6 +135,7 @@
 
     <!-- ═══ ④ ENTRY（売上入力） ═══ -->
     <div class="panel" id="p-entry">
+        <div id="excel-import-container"></div>
         <div id="entry-form"></div>
     </div>
 
@@ -161,7 +162,7 @@
             <div style="text-align:center;padding:40px;">
                 <div style="font-size:48px;margin-bottom:16px;">🔴</div>
                 <div
-                    style="font-family:'JetBrains Mono';font-size:18px;font-weight:800;color:var(--red);letter-spacing:3px;">
+                    style="font-family:'Outfit';font-size:18px;font-weight:800;color:var(--red);letter-spacing:3px;">
                     ENTER</div>
                 <div style="font-size:12px;color:var(--text-dim);margin-top:8px;">TI (Talent Intelligence) が接続された時、起動する。
                 </div>
@@ -242,7 +243,7 @@
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 13px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Outfit', monospace;
         }
 
         .gas-btn {
@@ -361,8 +362,14 @@
             padding: 4px 8px;
         }
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="config.js?v=20260317a"></script>
+    <script src="forecast.js?v=20260317a"></script>
+    <script src="data.js?v=20260319a"></script>
+    <script src="ui.js?v=20260317a"></script>
+    <script src="excel_import.js?v=20260308a"></script>
     <script src="mp_chat.js?v=20260307c"></script>
-    <script src="app.js?v=20260308a"></script>
+    <script src="app.js?v=20260317a"></script>
 </body>
 
 </html>

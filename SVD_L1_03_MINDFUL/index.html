@@ -2578,6 +2578,23 @@
                     <div id="pushNotifStatus" style="font-size: 10px; color: var(--text-gray); text-align: center; margin-top: 8px;"></div>
                 </div>
 
+                <!-- 📢 アナウンスメント送信セクション -->
+                <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                    <div
+                        style="font-family: 'Montserrat', sans-serif; font-size: 12px; color: var(--text-gray); letter-spacing: 0.1em; margin-bottom: 10px;">
+                        📢 アナウンス送信</div>
+                    <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 10px;">全スタッフにPush通知を一斉送信します</div>
+                    <input id="announceTitle" type="text" placeholder="タイトル（例：明日の営業について）" maxlength="50"
+                        style="width: 100%; padding: 10px 12px; background: var(--light-gray); color: var(--navy); border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; margin-bottom: 8px; box-sizing: border-box;" />
+                    <textarea id="announceBody" placeholder="本文を入力..." maxlength="200" rows="3"
+                        style="width: 100%; padding: 10px 12px; background: var(--light-gray); color: var(--navy); border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; margin-bottom: 8px; box-sizing: border-box; resize: vertical;"></textarea>
+                    <button id="announceSendBtn" onclick="sendAnnouncementPush()"
+                        style="width: 100%; padding: 12px; background: linear-gradient(135deg, #FF6B35, #FF8C42); color: white; border: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        📢 全スタッフに送信
+                    </button>
+                    <div id="announceResult" style="font-size: 11px; text-align: center; margin-top: 8px;"></div>
+                </div>
+
                 <!-- PIN変更セクション -->
                 <div style="border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
                     <div
@@ -5167,13 +5184,16 @@
                 console.log('[FCM] Permission:', permission);
 
                 if (permission === 'granted') {
-                    // FCMトークンを取得
-                    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                    // Service Workerをカスタムパスで登録（サブディレクトリ対応）
+                    const swRegistration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                    console.log('[FCM] Custom SW registered:', swRegistration.scope);
+                    // FCMトークンを取得（カスタムSW登録を渡す）
+                    const token = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: swRegistration });
                     console.log('[FCM] Token:', token);
 
                     if (token) {
                         // トークンをGASバックエンドに保存
-                        await saveFcmToken(token);
+                        const saveResult = await saveFcmToken(token);
                         localStorage.setItem('mindful_fcm_token', token);
                         localStorage.setItem('mindful_push_enabled', 'true');
 
@@ -5181,8 +5201,12 @@
                         btn.style.background = 'rgba(34, 197, 94, 0.15)';
                         btn.style.color = 'var(--success)';
                         btn.style.borderColor = 'var(--success)';
-                        status.textContent = 'チェックアウト忘れの通知が届きます';
-                        status.style.color = 'var(--success)';
+                        if (saveResult && saveResult.success) {
+                            status.textContent = '✅ トークン保存完了 [' + token.substring(0, 10) + '...]';
+                        } else {
+                            status.textContent = '⚠️ トークン保存失敗: ' + (saveResult?.error || 'プロフィール未設定');
+                            status.style.color = 'var(--danger)';
+                        }
                     }
                 } else if (permission === 'denied') {
                     btn.textContent = '🚫 通知がブロックされています';
@@ -5209,7 +5233,10 @@
             const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
             const base = profile.base || todayBase || 'moiwayama';
             const url = SCRIPT_URLS[base];
-            if (!url || !profile.name || !profile.pin) return;
+            if (!url || !profile.name || !profile.pin) {
+                console.error('[FCM] Profile missing:', { url: !!url, name: profile.name, pin: !!profile.pin, base });
+                return { success: false, error: 'プロフィール未設定 (base:' + base + ')' };
+            }
 
             try {
                 const response = await fetch(
@@ -5217,8 +5244,76 @@
                 );
                 const result = await response.json();
                 console.log('[FCM] Token saved to GAS:', result);
+                return result;
             } catch (e) {
                 console.error('[FCM] Failed to save token:', e);
+                return { success: false, error: e.message };
+            }
+        }
+
+        // 📢 アナウンスメント送信
+        async function sendAnnouncementPush() {
+            const title = document.getElementById('announceTitle').value.trim();
+            const body = document.getElementById('announceBody').value.trim();
+            const btn = document.getElementById('announceSendBtn');
+            const result = document.getElementById('announceResult');
+            
+            if (!title || !body) {
+                result.textContent = '⚠️ タイトルと本文を入力してください';
+                result.style.color = 'var(--danger)';
+                return;
+            }
+            
+            const profile = JSON.parse(localStorage.getItem('mindful_profile') || '{}');
+            if (!profile.name || !profile.pin) {
+                result.textContent = '⚠️ ログインが必要です';
+                result.style.color = 'var(--danger)';
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '📡 送信中...';
+            result.textContent = '';
+            
+            try {
+                // Multi-Remote Broadcast: 全拠点に送信
+                const bases = ['moiwayama', 'okurayama', 'tvtower', 'akarenga'];
+                let totalSent = 0;
+                let totalFail = 0;
+                
+                for (const base of bases) {
+                    const url = SCRIPT_URLS[base];
+                    if (!url) continue;
+                    
+                    try {
+                        const response = await fetch(
+                            `${url}?action=sendAnnouncementPush&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&senderName=${encodeURIComponent(profile.name)}&senderPin=${encodeURIComponent(profile.pin)}${tokenParam()}`
+                        );
+                        const data = await response.json();
+                        if (data.success) {
+                            totalSent += (data.sentCount || 0);
+                            totalFail += (data.failCount || 0);
+                        }
+                    } catch (e) {
+                        console.error('[Announce] Error on ' + base + ':', e);
+                    }
+                }
+                
+                if (totalSent > 0) {
+                    result.textContent = `✅ ${totalSent}名に送信完了！`;
+                    result.style.color = 'var(--success)';
+                    document.getElementById('announceTitle').value = '';
+                    document.getElementById('announceBody').value = '';
+                } else {
+                    result.textContent = '⚠️ 送信対象がいません（通知ONのスタッフがいません）';
+                    result.style.color = 'var(--danger)';
+                }
+            } catch (error) {
+                result.textContent = '⚠️ 送信エラー: ' + error.message;
+                result.style.color = 'var(--danger)';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📢 全スタッフに送信';
             }
         }
 

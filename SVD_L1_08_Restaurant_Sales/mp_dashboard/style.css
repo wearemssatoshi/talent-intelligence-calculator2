@@ -2,7 +2,7 @@
    MOMENTUM PEAKS — Command & Control Design System
    ═══════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
 
 /* ── Tokens ── */
 :root {
@@ -55,11 +55,12 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ── Typography ── */
 .mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 .label {
@@ -81,7 +82,7 @@ body {
 }
 
 .header h1 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 22px;
     font-weight: 800;
     letter-spacing: 4px;
@@ -103,7 +104,7 @@ body {
 
 /* ── Tax Display Toggle (Header) ── */
 .tax-display-btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -145,7 +146,7 @@ body {
 
 .nav-btn {
     padding: 14px 18px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 1px;
@@ -203,7 +204,7 @@ body {
 }
 
 .card h3 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 1.5px;
@@ -265,7 +266,7 @@ body {
 }
 
 .store-card .store-name {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -279,7 +280,7 @@ body {
 }
 
 .store-card .mp-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 32px;
     font-weight: 900;
     color: var(--gold);
@@ -292,7 +293,7 @@ body {
 }
 
 .store-card .store-sales {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     color: var(--text-sub);
     margin-top: 8px;
@@ -319,7 +320,7 @@ body {
 /* ── Season Badges ── */
 .season-badge {
     display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -361,7 +362,7 @@ body {
 }
 
 .base-btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 1px;
@@ -389,7 +390,7 @@ body {
 
 /* ── Store Filter (per-store buttons) ── */
 .store-btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.5px;
@@ -432,7 +433,7 @@ body {
 }
 
 .svd-stat .stat-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 24px;
     font-weight: 700;
     color: var(--gold);
@@ -470,7 +471,7 @@ body {
 }
 
 .kf-card .kf-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 28px;
     font-weight: 700;
     color: var(--gold);
@@ -496,7 +497,7 @@ body {
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
 }
 
@@ -597,7 +598,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 8px;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
@@ -648,7 +649,7 @@ body {
     padding: 12px 16px;
     border-radius: var(--radius);
     margin-top: 12px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
 }
 
@@ -686,12 +687,12 @@ body {
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 select,
 input[type="date"] {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     background: var(--surface-2);
     color: var(--text);
@@ -708,7 +709,7 @@ input[type="date"]:focus {
 
 /* ── Buttons ── */
 .btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -752,7 +753,7 @@ input[type="date"]:focus {
 }
 
 .year-card h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 700;
     color: var(--gold);
@@ -776,7 +777,7 @@ input[type="date"]:focus {
 }
 
 .year-stat .yv {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     font-weight: 600;
 }
@@ -900,7 +901,7 @@ input[type="date"]:focus {
 
 /* ── Ropeway Toggle Buttons ── */
 .rw-btn {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 600;
     padding: 4px 10px;
@@ -1046,7 +1047,7 @@ input[type="date"]:focus {
     border-radius: 6px;
     color: var(--text);
     padding: 6px 10px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
 }
 
@@ -1112,7 +1113,7 @@ input[type="date"]:focus {
     border-radius: 6px;
     color: var(--text);
     padding: 6px 8px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
 }
 
@@ -1240,7 +1241,7 @@ input[type="date"]:focus {
 }
 
 .sf-store-tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 700;
     color: var(--gold);
@@ -1305,7 +1306,7 @@ input[type="date"]:focus {
 }
 
 .rationale-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -1438,7 +1439,7 @@ input[type="date"]:focus {
 }
 
 .entry-form-header h3 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 700;
     color: var(--gold);
@@ -1446,7 +1447,7 @@ input[type="date"]:focus {
 
 .entry-status {
     font-size: 12px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* ── Section ── */
@@ -1464,7 +1465,7 @@ input[type="date"]:focus {
 }
 
 .entry-section-title {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 2px;
@@ -1514,7 +1515,7 @@ input[type="date"]:focus {
     font-size: 12px;
     color: var(--text-muted);
     padding: 0 8px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     flex-shrink: 0;
 }
 
@@ -1536,7 +1537,7 @@ input[type="date"]:focus {
     border: none;
     outline: none;
     color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 14px;
     font-weight: 600;
     padding: 8px 10px;
@@ -1589,7 +1590,7 @@ input[type="date"]:focus {
 }
 
 .entry-total-value {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 20px;
     font-weight: 800;
     color: var(--gold-light);
@@ -1602,7 +1603,7 @@ input[type="date"]:focus {
 .entry-total-sub {
     font-size: 11px;
     color: var(--text-sub);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
 }
 
 /* ── Actions ── */
@@ -1616,7 +1617,7 @@ input[type="date"]:focus {
 }
 
 .entry-save-status {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     margin-left: auto;
 }
@@ -1715,7 +1716,7 @@ input[type="date"]:focus {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 1px;
@@ -1779,7 +1780,7 @@ input[type="date"]:focus {
 }
 
 .mp-msg-name {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 9px;
     font-weight: 600;
     color: var(--gold);
@@ -1828,7 +1829,7 @@ input[type="date"]:focus {
 }
 
 .mp-typing-dots span {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 18px;
     font-weight: 900;
     color: var(--gold);
@@ -1925,7 +1926,7 @@ input[type="date"]:focus {
 }
 
 .mp-chat-settings-inner h4 {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     font-weight: 700;
     color: var(--gold);
@@ -1941,7 +1942,7 @@ input[type="date"]:focus {
 
 .mp-chat-settings-inner input {
     width: 100%;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 12px;
     background: var(--surface-1);
     color: var(--text);
@@ -1962,7 +1963,7 @@ input[type="date"]:focus {
 }
 
 .mp-chat-settings-btns button {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Outfit', sans-serif;
     font-size: 11px;
     font-weight: 600;
     padding: 6px 14px;

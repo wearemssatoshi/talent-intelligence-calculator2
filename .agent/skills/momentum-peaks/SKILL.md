@@ -5,6 +5,31 @@ description: "売上予測・需要予測に関する質問、シフト人数の
 
 # Momentum Peaks — 完全憲法 📈
 
+> **MPは予測ツールではない。意思決定の羅針盤である。**
+
+## §0. 存在意義 — なぜMPは存在するのか（2026年3月7日 SAT制定）
+
+> **「今」を知り、「何」をするか。「何」ができるか。「何」ができたか。**
+> **— これがMPの全てだ。当てることが目的ではない。ズレを防ぐことが目的ではない。**
+> **命懸けで業界を未来に運ぶための武器だ。ゲームではない。**
+
+MPは25年の現場経験から生まれた。レストランプロデューサーの「経験と勘」をコードに変換し、
+100人の仲間が最高のパフォーマンスを発揮するために、**決断の根拠**を提供する。
+
+| MPが問う4つの問い | 意味 |
+|---|---|
+| **「今」を知る** | 今日の需要はどうか。予約は何件か。季節はどこにいるか |
+| **「何」をするか** | この情報を元に、配置を決め、仕込みを決め、行動を決める |
+| **「何」ができるか** | 手元のリソースで、最高の体験を届けるには何が可能か |
+| **「何」ができたか** | 結果を記録し、次の判断に活かす |
+
+> [!CAUTION]
+> **MPを「予測精度ゲーム」に矮小化してはならない。**
+> MAPEが何%かは指標の一つに過ぎない。MPの価値は、SATとチームの**次の行動が変わるか**で測る。
+> この§0は全てのセクション（§1-§15）の上位規範である。
+
+---
+
 > SVDが開発した独自の需要予測フレームワーク。
 > 「業界のなんとなく」を排し、データに基づく**適正フォーキャスト**を算出する。
 > **このファイルがMPの唯一の設計図。壊れたら、ここから再構築する。**
@@ -73,7 +98,7 @@ https://script.google.com/macros/s/AKfycbyE_uNfiMB6_szu0D0cQoR8JBgwxXm-3H45DGs6q
 SVD_API_TOKEN = 'a6b93874301b54dac9a37afc89d04f56'
 ```
 
-### GAS Store Sheets（ヘッダー定義 — 2026-03-05更新）
+### GAS Store Sheets（ヘッダー定義 — 2026-03-13更新）
 ```
 MOIWA_JW:       date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|TO_Food|TO_Drink|席料|南京錠|花束|物販_食品|物販_アパレル
 TVTOWER_GA:     date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|3CH_Food|3CH_Drink|3CH人数|宴会_Food|宴会_Drink|宴会人数|室料|展望台|物販_食品|物販_アパレル
@@ -82,7 +107,15 @@ OKURAYAMA_NP:   date|L_Food|L_Drink|L人数|D_Food|D_Drink|D人数|室料|花束
 OKURAYAMA_Ce:   date|Food|Drink|人数|物販_食品|物販_アパレル
 OKURAYAMA_RP:   date|Food|Drink|人数|物販_食品|物販_アパレル
 AKARENGA_BQ:    date|L_Food|L_Drink|L人数|AT_Food|AT_Drink|AT人数|D_Food|D_Drink|D人数|席料|物販_食品|物販_アパレル
-AKARENGA_RYB:   date|Food|Drink|人数|物販_食品|物販_アパレル
+AKARENGA_RYB:   date|Food|Drink|人数|TO_Sales|TO人数|物販_食品|物販_アパレル
+```
+
+### KF3 来場者数シート（2026-03-13追加）
+```
+VISITOR_MOIWAYAMA:  date|ropeway|minicable|total|memo       (日次)
+VISITOR_OKURAYAMA:  date|jump_site|total|memo               (日次)
+VISITOR_TVTOWER:    month|observatory|total|memo             (月次)
+VISITOR_AKARENGA:   month|total|memo                         (月次)
 ```
 
 > [!NOTE]
