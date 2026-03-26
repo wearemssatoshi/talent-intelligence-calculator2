@@ -48,9 +48,21 @@
               "icon": "lucide-file",
               "title": "無題のファイル"
             }
+          },
+          {
+            "id": "1b90df7e338717a0",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.12.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "リリースノート 1.12.7"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -212,7 +224,7 @@
       "bases:新規ベースを作成": false
     }
   },
-  "active": "8cb7bbcddb20367d",
+  "active": "1b90df7e338717a0",
   "lastOpenFiles": [
     "02_AREAS/Ask_Maps_Impact_Analysis_2026-03-14.md",
     "Antigravity（Google）とClaude Code（Anthropic）を３か月使い倒してわかったこと。2026年のAIコーディング、結局「どっちが強い？」じゃなくて「何をやりたいか」で決まる.md",

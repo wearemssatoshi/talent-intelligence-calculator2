@@ -1494,12 +1494,13 @@
 
 
 
-                    // 各スキルスコアを取得
+                    // 各スキルスコアを取得 — select要素はid="p1"等で定義されている
                     const skillPrefixes = ['p', 's', 'e', 'm'];
                     skillPrefixes.forEach(prefix => {
                         for (let i = 1; i <= 6; i++) {
-                            const select = document.querySelector(`select[data-skill="${prefix}${i}"]`);
-                            formData.append(`${prefix}${i}`, select?.value || '0');
+                            const key = `${prefix}${i}`;
+                            const select = document.getElementById(key);
+                            formData.append(key, select?.value || '0');
                         }
                     });
 

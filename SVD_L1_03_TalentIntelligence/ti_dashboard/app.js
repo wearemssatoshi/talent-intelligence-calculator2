@@ -1165,8 +1165,8 @@ let dragStartPos = null;
 
 function handleDragStart(e) {
     isDragging = true;
-    // カード全体からドラッグ開始
-    const card = e.currentTarget.closest('.staff-card') || e.currentTarget;
+    // カード全体からドラッグ開始 — e.target が子要素の場合も確実に .staff-card を取得
+    const card = e.target.closest('.staff-card');
     draggedStaffId = card ? card.dataset.staffId : null;
     if (!draggedStaffId) {
         isDragging = false;
@@ -1176,15 +1176,24 @@ function handleDragStart(e) {
     e.dataTransfer.setData('text/plain', draggedStaffId);
     // micro-delay to let browser snapshot card before opacity change
     setTimeout(() => { if (card) card.classList.add('staff-card--dragging'); }, 0);
-    // Show all drop zones
+    // Show all drop zones — collapsed セクションも一時的に展開
+    document.querySelectorAll('.team-section.collapsed').forEach(sec => {
+        sec.classList.add('drag-temp-expand');
+        sec.classList.remove('collapsed');
+    });
     document.querySelectorAll('.team-members').forEach(z => z.classList.add('drop-zone--ready'));
 }
 
 function handleDragEnd(e) {
-    const card = e.currentTarget.closest('.staff-card') || e.currentTarget;
+    const card = e.target.closest('.staff-card');
     if (card) card.classList.remove('staff-card--dragging');
     document.querySelectorAll('.team-members').forEach(z => {
         z.classList.remove('drop-zone--ready', 'drop-zone--over');
+    });
+    // ドラッグ中に一時展開したセクションを元に戻す
+    document.querySelectorAll('.team-section.drag-temp-expand').forEach(sec => {
+        sec.classList.add('collapsed');
+        sec.classList.remove('drag-temp-expand');
     });
     // Reset drag state after a short delay to prevent click from firing
     setTimeout(() => { isDragging = false; }, 100);
@@ -1440,7 +1449,29 @@ async function openStaffModal(staffId) {
 
         body.innerHTML = `
             <div class="modal-info-grid">
-                <div class="info-row"><span class="info-label">所属</span><span class="info-value">${staff.affiliation || '—'}</span></div>
+                <div class="info-row"><span class="info-label">所属</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;">
+                        ${(() => {
+                            const ALL_LOCS = [
+                                { short: 'JW', full: 'THE JEWELS' },
+                                { short: 'NP', full: 'NOUVELLE POUSSE OKURAYAMA' },
+                                { short: 'GA', full: 'THE GARDEN SAPPORO HOKKAIDO GRILLE' },
+                                { short: 'BQ', full: 'LA BRIQUE SAPPORO Akarenga Terrace' },
+                                { short: 'RYB', full: 'Rusutsu Yotei Buta by BQ' },
+                                { short: 'BG', full: 'Sapporo TV Tower BEER GARDEN' },
+                                { short: 'Ce', full: 'OKURAYAMA S\u00e9l\u00e9ste' },
+                                { short: 'RP', full: 'Repos' },
+                                { short: 'POP', full: 'POP UP' },
+                                { short: 'RSV', full: RESERVE_NAME }
+                            ];
+                            return ALL_LOCS.map(loc => {
+                                const isActive = shortName(staff.affiliation) === loc.short;
+                                const color = STORE_COLORS[loc.short] || 'var(--text-sub)';
+                                return `<button onclick="changeAffiliation('${staffId}','${loc.full.replace(/'/g, "\\'")}','${loc.short}',this)" style="padding:3px 10px;border-radius:14px;font-size:11px;font-weight:${isActive ? '700' : '500'};cursor:pointer;border:2px solid ${isActive ? color : 'rgba(160,120,64,0.15)'};background:${isActive ? color + '22' : 'transparent'};color:${isActive ? color : 'var(--text-dim)'};transition:all 0.2s;letter-spacing:0.5px;" title="${loc.full}">${loc.short}</button>`;
+                            }).join('');
+                        })()}
+                    </div>
+                </div>
                 <div class="info-row"><span class="info-label">役職</span>
                     <select id="modalJobTitle" onchange="updateStaffField('${staffId}','jobTitle',this.value)" style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-family:inherit;">
                         ${['一般','アシスタントキャプテン','キャプテン','アシスタントマネジャー','マネジャーまたは副支配人','チーフマネジャー・支配人','ディビジョン支配人','統括支配人','ゼネラルマネジャー・総支配人'].map(j =>
@@ -1638,6 +1669,51 @@ async function updateStaffField(staffId, field, value) {
         renderStaffGrid(staffList);
     } catch (e) {
         TI_BRIDGE.showToast('❌ 更新に失敗しました');
+    }
+}
+
+// ── Modal: 所属変更 (Location Chips) ──
+async function changeAffiliation(staffId, newAffFull, newAffShort, btnEl) {
+    const staff = staffList.find(s => s.staffId === staffId);
+    if (!staff) return;
+
+    const oldAffiliation = staff.affiliation;
+    const oldShort = shortName(oldAffiliation);
+    if (oldShort === newAffShort) return; // 同じ所属 — 何もしない
+
+    // ローカル即時反映
+    staff.affiliation = newAffFull;
+    recordAffiliationChange(staffId, oldAffiliation, newAffFull);
+
+    // チップUIを即時更新（全ボタンをリセットしてアクティブを切替）
+    if (btnEl && btnEl.parentElement) {
+        const siblings = btnEl.parentElement.querySelectorAll('button');
+        siblings.forEach(b => {
+            b.style.fontWeight = '500';
+            b.style.background = 'transparent';
+            b.style.borderColor = 'rgba(160,120,64,0.15)';
+            b.style.color = 'var(--text-dim)';
+        });
+        const color = STORE_COLORS[newAffShort] || 'var(--text-sub)';
+        btnEl.style.fontWeight = '700';
+        btnEl.style.background = color + '22';
+        btnEl.style.borderColor = color;
+        btnEl.style.color = color;
+    }
+
+    renderStaffGrid(staffList);
+    TI_BRIDGE.showToast(`🔄 ${staff.name} → ${newAffShort} に移動中...`);
+
+    // バックエンドに保存
+    try {
+        const res = await TI_BRIDGE.updateProfile(staffId, { affiliation: newAffFull });
+        if (res.result === 'success') {
+            TI_BRIDGE.showToast(`✅ ${staff.name} → ${newAffShort} 保存完了`);
+        } else {
+            TI_BRIDGE.showToast(`⚠️ ${staff.name}: サーバー保存失敗 — ローカルでは移動済み`, 5000);
+        }
+    } catch (err) {
+        TI_BRIDGE.showToast(`⚠️ ${staff.name}: 通信エラー — ローカルでは移動済み`, 5000);
     }
 }
 
