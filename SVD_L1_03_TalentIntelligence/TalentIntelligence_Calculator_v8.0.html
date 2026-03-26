@@ -1511,6 +1511,14 @@
                             params.append(key, value);
                         }
 
+                        // ★ v9.1 デバッグ: 送信内容を確認
+                        console.log('📡 saveEvaluation送信内容:');
+                        for (const [k, v] of params.entries()) {
+                            console.log(`  ${k}: ${v}`);
+                        }
+                        const scoreCheck = ['p1','p2','p3','s1','e1','m1'].map(k => `${k}=${params.get(k)}`).join(', ');
+                        console.log(`🎯 スコアサンプル: ${scoreCheck}`);
+
                         const response = await fetch(GAS_ENDPOINT + '?token=' + encodeURIComponent(SVD_API_TOKEN || ''), {
                             method: 'POST',
                             body: params
