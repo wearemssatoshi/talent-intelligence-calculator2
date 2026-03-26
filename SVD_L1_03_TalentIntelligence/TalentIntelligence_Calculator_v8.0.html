@@ -1526,7 +1526,15 @@
 
                         const result = await response.json();
 
+                        // ★ v9.1 デバッグ: GASの返却内容を確認
+                        console.log('📡 GAS返却:', JSON.stringify(result));
+
                         if (result.result === 'success') {
+                            // ★ デバッグ: GASが計算したスコアを表示（バックエンド連携確認）
+                            const gasTotal = result.totalScore || '?';
+                            const gasCat = result.categoryScores ? JSON.stringify(result.categoryScores) : '?';
+                            alert(`✅ 保存完了!\n\nGAS計算 totalScore: ${gasTotal}\nカテゴリ: ${gasCat}\n\n※ 0ならバックエンド連携に問題あり`);
+                            
                             saveBtn.textContent = '✅ 保存完了！';
                             setTimeout(() => {
                                 saveBtn.textContent = originalText;
