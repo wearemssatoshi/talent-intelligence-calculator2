@@ -209,9 +209,15 @@ function calcCategoryScores_(scores) {
 }
 
 function calcTotalScore_(scores) {
-  const keys = ['p1','p2','p3','p4','p5','p6','s1','s2','s3','s4','s5','s6',
-                'e1','e2','e3','e4','e5','e6','m1','m2','m3','m4','m5','m6'];
-  return keys.reduce((sum, k) => sum + Number(scores[k] || 0), 0);
+  // Combat Power = (P平均 × S平均) + (E平均 × M平均)
+  // カリキュレーターのfinalScore計算と統一
+  const avg = (arr) => arr.reduce((a, b) => a + Number(b || 0), 0) / arr.length;
+  const P = avg([scores.p1, scores.p2, scores.p3, scores.p4, scores.p5, scores.p6]);
+  const S = avg([scores.s1, scores.s2, scores.s3, scores.s4, scores.s5, scores.s6]);
+  const E = avg([scores.e1, scores.e2, scores.e3, scores.e4, scores.e5, scores.e6]);
+  const M = avg([scores.m1, scores.m2, scores.m3, scores.m4, scores.m5, scores.m6]);
+  const cp = (P * S) + (E * M);
+  return parseFloat(cp.toFixed(2));
 }
 
 /**
