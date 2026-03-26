@@ -1743,21 +1743,11 @@
                 const container = document.getElementById('role-chips-container');
                 if (!container) return;
 
+                // label内のcheckboxはブラウザが自動でトグルするため、
+                // changeイベントだけで処理する（clickでの手動トグルは二重トグルになるため削除）
                 container.addEventListener('change', function (e) {
                     if (e.target.type === 'checkbox') {
                         updateRoleSelection(e.target);
-                    }
-                });
-
-                // Also allow clicking on the label
-                container.addEventListener('click', function (e) {
-                    const chip = e.target.closest('.role-chip');
-                    if (chip && e.target.type !== 'checkbox') {
-                        const checkbox = chip.querySelector('input[type="checkbox"]');
-                        if (checkbox) {
-                            checkbox.checked = !checkbox.checked;
-                            updateRoleSelection(checkbox);
-                        }
                     }
                 });
             }
